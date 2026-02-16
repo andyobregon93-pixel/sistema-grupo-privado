@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Grupo Privado</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.container{
+width:95%;
+max-width:1100px;
+margin:30px auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1,h2,h3{color:#203a43;}
+
+input,select,button{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+background:#203a43;
+color:white;
+border:none;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{opacity:0.9;}
+
+.logout{background:#c0392b;}
+
+.admin-box{
+background:#f4f4f4;
+padding:15px;
+border-radius:8px;
+margin-bottom:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#203a43;
+color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="loginBox">
+<h1>SISTEMA GRUPO PRIVADO</h1>
+<input type="email" id="email" placeholder="Correo">
+<input type="password" id="password" placeholder="Clave">
+<button onclick="login()">Ingresar</button>
+</div>
+
+<div id="app" style="display:none;">
+
+<h2 id="infoUsuario"></h2>
+<button class="logout" onclick="logout()">Cerrar sesión</button>
+
+<!-- PANEL ADMIN -->
+<div id="panelAdmin" style="display:none;">
+
+<div class="admin-box">
+<h3>Crear Usuario</h3>
+<input type="email" id="nuevoEmail" placeholder="Correo usuario">
+<input type="password" id="nuevoPassword" placeholder="Clave">
+<button onclick="crearUsuario()">Crear Usuario</button>
+</div>
+
+<div class="admin-box">
+<h3>Administradores que ayudan</h3>
+<input type="text" id="nuevoAdminNombre" placeholder="Nombre administrador">
+<button onclick="agregarAdmin()">Agregar</button>
+</div>
+
+<div class="admin-box">
+<h3>Plataformas</h3>
+<input type="text" id="nuevaPlataforma" placeholder="Nombre plataforma">
+<button onclick="agregarPlataforma()">Agregar</button>
+</div>
+
+</div>
+
+<h3>Cuentas Activadas</h3>
+
+<select id="selectPlataforma"></select>
+<select id="selectAdmin"></select>
+<input type="text" id="miembro" placeholder="Nombre del miembro">
+<button onclick="guardarRegistro()">Guardar</button>
+
+<h3>Historial</h3>
+
+<table>
+<thead>
+<tr>
+<th>Plataforma</th>
+<th>Miembro</th>
+<th>Administrador</th>
+<th>Fecha</th>
+</tr>
+</thead>
+<tbody id="tablaRegistros"></tbody>
+</table>
+
+</div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* 🔥 REEMPLAZA ESTO CON TU CONFIG FIREBASE */
+const firebaseConfig = {
+apiKey: "TU_API_KEY",
+authDomain: "TU_AUTH_DOMAIN",
+projectId: "TU_PROJECT_ID",
+storageBucket: "TU_BUCKET",
+messagingSenderId: "TU_SENDER_ID",
+appId: "TU_APP_ID"
+};
+
+const appFirebase = initializeApp(firebaseConfig);
+const auth = getAuth(appFirebase);
+const db = getFirestore(appFirebase);
+
+let rolActual=null;
+
+/* LOGIN */
+window.login=async()=>{
+await signInWithEmailAndPassword(auth,email.value,password.value);
+};
+
+window.logout=()=>signOut(auth);
+
+/* AUTH */
+onAuthStateChanged(auth, async(user)=>{
+if(user){
+
+const snap=await getDoc(doc(db,"usuarios",user.uid));
+rolActual=snap.exists()?snap.data().role:"usuario";
+
+infoUsuario.innerText="Usuario: "+user.email+" | Rol: "+rolActual;
+
+loginBox.style.display="none";
+app.style.display="block";
+
+if(rolActual==="admin"){
+panelAdmin.style.display="block";
+}else{
+panelAdmin.style.display="none";
+}
+
+cargarSelects();
+cargarHistorial();
+
+}else{
+loginBox.style.display="block";
+app.style.display="none";
+}
+});
+
+/* SOLO ADMIN CREA USUARIOS */
+window.crearUsuario=async()=>{
+if(rolActual!=="admin"){alert("No autorizado");return;}
+
+const cred=await createUserWithEmailAndPassword(auth,nuevoEmail.value,nuevoPassword.value);
+
+await setDoc(doc(db,"usuarios",cred.user.uid),{
+email:nuevoEmail.value,
+role:"usuario"
+});
+
+alert("Usuario creado correctamente");
+};
+
+/* ADMIN AGREGA ADMINISTRADORES */
+window.agregarAdmin=async()=>{
+if(rolActual!=="admin"){alert("No autorizado");return;}
+
+await addDoc(collection(db,"adminsAyuda"),{
+nombre:nuevoAdminNombre.value
+});
+
+nuevoAdminNombre.value="";
+};
+
+/* ADMIN AGREGA PLATAFORMAS */
+window.agregarPlataforma=async()=>{
+if(rolActual!=="admin"){alert("No autorizado");return;}
+
+await addDoc(collection(db,"plataformas"),{
+nombre:nuevaPlataforma.value
+});
+
+nuevaPlataforma.value="";
+};
+
+/* CARGAR SELECTS */
+function cargarSelects(){
+
+onSnapshot(collection(db,"adminsAyuda"),(snapshot)=>{
+selectAdmin.innerHTML="";
+snapshot.forEach(doc=>{
+selectAdmin.innerHTML+=`<option>${doc.data().nombre}</option>`;
+});
+});
+
+onSnapshot(collection(db,"plataformas"),(snapshot)=>{
+selectPlataforma.innerHTML="";
+snapshot.forEach(doc=>{
+selectPlataforma.innerHTML+=`<option>${doc.data().nombre}</option>`;
+});
+});
+}
+
+/* GUARDAR REGISTRO */
+window.guardarRegistro=async()=>{
+await addDoc(collection(db,"cuentasActivadas"),{
+plataforma:selectPlataforma.value,
+miembro:miembro.value,
+admin:selectAdmin.value,
+fecha:new Date().toLocaleString()
+});
+miembro.value="";
+};
+
+/* HISTORIAL */
+function cargarHistorial(){
+onSnapshot(collection(db,"cuentasActivadas"),(snapshot)=>{
+tablaRegistros.innerHTML="";
+snapshot.forEach(doc=>{
+const d=doc.data();
+tablaRegistros.innerHTML+=`
+<tr>
+<td>${d.plataforma}</td>
+<td>${d.miembro}</td>
+<td>${d.admin}</td>
+<td>${d.fecha}</td>
+</tr>`;
+});
+});
+}
+
+</script>
+</body>
+  </html>
