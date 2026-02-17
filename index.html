@@ -1,138 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Grupo Privado</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-}
-
-.container{
-width:95%;
-max-width:1100px;
-margin:30px auto;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
-
-h1,h2,h3{color:#203a43;}
-
-input,select,button{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:6px;
-border:1px solid #ccc;
-}
-
-button{
-background:#203a43;
-color:white;
-border:none;
-cursor:pointer;
-font-weight:bold;
-}
-
-button:hover{opacity:0.9;}
-
-.logout{background:#c0392b;}
-
-.admin-box{
-background:#f4f4f4;
-padding:15px;
-border-radius:8px;
-margin-bottom:20px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
-}
-
-th{
-background:#203a43;
-color:white;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div id="loginBox">
-<h1>SISTEMA GRUPO PRIVADO</h1>
-<input type="email" id="email" placeholder="Correo">
-<input type="password" id="password" placeholder="Clave">
-<button onclick="login()">Ingresar</button>
-</div>
-
-<div id="app" style="display:none;">
-
-<h2 id="infoUsuario"></h2>
-<button class="logout" onclick="logout()">Cerrar sesión</button>
-
-<div id="panelAdmin" style="display:none;">
-
-<div class="admin-box">
-<h3>Crear Usuario</h3>
-<input type="email" id="nuevoEmail" placeholder="Correo usuario">
-<input type="password" id="nuevoPassword" placeholder="Clave">
-<button onclick="crearUsuario()">Crear Usuario</button>
-</div>
-
-<div class="admin-box">
-<h3>Administradores que ayudan</h3>
-<input type="text" id="nuevoAdminNombre" placeholder="Nombre administrador">
-<button onclick="agregarAdmin()">Agregar</button>
-</div>
-
-<div class="admin-box">
-<h3>Plataformas</h3>
-<input type="text" id="nuevaPlataforma" placeholder="Nombre plataforma">
-<button onclick="agregarPlataforma()">Agregar</button>
-</div>
-
-</div>
-
-<h3>Cuentas Activadas</h3>
-
-<select id="selectPlataforma"></select>
-<select id="selectAdmin"></select>
-<input type="text" id="miembro" placeholder="Nombre del miembro">
-<button onclick="guardarRegistro()">Guardar</button>
-
-<h3>Historial</h3>
-
-<table>
-<thead>
-<tr>
-<th>Plataforma</th>
-<th>Miembro</th>
-<th>Administrador</th>
-<th>Fecha</th>
-</tr>
-</thead>
-<tbody id="tablaRegistros"></tbody>
-</table>
-
-</div>
-</div>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -154,116 +19,112 @@ const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
 const db = getFirestore(appFirebase);
 
-let rolActual=null;
+let rolActual = null;
 
-/* LOGIN */
-window.login=async()=>{
-await signInWithEmailAndPassword(auth,email.value,password.value);
-};
-
-window.logout=()=>signOut(auth);
-
-/* AUTH */
-onAuthStateChanged(auth, async(user)=>{
-if(user){
-
-// 🔥 CORREGIDO AQUÍ
-const snap=await getDoc(doc(db,"users",user.uid));
-rolActual=snap.exists()?snap.data().role:"usuario";
-
-infoUsuario.innerText="Usuario: "+user.email+" | Rol: "+rolActual;
-
-loginBox.style.display="none";
-app.style.display="block";
-
-if(rolActual==="admin"){
-panelAdmin.style.display="block";
-}else{
-panelAdmin.style.display="none";
+/* ================= LOGIN ================= */
+async function login(){
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    );
+  }catch(error){
+    alert(error.message);
+    console.log(error);
+  }
 }
 
-cargarSelects();
-cargarHistorial();
-
-}else{
-loginBox.style.display="block";
-app.style.display="none";
+/* ================= LOGOUT ================= */
+function logout(){
+  signOut(auth);
 }
-});
 
-/* SOLO ADMIN CREA USUARIOS */
-window.crearUsuario=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
+/* ================= CREAR USUARIO ================= */
+async function crearUsuario(){
+if(rolActual!=="admin"){ alert("No autorizado"); return; }
 
-const cred=await createUserWithEmailAndPassword(auth,nuevoEmail.value,nuevoPassword.value);
+try{
+const cred = await createUserWithEmailAndPassword(
+auth,
+document.getElementById("nuevoEmail").value,
+document.getElementById("nuevoPassword").value
+);
 
-// 🔥 CORREGIDO AQUÍ
 await setDoc(doc(db,"users",cred.user.uid),{
-email:nuevoEmail.value,
+email:document.getElementById("nuevoEmail").value,
 role:"usuario"
 });
 
 alert("Usuario creado correctamente");
-};
 
-/* ADMIN AGREGA ADMINISTRADORES */
-window.agregarAdmin=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
+}catch(error){
+alert(error.message);
+}
+}
+
+/* ================= AGREGAR ADMIN ================= */
+async function agregarAdmin(){
+if(rolActual!=="admin"){ alert("No autorizado"); return; }
 
 await addDoc(collection(db,"adminsAyuda"),{
-nombre:nuevoAdminNombre.value
+nombre:document.getElementById("nuevoAdminNombre").value
 });
 
-nuevoAdminNombre.value="";
-};
+document.getElementById("nuevoAdminNombre").value="";
+}
 
-/* ADMIN AGREGA PLATAFORMAS */
-window.agregarPlataforma=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
+/* ================= AGREGAR PLATAFORMA ================= */
+async function agregarPlataforma(){
+if(rolActual!=="admin"){ alert("No autorizado"); return; }
 
 await addDoc(collection(db,"plataformas"),{
-nombre:nuevaPlataforma.value
+nombre:document.getElementById("nuevaPlataforma").value
 });
 
-nuevaPlataforma.value="";
-};
+document.getElementById("nuevaPlataforma").value="";
+}
 
-/* CARGAR SELECTS */
+/* ================= GUARDAR REGISTRO ================= */
+async function guardarRegistro(){
+await addDoc(collection(db,"cuentasActivadas"),{
+plataforma:document.getElementById("selectPlataforma").value,
+miembro:document.getElementById("miembro").value,
+admin:document.getElementById("selectAdmin").value,
+fecha:new Date().toLocaleString()
+});
+
+document.getElementById("miembro").value="";
+}
+
+/* ================= CARGAR SELECTS ================= */
 function cargarSelects(){
 
 onSnapshot(collection(db,"adminsAyuda"),(snapshot)=>{
+const selectAdmin=document.getElementById("selectAdmin");
 selectAdmin.innerHTML="";
-snapshot.forEach(doc=>{
-selectAdmin.innerHTML+=`<option>${doc.data().nombre}</option>`;
+snapshot.forEach(docu=>{
+selectAdmin.innerHTML+=`<option>${docu.data().nombre}</option>`;
 });
 });
 
 onSnapshot(collection(db,"plataformas"),(snapshot)=>{
+const selectPlataforma=document.getElementById("selectPlataforma");
 selectPlataforma.innerHTML="";
-snapshot.forEach(doc=>{
-selectPlataforma.innerHTML+=`<option>${doc.data().nombre}</option>`;
+snapshot.forEach(docu=>{
+selectPlataforma.innerHTML+=`<option>${docu.data().nombre}</option>`;
 });
 });
 }
 
-/* GUARDAR REGISTRO */
-window.guardarRegistro=async()=>{
-await addDoc(collection(db,"cuentasActivadas"),{
-plataforma:selectPlataforma.value,
-miembro:miembro.value,
-admin:selectAdmin.value,
-fecha:new Date().toLocaleString()
-});
-miembro.value="";
-};
-
-/* HISTORIAL */
+/* ================= HISTORIAL ================= */
 function cargarHistorial(){
 onSnapshot(collection(db,"cuentasActivadas"),(snapshot)=>{
-tablaRegistros.innerHTML="";
-snapshot.forEach(doc=>{
-const d=doc.data();
-tablaRegistros.innerHTML+=`
+const tabla=document.getElementById("tablaRegistros");
+tabla.innerHTML="";
+snapshot.forEach(docu=>{
+const d=docu.data();
+tabla.innerHTML+=`
 <tr>
 <td>${d.plataforma}</td>
 <td>${d.miembro}</td>
@@ -274,6 +135,40 @@ tablaRegistros.innerHTML+=`
 });
 }
 
+/* ================= AUTH ================= */
+onAuthStateChanged(auth, async(user)=>{
+if(user){
+
+const snap = await getDoc(doc(db,"users",user.uid));
+rolActual = snap.exists() ? snap.data().role : "usuario";
+
+document.getElementById("infoUsuario").innerText =
+"Usuario: " + user.email + " | Rol: " + rolActual;
+
+document.getElementById("loginBox").style.display="none";
+document.getElementById("app").style.display="block";
+
+if(rolActual==="admin"){
+document.getElementById("panelAdmin").style.display="block";
+}else{
+document.getElementById("panelAdmin").style.display="none";
+}
+
+cargarSelects();
+cargarHistorial();
+
+}else{
+document.getElementById("loginBox").style.display="block";
+document.getElementById("app").style.display="none";
+}
+});
+
+/* ================= EVENTOS ================= */
+document.querySelector("#loginBox button").addEventListener("click", login);
+document.querySelector(".logout").addEventListener("click", logout);
+document.querySelector("#panelAdmin button:nth-of-type(1)").addEventListener("click", crearUsuario);
+document.querySelector("#panelAdmin button:nth-of-type(2)").addEventListener("click", agregarAdmin);
+document.querySelector("#panelAdmin button:nth-of-type(3)").addEventListener("click", agregarPlataforma);
+document.querySelector("#app button:not(.logout)").addEventListener("click", guardarRegistro);
+
 </script>
-</body>
-</html>
