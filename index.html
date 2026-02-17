@@ -142,15 +142,23 @@ from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* 🔥 REEMPLAZA ESTO CON TU CONFIG FIREBASE */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-apiKey: "TU_API_KEY",
-authDomain: "TU_AUTH_DOMAIN",
-projectId: "TU_PROJECT_ID",
-storageBucket: "TU_BUCKET",
-messagingSenderId: "TU_SENDER_ID",
-appId: "TU_APP_ID"
+  apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
+  authDomain: "sistema-grupo-privado.firebaseapp.com",
+  projectId: "sistema-grupo-privado",
+  storageBucket: "sistema-grupo-privado.firebasestorage.app",
+  messagingSenderId: "86750167453",
+  appId: "1:86750167453:web:165ff3a605105d525c6f74"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
