@@ -156,16 +156,22 @@ const db = getFirestore(appFirebase);
 
 let rolActual=null;
 
-/* LOGIN */
-window.login=async()=>{
-try{
-await signInWithEmailAndPassword(auth,email.value,password.value);
-}catch(error){
-alert(error.message);
-}
+/* LOGIN CORREGIDO */
+window.login = async function(){
+  try{
+    const correo = document.getElementById("email").value;
+    const clave = document.getElementById("password").value;
+
+    await signInWithEmailAndPassword(auth, correo, clave);
+
+  }catch(error){
+    alert(error.message);
+  }
 };
 
-window.logout=()=>signOut(auth);
+window.logout = function(){
+  signOut(auth);
+};
 
 /* AUTH */
 onAuthStateChanged(auth, async(user)=>{
@@ -174,30 +180,35 @@ if(user){
 const snap=await getDoc(doc(db,"users",user.uid));
 rolActual=snap.exists()?snap.data().role:"usuario";
 
-infoUsuario.innerText="Usuario: "+user.email+" | Rol: "+rolActual;
+document.getElementById("infoUsuario").innerText =
+"Usuario: "+user.email+" | Rol: "+rolActual;
 
-loginBox.style.display="none";
-app.style.display="block";
-panelAdmin.style.display=(rolActual==="admin")?"block":"none";
+document.getElementById("loginBox").style.display="none";
+document.getElementById("app").style.display="block";
+document.getElementById("panelAdmin").style.display=(rolActual==="admin")?"block":"none";
 
 cargarSelects();
 cargarHistorial();
 
 }else{
-loginBox.style.display="block";
-app.style.display="none";
+document.getElementById("loginBox").style.display="block";
+document.getElementById("app").style.display="none";
 }
 });
 
-/* ADMIN CREA USUARIO */
+/* CREAR USUARIO */
 window.crearUsuario=async()=>{
 if(rolActual!=="admin"){alert("No autorizado");return;}
 
 try{
-const cred=await createUserWithEmailAndPassword(auth,nuevoEmail.value,nuevoPassword.value);
+const cred=await createUserWithEmailAndPassword(
+auth,
+document.getElementById("nuevoEmail").value,
+document.getElementById("nuevoPassword").value
+);
 
 await setDoc(doc(db,"users",cred.user.uid),{
-email:nuevoEmail.value,
+email:document.getElementById("nuevoEmail").value,
 role:"usuario"
 });
 
@@ -212,10 +223,10 @@ window.agregarAdmin=async()=>{
 if(rolActual!=="admin"){alert("No autorizado");return;}
 
 await addDoc(collection(db,"adminsAyuda"),{
-nombre:nuevoAdminNombre.value
+nombre:document.getElementById("nuevoAdminNombre").value
 });
 
-nuevoAdminNombre.value="";
+document.getElementById("nuevoAdminNombre").value="";
 };
 
 /* AGREGAR PLATAFORMA */
@@ -223,33 +234,30 @@ window.agregarPlataforma=async()=>{
 if(rolActual!=="admin"){alert("No autorizado");return;}
 
 await addDoc(collection(db,"plataformas"),{
-nombre:nuevaPlataforma.value
+nombre:document.getElementById("nuevaPlataforma").value
 });
 
-nuevaPlataforma.value="";
+document.getElementById("nuevaPlataforma").value="";
 };
 
 /* GUARDAR REGISTRO */
 window.guardarRegistro=async()=>{
 await addDoc(collection(db,"cuentasActivadas"),{
-plataforma:selectPlataforma.value,
-miembro:miembro.value,
-admin:selectAdmin.value,
+plataforma:document.getElementById("selectPlataforma").value,
+miembro:document.getElementById("miembro").value,
+admin:document.getElementById("selectAdmin").value,
 fecha:new Date().toLocaleString()
 });
-miembro.value="";
+document.getElementById("miembro").value="";
 };
 
-/* CARGAR SELECTS */
 function cargarSelects(){
-
 onSnapshot(collection(db,"adminsAyuda"),(snapshot)=>{
 selectAdmin.innerHTML="";
 snapshot.forEach(doc=>{
 selectAdmin.innerHTML+=`<option>${doc.data().nombre}</option>`;
 });
 });
-
 onSnapshot(collection(db,"plataformas"),(snapshot)=>{
 selectPlataforma.innerHTML="";
 snapshot.forEach(doc=>{
@@ -258,7 +266,6 @@ selectPlataforma.innerHTML+=`<option>${doc.data().nombre}</option>`;
 });
 }
 
-/* HISTORIAL */
 function cargarHistorial(){
 onSnapshot(collection(db,"cuentasActivadas"),(snapshot)=>{
 tablaRegistros.innerHTML="";
