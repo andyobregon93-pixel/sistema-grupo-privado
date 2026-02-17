@@ -86,7 +86,6 @@ color:white;
 <h2 id="infoUsuario"></h2>
 <button class="logout" onclick="logout()">Cerrar sesión</button>
 
-<!-- PANEL ADMIN -->
 <div id="panelAdmin" style="display:none;">
 
 <div class="admin-box">
@@ -143,7 +142,7 @@ import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
+  apiKey: "TU_API_KEY",
   authDomain: "sistema-grupo-privado.firebaseapp.com",
   projectId: "sistema-grupo-privado",
   storageBucket: "sistema-grupo-privado.firebasestorage.app",
@@ -168,7 +167,8 @@ window.logout=()=>signOut(auth);
 onAuthStateChanged(auth, async(user)=>{
 if(user){
 
-const snap=await getDoc(doc(db,"usuarios",user.uid));
+// 🔥 CORREGIDO AQUÍ
+const snap=await getDoc(doc(db,"users",user.uid));
 rolActual=snap.exists()?snap.data().role:"usuario";
 
 infoUsuario.innerText="Usuario: "+user.email+" | Rol: "+rolActual;
@@ -197,7 +197,8 @@ if(rolActual!=="admin"){alert("No autorizado");return;}
 
 const cred=await createUserWithEmailAndPassword(auth,nuevoEmail.value,nuevoPassword.value);
 
-await setDoc(doc(db,"usuarios",cred.user.uid),{
+// 🔥 CORREGIDO AQUÍ
+await setDoc(doc(db,"users",cred.user.uid),{
 email:nuevoEmail.value,
 role:"usuario"
 });
