@@ -3,128 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo Premium v3.0</title>
+    <title>SISTEMA AUTOMÁTICO DE CUENTAS</title>
     <style>
-        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --wsp: #25d366; }
+        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
-        .contenedor{ max-width:1200px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
+        .contenedor{ max-width:1100px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
         
-        /* Tarjetas */
+        /* Navegación */
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn { background: #ddd; color: #333; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; transition: 0.3s; }
+        .tab-btn.active { background: var(--admin); color: white; }
+
         .tarjeta { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primario); }
-        .tarjeta-admin { border-top: 5px solid var(--admin); background: #fffcf9; }
+        .tarjeta-admin { border-top: 5px solid var(--admin); }
         
         input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:14px; box-sizing: border-box; }
-        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
-        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; }
         
-        .fila-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-
-        /* Tablas */
-        .tabla-contenedor { overflow-x: auto; margin-top: 15px; background: white; border-radius: 8px; max-height: 450px; }
+        .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; }
         table { width:100%; border-collapse:collapse; font-size: 12px; }
         th, td { border:1px solid #eee; padding:12px; text-align:left; }
-        th { background:var(--primario); color: white; position: sticky; top: 0; }
+        th { background:var(--primario); color: white; }
 
-        /* Badges y Botones Especiales */
-        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 10px; color: white; }
+        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; }
         .bg-pendiente { background: var(--admin); }
         .bg-listo { background: var(--exito); }
-        .btn-activar { background: var(--tv); padding: 5px; margin-bottom: 5px; }
-        .btn-wsp { background: var(--wsp); padding: 5px; }
-        
-        .seccion-titulo { border-left: 5px solid var(--admin); padding-left: 10px; margin-bottom: 20px; color: var(--primario); }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
     <div id="cajaLogin">
-        <h1 style="text-align:center; color: var(--primario)">🔑 Acceso Administrativo</h1>
+        <h1 style="text-align:center; color: var(--primario)">🔐 Acceso al Sistema</h1>
         <input type="email" id="correoLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
-        <button onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
+        <button onclick="iniciarSesion()">INGRESAR</button>
     </div>
 
     <div id="app" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <div id="infoUsuario" style="font-weight: bold; color: var(--primario);"></div>
-            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:6px 15px;">Salir</button>
+            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 20px;">Salir</button>
         </div>
 
         <div id="seccionUsuario">
             <div class="tarjeta">
-                <h3 class="seccion-titulo">🎁 Solicitar Cuenta o Activación</h3>
-                <div class="fila-grid">
-                    <input type="text" id="nombreWsp" placeholder="Nombre en WhatsApp (Ej: Juan)">
+                <h3>🎁 Obtener mi Cuenta al Instante</h3>
+                <p style="font-size: 0.9rem; color: #666;">Selecciona la plataforma y el sistema te entregará la cuenta automáticamente si hay stock disponible.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="nombreWsp" placeholder="Tu Nombre">
                     <select id="selectPlatUsuario"></select>
                 </div>
-                <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-top: 10px;">
-                    <label><b>¿Es para Televisor?</b> Escribe el código aquí:</label>
-                    <input type="text" id="codigoTV" placeholder="Ej: 885 964 (Opcional)">
-                </div>
-                <button onclick="procesarPedido()" style="background:var(--exito); font-size: 1.1rem; margin-top: 15px;">🚀 ENVIAR SOLICITUD</button>
+                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Opcional - Solo para activaciones)">
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); font-size: 1.1rem; height: 50px;">🚀 RECLAMAR CUENTA AHORA</button>
                 
-                <div id="resultadoPedido" style="display:none; margin-top:15px; padding:15px; border-radius:8px; text-align:center; background: #e8f4fd; border: 2px solid var(--secundario);">
+                <div id="resultadoPedido" style="display:none; margin-top:15px; padding:20px; border-radius:8px; text-align:center; background: #f0fdf4; border: 2px solid var(--exito);">
                     <div id="esperaTV" style="display:none;">
-                        <p>⏳ <b style="color:var(--tv)">¡Solicitud de Activación Enviada!</b></p>
-                        <p>Estamos activando tu pantalla. Mantén esta ventana abierta.</p>
+                        <p>⏳ <b style="color:var(--tv)">¡Código enviado!</b> Espera a que el admin active tu pantalla...</p>
                     </div>
                     <div id="entregaAuto">
-                        <p>✅ <b>Tus credenciales de acceso:</b></p>
-                        <code id="textoCuenta" style="display:block; padding:15px; background:#fff; border:1px solid #ccc; font-size:1.3rem;"></code>
+                        <p style="margin:0; font-weight: bold; color: #1e4620;">✅ ¡ENTREGA EXITOSA! AQUÍ TIENES TU CUENTA:</p>
+                        <code id="textoCuenta" style="display:block; padding:15px; background:#fff; font-size:1.4rem; border: 2px dashed var(--exito); margin-top:10px; color: #333;"></code>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Copia y pega estos datos en la aplicación.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="seccionAdmin" style="display:none;">
-            <h2 class="seccion-titulo">🛠️ Panel de Control Maestro</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOREO</button>
+                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK / PLATAFORMAS</button>
+                <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 EQUIPO</button>
+            </div>
 
-            <div class="fila-grid">
+            <div id="tabVentas" class="tab-content">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>👥 Registrar Personal</h4>
-                    <input type="email" id="nuevoCorreo" placeholder="Correo">
-                    <input type="password" id="nuevoPass" placeholder="Clave">
+                    <h4>📡 Monitor Global (Entregas Automáticas y TV)</h4>
+                    <div class="tabla-contenedor">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Plataforma</th>
+                                    <th>Cuenta Entregada / Código</th>
+                                    <th>Admin que subió stock</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaAdminGlobal"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tabStock" class="tab-content" style="display:none;">
+                <div class="tarjeta tarjeta-admin">
+                    <h4>📥 Cargar Cuentas al Inventario</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <input type="text" id="accCorreo" placeholder="Correo cuenta">
+                        <input type="text" id="accPass" placeholder="Clave cuenta">
+                        <select id="selectPlatAdmin"></select>
+                    </div>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR AL STOCK</button>
+                    <hr>
+                    <h4>➕ Nueva Plataforma</h4>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="nombreNuevaPlat" placeholder="Nombre (Ej: Netflix)">
+                        <button onclick="crearPlataforma()" style="background:#555; width: 150px;">CREAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tabUsuarios" class="tab-content" style="display:none;">
+                <div class="tarjeta tarjeta-admin">
+                    <h4>👥 Registro de Administradores</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="email" id="nuevoCorreo" placeholder="Correo nuevo admin">
+                        <input type="password" id="nuevoPass" placeholder="Contraseña">
+                    </div>
                     <select id="nuevoRol">
-                        <option value="usuario">Vendedor / Usuario</option>
-                        <option value="admin">Administrador</option>
+                        <option value="usuario">Usuario / Vendedor</option>
+                        <option value="admin">Administrador Full</option>
                     </select>
-                    <button onclick="registrarUsuario()">CREAR ACCESO</button>
-                </div>
-
-                <div class="tarjeta tarjeta-admin">
-                    <h4>📥 Cargar Cuentas</h4>
-                    <input type="text" id="accCorreo" placeholder="Correo cuenta">
-                    <input type="text" id="accPass" placeholder="Clave cuenta">
-                    <select id="selectPlatAdmin"></select>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">GUARDAR STOCK</button>
-                </div>
-            </div>
-
-            <div class="tarjeta tarjeta-admin">
-                <h4>📊 Monitor de Ventas y Activaciones TV</h4>
-                <div class="tabla-contenedor">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Plataforma</th>
-                                <th>Datos / Código TV</th>
-                                <th>Admin Stock</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaAdminGlobal"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="tarjeta tarjeta-admin">
-                <h4>⚙️ Configuración</h4>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="nombreNuevaPlat" placeholder="Nombre de Plataforma (Netflix, etc)">
-                    <button onclick="crearPlataforma()" style="background:#555; width:150px;">AÑADIR</button>
+                    <button onclick="registrarUsuario()">REGISTRAR</button>
                 </div>
             </div>
         </div>
@@ -136,6 +139,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Tu configuración (No cambiar)
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -154,7 +158,7 @@
 
     window.iniciarSesion = async () => {
         try { await signInWithEmailAndPassword(auth, correoLogin.value, passLogin.value); } 
-        catch (err) { alert("Usuario o clave incorrectos"); }
+        catch (err) { alert("Error de acceso"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -162,75 +166,86 @@
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             miEmail = user.email;
-            const docSnap = await getDoc(doc(db, "users", user.uid));
-            miRol = docSnap.exists() ? docSnap.data().role : "usuario";
+            const snap = await getDoc(doc(db, "users", user.uid));
+            miRol = snap.exists() ? snap.data().role : "usuario";
             
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `Conectado: ${miEmail} (${miRol})`;
+            document.getElementById("infoUsuario").innerText = `Usuario: ${miEmail} (${miRol})`;
             
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
             document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
             
-            inicializarDatos();
+            cargarDatosEnVivo();
         } else {
             document.getElementById("cajaLogin").style.display = "block";
             document.getElementById("app").style.display = "none";
         }
     });
 
-    window.procesarPedido = async () => {
+    // NAVEGACIÓN
+    window.verTab = (id) => {
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).style.display = 'block';
+        event.currentTarget.classList.add('active');
+    };
+
+    // EL MOTOR AUTOMÁTICO (LO QUE PEDISTE)
+    window.procesarEntregaAutomatica = async () => {
         const nom = nombreWsp.value.trim().toLowerCase();
         const plat = selectPlatUsuario.value;
         const code = codigoTV.value.trim();
-        if(!nom) return alert("Escribe tu nombre para el registro");
+        if(!nom) return alert("Escribe tu nombre");
 
+        // CASO 1: ACTIVACIÓN TV (Requiere acción de admin)
         if(code !== "") {
-            // ACTIVACIÓN TV
             document.getElementById("resultadoPedido").style.display = "block";
             document.getElementById("esperaTV").style.display = "block";
             document.getElementById("entregaAuto").style.display = "none";
 
             await addDoc(collection(db, "entregas"), {
-                nombreWsp: nom, plataforma: plat, cuenta: "PENDIENTE DE ACTIVACIÓN",
+                nombreWsp: nom, plataforma: plat, cuenta: "📺 ACTIVACIÓN PENDIENTE",
                 codigoTV: code, estado: "pendiente", timestamp: Date.now(),
                 fecha: new Date().toLocaleString(), usuarioEmail: miEmail
             });
-        } else {
-            // CUENTA DIRECTA
+        } 
+        // CASO 2: ENTREGA AUTOMÁTICA (Busca en stock y entrega solo)
+        else {
             const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
             const snap = await getDocs(q);
-            if(snap.empty) return alert("Sin stock de " + plat);
+            
+            if(snap.empty) return alert("¡Vaya! No tenemos stock de " + plat + " en este momento.");
 
             const docStock = snap.docs[0];
-            const dataC = docStock.data().cuenta;
-            const admOri = docStock.data().adminResponsable || "Sistema";
+            const dataCuenta = docStock.data().cuenta;
+            const adminOrigen = docStock.data().adminResponsable || "Sistema";
 
+            // Marcamos como entregada para que nadie más la use
             await updateDoc(doc(db, "inventario", docStock.id), { estado: "entregada" });
+
+            // Guardamos la venta con el nombre del admin que subió el stock
             await addDoc(collection(db, "entregas"), {
-                nombreWsp: nom, plataforma: plat, cuenta: dataC, codigoTV: "N/A",
-                estado: "listo", adminOriginal: admOri, timestamp: Date.now(),
+                nombreWsp: nom, plataforma: plat, cuenta: dataCuenta, codigoTV: "N/A",
+                estado: "listo", adminOriginal: adminOrigen, timestamp: Date.now(),
                 fecha: new Date().toLocaleString(), usuarioEmail: miEmail
             });
 
+            // Mostramos al cliente la cuenta automáticamente
             document.getElementById("resultadoPedido").style.display = "block";
             document.getElementById("esperaTV").style.display = "none";
             document.getElementById("entregaAuto").style.display = "block";
-            document.getElementById("textoCuenta").innerText = dataC;
+            document.getElementById("textoCuenta").innerText = dataCuenta;
         }
     };
 
+    // ACCIONES ADMIN
     window.activarTV = async (id) => {
         await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ PANTALLA ACTIVADA" });
-        alert("Activación confirmada");
+        alert("Activación Exitosa");
     };
 
-    window.abrirWhatsapp = (nombre) => {
-        const msj = `Hola ${nombre}, soy el administrador. He recibido tu código de activación.`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msj)}`, '_blank');
-    };
-
-    function inicializarDatos() {
+    function cargarDatosEnVivo() {
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let h = ""; snap.forEach(d => h += `<option value="${d.data().nombre}">${d.data().nombre}</option>`);
             selectPlatUsuario.innerHTML = h; selectPlatAdmin.innerHTML = h;
@@ -238,41 +253,39 @@
 
         const qG = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(50));
         onSnapshot(qG, (snap) => {
-            let hAdmin = "";
+            let h = "";
             snap.forEach(d => {
                 const data = d.data();
-                const esPendiente = data.estado === "pendiente";
-                hAdmin += `<tr>
+                const esP = data.estado === "pendiente";
+                h += `<tr>
                     <td><b>${data.nombreWsp.toUpperCase()}</b></td>
                     <td>${data.plataforma}</td>
-                    <td><code>${data.cuenta}</code> ${data.codigoTV !== "N/A" ? '<br>📺 <b>CÓDIGO:</b> '+data.codigoTV : ''}</td>
-                    <td>${data.adminOriginal || '-'}</td>
-                    <td><span class="badge ${esPendiente ? 'bg-pendiente' : 'bg-listo'}">${data.estado.toUpperCase()}</span></td>
+                    <td><code>${data.cuenta}</code> ${data.codigoTV !== "N/A" ? '<br><b>CÓDIGO: '+data.codigoTV+'</b>' : ''}</td>
+                    <td><small>${data.adminOriginal || 'Manual'}</small></td>
+                    <td><span class="badge ${esP ? 'bg-pendiente' : 'bg-listo'}">${data.estado}</span></td>
                     <td>
-                        ${(esPendiente && miRol === 'admin') ? `<button class="btn-activar" onclick="activarTV('${d.id}')">ACTIVAR TV</button>` : ''}
-                        <button class="btn-wsp" onclick="abrirWhatsapp('${data.nombreWsp}')">MENSAJE WSP</button>
+                        ${esP ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); font-size:10px; padding:5px;">ACTIVAR TV</button>` : 'Entregado'}
                     </td>
                 </tr>`;
                 
-                // Actualización automática para el cliente
+                // Si el cliente está esperando TV y tú lo activas, se le actualiza solo
                 if(data.usuarioEmail === miEmail && data.estado === "listo" && document.getElementById("esperaTV").style.display === "block") {
                     document.getElementById("esperaTV").style.display = "none";
                     document.getElementById("entregaAuto").style.display = "block";
                     document.getElementById("textoCuenta").innerText = data.cuenta;
                 }
             });
-            if(miRol === "admin") document.getElementById("tablaAdminGlobal").innerHTML = hAdmin;
+            if(miRol === "admin") tablaAdminGlobal.innerHTML = h;
         });
     }
 
-    // GESTIÓN ADMIN
     window.subirInventario = async () => {
         if(accCorreo.value && accPass.value) {
             await addDoc(collection(db, "inventario"), {
                 plataforma: selectPlatAdmin.value, cuenta: `${accCorreo.value}:${accPass.value}`,
-                estado: "disponible", adminResponsable: miEmail
+                estado: "disponible", adminResponsable: miEmail // Registra quién sube el stock
             });
-            alert("Stock guardado");
+            alert("Cuenta cargada correctamente por " + miEmail);
             accCorreo.value = ""; accPass.value = "";
         }
     };
@@ -281,8 +294,8 @@
         try {
             const res = await createUserWithEmailAndPassword(auth, nuevoCorreo.value, nuevoPass.value);
             await setDoc(doc(db, "users", res.user.uid), { email: nuevoCorreo.value, role: nuevoRol.value });
-            alert("¡Usuario registrado con éxito!");
-        } catch(e) { alert("Error: " + e.message); }
+            alert("Usuario Registrado");
+        } catch(e) { alert(e.message); }
     };
 
     window.crearPlataforma = async () => {
