@@ -1,85 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cuentas Premium</title>
+    <style>
+        body{ margin:0; font-family:Arial; background:linear-gradient(135deg,#0f2027,#2c5364); color:white; min-height:100vh; padding:20px; }
+        .container{ max-width:800px; margin:auto; background:white; color:#333; padding:20px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.3); }
+        input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; box-sizing:border-box; }
+        button { background:#203a43; color:white; font-weight:bold; cursor:pointer; border:none; }
+        button:hover { background:#2c5364; }
+        .card { background:#f9f9f9; padding:15px; border-radius:10px; margin-bottom:15px; border-left:5px solid #203a43; }
+        .result { background:#27ae60; color:white; padding:15px; border-radius:8px; display:none; margin-top:10px; text-align:center; }
+        table { width:100%; border-collapse:collapse; margin-top:20px; }
+        th, td { border:1px solid #ddd; padding:10px; text-align:left; font-size:14px; }
+        th { background:#203a43; color:white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loginBox">
+        <h1>🔐 Acceso</h1>
+        <input type="email" id="email" placeholder="Correo">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">INGRESAR</button>
+    </div>
+
+    <div id="app" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="infoUsuario" style="font-weight:bold;"></span>
+            <button onclick="logout()" style="width:auto; background:#c0392b; padding:5px 15px;">Salir</button>
+        </div>
+
+        <div class="card">
+            <h2>🎁 Solicitar Cuenta</h2>
+            <select id="selectPlataformaUser"></select>
+            <button onclick="reclamarCuenta()" style="background:#27ae60;">¡OBTENER CUENTA!</button>
+            <div id="displayCuenta" class="result">
+                <strong>Tus datos:</strong><br>
+                <code id="cuentaTexto" style="font-size:1.2rem;"></code>
+            </div>
+        </div>
+
+        <div id="panelAdmin" style="display:none;">
+            <div class="card" style="border-left-color:#f1c40f;">
+                <h3>⚙️ Administración (Stock)</h3>
+                <select id="selectPlataformaAdmin"></select>
+                <input type="text" id="datosCuenta" placeholder="correo:contraseña">
+                <button onclick="subirStock()">Cargar a Inventario</button>
+                <hr>
+                <input type="text" id="nuevaPlataforma" placeholder="Nombre plataforma (ej: Netflix)">
+                <button onclick="agregarPlataforma()">Crear Plataforma</button>
+            </div>
+        </div>
+
+        <h3>📋 Mis Cuentas Reclamadas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plataforma</th>
+                    <th>Cuenta</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="tablaHistorial"></tbody>
+        </table>
+    </div>
+</div>
+
 <script type="module">
-// 1. IMPORTS CORREGIDOS (Todos arriba)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { 
-    getFirestore, 
-    doc, 
-    setDoc, 
-    getDoc, 
-    getDocs, // <-- Importante: agregado aquí
-    addDoc, 
-    collection, 
-    onSnapshot, 
-    query, 
-    where, 
-    limit, 
-    updateDoc 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
-    authDomain: "sistema-grupo-privado.firebaseapp.com",
-    projectId: "sistema-grupo-privado",
-    storageBucket: "sistema-grupo-privado.firebasestorage.app",
-    messagingSenderId: "86750167453",
-    appId: "1:86750167453:web:165ff3a605105d525c6f74"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
+        authDomain: "sistema-grupo-privado.firebaseapp.com",
+        projectId: "sistema-grupo-privado",
+        storageBucket: "sistema-grupo-privado.firebasestorage.app",
+        messagingSenderId: "86750167453",
+        appId: "1:86750167453:web:165ff3a605105d525c6f74"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+    const db = getFirestore(appFirebase);
 
-let rolActual = null;
-let userEmail = "";
+    let userEmail = "";
+    let rolActual = "";
 
-// --- LÓGICA DE RECLAMO CORREGIDA ---
-window.reclamarCuenta = async () => {
-    const plat = document.getElementById("selectPlataformaUser").value;
-    
-    // Consulta para buscar cuenta disponible
-    const q = query(
-        collection(db, "inventario"), 
-        where("plataforma", "==", plat), 
-        where("estado", "==", "disponible"),
-        limit(1)
-    );
+    // LOGIN
+    window.login = async () => {
+        const e = document.getElementById("email").value;
+        const p = document.getElementById("password").value;
+        try { await signInWithEmailAndPassword(auth, e, p); } 
+        catch (err) { alert("Error: " + err.message); }
+    };
 
-    try {
-        const snap = await getDocs(q); // Uso correcto de getDocs
+    window.logout = () => signOut(auth);
 
-        if (snap.empty) {
-            alert("¡Lo sentimos! No hay stock disponible para " + plat);
-            return;
+    // CONTROL DE ESTADO
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userEmail = user.email;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            rolActual = snap.exists() ? snap.data().role : "usuario";
+
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("app").style.display = "block";
+            document.getElementById("infoUsuario").innerText = userEmail + " (" + rolActual + ")";
+            document.getElementById("panelAdmin").style.display = (rolActual === "admin") ? "block" : "none";
+
+            cargarDatos();
+        } else {
+            document.getElementById("loginBox").style.display = "block";
+            document.getElementById("app").style.display = "none";
         }
+    });
 
-        const docCuenta = snap.docs[0];
-        const datosCerrados = docCuenta.data().cuenta;
-
-        // Marcar como entregada
-        await updateDoc(doc(db, "inventario", docCuenta.id), {
-            estado: "entregada",
-            entregadaA: userEmail,
-            fechaEntrega: new Date().toLocaleString()
-        });
-
-        // Registrar la entrega
-        await addDoc(collection(db, "entregas"), {
-            plataforma: plat,
-            cuenta: datosCerrados,
-            usuario: userEmail,
-            fecha: new Date().toLocaleString()
-        });
-
-        // Mostrar al usuario
-        document.getElementById("displayCuenta").style.display = "block";
-        document.getElementById("cuentaTexto").innerText = datosCerrados;
+    // RECLAMAR CUENTA
+    window.reclamarCuenta = async () => {
+        const plat = document.getElementById("selectPlataformaUser").value;
+        const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
         
-    } catch (error) {
-        console.error("Error al reclamar:", error);
-        alert("Hubo un error al procesar tu solicitud.");
-    }
-};
+        const snap = await getDocs(q);
+        if (snap.empty) { alert("Sin stock de " + plat); return; }
 
-// ... Resto de tus funciones (login, logout, cargarSelects) igual que antes
+        const docRef = snap.docs[0];
+        const datos = docRef.data().cuenta;
+
+        await updateDoc(doc(db, "inventario", docRef.id), { estado: "entregada", usuario: userEmail });
+        await addDoc(collection(db, "entregas"), { plataforma: plat, cuenta: datos, usuario: userEmail, fecha: new Date().toLocaleString() });
+
+        document.getElementById("displayCuenta").style.display = "block";
+        document.getElementById("cuentaTexto").innerText = datos;
+    };
+
+    // ADMIN FUNCTIONS
+    window.agregarPlataforma = async () => {
+        const n = document.getElementById("nuevaPlataforma").value;
+        if(n) await addDoc(collection(db, "plataformas"), { nombre: n });
+        document.getElementById("nuevaPlataforma").value = "";
+    };
+
+    window.subirStock = async () => {
+        const p = document.getElementById("selectPlataformaAdmin").value;
+        const d = document.getElementById("datosCuenta").value;
+        if(d) await addDoc(collection(db, "inventario"), { plataforma: p, cuenta: d, estado: "disponible" });
+        document.getElementById("datosCuenta").value = "";
+        alert("Stock añadido");
+    };
+
+    // CARGA DE DATOS (IMPORTANTE)
+    function cargarDatos() {
+        // Cargar Selects
+        onSnapshot(collection(db, "plataformas"), (snap) => {
+            let options = "";
+            snap.forEach(d => { options += `<option value="${d.data().nombre}">${d.data().nombre}</option>`; });
+            document.getElementById("selectPlataformaUser").innerHTML = options;
+            document.getElementById("selectPlataformaAdmin").innerHTML = options;
+        });
+
+        // Cargar Historial Personal
+        const qH = query(collection(db, "entregas"), where("usuario", "==", userEmail));
+        onSnapshot(qH, (snap) => {
+            let filas = "";
+            snap.forEach(d => {
+                filas += `<tr><td>${d.data().plataforma}</td><td><code>${d.data().cuenta}</code></td><td>${d.data().fecha}</td></tr>`;
+            });
+            document.getElementById("tablaHistorial").innerHTML = filas;
+        });
+    }
 </script>
+</body>
+</html>
