@@ -1,244 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Auto-Delivery System</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --bg: #f5f6fa;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            width: 95%;
-            max-width: 900px;
-            margin: 30px auto;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        h1, h2, h3 { color: var(--primary); text-align: center; }
-
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid var(--secondary);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        button:hover { background: var(--secondary); transform: translateY(-2px); }
-        .btn-claim { background: #27ae60; font-size: 1.2rem; }
-        .logout { background: var(--accent); width: auto; padding: 5px 15px; float: right; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
-        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
-        th { background: var(--primary); color: white; }
-
-        .account-display {
-            background: #27ae60;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div id="loginBox">
-        <h1>🚀 Acceso Miembros</h1>
-        <input type="email" id="email" placeholder="Correo Electrónico">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()">ENTRAR AL SISTEMA</button>
-    </div>
-
-    <div id="app" style="display:none;">
-        <button class="logout" onclick="logout()">Salir</button>
-        <p id="infoUsuario"></p>
-        <hr>
-
-        <div class="card">
-            <h2>🎁 Reclamar Nueva Cuenta</h2>
-            <p>Selecciona la plataforma y el sistema te entregará una cuenta activa al instante.</p>
-            <select id="selectPlataformaUser"></select>
-            <button class="btn-claim" onclick="reclamarCuenta()">¡OBTENER CUENTA AHORA!</button>
-            
-            <div id="displayCuenta" class="account-display">
-                <strong>¡Aquí tienes tu cuenta!</strong><br>
-                <span id="cuentaTexto" style="font-family: monospace; font-size: 1.2rem;"></span>
-            </div>
-        </div>
-
-        <div id="panelAdmin" style="display:none;">
-            <div class="card" style="border-left-color: #f1c40f;">
-                <h3>⚙️ Panel de Control (Admin)</h3>
-                
-                <h4>Añadir Stock al Inventario</h4>
-                <select id="selectPlataformaAdmin"></select>
-                <input type="text" id="datosCuenta" placeholder="correo:contraseña">
-                <button onclick="subirStock()">Cargar a Inventario</button>
-                
-                <hr>
-                <input type="text" id="nuevaPlataforma" placeholder="Nombre de nueva plataforma (Netflix, Disney...)">
-                <button onclick="agregarPlataforma()">Registrar Plataforma</button>
-            </div>
-        </div>
-
-        <h3>📋 Mis Cuentas Reclamadas</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Plataforma</th>
-                    <th>Datos (Email:Pass)</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody id="tablaHistorial"></tbody>
-        </table>
-    </div>
-</div>
-
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot, query, where, limit, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// 1. IMPORTS CORREGIDOS (Todos arriba)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc, 
+    getDocs, // <-- Importante: agregado aquí
+    addDoc, 
+    collection, 
+    onSnapshot, 
+    query, 
+    where, 
+    limit, 
+    updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
-        authDomain: "sistema-grupo-privado.firebaseapp.com",
-        projectId: "sistema-grupo-privado",
-        storageBucket: "sistema-grupo-privado.firebasestorage.app",
-        messagingSenderId: "86750167453",
-        appId: "1:86750167453:web:165ff3a605105d525c6f74"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
+    authDomain: "sistema-grupo-privado.firebaseapp.com",
+    projectId: "sistema-grupo-privado",
+    storageBucket: "sistema-grupo-privado.firebasestorage.app",
+    messagingSenderId: "86750167453",
+    appId: "1:86750167453:web:165ff3a605105d525c6f74"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    let rolActual = null;
-    let userEmail = "";
+let rolActual = null;
+let userEmail = "";
 
-    // --- AUTENTICACIÓN ---
-    window.login = async () => {
-        try {
-            await signInWithEmailAndPassword(auth, email.value, password.value);
-        } catch (e) { alert("Error: " + e.message); }
-    };
+// --- LÓGICA DE RECLAMO CORREGIDA ---
+window.reclamarCuenta = async () => {
+    const plat = document.getElementById("selectPlataformaUser").value;
+    
+    // Consulta para buscar cuenta disponible
+    const q = query(
+        collection(db, "inventario"), 
+        where("plataforma", "==", plat), 
+        where("estado", "==", "disponible"),
+        limit(1)
+    );
 
-    window.logout = () => signOut(auth);
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            userEmail = user.email;
-            const snap = await getDoc(doc(db, "users", user.uid));
-            rolActual = snap.exists() ? snap.data().role : "usuario";
-
-            infoUsuario.innerHTML = `Conectado como: <b>${user.email}</b> | Rango: <span style="color:blue">${rolActual.toUpperCase()}</span>`;
-            loginBox.style.display = "none";
-            app.style.display = "block";
-            panelAdmin.style.display = (rolActual === "admin") ? "block" : "none";
-
-            cargarPlataformas();
-            cargarHistorialPersonal();
-        } else {
-            loginBox.style.display = "block";
-            app.style.display = "none";
-        }
-    });
-
-    // --- FUNCIONES ADMIN ---
-    window.agregarPlataforma = async () => {
-        if (!nuevaPlataforma.value) return;
-        await addDoc(collection(db, "plataformas"), { nombre: nuevaPlataforma.value });
-        nuevaPlataforma.value = "";
-    };
-
-    window.subirStock = async () => {
-        if (!datosCuenta.value) return;
-        await addDoc(collection(db, "inventario"), {
-            plataforma: selectPlataformaAdmin.value,
-            cuenta: datosCuenta.value,
-            estado: "disponible", // disponible | entregada
-            creadoEn: new Date()
-        });
-        datosCuenta.value = "";
-        alert("Stock cargado!");
-    };
-
-    // --- LÓGICA DE RECLAMO (LO ESPECTACULAR) ---
-    window.reclamarCuenta = async () => {
-        const plat = selectPlataformaUser.value;
-        
-        // 1. Buscar una cuenta disponible de esa plataforma
-        const q = query(
-            collection(db, "inventario"), 
-            where("plataforma", "==", plat), 
-            where("estado", "==", "disponible"),
-            limit(1)
-        );
-
-        const querySnapshot = await getDoc(q); // Nota: En móviles/v10 se usa getDocs para queries
-        // Corrección para query:
-        import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        const snap = await getDocs(q);
+    try {
+        const snap = await getDocs(q); // Uso correcto de getDocs
 
         if (snap.empty) {
-            alert("¡Lo sentimos! No hay stock de " + plat);
+            alert("¡Lo sentimos! No hay stock disponible para " + plat);
             return;
         }
 
         const docCuenta = snap.docs[0];
         const datosCerrados = docCuenta.data().cuenta;
 
-        // 2. Marcar como entregada para que nadie más la use
+        // Marcar como entregada
         await updateDoc(doc(db, "inventario", docCuenta.id), {
             estado: "entregada",
             entregadaA: userEmail,
             fechaEntrega: new Date().toLocaleString()
         });
 
-        // 3. Guardar en el historial público/privado
+        // Registrar la entrega
         await addDoc(collection(db, "entregas"), {
             plataforma: plat,
             cuenta: datosCerrados,
@@ -246,38 +71,15 @@
             fecha: new Date().toLocaleString()
         });
 
-        // 4. Mostrar al usuario
-        displayCuenta.style.display = "block";
-        cuentaTexto.innerText = datosCerrados;
-    };
-
-    // --- CARGA DE DATOS ---
-    function cargarPlataformas() {
-        onSnapshot(collection(db, "plataformas"), (snap) => {
-            selectPlataformaAdmin.innerHTML = "";
-            selectPlataformaUser.innerHTML = "";
-            snap.forEach(doc => {
-                const opt = `<option value="${doc.data().nombre}">${doc.data().nombre}</option>`;
-                selectPlataformaAdmin.innerHTML += opt;
-                selectPlataformaUser.innerHTML += opt;
-            });
-        });
+        // Mostrar al usuario
+        document.getElementById("displayCuenta").style.display = "block";
+        document.getElementById("cuentaTexto").innerText = datosCerrados;
+        
+    } catch (error) {
+        console.error("Error al reclamar:", error);
+        alert("Hubo un error al procesar tu solicitud.");
     }
+};
 
-    function cargarHistorialPersonal() {
-        const q = query(collection(db, "entregas"), where("usuario", "==", userEmail));
-        onSnapshot(q, (snap) => {
-            tablaHistorial.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data();
-                tablaHistorial.innerHTML += `<tr>
-                    <td>${d.plataforma}</td>
-                    <td><code>${d.cuenta}</code></td>
-                    <td>${d.fecha}</td>
-                </tr>`;
-            });
-        });
-    }
+// ... Resto de tus funciones (login, logout, cargarSelects) igual que antes
 </script>
-</body>
-</html>
