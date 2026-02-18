@@ -3,107 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Real Time System</title>
+    <title>Sistema Pro - MultiAdmin & Auto-TV</title>
     <style>
-        :root { --primary: #0f2027; --secondary: #2c5364; --success: #27ae60; --danger: #e74c3c; --admin-bg: #fdf2e9; }
+        :root { --primary: #0f2027; --secondary: #2c5364; --success: #27ae60; --danger: #e74c3c; --admin-gold: #e67e22; --tv-color: #8e44ad; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
-        .container{ max-width:1100px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
+        .container{ max-width:1200px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
         
         .card { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primary); }
-        .admin-card { border-top: 5px solid #e67e22; background: var(--admin-bg); }
+        .admin-card { border-top: 5px solid var(--admin-gold); background: #fffcf9; }
         
-        input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:15px; box-sizing: border-box; }
+        input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:14px; box-sizing: border-box; }
         button { background:var(--primary); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
-        button:hover:not(:disabled) { background:var(--secondary); transform: scale(1.01); }
-        button:disabled { background: #95a5a6; }
-
-        .cooldown-alert { background: #fee2e2; color: var(--danger); padding: 10px; border-radius: 8px; border: 1px solid var(--danger); display: none; text-align: center; font-weight: bold; margin: 10px 0; }
-        .result-box { background:var(--success); color:white; padding:20px; border-radius:10px; display:none; text-align:center; margin-top:15px; }
+        button:hover:not(:disabled) { transform: translateY(-2px); opacity: 0.9; }
         
-        /* Tablas */
-        .table-container { overflow-x: auto; margin-top: 15px; background: white; border-radius: 8px; }
-        table { width:100%; border-collapse:collapse; font-size: 13px; }
-        th, td { border:1px solid #eee; padding:12px; text-align:left; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .table-container { overflow-x: auto; margin-top: 15px; background: white; border-radius: 8px; max-height: 500px; }
+        table { width:100%; border-collapse:collapse; font-size: 12px; }
+        th, td { border:1px solid #eee; padding:10px; text-align:left; }
         th { background:var(--primary); color: white; position: sticky; top: 0; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: #e8f5e9; color: #2e7d32; }
+
+        /* Estilos de TV */
+        .badge-tv { background: var(--tv-color); color: white; padding: 3px 8px; border-radius: 5px; font-weight: bold; font-size: 10px; }
+        .btn-activar { background: var(--tv-color); color: white; border: none; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-top: 5px; }
+        .status-pendiente { color: #f39c12; font-weight: bold; }
+        .status-listo { color: var(--success); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="loginBox">
-        <h1 style="text-align:center; color: var(--primary)">🔐 Acceso al Sistema</h1>
-        <input type="email" id="email" placeholder="Usuario Admin/Cliente">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()">INGRESAR</button>
+        <h1 style="text-align:center; color: var(--primary)">🔐 Acesso ao Sistema</h1>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="login()">ENTRAR</button>
     </div>
 
     <div id="app" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <div id="infoUsuario" style="font-weight: bold; color: var(--primary);"></div>
-            <button onclick="logout()" style="width:auto; background:var(--danger); padding:6px 15px;">Salir</button>
+            <button onclick="logout()" style="width:auto; background:var(--danger); padding:6px 15px;">Sair</button>
         </div>
 
         <div class="card">
-            <h3>🎁 Reclamar Cuenta</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="text" id="userNombreWsp" placeholder="Nombre de WhatsApp">
-                <input type="number" id="userTelefono" placeholder="Móvil (Opcional)">
+            <h3>🎁 Solicitar Conta ou Ativação TV</h3>
+            <div class="grid-3">
+                <input type="text" id="userNombreWsp" placeholder="Seu Nome no WhatsApp">
+                <select id="selectPlataformaUser"></select>
+                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Só se for para TV)">
             </div>
-            <select id="selectPlataformaUser"></select>
-            <div id="msgCooldown" class="cooldown-alert"></div>
-            <button id="btnReclamar" onclick="reclamarCuenta()" style="background:var(--success);">OBTENER ACCESO</button>
+            <button onclick="procesarSolicitud()" style="background:var(--success); font-size: 1.2rem;">🚀 SOLICITAR AGORA</button>
             
-            <div id="displayCuenta" class="result-box">
-                <strong>¡Cuenta entregada!</strong><br>
-                <code id="cuentaTexto" style="font-size:1.4rem; background:white; color:#333; padding:10px; display:block; margin-top:10px; border: 2px dashed var(--success);"></code>
+            <div id="displayResultado" style="display:none; margin-top:15px; padding:15px; border-radius:8px; text-align:center; background: #f8f9fa; border: 2px solid #ddd;">
+                <div id="esperaTV" style="display:none;">
+                    <p>⏳ <b style="color:var(--tv-color)">Código enviado!</b></p>
+                    <p>Por favor, aguarde. O administrador está ativando sua TV agora mesmo...</p>
+                </div>
+                <div id="entregaFinal">
+                    <p>✅ <b>Aqui estão seus dados:</b></p>
+                    <code id="datosEntregados" style="display:block; padding:15px; background:#fff; border:1px solid #ccc; font-size:1.3rem; color: #333;"></code>
+                </div>
             </div>
         </div>
 
         <div id="panelAdmin" style="display:none;">
             <div class="card admin-card">
-                <h3>👑 Panel de Administración (Stock)</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                    <input type="text" id="stockCorreo" placeholder="Correo cuenta">
-                    <input type="text" id="stockPass" placeholder="Clave cuenta">
+                <h3>👥 Criar Novos Administradores/Usuários</h3>
+                <div class="grid-3">
+                    <input type="email" id="newEmail" placeholder="E-mail novo">
+                    <input type="password" id="newPass" placeholder="Senha nova">
+                    <select id="newRole">
+                        <option value="usuario">Usuário Normal</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <button onclick="crearNuevoUsuario()">Registrar Usuário</button>
+            </div>
+
+            <div class="card admin-card">
+                <h3>📥 Adicionar Stock (Contas)</h3>
+                <div class="grid-3">
+                    <input type="text" id="stockCorreo" placeholder="E-mail da conta">
+                    <input type="text" id="stockPass" placeholder="Senha da conta">
                     <select id="selectPlataformaAdmin"></select>
                 </div>
-                <button onclick="subirStock()" style="background:var(--secondary);">Cargar a Inventario</button>
+                <button onclick="subirStock()" style="background:var(--secondary);">Salvar Conta</button>
                 <hr>
-                <div style="display: flex; gap:10px;">
-                    <input type="text" id="nuevaPlataforma" placeholder="Nueva Plataforma (ej: Disney)">
-                    <button onclick="agregarPlataforma()" style="background:#555; width: 200px;">Crear</button>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="nuevaPlataforma" placeholder="Nova Plataforma (ex: Netflix)">
+                    <button onclick="agregarPlataforma()" style="background:#555; width:150px;">Criar</button>
                 </div>
             </div>
 
             <div class="card admin-card">
-                <h3>📊 Monitor Global (Entregas de hoy)</h3>
+                <h3>📊 Monitor Global em Tempo Real</h3>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>Cliente</th>
-                                <th>WhatsApp</th>
                                 <th>Plataforma</th>
-                                <th>Cuenta Entregada</th>
-                                <th>Hora</th>
+                                <th>Dados / Código TV</th>
+                                <th>Admin (Stock)</th>
+                                <th>Estado TV</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaHistorialAdmin"></tbody>
+                        <tbody id="tablaGlobal"></tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-
-        <div id="vistaUsuario">
-            <h3>📋 Mi historial de hoy</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr><th>Plataforma</th><th>Nombre</th><th>Fecha</th></tr>
-                    </thead>
-                    <tbody id="tablaHistorialUser"></tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -111,9 +119,10 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Configuração Firebase (Sua configuração atual)
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -128,142 +137,156 @@
     const db = getFirestore(app);
 
     let rolActual = "";
+    let emailAdminLogueado = "";
 
     window.login = async () => {
         try { await signInWithEmailAndPassword(auth, email.value, password.value); } 
-        catch (err) { alert("Acceso fallido"); }
+        catch (err) { alert("Erro de acesso"); }
     };
 
     window.logout = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            emailAdminLogueado = user.email;
             const snap = await getDoc(doc(db, "users", user.uid));
             rolActual = snap.exists() ? snap.data().role : "usuario";
             
             document.getElementById("loginBox").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `👤 Usuario: ${user.email} (${rolActual})`;
+            document.getElementById("infoUsuario").innerText = `👤 ${emailAdminLogueado} (${rolActual})`;
+            document.getElementById("panelAdmin").style.display = (rolActual === "admin") ? "block" : "none";
             
-            if (rolActual === "admin") {
-                document.getElementById("panelAdmin").style.display = "block";
-                document.getElementById("vistaUsuario").style.display = "none";
-            } else {
-                document.getElementById("panelAdmin").style.display = "none";
-                document.getElementById("vistaUsuario").style.display = "block";
-            }
-            
-            cargarDatosEnTiempoReal();
+            cargarTodoVivo();
         } else {
             document.getElementById("loginBox").style.display = "block";
             document.getElementById("app").style.display = "none";
         }
     });
 
-    window.reclamarCuenta = async () => {
-        const nombreInput = document.getElementById("userNombreWsp").value.trim().toLowerCase();
-        const movilInput = document.getElementById("userTelefono").value || "S/N";
-        const plat = document.getElementById("selectPlataformaUser").value;
-
-        if(!nombreInput) { alert("El nombre es obligatorio"); return; }
-
+    // PROCESAR SOLICITUD (CLIENTE)
+    window.procesarSolicitud = async () => {
+        const nom = userNombreWsp.value.trim().toLowerCase();
+        const plat = selectPlataformaUser.value;
+        const code = codigoTV.value.trim();
         const ahora = Date.now();
-        const doceHoras = 12 * 60 * 60 * 1000;
 
-        // Verificar bloqueo por nombre
-        const qCheck = query(collection(db, "entregas"), where("nombreWsp", "==", nombreInput), orderBy("timestamp", "desc"), limit(1));
-        const snapCheck = await getDocs(qCheck);
+        if(!nom) return alert("Digite seu nome do WhatsApp");
 
-        if (!snapCheck.empty) {
-            const ultima = snapCheck.docs[0].data().timestamp;
-            if (ahora - ultima < doceHoras) {
-                const queda = doceHoras - (ahora - ultima);
-                const h = Math.floor(queda / 3600000);
-                const m = Math.floor((queda % 3600000) / 60000);
-                const msg = document.getElementById("msgCooldown");
-                msg.innerText = `⏳ Bloqueo temporal para ${nombreInput.toUpperCase()}. Falta: ${h}h ${m}m`;
-                msg.style.display = "block";
-                return;
-            }
+        // Caso: ATIVAÇÃO DE TV
+        if(code !== "") {
+            document.getElementById("displayResultado").style.display = "block";
+            document.getElementById("esperaTV").style.display = "block";
+            document.getElementById("entregaFinal").style.display = "none";
+
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nom,
+                plataforma: plat,
+                cuenta: "AGUARDANDO ATIVAÇÃO...",
+                codigoTV: code,
+                estadoTV: "pendiente",
+                timestamp: ahora,
+                fecha: new Date().toLocaleString()
+            });
+        } 
+        // Caso: CONTA NORMAL
+        else {
+            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
+            const snap = await getDocs(q);
+
+            if(snap.empty) return alert("Sem stock disponível para " + plat);
+
+            const docStock = snap.docs[0];
+            const dataC = docStock.data().cuenta;
+            const adm = docStock.data().adminResponsable || "Sist";
+
+            await updateDoc(doc(db, "inventario", docStock.id), { estado: "entregada" });
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nom, plataforma: plat, cuenta: dataC,
+                codigoTV: "N/A", estadoTV: "ok", adminOriginal: adm,
+                timestamp: ahora, fecha: new Date().toLocaleString()
+            });
+
+            document.getElementById("displayResultado").style.display = "block";
+            document.getElementById("esperaTV").style.display = "none";
+            document.getElementById("entregaFinal").style.display = "block";
+            document.getElementById("datosEntregados").innerText = dataC;
         }
-
-        // Buscar stock
-        const qStock = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
-        const snapStock = await getDocs(qStock);
-
-        if (snapStock.empty) { alert("Sin stock de " + plat); return; }
-
-        const docStock = snapStock.docs[0];
-        const datos = docStock.data().cuenta;
-
-        await updateDoc(doc(db, "inventario", docStock.id), { estado: "entregada" });
-        await addDoc(collection(db, "entregas"), {
-            nombreWsp: nombreInput,
-            movil: movilInput,
-            plataforma: plat,
-            cuenta: datos,
-            timestamp: ahora,
-            fecha: new Date().toLocaleString()
-        });
-
-        document.getElementById("displayCuenta").style.display = "block";
-        document.getElementById("cuentaTexto").innerText = datos;
-        document.getElementById("msgCooldown").style.display = "none";
     };
 
-    function cargarDatosEnTiempoReal() {
-        // 1. Cargar plataformas
+    // BOTÃO ATIVAR AGORA (ADMIN)
+    window.activarTVManualmente = async (idDoc) => {
+        await updateDoc(doc(db, "entregas", idDoc), {
+            estadoTV: "listo",
+            cuenta: "✅ TV ATIVADA COM SUCESSO!"
+        });
+        alert("TV Ativada!");
+    };
+
+    function cargarTodoVivo() {
+        // Listar Plataformas
         onSnapshot(collection(db, "plataformas"), (snap) => {
-            let opts = "";
-            snap.forEach(d => { opts += `<option value="${d.data().nombre}">${d.data().nombre}</option>`; });
-            document.getElementById("selectPlataformaUser").innerHTML = opts;
-            document.getElementById("selectPlataformaAdmin").innerHTML = opts;
+            let h = ""; snap.forEach(d => h += `<option value="${d.data().nombre}">${d.data().nombre}</option>`);
+            selectPlataformaUser.innerHTML = h; selectPlataformaAdmin.innerHTML = h;
         });
 
-        // 2. Monitor Admin - TODAS LAS ENTREGAS EN VIVO
-        const qAdmin = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(50));
-        onSnapshot(qAdmin, (snap) => {
-            let html = "";
+        // Monitor Global Realtime
+        const qG = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(50));
+        onSnapshot(qG, (snap) => {
+            let h = "";
             snap.forEach(d => {
                 const data = d.data();
-                html += `<tr>
+                const esTV = data.codigoTV !== "N/A";
+                const stClass = data.estadoTV === "pendiente" ? 'status-pendiente' : 'status-listo';
+                
+                h += `<tr>
                     <td><b>${data.nombreWsp.toUpperCase()}</b></td>
-                    <td>${data.movil}</td>
-                    <td><span class="status-badge">${data.plataforma}</span></td>
-                    <td><code>${data.cuenta}</code></td>
-                    <td>${data.fecha.split(',')[1]}</td>
+                    <td>${data.plataforma}</td>
+                    <td><code>${data.cuenta}</code> ${esTV ? '<br><span class="badge-tv">CÓDIGO: '+data.codigoTV+'</span>' : ''}</td>
+                    <td>${data.adminOriginal || '-'}</td>
+                    <td class="${stClass}">${data.estadoTV.toUpperCase()}</td>
+                    <td>
+                        ${(data.estadoTV === "pendiente" && rolActual === "admin") ? 
+                        `<button class="btn-activar" onclick="activarTVManualmente('${d.id}')">✅ ATIVAR AGORA</button>` : '-'}
+                    </td>
                 </tr>`;
-            });
-            document.getElementById("tablaHistorialAdmin").innerHTML = html;
-        });
 
-        // 3. Monitor Usuario - Solo sus peticiones
-        onSnapshot(qAdmin, (snap) => {
-             let htmlUser = "";
-             snap.forEach(d => {
-                const data = d.data();
-                htmlUser += `<tr><td>${data.plataforma}</td><td>${data.nombreWsp}</td><td>${data.fecha}</td></tr>`;
-             });
-             document.getElementById("tablaHistorialUser").innerHTML = htmlUser;
+                // Se o cliente estiver olhando a tela dele e for ativado
+                if(data.nombreWsp === userNombreWsp.value.trim().toLowerCase() && data.estadoTV === "listo") {
+                    document.getElementById("esperaTV").style.display = "none";
+                    document.getElementById("entregaFinal").style.display = "block";
+                    document.getElementById("datosEntregados").innerText = data.cuenta;
+                }
+            });
+            tablaGlobal.innerHTML = h;
         });
     }
 
-    // Funciones Admin Stock
+    // Funções Admin Stock e Usuários
     window.subirStock = async () => {
-        const c = document.getElementById("stockCorreo").value;
-        const p = document.getElementById("stockPass").value;
-        const plat = document.getElementById("selectPlataformaAdmin").value;
-        if(c && p) {
-            await addDoc(collection(db, "inventario"), { plataforma: plat, cuenta: `${c}:${p}`, estado: "disponible" });
-            alert("Cuenta cargada!");
-            document.getElementById("stockCorreo").value = ""; document.getElementById("stockPass").value = "";
+        if(stockCorreo.value && stockPass.value) {
+            await addDoc(collection(db, "inventario"), {
+                plataforma: selectPlataformaAdmin.value,
+                cuenta: `${stockCorreo.value}:${stockPass.value}`,
+                estado: "disponible",
+                adminResponsable: emailAdminLogueado
+            });
+            alert("Stock Adicionado!");
+            stockCorreo.value = ""; stockPass.value = "";
         }
     };
 
+    window.crearNuevoUsuario = async () => {
+        try {
+            const res = await createUserWithEmailAndPassword(auth, newEmail.value, newPass.value);
+            await setDoc(doc(db, "users", res.user.uid), { email: newEmail.value, role: newRole.value });
+            alert("Usuário Criado!");
+        } catch(e) { alert(e.message); }
+    };
+
     window.agregarPlataforma = async () => {
-        const n = document.getElementById("nuevaPlataforma").value;
-        if(n) await addDoc(collection(db, "plataformas"), { nombre: n });
-        document.getElementById("nuevaPlataforma").value = "";
+        if(nuevaPlataforma.value) await addDoc(collection(db, "plataformas"), { nombre: nuevaPlataforma.value });
+        nuevaPlataforma.value = "";
     };
 </script>
 </body>
