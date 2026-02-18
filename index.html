@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA AUTOMÁTICO DE CUENTAS</title>
+    <title>SISTEMA AUTOMÁTICO - CUPO 8x1</title>
     <style>
         :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
         .contenedor{ max-width:1100px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
         
-        /* Navegación */
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
         .tab-btn { background: #ddd; color: #333; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; transition: 0.3s; }
         .tab-btn.active { background: var(--admin); color: white; }
@@ -18,16 +17,20 @@
         .tarjeta-admin { border-top: 5px solid var(--admin); }
         
         input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:14px; box-sizing: border-box; }
-        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; }
+        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
         
-        .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; }
+        .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
         table { width:100%; border-collapse:collapse; font-size: 12px; }
         th, td { border:1px solid #eee; padding:12px; text-align:left; }
         th { background:var(--primario); color: white; }
 
-        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; }
+        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; text-transform: uppercase; }
         .bg-pendiente { background: var(--admin); }
         .bg-listo { background: var(--exito); }
+        .bg-agotado { background: var(--error); }
+        
+        .cupo-indicador { font-size: 0.8rem; color: #666; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -48,23 +51,23 @@
 
         <div id="seccionUsuario">
             <div class="tarjeta">
-                <h3>🎁 Obtener mi Cuenta al Instante</h3>
-                <p style="font-size: 0.9rem; color: #666;">Selecciona la plataforma y el sistema te entregará la cuenta automáticamente si hay stock disponible.</p>
+                <h3>🎁 Reclamar mi Cuenta</h3>
+                <p style="font-size: 0.9rem; color: #666;">El sistema te asignará una cuenta disponible. Límite: 8 usuarios por cuenta.</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="nombreWsp" placeholder="Tu Nombre">
+                    <input type="text" id="nombreWsp" placeholder="Tu Nombre o ID">
                     <select id="selectPlatUsuario"></select>
                 </div>
                 <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Opcional - Solo para activaciones)">
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); font-size: 1.1rem; height: 50px;">🚀 RECLAMAR CUENTA AHORA</button>
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); font-size: 1.1rem; height: 50px;">🚀 OBTENER ACCESO</button>
                 
                 <div id="resultadoPedido" style="display:none; margin-top:15px; padding:20px; border-radius:8px; text-align:center; background: #f0fdf4; border: 2px solid var(--exito);">
                     <div id="esperaTV" style="display:none;">
-                        <p>⏳ <b style="color:var(--tv)">¡Código enviado!</b> Espera a que el admin active tu pantalla...</p>
+                        <p>⏳ <b style="color:var(--tv)">¡Código enviado!</b> Espera a que el administrador active tu pantalla...</p>
                     </div>
                     <div id="entregaAuto">
-                        <p style="margin:0; font-weight: bold; color: #1e4620;">✅ ¡ENTREGA EXITOSA! AQUÍ TIENES TU CUENTA:</p>
-                        <code id="textoCuenta" style="display:block; padding:15px; background:#fff; font-size:1.4rem; border: 2px dashed var(--exito); margin-top:10px; color: #333;"></code>
-                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Copia y pega estos datos en la aplicación.</p>
+                        <p style="margin:0; font-weight: bold; color: #1e4620;">✅ ¡ENTREGA EXITOSA! DATOS DE ACCESO:</p>
+                        <code id="textoCuenta" style="display:block; padding:15px; background:#fff; font-size:1.4rem; border: 2px dashed var(--exito); margin-top:10px; color: #333; word-break: break-all;"></code>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Copia y usa estos datos en la App correspondiente.</p>
                     </div>
                 </div>
             </div>
@@ -72,22 +75,21 @@
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
-                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOREO</button>
-                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK / PLATAFORMAS</button>
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 ENTREGAS</button>
+                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK (8 USOS)</button>
                 <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 EQUIPO</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📡 Monitor Global (Entregas Automáticas y TV)</h4>
+                    <h4>📡 Monitor de Actividad</h4>
                     <div class="tabla-contenedor">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Cliente</th>
                                     <th>Plataforma</th>
-                                    <th>Cuenta Entregada / Código</th>
-                                    <th>Admin que subió stock</th>
+                                    <th>Cuenta / Código</th>
                                     <th>Estado</th>
                                     <th>Acción</th>
                                 </tr>
@@ -100,17 +102,18 @@
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📥 Cargar Cuentas al Inventario</h4>
+                    <h4>📥 Cargar Nueva Cuenta al Inventario</h4>
+                    <p style="font-size: 0.8rem; color: #666;">Cada cuenta que subas será compartida por máximo 8 personas.</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                        <input type="text" id="accCorreo" placeholder="Correo cuenta">
-                        <input type="text" id="accPass" placeholder="Clave cuenta">
+                        <input type="text" id="accCorreo" placeholder="Correo / Usuario">
+                        <input type="text" id="accPass" placeholder="Contraseña">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR AL STOCK</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR A INVENTARIO</button>
                     <hr>
-                    <h4>➕ Nueva Plataforma</h4>
+                    <h4>➕ Crear Nueva Plataforma</h4>
                     <div style="display:flex; gap:10px;">
-                        <input type="text" id="nombreNuevaPlat" placeholder="Nombre (Ej: Netflix)">
+                        <input type="text" id="nombreNuevaPlat" placeholder="Nombre (Netflix, Disney, etc)">
                         <button onclick="crearPlataforma()" style="background:#555; width: 150px;">CREAR</button>
                     </div>
                 </div>
@@ -118,16 +121,16 @@
 
             <div id="tabUsuarios" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>👥 Registro de Administradores</h4>
+                    <h4>👥 Registro de Administradores/Vendedores</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <input type="email" id="nuevoCorreo" placeholder="Correo nuevo admin">
+                        <input type="email" id="nuevoCorreo" placeholder="Correo electrónico">
                         <input type="password" id="nuevoPass" placeholder="Contraseña">
                     </div>
                     <select id="nuevoRol">
-                        <option value="usuario">Usuario / Vendedor</option>
-                        <option value="admin">Administrador Full</option>
+                        <option value="usuario">Vendedor (Solo entrega)</option>
+                        <option value="admin">Administrador (Control total)</option>
                     </select>
-                    <button onclick="registrarUsuario()">REGISTRAR</button>
+                    <button onclick="registrarUsuario()">REGISTRAR SOCIO</button>
                 </div>
             </div>
         </div>
@@ -137,9 +140,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Tu configuración (No cambiar)
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -158,7 +160,7 @@
 
     window.iniciarSesion = async () => {
         try { await signInWithEmailAndPassword(auth, correoLogin.value, passLogin.value); } 
-        catch (err) { alert("Error de acceso"); }
+        catch (err) { alert("Credenciales incorrectas"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -171,7 +173,7 @@
             
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `Usuario: ${miEmail} (${miRol})`;
+            document.getElementById("infoUsuario").innerText = `Conectado: ${miEmail} | Rol: ${miRol}`;
             
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
             document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
@@ -183,7 +185,6 @@
         }
     });
 
-    // NAVEGACIÓN
     window.verTab = (id) => {
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -191,58 +192,64 @@
         event.currentTarget.classList.add('active');
     };
 
-    // EL MOTOR AUTOMÁTICO (LO QUE PEDISTE)
+    // --- MOTOR DE LÓGICA 8 USOS POR CUENTA ---
     window.procesarEntregaAutomatica = async () => {
-        const nom = nombreWsp.value.trim().toLowerCase();
+        const nom = nombreWsp.value.trim();
         const plat = selectPlatUsuario.value;
         const code = codigoTV.value.trim();
-        if(!nom) return alert("Escribe tu nombre");
+        if(!nom) return alert("Por favor ingresa tu nombre");
 
-        // CASO 1: ACTIVACIÓN TV (Requiere acción de admin)
         if(code !== "") {
-            document.getElementById("resultadoPedido").style.display = "block";
-            document.getElementById("esperaTV").style.display = "block";
-            document.getElementById("entregaAuto").style.display = "none";
-
+            // CASO TV: Activación manual
             await addDoc(collection(db, "entregas"), {
                 nombreWsp: nom, plataforma: plat, cuenta: "📺 ACTIVACIÓN PENDIENTE",
                 codigoTV: code, estado: "pendiente", timestamp: Date.now(),
                 fecha: new Date().toLocaleString(), usuarioEmail: miEmail
             });
+            document.getElementById("resultadoPedido").style.display = "block";
+            document.getElementById("esperaTV").style.display = "block";
+            document.getElementById("entregaAuto").style.display = "none";
         } 
-        // CASO 2: ENTREGA AUTOMÁTICA (Busca en stock y entrega solo)
         else {
-            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
+            // CASO AUTOMÁTICO: Buscar cuenta con cupo < 8
+            const q = query(
+                collection(db, "inventario"), 
+                where("plataforma", "==", plat), 
+                where("estado", "==", "disponible"),
+                where("usos", "<", 8),
+                limit(1)
+            );
+            
             const snap = await getDocs(q);
             
-            if(snap.empty) return alert("¡Vaya! No tenemos stock de " + plat + " en este momento.");
+            if(snap.empty) return alert("No hay stock disponible de " + plat + " con cupos libres.");
 
             const docStock = snap.docs[0];
-            const dataCuenta = docStock.data().cuenta;
-            const adminOrigen = docStock.data().adminResponsable || "Sistema";
+            const dataStock = docStock.data();
+            const nuevosUsos = (dataStock.usos || 0) + 1;
 
-            // Marcamos como entregada para que nadie más la use
-            await updateDoc(doc(db, "inventario", docStock.id), { estado: "entregada" });
+            // Actualizar cuenta: si llega a 8, marcar agotada
+            const updateData = { usos: nuevosUsos };
+            if(nuevosUsos >= 8) updateData.estado = "agotado";
+            await updateDoc(doc(db, "inventario", docStock.id), updateData);
 
-            // Guardamos la venta con el nombre del admin que subió el stock
+            // Registrar entrega
             await addDoc(collection(db, "entregas"), {
-                nombreWsp: nom, plataforma: plat, cuenta: dataCuenta, codigoTV: "N/A",
-                estado: "listo", adminOriginal: adminOrigen, timestamp: Date.now(),
-                fecha: new Date().toLocaleString(), usuarioEmail: miEmail
+                nombreWsp: nom, plataforma: plat, cuenta: dataStock.cuenta, 
+                codigoTV: "N/A", estado: "listo", timestamp: Date.now(),
+                fecha: new Date().toLocaleString(), usuarioEmail: miEmail,
+                cupoAsignado: nuevosUsos
             });
 
-            // Mostramos al cliente la cuenta automáticamente
             document.getElementById("resultadoPedido").style.display = "block";
             document.getElementById("esperaTV").style.display = "none";
             document.getElementById("entregaAuto").style.display = "block";
-            document.getElementById("textoCuenta").innerText = dataCuenta;
+            document.getElementById("textoCuenta").innerText = dataStock.cuenta;
         }
     };
 
-    // ACCIONES ADMIN
     window.activarTV = async (id) => {
         await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ PANTALLA ACTIVADA" });
-        alert("Activación Exitosa");
     };
 
     function cargarDatosEnVivo() {
@@ -260,15 +267,13 @@
                 h += `<tr>
                     <td><b>${data.nombreWsp.toUpperCase()}</b></td>
                     <td>${data.plataforma}</td>
-                    <td><code>${data.cuenta}</code> ${data.codigoTV !== "N/A" ? '<br><b>CÓDIGO: '+data.codigoTV+'</b>' : ''}</td>
-                    <td><small>${data.adminOriginal || 'Manual'}</small></td>
+                    <td><code>${data.cuenta}</code> ${data.codigoTV !== "N/A" ? '<br>COD: '+data.codigoTV : ''}</td>
                     <td><span class="badge ${esP ? 'bg-pendiente' : 'bg-listo'}">${data.estado}</span></td>
                     <td>
                         ${esP ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); font-size:10px; padding:5px;">ACTIVAR TV</button>` : 'Entregado'}
                     </td>
                 </tr>`;
-                
-                // Si el cliente está esperando TV y tú lo activas, se le actualiza solo
+
                 if(data.usuarioEmail === miEmail && data.estado === "listo" && document.getElementById("esperaTV").style.display === "block") {
                     document.getElementById("esperaTV").style.display = "none";
                     document.getElementById("entregaAuto").style.display = "block";
@@ -282,10 +287,13 @@
     window.subirInventario = async () => {
         if(accCorreo.value && accPass.value) {
             await addDoc(collection(db, "inventario"), {
-                plataforma: selectPlatAdmin.value, cuenta: `${accCorreo.value}:${accPass.value}`,
-                estado: "disponible", adminResponsable: miEmail // Registra quién sube el stock
+                plataforma: selectPlatAdmin.value, 
+                cuenta: `${accCorreo.value}:${accPass.value}`,
+                estado: "disponible", 
+                usos: 0, // Inicia en 0
+                adminResponsable: miEmail 
             });
-            alert("Cuenta cargada correctamente por " + miEmail);
+            alert("Cuenta cargada. Podrá ser entregada a 8 personas.");
             accCorreo.value = ""; accPass.value = "";
         }
     };
@@ -294,8 +302,8 @@
         try {
             const res = await createUserWithEmailAndPassword(auth, nuevoCorreo.value, nuevoPass.value);
             await setDoc(doc(db, "users", res.user.uid), { email: nuevoCorreo.value, role: nuevoRol.value });
-            alert("Usuario Registrado");
-        } catch(e) { alert(e.message); }
+            alert("Socio registrado con éxito");
+        } catch(e) { alert("Error: " + e.message); }
     };
 
     window.crearPlataforma = async () => {
