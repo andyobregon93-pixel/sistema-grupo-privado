@@ -1,288 +1,283 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Grupo Privado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Auto-Delivery System</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --bg: #f5f6fa;
+        }
 
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-}
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            color: #333;
+        }
 
-.container{
-width:95%;
-max-width:1100px;
-margin:30px auto;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
+        .container {
+            width: 95%;
+            max-width: 900px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
 
-h1,h2,h3{color:#203a43;}
+        h1, h2, h3 { color: var(--primary); text-align: center; }
 
-input,select,button{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:6px;
-border:1px solid #ccc;
-}
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-button{
-background:#203a43;
-color:white;
-border:none;
-cursor:pointer;
-font-weight:bold;
-}
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
 
-button:hover{opacity:0.9;}
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
 
-.logout{background:#c0392b;}
+        button:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-claim { background: #27ae60; font-size: 1.2rem; }
+        .logout { background: var(--accent); width: auto; padding: 5px 15px; float: right; }
 
-.admin-box{
-background:#f4f4f4;
-padding:15px;
-border-radius:8px;
-margin-bottom:20px;
-}
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background: var(--primary); color: white; }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
+        .account-display {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
 
-th,td{
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
-}
-
-th{
-background:#203a43;
-color:white;
-}
-</style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
+    <div id="loginBox">
+        <h1>🚀 Acceso Miembros</h1>
+        <input type="email" id="email" placeholder="Correo Electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">ENTRAR AL SISTEMA</button>
+    </div>
 
-<div id="loginBox">
-<h1>SISTEMA GRUPO PRIVADO</h1>
-<input type="email" id="email" placeholder="Correo">
-<input type="password" id="password" placeholder="Clave">
-<button onclick="login()">Ingresar</button>
-</div>
+    <div id="app" style="display:none;">
+        <button class="logout" onclick="logout()">Salir</button>
+        <p id="infoUsuario"></p>
+        <hr>
 
-<div id="app" style="display:none;">
+        <div class="card">
+            <h2>🎁 Reclamar Nueva Cuenta</h2>
+            <p>Selecciona la plataforma y el sistema te entregará una cuenta activa al instante.</p>
+            <select id="selectPlataformaUser"></select>
+            <button class="btn-claim" onclick="reclamarCuenta()">¡OBTENER CUENTA AHORA!</button>
+            
+            <div id="displayCuenta" class="account-display">
+                <strong>¡Aquí tienes tu cuenta!</strong><br>
+                <span id="cuentaTexto" style="font-family: monospace; font-size: 1.2rem;"></span>
+            </div>
+        </div>
 
-<h2 id="infoUsuario"></h2>
-<button class="logout" onclick="logout()">Cerrar sesión</button>
+        <div id="panelAdmin" style="display:none;">
+            <div class="card" style="border-left-color: #f1c40f;">
+                <h3>⚙️ Panel de Control (Admin)</h3>
+                
+                <h4>Añadir Stock al Inventario</h4>
+                <select id="selectPlataformaAdmin"></select>
+                <input type="text" id="datosCuenta" placeholder="correo:contraseña">
+                <button onclick="subirStock()">Cargar a Inventario</button>
+                
+                <hr>
+                <input type="text" id="nuevaPlataforma" placeholder="Nombre de nueva plataforma (Netflix, Disney...)">
+                <button onclick="agregarPlataforma()">Registrar Plataforma</button>
+            </div>
+        </div>
 
-<div id="panelAdmin" style="display:none;">
-
-<div class="admin-box">
-<h3>Crear Usuario</h3>
-<input type="email" id="nuevoEmail" placeholder="Correo usuario">
-<input type="password" id="nuevoPassword" placeholder="Clave">
-<button onclick="crearUsuario()">Crear Usuario</button>
-</div>
-
-<div class="admin-box">
-<h3>Administradores que ayudan</h3>
-<input type="text" id="nuevoAdminNombre" placeholder="Nombre administrador">
-<button onclick="agregarAdmin()">Agregar</button>
-</div>
-
-<div class="admin-box">
-<h3>Plataformas</h3>
-<input type="text" id="nuevaPlataforma" placeholder="Nombre plataforma">
-<button onclick="agregarPlataforma()">Agregar</button>
-</div>
-
-</div>
-
-<h3>Cuentas Activadas</h3>
-
-<select id="selectPlataforma"></select>
-<select id="selectAdmin"></select>
-<input type="text" id="miembro" placeholder="Nombre del miembro">
-<button onclick="guardarRegistro()">Guardar</button>
-
-<h3>Historial</h3>
-
-<table>
-<thead>
-<tr>
-<th>Plataforma</th>
-<th>Miembro</th>
-<th>Administrador</th>
-<th>Fecha</th>
-</tr>
-</thead>
-<tbody id="tablaRegistros"></tbody>
-</table>
-
-</div>
+        <h3>📋 Mis Cuentas Reclamadas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plataforma</th>
+                    <th>Datos (Email:Pass)</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="tablaHistorial"></tbody>
+        </table>
+    </div>
 </div>
 
 <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot, query, where, limit, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot }
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const firebaseConfig = {
+        apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
+        authDomain: "sistema-grupo-privado.firebaseapp.com",
+        projectId: "sistema-grupo-privado",
+        storageBucket: "sistema-grupo-privado.firebasestorage.app",
+        messagingSenderId: "86750167453",
+        appId: "1:86750167453:web:165ff3a605105d525c6f74"
+    };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
-  authDomain: "sistema-grupo-privado.firebaseapp.com",
-  projectId: "sistema-grupo-privado",
-  storageBucket: "sistema-grupo-privado.firebasestorage.app",
-  messagingSenderId: "86750167453",
-  appId: "1:86750167453:web:165ff3a605105d525c6f74"
-};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-const appFirebase = initializeApp(firebaseConfig);
-const auth = getAuth(appFirebase);
-const db = getFirestore(appFirebase);
+    let rolActual = null;
+    let userEmail = "";
 
-let rolActual=null;
+    // --- AUTENTICACIÓN ---
+    window.login = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, email.value, password.value);
+        } catch (e) { alert("Error: " + e.message); }
+    };
 
-/* LOGIN CORREGIDO */
-window.login = async function(){
-  try{
-    const correo = document.getElementById("email").value;
-    const clave = document.getElementById("password").value;
+    window.logout = () => signOut(auth);
 
-    await signInWithEmailAndPassword(auth, correo, clave);
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userEmail = user.email;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            rolActual = snap.exists() ? snap.data().role : "usuario";
 
-  }catch(error){
-    alert(error.message);
-  }
-};
+            infoUsuario.innerHTML = `Conectado como: <b>${user.email}</b> | Rango: <span style="color:blue">${rolActual.toUpperCase()}</span>`;
+            loginBox.style.display = "none";
+            app.style.display = "block";
+            panelAdmin.style.display = (rolActual === "admin") ? "block" : "none";
 
-window.logout = function(){
-  signOut(auth);
-};
+            cargarPlataformas();
+            cargarHistorialPersonal();
+        } else {
+            loginBox.style.display = "block";
+            app.style.display = "none";
+        }
+    });
 
-/* AUTH */
-onAuthStateChanged(auth, async(user)=>{
-if(user){
+    // --- FUNCIONES ADMIN ---
+    window.agregarPlataforma = async () => {
+        if (!nuevaPlataforma.value) return;
+        await addDoc(collection(db, "plataformas"), { nombre: nuevaPlataforma.value });
+        nuevaPlataforma.value = "";
+    };
 
-const snap=await getDoc(doc(db,"users",user.uid));
-rolActual=snap.exists()?snap.data().role:"usuario";
+    window.subirStock = async () => {
+        if (!datosCuenta.value) return;
+        await addDoc(collection(db, "inventario"), {
+            plataforma: selectPlataformaAdmin.value,
+            cuenta: datosCuenta.value,
+            estado: "disponible", // disponible | entregada
+            creadoEn: new Date()
+        });
+        datosCuenta.value = "";
+        alert("Stock cargado!");
+    };
 
-document.getElementById("infoUsuario").innerText =
-"Usuario: "+user.email+" | Rol: "+rolActual;
+    // --- LÓGICA DE RECLAMO (LO ESPECTACULAR) ---
+    window.reclamarCuenta = async () => {
+        const plat = selectPlataformaUser.value;
+        
+        // 1. Buscar una cuenta disponible de esa plataforma
+        const q = query(
+            collection(db, "inventario"), 
+            where("plataforma", "==", plat), 
+            where("estado", "==", "disponible"),
+            limit(1)
+        );
 
-document.getElementById("loginBox").style.display="none";
-document.getElementById("app").style.display="block";
-document.getElementById("panelAdmin").style.display=(rolActual==="admin")?"block":"none";
+        const querySnapshot = await getDoc(q); // Nota: En móviles/v10 se usa getDocs para queries
+        // Corrección para query:
+        import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        const snap = await getDocs(q);
 
-cargarSelects();
-cargarHistorial();
+        if (snap.empty) {
+            alert("¡Lo sentimos! No hay stock de " + plat);
+            return;
+        }
 
-}else{
-document.getElementById("loginBox").style.display="block";
-document.getElementById("app").style.display="none";
-}
-});
+        const docCuenta = snap.docs[0];
+        const datosCerrados = docCuenta.data().cuenta;
 
-/* CREAR USUARIO */
-window.crearUsuario=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
+        // 2. Marcar como entregada para que nadie más la use
+        await updateDoc(doc(db, "inventario", docCuenta.id), {
+            estado: "entregada",
+            entregadaA: userEmail,
+            fechaEntrega: new Date().toLocaleString()
+        });
 
-try{
-const cred=await createUserWithEmailAndPassword(
-auth,
-document.getElementById("nuevoEmail").value,
-document.getElementById("nuevoPassword").value
-);
+        // 3. Guardar en el historial público/privado
+        await addDoc(collection(db, "entregas"), {
+            plataforma: plat,
+            cuenta: datosCerrados,
+            usuario: userEmail,
+            fecha: new Date().toLocaleString()
+        });
 
-await setDoc(doc(db,"users",cred.user.uid),{
-email:document.getElementById("nuevoEmail").value,
-role:"usuario"
-});
+        // 4. Mostrar al usuario
+        displayCuenta.style.display = "block";
+        cuentaTexto.innerText = datosCerrados;
+    };
 
-alert("Usuario creado correctamente");
-}catch(error){
-alert(error.message);
-}
-};
+    // --- CARGA DE DATOS ---
+    function cargarPlataformas() {
+        onSnapshot(collection(db, "plataformas"), (snap) => {
+            selectPlataformaAdmin.innerHTML = "";
+            selectPlataformaUser.innerHTML = "";
+            snap.forEach(doc => {
+                const opt = `<option value="${doc.data().nombre}">${doc.data().nombre}</option>`;
+                selectPlataformaAdmin.innerHTML += opt;
+                selectPlataformaUser.innerHTML += opt;
+            });
+        });
+    }
 
-/* AGREGAR ADMIN */
-window.agregarAdmin=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
-
-await addDoc(collection(db,"adminsAyuda"),{
-nombre:document.getElementById("nuevoAdminNombre").value
-});
-
-document.getElementById("nuevoAdminNombre").value="";
-};
-
-/* AGREGAR PLATAFORMA */
-window.agregarPlataforma=async()=>{
-if(rolActual!=="admin"){alert("No autorizado");return;}
-
-await addDoc(collection(db,"plataformas"),{
-nombre:document.getElementById("nuevaPlataforma").value
-});
-
-document.getElementById("nuevaPlataforma").value="";
-};
-
-/* GUARDAR REGISTRO */
-window.guardarRegistro=async()=>{
-await addDoc(collection(db,"cuentasActivadas"),{
-plataforma:document.getElementById("selectPlataforma").value,
-miembro:document.getElementById("miembro").value,
-admin:document.getElementById("selectAdmin").value,
-fecha:new Date().toLocaleString()
-});
-document.getElementById("miembro").value="";
-};
-
-function cargarSelects(){
-onSnapshot(collection(db,"adminsAyuda"),(snapshot)=>{
-selectAdmin.innerHTML="";
-snapshot.forEach(doc=>{
-selectAdmin.innerHTML+=`<option>${doc.data().nombre}</option>`;
-});
-});
-onSnapshot(collection(db,"plataformas"),(snapshot)=>{
-selectPlataforma.innerHTML="";
-snapshot.forEach(doc=>{
-selectPlataforma.innerHTML+=`<option>${doc.data().nombre}</option>`;
-});
-});
-}
-
-function cargarHistorial(){
-onSnapshot(collection(db,"cuentasActivadas"),(snapshot)=>{
-tablaRegistros.innerHTML="";
-snapshot.forEach(doc=>{
-const d=doc.data();
-tablaRegistros.innerHTML+=`
-<tr>
-<td>${d.plataforma}</td>
-<td>${d.miembro}</td>
-<td>${d.admin}</td>
-<td>${d.fecha}</td>
-</tr>`;
-});
-});
-}
-
+    function cargarHistorialPersonal() {
+        const q = query(collection(db, "entregas"), where("usuario", "==", userEmail));
+        onSnapshot(q, (snap) => {
+            tablaHistorial.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                tablaHistorial.innerHTML += `<tr>
+                    <td>${d.plataforma}</td>
+                    <td><code>${d.cuenta}</code></td>
+                    <td>${d.fecha}</td>
+                </tr>`;
+            });
+        });
+    }
 </script>
-
 </body>
 </html>
