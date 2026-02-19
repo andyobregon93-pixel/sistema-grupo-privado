@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA AUTOMÁTICO - CUPO 8x1</title>
+    <title>SISTEMA CONTROL TOTAL - 8x1</title>
     <style>
-        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; }
+        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
         .contenedor{ max-width:1100px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
         
@@ -16,21 +16,19 @@
         .tarjeta { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primario); }
         .tarjeta-admin { border-top: 5px solid var(--admin); }
         
-        input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:14px; box-sizing: border-box; }
+        input, select, button { width:100%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #ddd; font-size:14px; box-sizing: border-box; }
         button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:hover { opacity: 0.9; }
         
         .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
         table { width:100%; border-collapse:collapse; font-size: 12px; }
-        th, td { border:1px solid #eee; padding:12px; text-align:left; }
+        th, td { border:1px solid #eee; padding:10px; text-align:left; }
         th { background:var(--primario); color: white; }
 
-        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; text-transform: uppercase; }
-        .bg-pendiente { background: var(--admin); }
-        .bg-listo { background: var(--exito); }
-        .bg-agotado { background: var(--error); }
-        
-        .cupo-indicador { font-size: 0.8rem; color: #666; font-weight: bold; }
+        .btn-accion { width: auto; padding: 5px 10px; font-size: 10px; margin-right: 2px; }
+        .btn-edit { background: var(--info); }
+        .btn-del { background: var(--error); }
+        .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -51,23 +49,19 @@
 
         <div id="seccionUsuario">
             <div class="tarjeta">
-                <h3>🎁 Reclamar mi Cuenta</h3>
-                <p style="font-size: 0.9rem; color: #666;">El sistema te asignará una cuenta disponible. Límite: 8 usuarios por cuenta.</p>
+                <h3>🎁 Reclamar Cuenta</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="nombreWsp" placeholder="Tu Nombre o ID">
+                    <input type="text" id="nombreWsp" placeholder="Nombre Cliente">
                     <select id="selectPlatUsuario"></select>
                 </div>
-                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Opcional - Solo para activaciones)">
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); font-size: 1.1rem; height: 50px;">🚀 OBTENER ACCESO</button>
+                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Opcional)">
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 50px;">🚀 OBTENER ACCESO</button>
                 
-                <div id="resultadoPedido" style="display:none; margin-top:15px; padding:20px; border-radius:8px; text-align:center; background: #f0fdf4; border: 2px solid var(--exito);">
-                    <div id="esperaTV" style="display:none;">
-                        <p>⏳ <b style="color:var(--tv)">¡Código enviado!</b> Espera a que el administrador active tu pantalla...</p>
-                    </div>
+                <div id="resultadoPedido" style="display:none; margin-top:15px; padding:15px; border: 2px solid var(--exito); text-align:center;">
+                    <div id="esperaTV" style="display:none;">⏳ <b style="color:var(--tv)">Esperando activación...</b></div>
                     <div id="entregaAuto">
-                        <p style="margin:0; font-weight: bold; color: #1e4620;">✅ ¡ENTREGA EXITOSA! DATOS DE ACCESO:</p>
-                        <code id="textoCuenta" style="display:block; padding:15px; background:#fff; font-size:1.4rem; border: 2px dashed var(--exito); margin-top:10px; color: #333; word-break: break-all;"></code>
-                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Copia y usa estos datos en la App correspondiente.</p>
+                        <p>✅ <b>DATOS:</b></p>
+                        <code id="textoCuenta" style="display:block; padding:10px; background:#f9f9f9; font-size:1.2rem; border: 1px dashed #ccc;"></code>
                     </div>
                 </div>
             </div>
@@ -76,61 +70,62 @@
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
                 <button class="tab-btn active" onclick="verTab('tabVentas')">📊 ENTREGAS</button>
-                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK (8 USOS)</button>
+                <button class="tab-btn" onclick="verTab('tabStock')">📦 GESTIONAR STOCK</button>
                 <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 EQUIPO</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
                 <div class="tarjeta tarjeta-admin">
                     <h4>📡 Monitor de Actividad</h4>
-                    <div class="tabla-contenedor">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Plataforma</th>
-                                    <th>Cuenta / Código</th>
-                                    <th>Estado</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaAdminGlobal"></tbody>
-                        </table>
-                    </div>
+                    <div class="tabla-contenedor"><table id="tablaAdminGlobal"></table></div>
                 </div>
             </div>
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📥 Cargar Nueva Cuenta al Inventario</h4>
-                    <p style="font-size: 0.8rem; color: #666;">Cada cuenta que subas será compartida por máximo 8 personas.</p>
+                    <h4>📥 Cargar Nueva Cuenta</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                        <input type="text" id="accCorreo" placeholder="Correo / Usuario">
-                        <input type="text" id="accPass" placeholder="Contraseña">
+                        <input type="text" id="accCorreo" placeholder="Correo">
+                        <input type="text" id="accPass" placeholder="Clave">
                         <select id="selectPlatAdmin"></select>
                     </div>
                     <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR A INVENTARIO</button>
-                    <hr>
-                    <h4>➕ Crear Nueva Plataforma</h4>
+                </div>
+
+                <div class="tarjeta tarjeta-admin">
+                    <h4>📝 Editar/Eliminar Stock Existente</h4>
+                    <div class="tabla-contenedor">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Plataforma</th>
+                                    <th>Cuenta (Correo:Clave)</th>
+                                    <th>Usos (Max 8)</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaGestionStock"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tarjeta tarjeta-admin">
+                    <h4>➕ Nueva Plataforma</h4>
                     <div style="display:flex; gap:10px;">
-                        <input type="text" id="nombreNuevaPlat" placeholder="Nombre (Netflix, Disney, etc)">
-                        <button onclick="crearPlataforma()" style="background:#555; width: 150px;">CREAR</button>
+                        <input type="text" id="nombreNuevaPlat" placeholder="Nombre">
+                        <button onclick="crearPlataforma()" style="background:#555; width: 120px;">CREAR</button>
                     </div>
                 </div>
             </div>
 
             <div id="tabUsuarios" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>👥 Registro de Administradores/Vendedores</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <input type="email" id="nuevoCorreo" placeholder="Correo electrónico">
-                        <input type="password" id="nuevoPass" placeholder="Contraseña">
-                    </div>
-                    <select id="nuevoRol">
-                        <option value="usuario">Vendedor (Solo entrega)</option>
-                        <option value="admin">Administrador (Control total)</option>
-                    </select>
-                    <button onclick="registrarUsuario()">REGISTRAR SOCIO</button>
+                    <h4>👥 Registro de Socios</h4>
+                    <input type="email" id="nuevoCorreo" placeholder="Correo">
+                    <input type="password" id="nuevoPass" placeholder="Contraseña">
+                    <select id="nuevoRol"><option value="usuario">Vendedor</option><option value="admin">Admin</option></select>
+                    <button onclick="registrarUsuario()">REGISTRAR</button>
                 </div>
             </div>
         </div>
@@ -140,7 +135,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
@@ -160,7 +155,7 @@
 
     window.iniciarSesion = async () => {
         try { await signInWithEmailAndPassword(auth, correoLogin.value, passLogin.value); } 
-        catch (err) { alert("Credenciales incorrectas"); }
+        catch (err) { alert("Error en acceso"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -170,14 +165,11 @@
             miEmail = user.email;
             const snap = await getDoc(doc(db, "users", user.uid));
             miRol = snap.exists() ? snap.data().role : "usuario";
-            
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `Conectado: ${miEmail} | Rol: ${miRol}`;
-            
+            document.getElementById("infoUsuario").innerText = `${miEmail} (${miRol})`;
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
             document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
-            
             cargarDatosEnVivo();
         } else {
             document.getElementById("cajaLogin").style.display = "block";
@@ -192,123 +184,126 @@
         event.currentTarget.classList.add('active');
     };
 
-    // --- MOTOR DE LÓGICA 8 USOS POR CUENTA ---
-    window.procesarEntregaAutomatica = async () => {
-        const nom = nombreWsp.value.trim();
-        const plat = selectPlatUsuario.value;
-        const code = codigoTV.value.trim();
-        if(!nom) return alert("Por favor ingresa tu nombre");
-
-        if(code !== "") {
-            // CASO TV: Activación manual
-            await addDoc(collection(db, "entregas"), {
-                nombreWsp: nom, plataforma: plat, cuenta: "📺 ACTIVACIÓN PENDIENTE",
-                codigoTV: code, estado: "pendiente", timestamp: Date.now(),
-                fecha: new Date().toLocaleString(), usuarioEmail: miEmail
-            });
-            document.getElementById("resultadoPedido").style.display = "block";
-            document.getElementById("esperaTV").style.display = "block";
-            document.getElementById("entregaAuto").style.display = "none";
-        } 
-        else {
-            // CASO AUTOMÁTICO: Buscar cuenta con cupo < 8
-            const q = query(
-                collection(db, "inventario"), 
-                where("plataforma", "==", plat), 
-                where("estado", "==", "disponible"),
-                where("usos", "<", 8),
-                limit(1)
-            );
-            
-            const snap = await getDocs(q);
-            
-            if(snap.empty) return alert("No hay stock disponible de " + plat + " con cupos libres.");
-
-            const docStock = snap.docs[0];
-            const dataStock = docStock.data();
-            const nuevosUsos = (dataStock.usos || 0) + 1;
-
-            // Actualizar cuenta: si llega a 8, marcar agotada
-            const updateData = { usos: nuevosUsos };
-            if(nuevosUsos >= 8) updateData.estado = "agotado";
-            await updateDoc(doc(db, "inventario", docStock.id), updateData);
-
-            // Registrar entrega
-            await addDoc(collection(db, "entregas"), {
-                nombreWsp: nom, plataforma: plat, cuenta: dataStock.cuenta, 
-                codigoTV: "N/A", estado: "listo", timestamp: Date.now(),
-                fecha: new Date().toLocaleString(), usuarioEmail: miEmail,
-                cupoAsignado: nuevosUsos
-            });
-
-            document.getElementById("resultadoPedido").style.display = "block";
-            document.getElementById("esperaTV").style.display = "none";
-            document.getElementById("entregaAuto").style.display = "block";
-            document.getElementById("textoCuenta").innerText = dataStock.cuenta;
+    // --- FUNCIONES DE GESTIÓN DE STOCK (ADMIN) ---
+    
+    window.editarCuenta = async (id, cuentaActual) => {
+        const nuevaCuenta = prompt("Editar Correo:Clave", cuentaActual);
+        if (nuevaCuenta) {
+            await updateDoc(doc(db, "inventario", id), { cuenta: nuevaCuenta });
+            alert("Cuenta actualizada");
         }
     };
 
-    window.activarTV = async (id) => {
-        await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ PANTALLA ACTIVADA" });
+    window.eliminarCuenta = async (id) => {
+        if (confirm("¿Seguro que quieres eliminar esta cuenta del sistema?")) {
+            await deleteDoc(doc(db, "inventario", id));
+            alert("Cuenta eliminada");
+        }
+    };
+
+    window.resetearUsos = async (id) => {
+        if (confirm("¿Resetear los cupos a 0?")) {
+            await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
+        }
     };
 
     function cargarDatosEnVivo() {
+        // Listar plataformas en los selects
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let h = ""; snap.forEach(d => h += `<option value="${d.data().nombre}">${d.data().nombre}</option>`);
             selectPlatUsuario.innerHTML = h; selectPlatAdmin.innerHTML = h;
         });
 
-        const qG = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(50));
+        // Tabla de gestión de STOCK (Solo para el admin)
+        if(miRol === "admin") {
+            onSnapshot(collection(db, "inventario"), (snap) => {
+                let h = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    h += `<tr>
+                        <td><b>${data.plataforma}</b></td>
+                        <td><code>${data.cuenta}</code></td>
+                        <td>${data.usos || 0} / 8</td>
+                        <td><span class="badge" style="background:${data.estado === 'disponible' ? '#27ae60':'#e74c3c'}">${data.estado}</span></td>
+                        <td>
+                            <button class="btn-accion btn-edit" onclick="editarCuenta('${d.id}', '${data.cuenta}')">EDITAR</button>
+                            <button class="btn-accion btn-del" onclick="eliminarCuenta('${d.id}')">BORRAR</button>
+                            <button class="btn-accion" style="background:#7f8c8d" onclick="resetearUsos('${d.id}')">RESET</button>
+                        </td>
+                    </tr>`;
+                });
+                tablaGestionStock.innerHTML = h;
+            });
+        }
+
+        // Monitor de actividad (Entregas)
+        const qG = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(30));
         onSnapshot(qG, (snap) => {
-            let h = "";
+            let h = "<thead><tr><th>Cliente</th><th>Plat</th><th>Cuenta</th><th>Estado</th><th>Acción</th></tr></thead><tbody>";
             snap.forEach(d => {
                 const data = d.data();
-                const esP = data.estado === "pendiente";
                 h += `<tr>
-                    <td><b>${data.nombreWsp.toUpperCase()}</b></td>
+                    <td>${data.nombreWsp}</td>
                     <td>${data.plataforma}</td>
-                    <td><code>${data.cuenta}</code> ${data.codigoTV !== "N/A" ? '<br>COD: '+data.codigoTV : ''}</td>
-                    <td><span class="badge ${esP ? 'bg-pendiente' : 'bg-listo'}">${data.estado}</span></td>
-                    <td>
-                        ${esP ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); font-size:10px; padding:5px;">ACTIVAR TV</button>` : 'Entregado'}
-                    </td>
+                    <td><code>${data.cuenta}</code></td>
+                    <td>${data.estado}</td>
+                    <td>${data.estado === 'pendiente' ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); padding:4px;">ACTIVAR</button>` : '✅'}</td>
                 </tr>`;
-
-                if(data.usuarioEmail === miEmail && data.estado === "listo" && document.getElementById("esperaTV").style.display === "block") {
-                    document.getElementById("esperaTV").style.display = "none";
-                    document.getElementById("entregaAuto").style.display = "block";
-                    document.getElementById("textoCuenta").innerText = data.cuenta;
-                }
             });
-            if(miRol === "admin") tablaAdminGlobal.innerHTML = h;
+            h += "</tbody>";
+            tablaAdminGlobal.innerHTML = h;
         });
     }
 
+    // Lógica de carga y entrega (igual que el anterior pero optimizado)
     window.subirInventario = async () => {
         if(accCorreo.value && accPass.value) {
             await addDoc(collection(db, "inventario"), {
                 plataforma: selectPlatAdmin.value, 
                 cuenta: `${accCorreo.value}:${accPass.value}`,
-                estado: "disponible", 
-                usos: 0, // Inicia en 0
-                adminResponsable: miEmail 
+                estado: "disponible", usos: 0, adminResponsable: miEmail 
             });
-            alert("Cuenta cargada. Podrá ser entregada a 8 personas.");
             accCorreo.value = ""; accPass.value = "";
         }
     };
 
+    window.procesarEntregaAutomatica = async () => {
+        const nom = nombreWsp.value; const plat = selectPlatUsuario.value; const code = codigoTV.value;
+        if(!nom) return alert("Nombre requerido");
+
+        if(code) {
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nom, plataforma: plat, cuenta: "📺 ESPERANDO ACTIVACIÓN",
+                codigoTV: code, estado: "pendiente", timestamp: Date.now(), usuarioEmail: miEmail
+            });
+            document.getElementById("resultadoPedido").style.display = "block";
+            document.getElementById("esperaTV").style.display = "block";
+            document.getElementById("entregaAuto").style.display = "none";
+        } else {
+            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), where("usos", "<", 8), limit(1));
+            const snap = await getDocs(q);
+            if(snap.empty) return alert("Sin stock");
+
+            const docS = snap.docs[0]; const dataS = docS.data();
+            const nUsos = (dataS.usos || 0) + 1;
+            await updateDoc(doc(db, "inventario", docS.id), { usos: nUsos, estado: nUsos >= 8 ? "agotado" : "disponible" });
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nom, plataforma: plat, cuenta: dataS.cuenta, estado: "listo", timestamp: Date.now(), usuarioEmail: miEmail
+            });
+            document.getElementById("resultadoPedido").style.display = "block";
+            document.getElementById("textoCuenta").innerText = dataS.cuenta;
+            document.getElementById("entregaAuto").style.display = "block";
+        }
+    };
+
+    window.activarTV = async (id) => { await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ ACTIVADA" }); };
+    window.crearPlataforma = async () => { if(nombreNuevaPlat.value) await addDoc(collection(db, "plataformas"), { nombre: nombreNuevaPlat.value }); };
     window.registrarUsuario = async () => {
         try {
             const res = await createUserWithEmailAndPassword(auth, nuevoCorreo.value, nuevoPass.value);
             await setDoc(doc(db, "users", res.user.uid), { email: nuevoCorreo.value, role: nuevoRol.value });
-            alert("Socio registrado con éxito");
-        } catch(e) { alert("Error: " + e.message); }
-    };
-
-    window.crearPlataforma = async () => {
-        if(nombreNuevaPlat.value) await addDoc(collection(db, "plataformas"), { nombre: nombreNuevaPlat.value });
-        nombreNuevaPlat.value = "";
+            alert("Registrado");
+        } catch(e) { alert(e.message); }
     };
 </script>
 </body>
