@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA CONTROL TOTAL - PRO</title>
+    <title>SISTEMA CONTROL TOTAL - FIX</title>
     <style>
         :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; --oscuro: #2c3e50; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
@@ -21,11 +21,11 @@
         button:hover { filter: brightness(1.2); }
         
         .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
-        table { width:100%; border-collapse:collapse; font-size: 12px; }
+        table { width:100%; border-collapse:collapse; font-size: 11px; }
         th, td { border:1px solid #eee; padding:10px; text-align:left; }
         th { background:var(--primario); color: white; }
 
-        .btn-accion { width: auto; padding: 5px 10px; font-size: 10px; margin-right: 2px; border-radius: 4px; border: none; cursor: pointer; color: white; }
+        .btn-accion { width: auto; padding: 5px 10px; font-size: 10px; margin-right: 2px; border-radius: 4px; cursor: pointer; color: white; border:none; }
         .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; }
     </style>
 </head>
@@ -33,38 +33,36 @@
 
 <div class="contenedor">
     <div id="cajaLogin">
-        <h1 style="text-align:center; color: var(--primario)">🔐 Acceso al Sistema</h1>
+        <h1 style="text-align:center; color: var(--primario)">🔐 Panel de Acceso</h1>
         <input type="email" id="correoLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
-        <button onclick="iniciarSesion()">INGRESAR AL PANEL</button>
+        <button onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
     </div>
 
     <div id="app" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
-            <div id="infoUsuario" style="font-weight: bold; color: var(--primario);"></div>
-            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 20px;">Cerrar Sesión</button>
+            <div id="infoUsuario" style="font-weight: bold; color: var(--primario); border-left: 4px solid var(--exito); padding-left: 10px;"></div>
+            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 20px;">Salir</button>
         </div>
 
         <div id="seccionUsuario">
             <div class="tarjeta">
-                <h3>🎁 Generar Entrega</h3>
+                <h3>🎁 Nueva Entrega de Cuenta</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="nombreWsp" placeholder="Nombre Cliente">
+                    <input type="text" id="nombreWsp" placeholder="Nombre del Cliente">
                     <select id="selectPlatUsuario"></select>
                 </div>
-                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Si es para Smart TV)">
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem;">🚀 OBTENER ACCESO</button>
-                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:15px; border: 3px solid var(--exito); background:#f0fff0; text-align:center; border-radius: 10px;">
-                    <p>✅ <b>DATOS DE LA CUENTA:</b></p>
-                    <code id="textoCuenta" style="font-size:1.4rem; font-weight:bold; color:#d35400; display: block; margin: 10px 0;"></code>
-                    <button onclick="copiarCuenta()" style="width: auto; background: var(--secundario); padding: 5px 15px;">Copiar Datos</button>
+                <input type="text" id="codigoTV" placeholder="Código de TV (Solo si aplica)">
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem;">🚀 ENTREGAR AHORA</button>
+                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:15px; border: 2px solid var(--exito); background:#f0fff0; text-align:center;">
+                    <code id="textoCuenta" style="font-size:1.3rem; font-weight:bold; color:#d35400;"></code>
                 </div>
             </div>
         </div>
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
-                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOR VENTAS</button>
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOR HISTORIAL</button>
                 <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
                 <button class="tab-btn" onclick="verTab('tabPlataformas')">🛠 PLATAFORMAS</button>
                 <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 SOCIOS</button>
@@ -72,17 +70,17 @@
 
             <div id="tabVentas" class="tab-content">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📡 Actividad en Tiempo Real (Historial)</h4>
+                    <h4>📡 Ventas en Tiempo Real</h4>
                     <div class="tabla-contenedor">
-                        <table id="tablaHistorial">
+                        <table>
                             <thead>
                                 <tr>
-                                    <th>Fecha/Hora</th>
-                                    <th>Socio (Vendedor)</th>
+                                    <th>Fecha y Hora</th>
+                                    <th>Socio / Vendedor</th>
                                     <th>Cliente</th>
-                                    <th>Plataforma</th>
-                                    <th>Cuenta Entregada</th>
-                                    <th>Acción</th>
+                                    <th>Plat.</th>
+                                    <th>Cuenta / Info</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody id="cuerpoHistorial"></tbody>
@@ -93,17 +91,17 @@
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📥 Cargar Cuenta</h4>
+                    <h4>📥 Cargar Inventario</h4>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
                         <input type="text" id="accCorreo" placeholder="Correo">
                         <input type="text" id="accPass" placeholder="Clave">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR AL INVENTARIO</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR CUENTA</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos (x/8)</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="tablaGestionStock"></tbody>
                     </table>
                 </div>
@@ -111,8 +109,8 @@
 
             <div id="tabPlataformas" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>➕ Nueva Plataforma</h4>
-                    <div style="display:flex; gap:10px;"><input type="text" id="nombreNuevaPlat" placeholder="Nombre..."><button onclick="crearPlataforma()">CREAR</button></div>
+                    <h4>➕ Plataformas</h4>
+                    <div style="display:flex; gap:10px;"><input type="text" id="nombreNuevaPlat"><button onclick="crearPlataforma()">CREAR</button></div>
                 </div>
                 <div class="tabla-contenedor">
                     <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="listaPlataformasGestion"></tbody></table>
@@ -121,22 +119,19 @@
 
             <div id="tabUsuarios" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>👥 Registrar Nuevo Socio</h4>
+                    <h4>👥 Registrar Socio</h4>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
                         <input type="email" id="nuevoCorreo" placeholder="Correo">
-                        <input type="text" id="nuevoPass" placeholder="Contraseña">
+                        <input type="text" id="nuevoPass" placeholder="Clave">
                         <select id="nuevoRol"><option value="usuario">Vendedor</option><option value="admin">Admin</option></select>
                     </div>
-                    <button onclick="registrarUsuario()" style="background:var(--exito)">DAR DE ALTA</button>
+                    <button onclick="registrarUsuario()" style="background:var(--exito)">CREAR ACCESO</button>
                 </div>
-                <div class="tarjeta tarjeta-admin">
-                    <h4>📋 Lista de Socios y Control</h4>
-                    <div class="tabla-contenedor">
-                        <table>
-                            <thead><tr><th>Correo</th><th>Contraseña</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
-                            <tbody id="tablaListaUsuarios"></tbody>
-                        </table>
-                    </div>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead><tr><th>Correo</th><th>Clave</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="tablaListaUsuarios"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -146,7 +141,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
@@ -161,20 +156,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let miRol = "";
     let miEmail = "";
+    let miRol = "";
 
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value;
         const p = document.getElementById("passLogin").value;
-        try { 
-            const res = await signInWithEmailAndPassword(auth, c, p);
-            const snap = await getDoc(doc(db, "users", res.user.uid));
-            if(snap.exists() && snap.data().estado === "OFF") {
-                await signOut(auth);
-                alert("Cuenta desactivada.");
-            }
-        } catch (err) { alert("Acceso denegado."); }
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error de login"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -184,11 +172,12 @@
             const snap = await getDoc(doc(db, "users", user.uid));
             if(snap.exists() && snap.data().estado === "OFF") return signOut(auth);
             
-            miRol = snap.exists() ? snap.data().role : "usuario";
             miEmail = user.email;
+            miRol = snap.exists() ? snap.data().role : "usuario";
+            
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `Socio: ${miEmail} | ${miRol.toUpperCase()}`;
+            document.getElementById("infoUsuario").innerHTML = `SESIÓN: <b>${miEmail}</b> (${miRol.toUpperCase()})`;
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
             document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
             cargarDatosEnVivo();
@@ -202,125 +191,115 @@
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).style.display = 'block';
-        if(event) event.currentTarget.classList.add('active');
+        event.currentTarget.classList.add('active');
     };
 
     function cargarDatosEnVivo() {
-        // 1. Monitor de Historial (Tiempo Real)
-        const qH = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(30));
+        // HISTORIAL EN TIEMPO REAL CON FECHA Y VENDEDOR
+        const qH = query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(50));
         onSnapshot(qH, (snap) => {
             let h = "";
             snap.forEach(d => {
-                const data = d.data();
-                const fecha = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "...";
+                const item = d.data();
                 h += `<tr>
-                    <td>${fecha}</td>
-                    <td style="color:var(--secundario)"><b>${data.vendedor || 'Sistema'}</b></td>
-                    <td>${data.nombreWsp}</td>
-                    <td><span class="badge" style="background:var(--primario)">${data.plataforma}</span></td>
-                    <td><code>${data.cuenta}</code></td>
-                    <td>${data.estado === 'pendiente' ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); font-size:9px; color:white;">ACTIVAR TV</button>` : '<span class="badge" style="background:var(--exito)">LISTO</span>'}</td>
+                    <td>${item.fechaHora}</td>
+                    <td style="color:var(--admin)"><b>${item.vendedor}</b></td>
+                    <td>${item.nombreWsp}</td>
+                    <td><span class="badge" style="background:var(--secundario)">${item.plataforma}</span></td>
+                    <td><code>${item.cuenta}</code></td>
+                    <td><span class="badge" style="background:${item.estado === 'listo' ? 'var(--exito)':'var(--tv)'}">${item.estado}</span></td>
                 </tr>`;
             });
             document.getElementById("cuerpoHistorial").innerHTML = h;
         });
 
-        // 2. Cargar Plataformas
+        // PLATAFORMAS
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let h = ""; let hT = "";
             snap.forEach(d => {
                 h += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
-                hT += `<tr><td><b>${d.data().nombre}</b></td><td><button class="btn-accion" style="background:var(--info)" onclick="editarPlataforma('${d.id}','${d.data().nombre}')">Editar</button> <button class="btn-accion" style="background:var(--error)" onclick="eliminarPlataforma('${d.id}')">X</button></td></tr>`;
+                hT += `<tr><td>${d.data().nombre}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarPlataforma('${d.id}')">Eliminar</button></td></tr>`;
             });
             document.getElementById("selectPlatUsuario").innerHTML = h;
             document.getElementById("selectPlatAdmin").innerHTML = h;
             document.getElementById("listaPlataformasGestion").innerHTML = hT;
         });
 
-        // 3. Usuarios y Stock (Solo Admin)
+        // STOCK Y USUARIOS (ADMIN)
         if(miRol === "admin") {
+            onSnapshot(collection(db, "inventario"), (snap) => {
+                let h = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>${data.estado}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">X</button></td></tr>`;
+                });
+                document.getElementById("tablaGestionStock").innerHTML = h;
+            });
+
             onSnapshot(collection(db, "users"), (snap) => {
                 let h = "";
                 snap.forEach(d => {
                     const u = d.data();
                     h += `<tr>
                         <td>${u.email}</td>
-                        <td>${u.password || '***'}</td>
+                        <td>${u.password}</td>
                         <td>${u.role}</td>
-                        <td><span class="badge" style="background:${u.estado === 'ON' ? 'var(--exito)':'var(--error)'}">${u.estado || 'ON'}</span></td>
-                        <td>
-                            <button class="btn-accion" style="background:var(--oscuro)" onclick="cambiarEstadoUsuario('${d.id}','${u.estado}')">${u.estado === 'OFF' ? 'ON' : 'OFF'}</button>
-                            <button class="btn-accion" style="background:var(--info)" onclick="cambiarPassUsuario('${d.id}')">Clave</button>
-                            <button class="btn-accion" style="background:var(--error)" onclick="eliminarUsuario('${d.id}')">X</button>
-                        </td>
+                        <td><span class="badge" style="background:${u.estado === 'ON' ? 'var(--exito)':'var(--error)'}">${u.estado}</span></td>
+                        <td><button class="btn-accion" style="background:var(--oscuro)" onclick="toggleUser('${d.id}','${u.estado}')">${u.estado === 'OFF' ? 'ON':'OFF'}</button></td>
                     </tr>`;
                 });
                 document.getElementById("tablaListaUsuarios").innerHTML = h;
             });
-
-            onSnapshot(collection(db, "inventario"), (snap) => {
-                let h = "";
-                snap.forEach(d => {
-                    const data = d.data();
-                    h += `<tr><td>${data.plataforma}</td><td><code>${data.cuenta}</code></td><td>${data.usos || 0}/8</td><td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)':'var(--error)'}">${data.estado}</span></td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">Eliminar</button></td></tr>`;
-                });
-                document.getElementById("tablaGestionStock").innerHTML = h;
-            });
         }
     }
 
-    // --- ACCIONES DE VENTA ---
     window.procesarEntregaAutomatica = async () => {
-        const nClient = document.getElementById("nombreWsp").value;
-        const pl = document.getElementById("selectPlatUsuario").value;
+        const nom = document.getElementById("nombreWsp").value;
+        const plat = document.getElementById("selectPlatUsuario").value;
         const code = document.getElementById("codigoTV").value;
+        
+        if(!nom) return alert("Falta nombre");
 
-        if(!nClient) return alert("Nombre de cliente obligatorio");
+        // Crear Fecha y Hora Local Real
+        const ahora = new Date();
+        const fechaTxt = ahora.toLocaleDateString() + " " + ahora.toLocaleTimeString();
+        const fechaS = ahora.getTime(); // Para ordenar
 
         if(code) {
-            // Caso TV: Pendiente de activar
             await addDoc(collection(db, "entregas"), {
-                nombreWsp: nClient, plataforma: pl, cuenta: "📺 TV: " + code,
-                vendedor: miEmail, timestamp: serverTimestamp(), estado: "pendiente"
+                nombreWsp: nom, plataforma: plat, cuenta: "TV: " + code,
+                vendedor: miEmail, fechaHora: fechaTxt, fechaSort: fechaS, estado: "pendiente"
             });
-            alert("Pedido enviado al Admin para activación de TV.");
-            document.getElementById("nombreWsp").value = "";
-            document.getElementById("codigoTV").value = "";
+            alert("Pedido enviado.");
         } else {
-            // Caso automático: Buscar Stock
-            const q = query(collection(db, "inventario"), where("plataforma", "==", pl), where("estado", "==", "disponible"), limit(1));
+            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
             const snap = await getDocs(q);
+            if(snap.empty) return alert("Sin stock");
             
-            if(snap.empty) return alert("No hay stock de " + pl);
-
             const docS = snap.docs[0];
             const dataS = docS.data();
-            const nUsos = (dataS.usos || 0) + 1;
-
-            // Actualizar Stock
+            const nUsos = dataS.usos + 1;
+            
             await updateDoc(doc(db, "inventario", docS.id), { usos: nUsos, estado: nUsos >= 8 ? "agotado" : "disponible" });
-
-            // Registrar en Historial al INSTANTE
+            
             await addDoc(collection(db, "entregas"), {
-                nombreWsp: nClient, plataforma: pl, cuenta: dataS.cuenta,
-                vendedor: miEmail, timestamp: serverTimestamp(), estado: "listo"
+                nombreWsp: nom, plataforma: plat, cuenta: dataS.cuenta,
+                vendedor: miEmail, fechaHora: fechaTxt, fechaSort: fechaS, estado: "listo"
             });
-
-            // Mostrar al vendedor
+            
             document.getElementById("resultadoPedido").style.display = "block";
             document.getElementById("textoCuenta").innerText = dataS.cuenta;
         }
     };
 
-    window.copiarCuenta = () => {
-        const texto = document.getElementById("textoCuenta").innerText;
-        navigator.clipboard.writeText(texto);
-        alert("Copiado al portapapeles");
+    // FUNCIONES ADMIN RESTANTES
+    window.subirInventario = async () => {
+        const c = document.getElementById("accCorreo").value;
+        const p = document.getElementById("accPass").value;
+        const pl = document.getElementById("selectPlatAdmin").value;
+        if(c && p) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: `${c}:${p}`, estado: "disponible", usos: 0 });
     };
 
-    // --- ACCIONES ADMIN ---
-    window.activarTV = async (id) => { await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ ACTIVADA EN TV" }); };
-    
     window.registrarUsuario = async () => {
         const c = document.getElementById("nuevoCorreo").value;
         const p = document.getElementById("nuevoPass").value;
@@ -328,29 +307,13 @@
         try {
             const res = await createUserWithEmailAndPassword(auth, c, p);
             await setDoc(doc(db, "users", res.user.uid), { email: c, password: p, role: r, estado: "ON" });
-            alert("Socio registrado");
+            alert("Socio creado");
         } catch(e) { alert(e.message); }
     };
 
-    window.cambiarEstadoUsuario = async (id, est) => { await updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" }); };
-    window.cambiarPassUsuario = async (id) => {
-        const np = prompt("Nueva contraseña:");
-        if(np) await updateDoc(doc(db, "users", id), { password: np });
-    };
-    window.eliminarUsuario = async (id) => { if(confirm("¿Eliminar socio?")) await deleteDoc(doc(db, "users", id)); };
-    
-    window.crearPlataforma = async () => {
-        const n = document.getElementById("nombreNuevaPlat").value;
-        if(n) await addDoc(collection(db, "plataformas"), { nombre: n });
-    };
-    window.eliminarPlataforma = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "plataformas", id)); };
-
-    window.subirInventario = async () => {
-        const c = document.getElementById("accCorreo").value;
-        const p = document.getElementById("accPass").value;
-        const pl = document.getElementById("selectPlatAdmin").value;
-        if(c && p) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: `${c}:${p}`, estado: "disponible", usos: 0 });
-    };
+    window.toggleUser = async (id, est) => { await updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" }); };
+    window.crearPlataforma = async () => { const n = document.getElementById("nombreNuevaPlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
+    window.eliminarPlataforma = async (id) => { await deleteDoc(doc(db, "plataformas", id)); };
     window.eliminarCuenta = async (id) => { await deleteDoc(doc(db, "inventario", id)); };
 </script>
 </body>
