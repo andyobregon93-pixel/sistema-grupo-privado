@@ -52,24 +52,43 @@
                     <input type="text" id="nombreWsp" placeholder="Nombre Cliente">
                     <select id="selectPlatUsuario"></select>
                 </div>
-                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Opcional)">
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px;">🚀 OBTENER ACCESO</button>
-                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:15px; border: 2px solid var(--exito); background:#f0fff0; text-align:center;">
-                    <code id="textoCuenta" style="font-size:1.2rem; font-weight:bold; color:#d35400;"></code>
+                <input type="text" id="codigoTV" placeholder="CÓDIGO TV (Si es para Smart TV)">
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem;">🚀 OBTENER ACCESO</button>
+                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:15px; border: 3px solid var(--exito); background:#f0fff0; text-align:center; border-radius: 10px;">
+                    <p>✅ <b>DATOS DE LA CUENTA:</b></p>
+                    <code id="textoCuenta" style="font-size:1.4rem; font-weight:bold; color:#d35400; display: block; margin: 10px 0;"></code>
+                    <button onclick="copiarCuenta()" style="width: auto; background: var(--secundario); padding: 5px 15px;">Copiar Datos</button>
                 </div>
             </div>
         </div>
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
-                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOR</button>
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 MONITOR VENTAS</button>
                 <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
                 <button class="tab-btn" onclick="verTab('tabPlataformas')">🛠 PLATAFORMAS</button>
-                <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 SOCIOS / VENDEDORES</button>
+                <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 SOCIOS</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
-                <div class="tarjeta tarjeta-admin"><h4>📡 Actividad</h4><div class="tabla-contenedor"><table id="tablaAdminGlobal"></table></div></div>
+                <div class="tarjeta tarjeta-admin">
+                    <h4>📡 Actividad en Tiempo Real (Historial)</h4>
+                    <div class="tabla-contenedor">
+                        <table id="tablaHistorial">
+                            <thead>
+                                <tr>
+                                    <th>Fecha/Hora</th>
+                                    <th>Socio (Vendedor)</th>
+                                    <th>Cliente</th>
+                                    <th>Plataforma</th>
+                                    <th>Cuenta Entregada</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoHistorial"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div id="tabStock" class="tab-content" style="display:none;">
@@ -80,17 +99,24 @@
                         <input type="text" id="accPass" placeholder="Clave">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR AL INVENTARIO</button>
                 </div>
-                <div class="tabla-contenedor"><table><thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaGestionStock"></tbody></table></div>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos (x/8)</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="tablaGestionStock"></tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="tabPlataformas" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
                     <h4>➕ Nueva Plataforma</h4>
-                    <div style="display:flex; gap:10px;"><input type="text" id="nombreNuevaPlat"><button onclick="crearPlataforma()">CREAR</button></div>
+                    <div style="display:flex; gap:10px;"><input type="text" id="nombreNuevaPlat" placeholder="Nombre..."><button onclick="crearPlataforma()">CREAR</button></div>
                 </div>
-                <div class="tabla-contenedor"><table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="listaPlataformasGestion"></tbody></table></div>
+                <div class="tabla-contenedor">
+                    <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="listaPlataformasGestion"></tbody></table>
+                </div>
             </div>
 
             <div id="tabUsuarios" class="tab-content" style="display:none;">
@@ -120,7 +146,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
@@ -146,9 +172,9 @@
             const snap = await getDoc(doc(db, "users", res.user.uid));
             if(snap.exists() && snap.data().estado === "OFF") {
                 await signOut(auth);
-                alert("Tu cuenta está desactivada. Contacta al Admin.");
+                alert("Cuenta desactivada.");
             }
-        } catch (err) { alert("Error de acceso."); }
+        } catch (err) { alert("Acceso denegado."); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -162,7 +188,7 @@
             miEmail = user.email;
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerText = `Socio: ${miEmail}`;
+            document.getElementById("infoUsuario").innerText = `Socio: ${miEmail} | ${miRol.toUpperCase()}`;
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
             document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
             cargarDatosEnVivo();
@@ -176,23 +202,42 @@
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).style.display = 'block';
-        event.currentTarget.classList.add('active');
+        if(event) event.currentTarget.classList.add('active');
     };
 
     function cargarDatosEnVivo() {
-        // Cargar Plataformas
+        // 1. Monitor de Historial (Tiempo Real)
+        const qH = query(collection(db, "entregas"), orderBy("timestamp", "desc"), limit(30));
+        onSnapshot(qH, (snap) => {
+            let h = "";
+            snap.forEach(d => {
+                const data = d.data();
+                const fecha = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "...";
+                h += `<tr>
+                    <td>${fecha}</td>
+                    <td style="color:var(--secundario)"><b>${data.vendedor || 'Sistema'}</b></td>
+                    <td>${data.nombreWsp}</td>
+                    <td><span class="badge" style="background:var(--primario)">${data.plataforma}</span></td>
+                    <td><code>${data.cuenta}</code></td>
+                    <td>${data.estado === 'pendiente' ? `<button onclick="activarTV('${d.id}')" style="background:var(--tv); font-size:9px; color:white;">ACTIVAR TV</button>` : '<span class="badge" style="background:var(--exito)">LISTO</span>'}</td>
+                </tr>`;
+            });
+            document.getElementById("cuerpoHistorial").innerHTML = h;
+        });
+
+        // 2. Cargar Plataformas
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let h = ""; let hT = "";
             snap.forEach(d => {
                 h += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
-                hT += `<tr><td>${d.data().nombre}</td><td><button class="btn-accion" style="background:var(--info)" onclick="editarPlataforma('${d.id}','${d.data().nombre}')">Renombrar</button></td></tr>`;
+                hT += `<tr><td><b>${d.data().nombre}</b></td><td><button class="btn-accion" style="background:var(--info)" onclick="editarPlataforma('${d.id}','${d.data().nombre}')">Editar</button> <button class="btn-accion" style="background:var(--error)" onclick="eliminarPlataforma('${d.id}')">X</button></td></tr>`;
             });
             document.getElementById("selectPlatUsuario").innerHTML = h;
             document.getElementById("selectPlatAdmin").innerHTML = h;
             document.getElementById("listaPlataformasGestion").innerHTML = hT;
         });
 
-        // Cargar Usuarios (Solo Admin)
+        // 3. Usuarios y Stock (Solo Admin)
         if(miRol === "admin") {
             onSnapshot(collection(db, "users"), (snap) => {
                 let h = "";
@@ -200,12 +245,12 @@
                     const u = d.data();
                     h += `<tr>
                         <td>${u.email}</td>
-                        <td>${u.password || '******'}</td>
+                        <td>${u.password || '***'}</td>
                         <td>${u.role}</td>
                         <td><span class="badge" style="background:${u.estado === 'ON' ? 'var(--exito)':'var(--error)'}">${u.estado || 'ON'}</span></td>
                         <td>
-                            <button class="btn-accion" style="background:var(--oscuro)" onclick="cambiarEstadoUsuario('${d.id}','${u.estado}')">${u.estado === 'OFF' ? 'ACTIVAR' : 'BLOQUEAR'}</button>
-                            <button class="btn-accion" style="background:var(--info)" onclick="cambiarPassUsuario('${d.id}')">CLAVE</button>
+                            <button class="btn-accion" style="background:var(--oscuro)" onclick="cambiarEstadoUsuario('${d.id}','${u.estado}')">${u.estado === 'OFF' ? 'ON' : 'OFF'}</button>
+                            <button class="btn-accion" style="background:var(--info)" onclick="cambiarPassUsuario('${d.id}')">Clave</button>
                             <button class="btn-accion" style="background:var(--error)" onclick="eliminarUsuario('${d.id}')">X</button>
                         </td>
                     </tr>`;
@@ -217,45 +262,88 @@
                 let h = "";
                 snap.forEach(d => {
                     const data = d.data();
-                    h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>${data.estado}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">X</button></td></tr>`;
+                    h += `<tr><td>${data.plataforma}</td><td><code>${data.cuenta}</code></td><td>${data.usos || 0}/8</td><td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)':'var(--error)'}">${data.estado}</span></td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">Eliminar</button></td></tr>`;
                 });
                 document.getElementById("tablaGestionStock").innerHTML = h;
             });
         }
     }
 
-    // --- ACCIONES DE USUARIO ---
+    // --- ACCIONES DE VENTA ---
+    window.procesarEntregaAutomatica = async () => {
+        const nClient = document.getElementById("nombreWsp").value;
+        const pl = document.getElementById("selectPlatUsuario").value;
+        const code = document.getElementById("codigoTV").value;
+
+        if(!nClient) return alert("Nombre de cliente obligatorio");
+
+        if(code) {
+            // Caso TV: Pendiente de activar
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nClient, plataforma: pl, cuenta: "📺 TV: " + code,
+                vendedor: miEmail, timestamp: serverTimestamp(), estado: "pendiente"
+            });
+            alert("Pedido enviado al Admin para activación de TV.");
+            document.getElementById("nombreWsp").value = "";
+            document.getElementById("codigoTV").value = "";
+        } else {
+            // Caso automático: Buscar Stock
+            const q = query(collection(db, "inventario"), where("plataforma", "==", pl), where("estado", "==", "disponible"), limit(1));
+            const snap = await getDocs(q);
+            
+            if(snap.empty) return alert("No hay stock de " + pl);
+
+            const docS = snap.docs[0];
+            const dataS = docS.data();
+            const nUsos = (dataS.usos || 0) + 1;
+
+            // Actualizar Stock
+            await updateDoc(doc(db, "inventario", docS.id), { usos: nUsos, estado: nUsos >= 8 ? "agotado" : "disponible" });
+
+            // Registrar en Historial al INSTANTE
+            await addDoc(collection(db, "entregas"), {
+                nombreWsp: nClient, plataforma: pl, cuenta: dataS.cuenta,
+                vendedor: miEmail, timestamp: serverTimestamp(), estado: "listo"
+            });
+
+            // Mostrar al vendedor
+            document.getElementById("resultadoPedido").style.display = "block";
+            document.getElementById("textoCuenta").innerText = dataS.cuenta;
+        }
+    };
+
+    window.copiarCuenta = () => {
+        const texto = document.getElementById("textoCuenta").innerText;
+        navigator.clipboard.writeText(texto);
+        alert("Copiado al portapapeles");
+    };
+
+    // --- ACCIONES ADMIN ---
+    window.activarTV = async (id) => { await updateDoc(doc(db, "entregas", id), { estado: "listo", cuenta: "✅ ACTIVADA EN TV" }); };
+    
     window.registrarUsuario = async () => {
         const c = document.getElementById("nuevoCorreo").value;
         const p = document.getElementById("nuevoPass").value;
         const r = document.getElementById("nuevoRol").value;
-        if(!c || !p) return alert("Completa los datos");
         try {
             const res = await createUserWithEmailAndPassword(auth, c, p);
             await setDoc(doc(db, "users", res.user.uid), { email: c, password: p, role: r, estado: "ON" });
-            alert("Usuario Creado");
-        } catch(e) { alert("Error: " + e.message); }
+            alert("Socio registrado");
+        } catch(e) { alert(e.message); }
     };
 
-    window.cambiarEstadoUsuario = async (id, estadoActual) => {
-        const nuevoEstado = estadoActual === "OFF" ? "ON" : "OFF";
-        await updateDoc(doc(db, "users", id), { estado: nuevoEstado });
-    };
-
+    window.cambiarEstadoUsuario = async (id, est) => { await updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" }); };
     window.cambiarPassUsuario = async (id) => {
         const np = prompt("Nueva contraseña:");
         if(np) await updateDoc(doc(db, "users", id), { password: np });
     };
-
-    window.eliminarUsuario = async (id) => {
-        if(confirm("¿Eliminar usuario?")) await deleteDoc(doc(db, "users", id));
-    };
-
-    // --- RESTO DE FUNCIONES (Stock, Plataformas, Entrega) ---
+    window.eliminarUsuario = async (id) => { if(confirm("¿Eliminar socio?")) await deleteDoc(doc(db, "users", id)); };
+    
     window.crearPlataforma = async () => {
         const n = document.getElementById("nombreNuevaPlat").value;
         if(n) await addDoc(collection(db, "plataformas"), { nombre: n });
     };
+    window.eliminarPlataforma = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "plataformas", id)); };
 
     window.subirInventario = async () => {
         const c = document.getElementById("accCorreo").value;
@@ -263,27 +351,7 @@
         const pl = document.getElementById("selectPlatAdmin").value;
         if(c && p) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: `${c}:${p}`, estado: "disponible", usos: 0 });
     };
-
-    window.procesarEntregaAutomatica = async () => {
-        const n = document.getElementById("nombreWsp").value;
-        const pl = document.getElementById("selectPlatUsuario").value;
-        const q = query(collection(db, "inventario"), where("plataforma", "==", pl), where("estado", "==", "disponible"), limit(1));
-        const snap = await getDocs(q);
-        if(snap.empty) return alert("Sin stock");
-        const docS = snap.docs[0];
-        const dataS = docS.data();
-        const nUsos = dataS.usos + 1;
-        await updateDoc(doc(db, "inventario", docS.id), { usos: nUsos, estado: nUsos >= 8 ? "agotado" : "disponible" });
-        await addDoc(collection(db, "entregas"), { nombreWsp: n, plataforma: pl, cuenta: dataS.cuenta, timestamp: Date.now(), estado: "listo" });
-        document.getElementById("resultadoPedido").style.display = "block";
-        document.getElementById("textoCuenta").innerText = dataS.cuenta;
-    };
-
     window.eliminarCuenta = async (id) => { await deleteDoc(doc(db, "inventario", id)); };
-    window.editarPlataforma = async (id, nom) => {
-        const n = prompt("Nuevo nombre:", nom);
-        if(n) await updateDoc(doc(db, "plataformas", id), { nombre: n });
-    };
 </script>
 </body>
 </html>
