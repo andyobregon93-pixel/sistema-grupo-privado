@@ -9,11 +9,11 @@
             --primario: #1a2a6c; --exito: #27ae60; --error: #e74c3c; 
             --admin: #2980b9; --fondo: #f0f2f5; --oscuro: #2c3e50; --oro: #f39c12;
         }
-        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { margin: 0; background-color: var(--fondo); color: #333; padding: 15px; }
-        
         .contenedor { max-width: 1100px; margin: 0 auto; }
         
+        /* Header */
         .header-panel { 
             background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
             color: white; padding: 20px; border-radius: 12px; 
@@ -36,31 +36,33 @@
         }
         .item-card.selected { border-color: var(--exito); background: #eafff0; }
 
-        /* Estilo Tablas */
-        .tabla-contenedor { overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
-        td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
-
         /* Botones */
         .btn { padding: 8px 12px; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.75rem; font-weight: 600; margin-right: 5px; }
-        .btn-verde { background: var(--exito); }
-        .btn-azul { background: var(--admin); }
-        .btn-rojo { background: var(--error); }
-        .btn-naranja { background: var(--oro); }
+        .btn-verde { background: var(--exito); } .btn-azul { background: var(--admin); } .btn-rojo { background: var(--error); } .btn-naranja { background: var(--oro); }
         
         .oculto { display: none !important; }
-        input, select { padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
+        input, select, textarea { padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
     </style>
 </head>
 <body>
 
-<div id="app" class="contenedor">
-    
+<div id="seccionLogin" class="contenedor" style="max-width:400px; margin-top:100px;">
+    <div class="card" style="text-align:center;">
+        <h2>🔐 INGRESO AL SISTEMA</h2>
+        <input type="email" id="correoLogin" placeholder="Correo">
+        <input type="password" id="passLogin" placeholder="Contraseña">
+        <button class="btn btn-azul" style="width:100%" onclick="iniciarSesion()">ENTRAR</button>
+    </div>
+</div>
+
+<div id="app" class="contenedor oculto">
     <div class="header-panel">
-        <div id="tituloEncabezado" style="font-weight:bold; letter-spacing:1px;">CARGANDO...</div>
+        <div id="tituloEncabezado" style="font-weight:bold;">SISTEMA</div>
         <div style="display:flex; align-items:center; gap:15px;">
-            <span id="infoUsuario"></span>
+            <span id="infoUsuario" style="font-size:0.8rem;"></span>
             <button class="btn btn-rojo" onclick="cerrarSesion()">SALIR</button>
         </div>
     </div>
@@ -71,64 +73,51 @@
             <p>1. Selecciona Miembro:</p>
             <div class="grid-seleccion" id="gridVipsEntrega"></div>
             <p style="margin-top:20px;">2. Selecciona Plataforma:</p>
-            <div class="grid-seleccion" id="gridPlatsEntrega" style="max-height: 150px;"></div>
+            <div class="grid-seleccion" id="gridPlatsEntrega"></div>
             <button class="btn btn-verde" style="width:100%; margin-top:25px; padding:15px;" onclick="procesarEntrega()">GENERAR CUENTA AHORA</button>
         </div>
     </div>
 
     <div id="vistaAdmin" class="oculto">
-        
         <div class="card">
             <h2>💎 GESTIÓN DE MIEMBROS VIP</h2>
-            <div style="display:grid; grid-template-columns: 1fr auto; gap:10px;">
-                <textarea id="textoMasivo" placeholder="Carga masiva: pega nombres línea por línea" rows="2"></textarea>
-                <button class="btn btn-azul" onclick="cargaMasivaVip()">CARGAR</button>
-            </div>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead><tr><th>Nombre / Contacto</th><th>Acciones</th></tr></thead>
-                    <tbody id="tablaVipsAdmin"></tbody>
-                </table>
-            </div>
+            <textarea id="textoMasivo" placeholder="Pega nombres línea por línea..." rows="2"></textarea>
+            <button class="btn btn-azul" onclick="cargaMasivaVip()" style="width:100%">CARGAR LISTA</button>
+            <table>
+                <tbody id="tablaVipsAdmin"></tbody>
+            </table>
         </div>
 
         <div class="card">
-            <h2>📦 INVENTARIO DE CUENTAS</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:10px;">
+            <h2>📦 INVENTARIO (CUENTAS)</h2>
+            <div style="display:flex; gap:10px;">
                 <input type="text" id="accDato" placeholder="cuenta:contraseña">
                 <select id="selectPlatStock"></select>
                 <button class="btn btn-azul" onclick="subirStock()">AÑADIR</button>
             </div>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Usos</th><th>Acciones</th></tr></thead>
-                    <tbody id="tablaStockAdmin"></tbody>
-                </table>
-            </div>
+            <table>
+                <tbody id="tablaStockAdmin"></tbody>
+            </table>
         </div>
 
         <div class="card">
-            <h2>🛠️ GESTIÓN DE PLATAFORMAS</h2>
-            <div style="display:grid; grid-template-columns: 1fr auto; gap:10px;">
-                <input type="text" id="nombrePlat" placeholder="Nombre de Plataforma">
+            <h2>🛠️ PLATAFORMAS</h2>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="nombrePlat" placeholder="Nueva Plataforma">
                 <button class="btn btn-verde" onclick="crearPlataforma()">CREAR</button>
             </div>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead><tr><th>Nombre</th><th>Acciones</th></tr></thead>
-                    <tbody id="tablaPlatsAdmin"></tbody>
-                </table>
-            </div>
+            <table>
+                <tbody id="tablaPlatsAdmin"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, deleteDoc, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Mismo Firebase Config de antes...
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -142,127 +131,86 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let vipSel = null, platSel = null;
+    window.iniciarSesion = async () => {
+        const c = document.getElementById("correoLogin").value;
+        const p = document.getElementById("passLogin").value;
+        try { await signInWithEmailAndPassword(auth, c, p); } catch(e) { alert("Error al entrar"); }
+    };
+
+    window.cerrarSesion = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const snap = await getDoc(doc(db, "users", user.uid));
-            const isAdmin = user.email === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin");
-            
+            document.getElementById("seccionLogin").classList.add("oculto");
+            document.getElementById("app").classList.remove("oculto");
             document.getElementById("infoUsuario").innerText = user.email;
             
+            const snap = await getDoc(doc(db, "users", user.uid));
+            const isAdmin = user.email === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin");
+
             if(isAdmin) {
                 document.getElementById("tituloEncabezado").innerText = "👑 ADMINISTRACIÓN DIRECTA";
                 document.getElementById("vistaAdmin").classList.remove("oculto");
+                document.getElementById("vistaSocio").classList.add("oculto"); // El admin no ve el cuadro de generar
             } else {
-                document.getElementById("tituloEncabezado").innerText = "💼 PANEL SOCIO VIP";
+                document.getElementById("tituloEncabezado").innerText = "💼 PANEL SOCIO";
                 document.getElementById("vistaSocio").classList.remove("oculto");
             }
             escucharDatos();
-        } else { location.href = "login.html"; } // Redirigir si no hay sesión
+        } else {
+            document.getElementById("seccionLogin").classList.remove("oculto");
+            document.getElementById("app").classList.add("oculto");
+        }
     });
 
     function escucharDatos() {
-        // Escuchar VIPs
+        // VIPs
         onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
             const grid = document.getElementById("gridVipsEntrega");
             const tabla = document.getElementById("tablaVipsAdmin");
             grid.innerHTML = ""; tabla.innerHTML = "";
             snap.forEach(d => {
-                const n = d.data().nombre;
-                // Grid Socio
-                grid.innerHTML += `<div class="item-card" onclick="selVip(this, '${n}')">👤<br>${n}</div>`;
-                // Tabla Admin
-                tabla.innerHTML += `<tr><td>${n}</td><td>
-                    <button class="btn btn-azul" onclick="editarDoc('vips','${d.id}','nombre','${n}')">EDITAR</button>
+                grid.innerHTML += `<div class="item-card" onclick="selVip(this, '${d.data().nombre}')">👤<br>${d.data().nombre}</div>`;
+                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td>
+                    <button class="btn btn-azul" onclick="editarDoc('vips','${d.id}','nombre','${d.data().nombre}')">EDITAR</button>
                     <button class="btn btn-rojo" onclick="eliminarDoc('vips','${d.id}')">BORRAR</button>
                 </td></tr>`;
             });
         });
 
-        // Escuchar Plataformas
+        // Stock y Plataformas
+        onSnapshot(collection(db, "inventario"), (snap) => {
+            const tabla = document.getElementById("tablaStockAdmin");
+            tabla.innerHTML = "";
+            snap.forEach(d => {
+                const i = d.data();
+                tabla.innerHTML += `<tr><td>${i.plataforma}</td><td>${i.cuenta}</td><td>${i.usos}/8</td><td>
+                    <button class="btn btn-naranja" onclick="regresarCupo('${d.id}')">REGRESAR CUPO</button>
+                    <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
+                </td></tr>`;
+            });
+        });
+        
         onSnapshot(collection(db, "plataformas"), (snap) => {
             const grid = document.getElementById("gridPlatsEntrega");
             const tabla = document.getElementById("tablaPlatsAdmin");
             const select = document.getElementById("selectPlatStock");
             grid.innerHTML = ""; tabla.innerHTML = ""; select.innerHTML = "";
             snap.forEach(d => {
-                const n = d.data().nombre;
-                grid.innerHTML += `<div class="item-card" onclick="selPlat(this, '${n}')">📺<br>${n}</div>`;
-                tabla.innerHTML += `<tr><td>${n}</td><td>
-                    <button class="btn btn-azul" onclick="editarDoc('plataformas','${d.id}','nombre','${n}')">EDITAR</button>
-                    <button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">BORRAR</button>
-                </td></tr>`;
-                select.innerHTML += `<option value="${n}">${n}</option>`;
-            });
-        });
-
-        // Escuchar Stock
-        onSnapshot(collection(db, "inventario"), (snap) => {
-            const tabla = document.getElementById("tablaStockAdmin");
-            tabla.innerHTML = "";
-            snap.forEach(d => {
-                const i = d.data();
-                tabla.innerHTML += `<tr>
-                    <td>${i.plataforma}</td>
-                    <td>${i.cuenta}</td>
-                    <td>${i.usos}/8</td>
-                    <td>
-                        <button class="btn btn-verde" onclick="regresarCupo('${d.id}')">RECOBRAR CUPO</button>
-                        <button class="btn btn-azul" onclick="editarDoc('inventario','${d.id}','cuenta','${i.cuenta}')">EDITAR</button>
-                        <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
-                    </td>
-                </tr>`;
+                grid.innerHTML += `<div class="item-card" onclick="selPlat(this, '${d.data().nombre}')">📺<br>${d.data().nombre}</div>`;
+                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td><button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">BORRAR</button></td></tr>`;
+                select.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
             });
         });
     }
 
-    // --- FUNCIONES GLOBALIZADAS ---
-    window.selVip = (el, n) => { 
-        document.querySelectorAll("#gridVipsEntrega .item-card").forEach(i => i.classList.remove("selected"));
-        el.classList.add("selected"); vipSel = n; 
-    };
-
-    window.selPlat = (el, n) => { 
-        document.querySelectorAll("#gridPlatsEntrega .item-card").forEach(i => i.classList.remove("selected"));
-        el.classList.add("selected"); platSel = n; 
-    };
-
-    window.regresarCupo = async (id) => {
-        await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
-        alert("Cupo disponible de nuevo.");
-    };
-
-    window.editarDoc = async (col, id, campo, valorActual) => {
-        const nuevo = prompt("Editar dato:", valorActual);
-        if(nuevo) await updateDoc(doc(db, col, id), { [campo]: nuevo });
-    };
-
-    window.eliminarDoc = async (col, id) => {
-        if(confirm("¿Seguro que deseas eliminar esto?")) await deleteDoc(doc(db, col, id));
-    };
-
-    window.crearPlataforma = async () => {
-        const n = document.getElementById("nombrePlat").value;
-        if(n) await addDoc(collection(db, "plataformas"), { nombre: n });
-    };
-
-    window.subirStock = async () => {
-        const c = document.getElementById("accDato").value, p = document.getElementById("selectPlatStock").value;
-        if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
-    };
-
-    window.cargaMasivaVip = async () => {
-        const t = document.getElementById("textoMasivo").value;
-        const batch = writeBatch(db);
-        t.split('\n').forEach(linea => {
-            if(linea.trim()) batch.set(doc(collection(db, "vips")), { nombre: linea.trim() });
-        });
-        await batch.commit();
-        document.getElementById("textoMasivo").value = "";
-    };
-
-    window.cerrarSesion = () => signOut(auth).then(() => location.reload());
+    // Funciones de acción
+    window.regresarCupo = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); alert("Cupo regresado!"); };
+    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
+    window.editarDoc = async (col, id, campo, valor) => { const n = prompt("Nuevo valor:", valor); if(n) await updateDoc(doc(db, col, id), { [campo]: n }); };
+    window.crearPlataforma = async () => { const n = document.getElementById("nombrePlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
+    window.subirStock = async () => { const c = document.getElementById("accDato").value, p = document.getElementById("selectPlatStock").value; if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" }); };
+    window.cargaMasivaVip = async () => { const batch = writeBatch(db); document.getElementById("textoMasivo").value.split('\n').forEach(l => { if(l.trim()) batch.set(doc(collection(db, "vips")), { nombre: l.trim() }); }); await batch.commit(); document.getElementById("textoMasivo").value = ""; };
 </script>
 </body>
 </html>
