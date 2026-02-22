@@ -3,58 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Andy - Sistema Automático v6</title>
+    <title>Panel Administrativo - Andy Obregón Pro</title>
     <style>
         :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
-        
+
         /* LOGIN */
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index: 2000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--primary); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 2px solid var(--accent); }
 
-        /* NAV */
+        /* NAVEGACIÓN */
         .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
-        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; flex: 1; font-size: 0.7rem; }
+        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
         .nav-btn.active { background: var(--accent); }
-        .btn-logout { background: var(--danger) !important; }
+        .btn-logout { background: var(--danger) !important; color: white; }
 
         .container { padding: 15px; }
-        .section { display: none; }
+        .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
-        
-        /* TABLAS Y BOTONES */
-        table { width: 100%; border-collapse: collapse; background: white; color: #333; border-radius: 8px; overflow: hidden; font-size: 0.8rem; }
-        th { background: #1e2d3b; color: white; padding: 10px; }
-        td { border-bottom: 1px solid #ddd; padding: 8px; text-align: center; }
-        
-        input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; border-radius: 8px; overflow: hidden; }
+        th { background: #1e2d3b; color: white; padding: 10px; font-size: 0.75rem; }
+        td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 0.8rem; text-align: center; }
+
+        input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .action-btn { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        .action-btn { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; margin: 2px; font-weight: bold; }
         
-        .status-badge { padding: 3px 6px; border-radius: 4px; font-weight: bold; }
-        .disponible { background: var(--success); color: white; }
-        .agotado { background: var(--danger); color: white; }
-        
-        /* BARRA DE PROGRESO CUPO */
-        .cupo-bar-bg { background: #eee; height: 10px; border-radius: 5px; width: 100%; margin-top: 5px; }
-        .cupo-bar-fill { background: var(--accent); height: 10px; border-radius: 5px; transition: 0.3s; }
+        .status-badge { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .on { background: var(--success); color: white; } 
+        .off { background: var(--danger); color: white; }
+
+        /* CUPOS PROGRESS BAR */
+        .progress-container { background: #eee; height: 8px; border-radius: 4px; width: 100%; margin-top: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--accent); transition: 0.3s; }
     </style>
 </head>
 <body>
 
 <div id="login-overlay">
     <div class="login-box">
-        <h2 style="color:var(--accent)">🛡️ ADMIN ANDY</h2>
+        <h2 style="color:var(--accent)">🛡️ PANEL ANDY</h2>
         <input type="email" id="login-email" placeholder="andyobregon799@gmail.com">
         <input type="password" id="login-pass" placeholder="Clave">
-        <button class="btn-add" onclick="verificarLogin()">ENTRAR</button>
+        <button class="btn-add" onclick="verificarLogin()">INGRESAR</button>
     </div>
 </div>
 
 <div id="main-content" style="display:none;">
     <div class="navbar">
-        <button class="nav-btn active" onclick="showTab('tab-historial')">🕒 LOG</button>
+        <button class="nav-btn active" onclick="showTab('tab-historial')">🕒 HISTORIAL</button>
+        <button class="nav-btn" onclick="showTab('tab-vip')">💎 VIP</button>
         <button class="nav-btn" onclick="showTab('tab-socios')">👥 SOCIOS</button>
         <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK</button>
         <button class="nav-btn" onclick="showTab('tab-resumen')">📊 TOTAL</button>
@@ -62,105 +63,88 @@
     </div>
 
     <div class="container">
-        <div id="tab-resumen" class="section">
+        <div id="tab-historial" class="section active">
             <div class="card">
-                <h3>📊 Gestión de Cupos Automática</h3>
-                <table id="tabla-resumen">
-                    <thead>
-                        <tr>
-                            <th>Plataforma</th>
-                            <th>Cuenta</th>
-                            <th>Uso (Cupos)</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="body-resumen"></tbody>
-                </table>
+                <h3>Historial Detallado de Actividad</h3>
+                <div id="historial-lista" style="max-height: 400px; overflow-y: auto; background:#0f172a; padding:10px;"></div>
+                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Borrar Historial</button>
+            </div>
+        </div>
+
+        <div id="tab-vip" class="section">
+            <div class="card">
+                <h3>Miembros VIP</h3>
+                <textarea id="input-vip-lista" placeholder="Pega el listado (Nombre - Número)"></textarea>
+                <button class="btn-add" onclick="agregarVIP()">AGREGAR VIP</button>
+                <table id="tabla-vip"><thead><tr><th>Nombre</th><th>Acción</th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+
+        <div id="tab-socios" class="section">
+            <div class="card">
+                <h3>Crear Socio / Admin</h3>
+                <input type="text" id="socio-nombre" placeholder="Nombre">
+                <input type="email" id="socio-correo" placeholder="Correo">
+                <input type="text" id="socio-pass" placeholder="Contraseña">
+                <select id="socio-rol"><option value="Socio">Socio</option><option value="Admin">Admin</option></select>
+                <button class="btn-add" onclick="agregarSocio()">CREAR ACCESO</button>
+            </div>
+            <div class="card">
+                <h3>Accesos Registrados</h3>
+                <table id="tabla-socios"><thead><tr><th>Nombre</th><th>Acceso</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody></tbody></table>
             </div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>➕ Cargar Cuenta</h3>
-                <input type="text" id="stock-correo" placeholder="Correo">
-                <input type="text" id="stock-clave" placeholder="Clave">
-                <select id="stock-plat"><option>Netflix</option><option>Disney+</option><option>IPTV</option></select>
-                <button class="btn-add" onclick="agregarStock()">GUARDAR</button>
+                <h3>➕ Crear Plataforma</h3>
+                <div style="display:flex; gap:10px;"><input type="text" id="nueva-plat-nombre" placeholder="Nombre"><button class="btn-add" style="width:100px;" onclick="crearPlataforma()">CREAR</button></div>
+            </div>
+            <div class="card">
+                <h3>📥 Cargar Nueva Cuenta</h3>
+                <input type="text" id="stock-correo" placeholder="Correo"><input type="text" id="stock-clave" placeholder="Clave">
+                <select id="stock-plataforma-select"></select>
+                <button class="btn-add" onclick="agregarStock()">GUARDAR EN STOCK</button>
             </div>
         </div>
 
-        <div id="tab-historial" class="section active">
+        <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>Historial</h3>
-                <div id="historial-lista" style="font-size: 0.7rem;"></div>
-            </div>
-        </div>
-        
-        <div id="tab-socios" class="section">
-            <div class="card">
-                <h3>Socios</h3>
-                <table id="tabla-socios"><thead><tr><th>Nombre</th><th>Estado</th></tr></thead><tbody id="body-socios"></tbody></table>
+                <h3>📊 Control de Cupos (0/8)</h3>
+                <table id="tabla-resumen">
+                    <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
+                    <tbody id="body-resumen"></tbody>
+                </table>
+                <div style="margin-top:20px;">
+                    <button class="btn-add" style="background:var(--warning)" onclick="resetUsadasGlobal()">🔄 Reiniciar Cuentas Usadas</button>
+                    <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="borrarTodoStock()">🔥 Borrar Todo</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('andy_final_v6')) || {
-        historial: [], 
-        stock: [], 
-        socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", estado: true}],
-        usadas: 0
+    let db = JSON.parse(localStorage.getItem('andy_sistema_final_v7')) || {
+        historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+", "IPTV"], usadas: 0,
+        socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", rol: "Admin", estado: true}]
     };
 
-    function save() { localStorage.setItem('andy_final_v6', JSON.stringify(db)); renderAll(); }
+    function save() { localStorage.setItem('andy_sistema_final_v7', JSON.stringify(db)); renderAll(); }
+    function addLog(msg) { let time = new Date().toLocaleTimeString(); db.historial.unshift(`[${time}] ${msg}`); save(); }
 
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
         let p = document.getElementById('login-pass').value;
-        if(c === "andyobregon799@gmail.com" && p === "123456") {
+        let user = db.socios.find(u => u.correo === c && u.pass === p && u.estado === true);
+        if(user) {
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('main-content').style.display='block';
-        } else { alert("Error"); }
+            addLog(`Inició sesión: ${user.nombre}`);
+        } else { alert("Datos incorrectos o acceso desactivado"); }
     }
 
     function cerrarSesion() { location.reload(); }
-
-    function agregarStock() {
-        let c = document.getElementById('stock-correo').value;
-        let p = document.getElementById('stock-clave').value;
-        let plt = document.getElementById('stock-plat').value;
-        if(c && p) {
-            db.stock.push({ plat: plt, cuenta: `${c}:${p}`, cupo: 0, max: 8 });
-            db.historial.unshift(`[${new Date().toLocaleTimeString()}] Nueva cuenta ${plt}`);
-            save();
-        }
-    }
-
-    // FUNCIÓN CLAVE: ENTREGAR CUPO
-    function entregarCupo(i) {
-        if(db.stock[i].cupo < db.stock[i].max) {
-            db.stock[i].cupo++;
-            db.historial.unshift(`[${new Date().toLocaleTimeString()}] Cupo entregado: ${db.stock[i].plat}`);
-            if(db.stock[i].cupo === db.stock[i].max) {
-                alert(`¡ATENCIÓN! La cuenta de ${db.stock[i].plat} se ha agotado (8/8).`);
-            }
-            save();
-        } else {
-            alert("Esta cuenta ya está agotada. Selecciona otra.");
-        }
-    }
-
-    function resetCupo(i) {
-        db.stock[i].cupo = 0;
-        db.historial.unshift(`[${new Date().toLocaleTimeString()}] Cupo reseteado: ${db.stock[i].plat}`);
-        save();
-    }
-
-    function borrarStock(i) {
-        db.stock.splice(i, 1);
-        save();
-    }
 
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -169,40 +153,71 @@
         event.currentTarget.classList.add('active');
     }
 
-    function renderAll() {
-        // Historial
-        document.getElementById('historial-lista').innerHTML = db.historial.slice(0,10).map(h => `<div>${h}</div>`).join('');
-        
-        // Resumen Detallado
-        document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => {
-            let porcentaje = (s.cupo / s.max) * 100;
-            let estadoClase = s.cupo >= s.max ? 'agotado' : 'disponible';
-            let estadoTexto = s.cupo >= s.max ? 'AGOTADO' : 'DISPONIBLE';
-
-            return `
-                <tr>
-                    <td><b>${s.plat}</b></td>
-                    <td><small>${s.cuenta}</small></td>
-                    <td>
-                        ${s.cupo} / ${s.max}
-                        <div class="cupo-bar-bg"><div class="cupo-bar-fill" style="width:${porcentaje}%"></div></div>
-                        <span class="status-badge ${estadoClase}">${estadoTexto}</span>
-                    </td>
-                    <td>
-                        <button class="action-btn" style="background:var(--success)" onclick="entregarCupo(${i})">VENDER</button>
-                        <button class="action-btn" style="background:var(--warning)" onclick="resetCupo(${i})">RESET</button>
-                        <button class="action-btn" style="background:var(--danger)" onclick="borrarStock(${i})">X</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
-        // Socios
-        document.getElementById('body-socios').innerHTML = db.socios.map(s => `<tr><td>${s.nombre}</td><td>ON</td></tr>`).join('');
+    // FUNCIONES STOCK & PLATAFORMA
+    function crearPlataforma() { let n = document.getElementById('nueva-plat-nombre').value; if(n) { db.plataformas.push(n); addLog(`Plataforma creada: ${n}`); document.getElementById('nueva-plat-nombre').value=""; save(); } }
+    function agregarStock() {
+        let c = document.getElementById('stock-correo').value;
+        let p = document.getElementById('stock-clave').value;
+        let plat = document.getElementById('stock-plataforma-select').value;
+        if(c && p) { db.stock.push({plat, cuenta: `${c}:${p}`, cupo: 0, max: 8}); addLog(`Nueva cuenta ${plat} agregada`); save(); }
     }
 
+    // FUNCIONES CUPOS (LA LÓGICA DE 8)
+    function usarCupo(i) {
+        if(db.stock[i].cupo < db.stock[i].max) {
+            db.stock[i].cupo++;
+            addLog(`Cupo vendido en ${db.stock[i].plat} (${db.stock[i].cupo}/8)`);
+            if(db.stock[i].cupo === 8) alert("¡CUENTA AGOTADA!");
+            save();
+        }
+    }
+    function resetCupo(i) { db.stock[i].cupo = 0; addLog(`Cupo reseteado: ${db.stock[i].plat}`); save(); }
+    function eliminarCuenta(i) { if(confirm("¿Borrar cuenta?")) { db.stock.splice(i,1); save(); } }
+
+    // FUNCIONES SOCIOS
+    function agregarSocio() {
+        let n = document.getElementById('socio-nombre').value;
+        let c = document.getElementById('socio-correo').value;
+        let p = document.getElementById('socio-pass').value;
+        let r = document.getElementById('socio-rol').value;
+        if(n && c && p) { db.socios.push({nombre: n, correo: c, pass: p, rol: r, estado: true}); addLog(`Socio ${n} creado`); save(); }
+    }
+    function toggleSocio(i) { db.socios[i].estado = !db.socios[i].estado; save(); }
+
+    // FUNCIONES VIP Y MASIVOS
+    function agregarVIP() { let t = document.getElementById('input-vip-lista').value; if(t) { db.vip.push(t); save(); } }
+    function limpiarHistorial() { db.historial = []; save(); }
+    function borrarTodoStock() { if(confirm("¿Borrar TODO?")) { db.stock = []; save(); } }
+    function resetUsadasGlobal() { db.stock.forEach(s => s.cupo = 0); save(); }
+
+    function renderAll() {
+        // Historial
+        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div style="border-bottom:1px solid #334155; padding:5px; color:#fff;">${h}</div>`).join('');
+        // Select Stock
+        document.getElementById('stock-plataforma-select').innerHTML = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
+        // VIP
+        document.querySelector('#tabla-vip tbody').innerHTML = db.vip.map((v, i) => `<tr><td style="text-align:left;">${v}</td><td><button class="action-btn" style="background:var(--danger)" onclick="db.vip.splice(${i},1);save()">X</button></td></tr>`).join('');
+        // SOCIOS
+        document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td><small>${s.correo}<br><b>${s.pass}</b></small></td><td>${s.rol}</td><td><span class="status-badge ${s.estado?'on':'off'}">${s.estado?'ON':'OFF'}</span></td><td><button class="action-btn" style="background:var(--accent)" onclick="toggleSocio(${i})">ON/OFF</button></td></tr>`).join('');
+        // RESUMEN Y STOCK DETALLADO
+        document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => {
+            let pct = (s.cupo / s.max) * 100;
+            return `<tr>
+                <td><b>${s.plat}</b></td>
+                <td><small>${s.cuenta}</small></td>
+                <td>
+                    ${s.cupo} / ${s.max}
+                    <div class="progress-container"><div class="progress-bar" style="width:${pct}%"></div></div>
+                </td>
+                <td style="display:flex; gap:2px;">
+                    <button class="action-btn" style="background:var(--success)" onclick="usarCupo(${i})">VENDER</button>
+                    <button class="action-btn" style="background:var(--warning)" onclick="resetCupo(${i})">RESET</button>
+                    <button class="action-btn" style="background:var(--danger)" onclick="eliminarCuenta(${i})">X</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
     renderAll();
 </script>
-
 </body>
 </html>
