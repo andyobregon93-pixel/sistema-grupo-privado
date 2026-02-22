@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDVIP | Premium Panel</title>
+    <title>ANDVIP | Sistema Premium</title>
     <style>
-        /* ESTILO ELEGANTE Y RESPONSIVE */
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
             --danger: #ef4444; --success: #10b981; --text: #f8fafc; 
@@ -18,7 +17,6 @@
             margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* Navegación Refinada */
         .nav-bar { 
             display: flex; background: var(--card); padding: 10px; 
             position: sticky; top: 0; z-index: 1000; 
@@ -33,10 +31,8 @@
             font-size: 0.8rem; white-space: nowrap; transition: 0.3s;
         }
         .nav-btn.active { color: white; background: var(--accent); box-shadow: 0 0 10px var(--glow); }
-
         .logout-btn { background: var(--danger); color: white; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
-        /* Contenedores y Tarjetas */
         .container { padding: 20px; max-width: 1100px; margin: auto; width: 90%; }
         .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
@@ -49,35 +45,30 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        h2, h3 { color: var(--accent); margin-top: 0; }
-
-        /* Inputs y Botones Premium */
+        h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { 
             width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; 
             border: 1px solid var(--border); background: #111827; color: white; 
-            box-sizing: border-box; font-size: 1rem; outline: none; transition: 0.3s;
+            box-sizing: border-box; font-size: 1rem; outline: none;
         }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 5px var(--glow); }
 
         .btn-main { 
             width: 100%; padding: 15px; border: none; border-radius: 12px; 
             font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px;
+            text-transform: uppercase;
         }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
 
-        /* Tablas Elegantes */
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #0f172a; color: var(--accent); padding: 15px; text-align: left; text-transform: uppercase; font-size: 0.75rem; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th { background: #0f172a; color: var(--accent); padding: 15px; text-align: left; font-size: 0.75rem; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 
         .btn-status { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .on { background: var(--success); }
         .off { background: var(--danger); }
 
-        /* Cuadro de Entrega Impactante */
         .entrega-box { 
             background: #fff; color: #0f172a; padding: 25px; border-radius: 16px; 
             text-align: center; margin-top: 25px; display: none;
@@ -85,20 +76,17 @@
         }
 
         .admin-only { display: none; }
-
-        /* Login */
-        #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); }
+        #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
     </style>
 </head>
 <body>
 
 <div id="login-box">
     <div class="card" style="width:350px; text-align:center;">
-        <h1 style="color:var(--accent); margin-bottom:5px;">ANDVIP</h1>
-        <p style="color:#94a3b8; margin-bottom:20px;">Acceso administrativo</p>
-        <input type="email" id="email" placeholder="Correo Electrónico">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()" class="btn-main btn-accent" style="margin-top:10px;">INICIAR SESIÓN</button>
+        <h1 style="color:var(--accent);">ANDVIP</h1>
+        <input type="email" id="email" placeholder="Correo">
+        <input type="password" id="password" placeholder="Clave">
+        <button onclick="login()" class="btn-main btn-accent">ENTRAR</button>
     </div>
 </div>
 
@@ -112,95 +100,83 @@
     </div>
 
     <div class="container">
-        
         <div id="tab-historial" class="section">
             <div class="card">
-                <h3>🕒 Historial de Actividad</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Credenciales</th><th>Acción</th></tr></thead>
-                        <tbody id="lista-pedidos"></tbody>
-                    </table>
-                </div>
+                <h3>🕒 Historial de Entregas</h3>
+                <div class="table-wrapper"><table id="tabla-historial">
+                    <thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead>
+                    <tbody id="lista-pedidos"></tbody>
+                </table></div>
             </div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>📦 Cargar Nuevo Contenido</h3>
+                <h3>📦 Añadir Contenido</h3>
                 <select id="st-tipo" onchange="toggleInputs()">
-                    <option value="streaming">Cuentas (Streaming)</option>
-                    <option value="iptv">Listas (IPTV)</option>
+                    <option value="streaming">Streaming (Correo/Clave)</option>
+                    <option value="iptv">IPTV (Link/URL)</option>
                 </select>
-                <input type="text" id="st-nombre" placeholder="Nombre (Ej: Netflix, Magis)">
+                <input type="text" id="st-nombre" placeholder="Nombre Plataforma">
                 <div id="inputs-streaming">
-                    <input type="text" id="st-correo" placeholder="Correo de la cuenta">
-                    <input type="text" id="st-clave" placeholder="Contraseña">
+                    <input type="text" id="st-correo" placeholder="Correo">
+                    <input type="text" id="st-clave" placeholder="Clave">
                 </div>
                 <div id="inputs-iptv" style="display:none;">
-                    <textarea id="st-url" placeholder="Pegue el link IPTV aquí..."></textarea>
+                    <textarea id="st-url" placeholder="URL IPTV"></textarea>
                 </div>
-                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR EN INVENTARIO</button>
+                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR STOCK</button>
             </div>
-            <h3>Inventario Activo</h3>
-            <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
+            <h3>Inventario (Máx 5 perfiles por cuenta)</h3>
+            <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
         </div>
 
         <div id="tab-socios" class="section">
             <div class="card">
-                <h3>👥 Registrar Nuevo Socio</h3>
-                <input type="email" id="socio-email" placeholder="Correo del socio">
-                <input type="password" id="socio-pass" placeholder="Contraseña">
-                <select id="socio-rol">
-                    <option value="vendedor">Vendedor</option>
-                    <option value="admin">Administrador</option>
-                </select>
-                <button onclick="crearSocio()" class="btn-main btn-accent">CREAR ACCESO OFICIAL</button>
+                <h3>👥 Nuevo Socio</h3>
+                <input type="email" id="socio-email" placeholder="Email">
+                <input type="password" id="socio-pass" placeholder="Clave">
+                <select id="socio-rol"><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
+                <button onclick="crearSocio()" class="btn-main btn-accent">CREAR USUARIO</button>
             </div>
-            <div class="card">
-                <h3>Lista de Colaboradores</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>Socio</th><th>Clave</th><th>Rol</th><th>Estado</th><th>Eliminar</th></tr></thead>
-                        <tbody id="lista-socios"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="table-wrapper"><table>
+                <thead><tr><th>Email</th><th>Clave</th><th>Rol</th><th>Estado</th><th>X</th></tr></thead>
+                <tbody id="lista-socios"></tbody>
+            </table></div>
         </div>
 
         <div id="tab-miembros" class="section active">
             <div id="panel-admin-miembros" class="card admin-only">
-                <h3>🛠 Gestión de Miembros VIP</h3>
-                <textarea id="lista-masiva" rows="4" placeholder="Nombre - Celular (Uno por línea)"></textarea>
-                <button onclick="guardarMiembros()" class="btn-main btn-accent">SUBIR A LA NUBE</button>
-                <div class="table-wrapper" style="margin-top:15px; max-height:200px;">
+                <h3>🛠 Carga de Miembros</h3>
+                <textarea id="lista-masiva" placeholder="Nombre - Celular (Uno por línea)"></textarea>
+                <button onclick="guardarMiembros()" class="btn-main btn-accent">ACTUALIZAR LISTA</button>
+                <div class="table-wrapper" style="margin-top:10px; max-height:150px;">
                     <table><tbody id="tabla-gestion-miembros"></tbody></table>
                 </div>
             </div>
 
-            <div id="panel-usuario-pedido" class="card" style="border: 2px solid var(--accent);">
-                <h2 style="text-align:center;">💎 PANEL VIP ANDVIP</h2>
-                <label>Paso 1: Seleccione su Usuario</label>
+            <div class="card" style="border: 2px solid var(--accent); text-align:center;">
+                <h2>SOLICITAR ACCESO VIP</h2>
+                <label>Selecciona tu Nombre:</label>
                 <select id="sel-miembro"></select>
-                <label>Paso 2: Seleccione Servicio</label>
+                <label>Plataforma deseada:</label>
                 <select id="sel-plat"></select>
-                <button onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:15px; font-size:1.2rem;">SOLICITAR ACCESO</button>
+                <button onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:15px;">OBTENER CUENTA</button>
             </div>
 
             <div id="entrega-box" class="entrega-box">
-                <p>SUS CREDENCIALES SON:</p>
-                <div id="datos-entregados" style="font-size:1.5rem; font-weight:800; margin:20px 0;"></div>
+                <p>TUS DATOS:</p>
+                <div id="datos-entregados" style="font-size:1.3rem; font-weight:bold; margin-bottom:15px;"></div>
                 <button onclick="copiarInfo()" class="btn-main btn-accent" style="background:#000;">COPIAR DATOS</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, increment, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig={
         apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -215,22 +191,16 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // LOGIN & AUTH
     window.login = async () => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try {
-            const res = await signInWithEmailAndPassword(auth, e, p);
-            const userDoc = await getDoc(doc(db, "usuarios", res.user.uid));
-            if (userDoc.exists() && userDoc.data().activo === false) { await signOut(auth); alert("ACCESO DENEGADO"); }
-        } catch(err) { alert("Credenciales incorrectas"); }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
+        catch(e) { alert("Credenciales incorrectas"); }
     };
     window.logout = () => signOut(auth);
 
     onAuthStateChanged(auth, async user => {
         if(user) {
-            const docU = await getDoc(doc(db, "usuarios", user.uid));
-            const isAdmin = (docU.exists() && docU.data().role === "admin");
+            const dU = await getDoc(doc(db, "usuarios", user.uid));
+            const isAdmin = (dU.exists() && dU.data().role === "admin");
             document.getElementById('login-box').style.display='none';
             document.getElementById('app').style.display='block';
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'block' : 'none');
@@ -242,25 +212,23 @@
         }
     });
 
+    // FUNCIONES DE CARGA
     window.crearSocio = async () => {
         const e = document.getElementById('socio-email').value;
         const p = document.getElementById('socio-pass').value;
         const r = document.getElementById('socio-rol').value;
-        try {
-            const res = await createUserWithEmailAndPassword(auth, e, p);
-            await setDoc(doc(db, "usuarios", res.user.uid), { email: e, password: p, role: r, activo: true, uid: res.user.uid });
-            alert("Socio creado con éxito");
-        } catch(err) { alert("Error al registrar"); }
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "usuarios", res.user.uid), { email: e, password: p, role: r, activo: true, uid: res.user.uid });
+        alert("Socio creado");
     };
 
     window.guardarStock = async () => {
         const t = document.getElementById('st-tipo').value;
-        const n = document.getElementById('st-nombre').value;
-        const data = { tipo: t, nombre: n, usos: 0, timestamp: serverTimestamp() };
+        const data = { tipo: t, nombre: document.getElementById('st-nombre').value, usos: 0, timestamp: serverTimestamp() };
         if(t === 'streaming') { data.correo = document.getElementById('st-correo').value; data.clave = document.getElementById('st-clave').value; }
         else { data.url = document.getElementById('st-url').value; }
         await addDoc(collection(db, "inventario_vip"), data);
-        alert("Stock cargado");
+        alert("Guardado");
     };
 
     window.guardarMiembros = async () => {
@@ -269,75 +237,79 @@
         document.getElementById('lista-masiva').value = "";
     };
 
+    // LÓGICA DE ENTREGA (ESTO ES LO QUE ARREGLÉ: DE 1 EN 1)
+    window.solicitarAuto = async () => {
+        const m = document.getElementById('sel-mimember').value || document.getElementById('sel-miembro').value;
+        const p = document.getElementById('sel-plat').value;
+        if(!m || !p) return alert("Selecciona tu nombre y la plataforma");
+
+        const q = query(collection(db, "inventario_vip"), where("nombre", "==", p), where("usos", "<", 5), limit(1));
+        const snap = await getDocs(q);
+
+        if(!snap.empty) {
+            const dR = snap.docs[0];
+            const d = dR.data();
+            const creds = d.tipo === 'streaming' ? `C: ${d.correo} | P: ${d.clave}` : d.url;
+
+            // ACTUALIZA SOLO 1 CUPO
+            await updateDoc(doc(db, "inventario_vip", dR.id), { usos: increment(1) });
+            await addDoc(collection(db, "pedidos_vip"), { miembro: m, plataforma: p, datos: creds, timestamp: serverTimestamp() });
+
+            document.getElementById('datos-entregados').innerText = creds;
+            document.getElementById('entrega-box').style.display = 'block';
+        } else { alert("Sin cupos para " + p); }
+    };
+
     function cargarDatos() {
-        onSnapshot(collection(db, "usuarios"), snap => {
+        onSnapshot(collection(db, "usuarios"), s => {
             const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
-            snap.forEach(d => {
+            s.forEach(d => {
                 const u = d.data(); const st = u.activo !== false ? 'on' : 'off';
-                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.password}</td><td>${u.role}</td><td><button class="btn-status ${st}" onclick="toggleSocio('${d.id}', ${u.activo})">${st.toUpperCase()}</button></td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">X</button></td></tr>`;
+                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.password}</td><td>${u.role}</td><td><button class="btn-status ${st}" onclick="toggleSocio('${d.id}', ${u.activo})">${st.toUpperCase()}</button></td><td><button onclick="eliminarDoc('usuarios','${d.id}')">X</button></td></tr>`;
             });
         });
 
-        onSnapshot(collection(db, "inventario_vip"), snap => {
+        onSnapshot(collection(db, "inventario_vip"), s => {
             const div = document.getElementById('display-stock-list'); const sel = document.getElementById('sel-plat');
-            div.innerHTML = ""; sel.innerHTML = '<option value="">-- SELECCIONE SERVICIO --</option>';
-            snap.forEach(d => {
-                const s = d.data();
-                if(s.usos < 5) sel.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
-                div.innerHTML += `<div class="card" style="margin-bottom:0"><b>${s.nombre}</b><br><small>${s.usos}/5 Usos</small><br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
+            div.innerHTML = ""; sel.innerHTML = '<option value="">-- PLATAFORMA --</option>';
+            s.forEach(d => {
+                const i = d.data(); if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>${i.usos}/5 Perfiles<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
             });
         });
 
-        onSnapshot(collection(db, "config_vip"), snap => {
+        onSnapshot(collection(db, "config_vip"), s => {
             const tab = document.getElementById('tabla-gestion-miembros'); const sel = document.getElementById('sel-miembro');
-            tab.innerHTML = ""; sel.innerHTML = '<option value="">-- BUSCA TU NOMBRE --</option>';
-            snap.forEach(d => {
-                tab.innerHTML += `<tr><td>${d.data().nombre}</td><td style="text-align:right"><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
+            tab.innerHTML = ""; sel.innerHTML = '<option value="">-- TU NOMBRE --</option>';
+            s.forEach(d => {
+                tab.innerHTML += `<tr><td>${d.data().nombre}</td><td style="text-align:right"><button onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
                 sel.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
             });
         });
 
-        onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), snap => {
+        onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), s => {
             const tb = document.getElementById('lista-pedidos'); tb.innerHTML = "";
-            snap.forEach(d => {
+            s.forEach(d => {
                 const p = d.data(); const f = p.timestamp ? new Date(p.timestamp.seconds*1000).toLocaleString() : '...';
-                tb.innerHTML += `<tr><td>${f}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button class="btn-status off" onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
+                tb.innerHTML += `<tr><td>${f}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
             });
         });
     }
-
-    window.solicitarAuto = async () => {
-        const m = document.getElementById('sel-miembro').value;
-        const p = document.getElementById('sel-plat').value;
-        if(!m || !p) return alert("Complete los campos");
-        const q = query(collection(db, "inventario_vip"), where("nombre", "==", p), where("usos", "<", 5));
-        onSnapshot(q, async snap => {
-            if(!snap.empty){
-                const docR = snap.docs[0]; const d = docR.data();
-                const creds = d.tipo === 'streaming' ? `${d.correo} | ${d.clave}` : d.url;
-                await updateDoc(doc(db, "inventario_vip", docR.id), { usos: increment(1) });
-                await addDoc(collection(db, "pedidos_vip"), { miembro: m, plataforma: p, datos: creds, timestamp: serverTimestamp() });
-                document.getElementById('datos-entregados').innerText = creds;
-                document.getElementById('entrega-box').style.display = 'block';
-            } else { alert("Plataforma sin cupos."); }
-        }, {onlyOnce: true});
-    };
 
     window.toggleSocio = async (id, act) => { await updateDoc(doc(db, "usuarios", id), { activo: !act }); };
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
+        document.getElementById(id).classList.add('active'); btn.classList.add('active');
     };
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Seguro?")) await deleteDoc(doc(db, col, id)); };
+    window.eliminarDoc = async (c, id) => { if(confirm("¿Borrar?")) await deleteDoc(doc(db, c, id)); };
     window.resetCupos = async (id) => { await updateDoc(doc(db, "inventario_vip", id), { usos: 0 }); };
     window.toggleInputs = () => {
         const t = document.getElementById('st-tipo').value;
         document.getElementById('inputs-streaming').style.display = t === 'streaming' ? 'block' : 'none';
         document.getElementById('inputs-iptv').style.display = t === 'iptv' ? 'block' : 'none';
     };
-    window.copiarInfo = () => { navigator.clipboard.writeText(document.getElementById('datos-entregados').innerText); alert("¡Datos Copiados!"); };
+    window.copiarInfo = () => { navigator.clipboard.writeText(document.getElementById('datos-entregados').innerText); alert("Copiado"); };
 </script>
 </body>
 </html>
