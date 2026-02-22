@@ -8,15 +8,12 @@
         :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
         
-        /* Efecto de pulsación en botones */
         button:active { transform: scale(0.95); opacity: 0.8; }
-        .btn-click-effect { animation: flash 0.2s; }
-        @keyframes flash { from { filter: brightness(1.5); } to { filter: brightness(1); } }
-
+        
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index: 2000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--primary); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 2px solid var(--accent); }
         .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
-        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; transition: 0.1s; }
+        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
         .nav-btn.active { background: var(--accent); }
         .btn-logout { background: var(--danger) !important; color: white; }
         
@@ -30,11 +27,16 @@
         td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 0.8rem; text-align: center; }
         
         input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.1s; }
+        .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
         .action-btn { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; margin: 2px; font-weight: bold; }
         
         .member-item { display: flex; justify-content: space-between; align-items: center; background: white; color: #333; padding: 15px; margin-bottom: 8px; border-radius: 4px; border-left: 5px solid var(--accent); }
         .log-item { border-bottom: 1px solid #334155; padding: 10px; font-size: 0.8rem; line-height: 1.4; color: white; }
+
+        /* CUADRO DE ENTREGA DETALLADO (IGUAL A TU IMAGEN) */
+        #display-entrega { display: none; margin-top: 20px; padding: 15px; border: 2px solid var(--success); border-radius: 8px; background: #f0fdf4; color: #166534; text-align: center; }
+        .cuenta-box { background: white; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1.1rem; color: #333; word-break: break-all; }
+        .btn-copy { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -42,8 +44,8 @@
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="color:var(--accent)">🛡️ PANEL ANDY</h2>
-        <input type="email" id="login-email" placeholder="andyobregon799@gmail.com">
-        <input type="password" id="login-pass" placeholder="123456">
+        <input type="email" id="login-email" placeholder="Correo">
+        <input type="password" id="login-pass" placeholder="Clave">
         <button class="btn-add" onclick="verificarLogin()">ENTRAR</button>
     </div>
 </div>
@@ -54,12 +56,19 @@
     <div class="container">
         <div id="tab-usuario" class="section">
             <div class="card">
-                <h3>💎 Solicitar Mi Cuenta</h3>
+                <h3>🎁 Obtener mi Cuenta al Instante</h3>
                 <label>Tu Nombre:</label>
                 <select id="user-select-miembro"></select>
                 <label>Plataforma:</label>
                 <select id="user-select-plat"></select>
-                <button class="btn-add" style="background:var(--accent)" onclick="usuarioPideCuenta()">OBTENER CUENTA</button>
+                <button class="btn-add" style="background:var(--success)" onclick="usuarioPideCuenta()">🚀 RECLAMAR CUENTA AHORA</button>
+
+                <div id="display-entrega">
+                    <div style="font-weight: bold;">✅ ¡ENTREGA EXITOSA! AQUÍ TIENES TU CUENTA:</div>
+                    <div class="cuenta-box" id="texto-cuenta"></div>
+                    <button class="btn-copy" onclick="copiarTodo()">📋 COPIAR TODO</button>
+                    <p style="font-size: 0.7rem; margin-top: 10px;">Copia y pega estos datos en la aplicación.</p>
+                </div>
             </div>
         </div>
 
@@ -74,9 +83,9 @@
 
         <div id="tab-historial" class="section active">
             <div class="card">
-                <h3>📜 Registro de Entregas Detallado</h3>
+                <h3>📜 Registro de Entregas</h3>
                 <div id="historial-lista" style="max-height: 400px; overflow-y: auto;"></div>
-                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="db.historial=[];save();">BORRAR HISTORIAL</button>
+                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="db.historial=[];save();">BORRAR TODO</button>
             </div>
         </div>
 
@@ -119,12 +128,12 @@
 
 <script>
     let session = { user: null };
-    let db = JSON.parse(localStorage.getItem('andy_v15_final')) || {
+    let db = JSON.parse(localStorage.getItem('andy_v16_final')) || {
         historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+"],
         socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", rol: "Admin", estado: true}]
     };
 
-    function save() { localStorage.setItem('andy_v15_final', JSON.stringify(db)); renderAll(); }
+    function save() { localStorage.setItem('andy_v16_final', JSON.stringify(db)); renderAll(); }
 
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
@@ -159,20 +168,35 @@
         let m = document.getElementById('user-select-miembro').value;
         let p = document.getElementById('user-select-plat').value;
         let sIdx = db.stock.findIndex(s => s.plat === p && s.cupo < 8);
+        
         if(sIdx !== -1) {
             db.stock[sIdx].cupo++;
             let d = new Date();
             db.historial.unshift({ fecha: d.toLocaleDateString(), hora: d.toLocaleTimeString(), socio: session.user.nombre, miembro: m, plat: p });
-            alert("TU CUENTA: " + db.stock[sIdx].cuenta);
+            
+            // MOSTRAR CUADRO DETALLADO EN VEZ DE ALERT
+            document.getElementById('texto-cuenta').innerText = db.stock[sIdx].cuenta;
+            document.getElementById('display-entrega').style.display = 'block';
+            
             save();
-        } else { alert("No hay cupos"); }
+        } else { 
+            alert("No hay cupos disponibles"); 
+            document.getElementById('display-entrega').style.display = 'none';
+        }
+    }
+
+    function copiarTodo() {
+        let texto = document.getElementById('texto-cuenta').innerText;
+        navigator.clipboard.writeText(texto).then(() => {
+            alert("¡Copiado al portapapeles!");
+        });
     }
 
     function cargarVipMasivo() { let t = document.getElementById('input-masivo-vip').value; if(t){ t.split('\n').forEach(l => { if(l.trim()) db.vip.push(l.trim()); }); document.getElementById('input-masivo-vip').value=""; save(); } }
     function crearPlat() { let n = document.getElementById('nueva-plat-nombre').value; if(n){ db.plataformas.push(n); document.getElementById('nueva-plat-nombre').value=""; save(); } }
     function agregarStock() { let c = document.getElementById('st-cor').value; let k = document.getElementById('st-cla').value; let p = document.getElementById('st-plat-select').value; if(c&&k){ db.stock.push({plat:p, cuenta:`${c}:${k}`, cupo:0}); save(); } }
     function agregarSocio() { let n = document.getElementById('soc-nom').value; let c = document.getElementById('soc-cor').value; let p = document.getElementById('soc-pas').value; let r = document.getElementById('soc-rol').value; if(n&&c&&p){ db.socios.push({nombre:n, correo:c, pass:p, rol:r, estado:true}); save(); } }
-    function showTab(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active'); }
+    function showTab(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
     function renderAll() {
         document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div class="log-item"><span style="color:var(--accent)">[${h.fecha} ${h.hora}]</span> <b>${h.socio}</b> dio <b>${h.plat}</b> a <b>${h.miembro}</b></div>`).join('');
