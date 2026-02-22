@@ -3,84 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA VIP - CONTROL TOTAL</title>
+    <title>SISTEMA VIP - VISTA EXPANDIDA</title>
     <style>
         :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; --vip: #f1c40f; }
-        body { margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
-        .contenedor { max-width:1150px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; border-bottom: 2px solid #eee; }
-        .tab-btn { background: #ddd; color: #333; padding: 12px 20px; border: none; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: bold; flex: 1; transition: 0.3s; min-width: 120px; }
-        .tab-btn.active { background: var(--admin); color: white; border-bottom: 3px solid var(--primario); }
-        .tarjeta { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primario); }
-        input, select, button, textarea { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:14px; box-sizing: border-box; }
-        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
+        
+        /* Ajuste para pantalla completa */
+        body { margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding: 0; }
+        
+        .contenedor { 
+            width: 98%; 
+            max-width: 100%; /* Ahora ocupa todo el ancho disponible */
+            margin: 10px auto; 
+            background: rgba(255,255,255,0.98); 
+            color:#333; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            min-height: 95vh;
+        }
+
+        .tabs { display: flex; gap: 2px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab-btn { background: #eee; color: #555; padding: 15px; border: none; cursor: pointer; font-weight: bold; flex: 1; font-size: 14px; transition: 0.3s; }
+        .tab-btn.active { background: var(--admin); color: white; }
+
+        .grid-entrega { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr; /* Más espacio para la búsqueda */
+            gap: 25px; 
+        }
+
+        .tarjeta { background:#fff; padding:25px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primario); }
+        
+        input, select, button, textarea { width:100%; padding:15px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:16px; box-sizing: border-box; }
+        
+        button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; text-transform: uppercase; }
         button:hover { filter: brightness(1.2); }
+
         .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
-        table { width:100%; border-collapse:collapse; font-size: 12px; }
-        th, td { border:1px solid #eee; padding:12px; text-align:left; }
-        th { background:var(--primario); color: white; }
-        .btn-accion { width: auto; padding: 6px 12px; font-size: 11px; margin: 2px; border-radius: 4px; cursor: pointer; color: white; border:none; font-weight: bold; }
-        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; font-size: 16px; color: #000; }
-        textarea { height: 100px; font-family: monospace; background: #f9f9f9; }
+        table { width:100%; border-collapse:collapse; font-size: 14px; } /* Texto de tabla un poco más grande */
+        th, td { border:1px solid #eee; padding:15px; text-align:left; }
+        th { background:var(--primario); color: white; position: sticky; top: 0; }
+
+        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; font-size: 20px !important; color: #000; }
+        
+        #selectMiembroVip { font-size: 16px; font-family: monospace; }
+        
+        /* Etiquetas de estado */
+        .badge { padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; color: white; }
+        .bg-on { background: var(--exito); }
+        .bg-off { background: var(--error); }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
-    <div id="cajaLogin">
-        <h1 style="text-align:center; color: var(--primario);">👑 PANEL VIP</h1>
-        <p style="text-align:center; color: #666;">Ingresa con tu correo de administrador</p>
-        <input type="email" id="correoLogin" placeholder="Correo electrónico">
+    <div id="cajaLogin" style="max-width: 500px; margin: 100px auto;">
+        <h1 style="text-align:center; color: var(--primario);">👑 PANEL VIP PRO</h1>
+        <input type="email" id="correoLogin" placeholder="Correo">
         <input type="password" id="passLogin" placeholder="Contraseña">
-        <button onclick="iniciarSesion()" style="height: 55px; font-size: 18px;">ENTRAR AL SISTEMA</button>
+        <button onclick="iniciarSesion()" style="height: 60px;">ENTRAR</button>
     </div>
 
     <div id="app" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
-            <div id="infoUsuario" style="font-size: 1.1rem;"></div>
-            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 25px; border-radius: 50px;">Cerrar Sesión</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background: #f8f9fa; padding: 15px; border-radius: 10px;">
+            <div id="infoUsuario" style="font-size: 1.2rem; color: var(--primario);"></div>
+            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:10px 30px;">Cerrar Sesión</button>
         </div>
 
         <div id="seccionUsuario">
             <div class="tarjeta" style="border-top-color: var(--exito);">
-                <h2 style="color: var(--exito);">🎁 Entrega Automática VIP</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <h2 style="color: var(--exito); margin-top:0;">🎁 PANEL DE ENTREGAS</h2>
+                <div class="grid-entrega">
                     <div>
-                        <label>🔍 BUSCAR MIEMBRO DEL GRUPO:</label>
-                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Nombre o país..." onkeyup="filtrarMiembros()">
-                        <select id="selectMiembroVip" size="8" style="height: 180px;"></select>
+                        <label><b>1. BUSCAR MIEMBRO:</b></label>
+                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Escribe nombre o país aquí..." onkeyup="filtrarMiembros()">
+                        <select id="selectMiembroVip" size="12" style="height: 300px;"></select>
                     </div>
                     <div>
-                        <label>CONFIGURACIÓN DEL PEDIDO:</label>
-                        <select id="selectPlatUsuario"></select>
-                        <div style="background: #f0f0f0; padding: 10px; border-radius: 8px; margin-top: 10px;">
-                            <label style="font-size: 11px;">CÓDIGO TV (Opcional):</label>
-                            <input type="text" id="codigoTV" placeholder="Ej: 123-456">
+                        <label><b>2. DETALLES:</b></label>
+                        <select id="selectPlatUsuario" style="height: 60px; font-weight: bold;"></select>
+                        <div style="background: #eef2f3; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                            <label>CÓDIGO TV / ACTIVACIÓN:</label>
+                            <input type="text" id="codigoTV" placeholder="Pegar código aquí si aplica">
                         </div>
+                        <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 80px; font-size: 1.5rem; margin-top: 20px;">🚀 ENTREGAR AHORA</button>
                     </div>
                 </div>
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.3rem; margin-top: 15px;">🚀 GENERAR ACCESO</button>
                 
-                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:20px; border: 3px dashed var(--exito); background:#fafffa; text-align:center; border-radius: 12px;">
-                    <p><b>DATOS PARA EL CLIENTE:</b></p>
-                    <div id="textoCuenta" style="font-size:1.6rem; color:var(--admin); font-weight: bold; background: white; padding: 15px; border: 1px solid #ddd;"></div>
-                    <button onclick="copiarTodo()" style="background: var(--info); width: auto; padding: 12px 40px; margin-top: 10px;">📋 COPIAR DATOS</button>
+                <div id="resultadoPedido" style="display:none; margin-top:30px; padding:30px; border: 4px dashed var(--exito); background:#fff; text-align:center;">
+                    <h3 style="margin-top:0;">CUENTA GENERADA:</h3>
+                    <div id="textoCuenta" style="font-size:2.2rem; color:var(--admin); font-weight: bold; margin: 20px 0; word-break: break-all;"></div>
+                    <button onclick="copiarTodo()" style="background: var(--info); width: auto; padding: 15px 60px;">📋 COPIAR DATOS</button>
                 </div>
             </div>
         </div>
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
-                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 HISTORIAL</button>
-                <button class="tab-btn" onclick="verTab('tabVip')">💎 VIPs</button>
-                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 HISTORIAL VENTAS</button>
+                <button class="tab-btn" onclick="verTab('tabVip')">💎 LISTA VIP</button>
+                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK CUENTAS</button>
+                <button class="tab-btn" onclick="verTab('tabPlataformas')">🛠️ PLATAFORMAS</button>
                 <button class="tab-btn" onclick="verTab('tabSocios')">👥 SOCIOS</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>Fecha</th><th>Socio</th><th>Miembro VIP</th><th>Producto</th><th>Cuenta / TV</th></tr></thead>
+                        <thead><tr><th>Fecha / Hora</th><th>Vendedor</th><th>Cliente VIP</th><th>Plataforma</th><th>Cuenta / TV</th></tr></thead>
                         <tbody id="cuerpoHistorial"></tbody>
                     </table>
                 </div>
@@ -88,13 +118,13 @@
 
             <div id="tabVip" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>⚡ Carga Masiva (Pegar Texto)</h3>
-                    <textarea id="textoMasivoVip" placeholder="Pega aquí tu lista de contactos..."></textarea>
-                    <button onclick="procesarCargaMasivaTexto()" style="background:var(--admin)">SUBIR TODO A LA BASE DE DATOS</button>
+                    <h3>Carga Rápida de Miembros</h3>
+                    <textarea id="textoMasivoVip" style="height: 150px;" placeholder="Pega aquí tu lista. El sistema creará un registro por cada línea."></textarea>
+                    <button onclick="procesarCargaMasivaTexto()" style="background:var(--admin)">PROCESAR Y SUBIR LISTA</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>País</th><th>Nombre</th><th>Número</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>País</th><th>Nombre / WhatsApp</th><th>Acciones</th></tr></thead>
                         <tbody id="listaVipsAdmin"></tbody>
                     </table>
                 </div>
@@ -102,30 +132,46 @@
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>📥 Cargar Cuentas</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <input type="text" id="accCorreo" placeholder="correo:contraseña">
+                    <h3>Cargar Nuevo Stock</h3>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:15px;">
+                        <input type="text" id="accCorreo" placeholder="Formato: correo@gmail.com:contraseña123">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR STOCK</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR A INVENTARIO</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Uso (Máx 8)</th><th>Acciones</th></tr></thead>
                         <tbody id="tablaGestionStock"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tabPlataformas" class="tab-content" style="display:none;">
+                <div class="tarjeta">
+                    <h3>Configurar Nombres de Apps</h3>
+                    <div style="display:flex; gap:15px;">
+                        <input type="text" id="nombreNuevaPlat" placeholder="Ej: Netflix 4K">
+                        <button onclick="crearPlataforma()" style="width:200px; background:var(--exito)">+ AGREGAR</button>
+                    </div>
+                </div>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead><tr><th>Nombre de Plataforma</th><th>Acciones</th></tr></thead>
+                        <tbody id="listaPlataformasGestion"></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="tabSocios" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>👥 Nuevo Socio</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                        <input type="email" id="nuevoCorreo" placeholder="Correo">
-                        <input type="text" id="nuevoPass" placeholder="Contraseña">
-                        <select id="nuevoRol"><option value="usuario">Socio</option><option value="admin">Admin</option></select>
+                    <h3>Registrar Socio/Vendedor</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px;">
+                        <input type="email" id="nuevoCorreo" placeholder="Correo del socio">
+                        <input type="text" id="nuevoPass" placeholder="Contraseña temporal">
+                        <select id="nuevoRol"><option value="usuario">Vendedor</option><option value="admin">Admin</option></select>
                     </div>
-                    <button onclick="registrarUsuario()" style="background:var(--exito)">CREAR ACCESO</button>
+                    <button onclick="registrarUsuario()" style="background:var(--exito)">DAR DE ALTA</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
@@ -161,51 +207,49 @@
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value.trim();
         const p = document.getElementById("passLogin").value.trim();
-        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error de acceso"); }
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error: Verifica tus credenciales"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // --- PARCHE DE EMERGENCIA PARA EL DUEÑO ---
             if (user.email === "andyobregon799@gmail.com") {
                 miRol = "admin"; miEmail = user.email;
-                document.getElementById("cajaLogin").style.display = "none";
-                document.getElementById("app").style.display = "block";
-                document.getElementById("seccionAdmin").style.display = "block";
-                document.getElementById("infoUsuario").innerHTML = `👑 <b>DUEÑO: ${miEmail}</b>`;
-                cargarDatos();
-                return;
+                activarApp(true);
+                cargarDatos(); return;
             }
-
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists() && snap.data().estado === "ON") {
                 miRol = snap.data().role; miEmail = user.email;
-                document.getElementById("cajaLogin").style.display = "none";
-                document.getElementById("app").style.display = "block";
-                document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
-                document.getElementById("infoUsuario").innerHTML = `👤 <b>${miEmail}</b>`;
+                activarApp(miRol === "admin");
                 cargarDatos();
-            } else { alert("Usuario desactivado"); signOut(auth); }
+            } else { alert("Acceso denegado"); signOut(auth); }
         } else {
             document.getElementById("cajaLogin").style.display = "block";
             document.getElementById("app").style.display = "none";
         }
     });
 
+    function activarApp(isAdmin) {
+        document.getElementById("cajaLogin").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        document.getElementById("seccionAdmin").style.display = isAdmin ? "block" : "none";
+        document.getElementById("infoUsuario").innerHTML = `Hola, <b>${miEmail}</b> [${miRol.toUpperCase()}]`;
+    }
+
     function cargarDatos() {
         onSnapshot(query(collection(db, "vips"), orderBy("pais", "asc")), (snap) => {
             vipsLocales = []; let h = "";
             snap.forEach(d => {
                 const v = d.data(); vipsLocales.push({id: d.id, ...v});
-                h += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('vips','${d.id}')">X</button></td></tr>`;
+                h += `<tr><td><b>${v.pais}</b></td><td>${v.nombre}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('vips','${d.id}')">Eliminar</button></td></tr>`;
             });
             document.getElementById("listaVipsAdmin").innerHTML = h;
             filtrarMiembros();
         });
 
-        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(30)), (snap) => {
+        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(50)), (snap) => {
             let h = "";
             snap.forEach(d => {
                 const i = d.data();
@@ -218,42 +262,52 @@
             let h = "";
             snap.forEach(d => {
                 const data = d.data();
-                h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>${data.estado}</td><td>
-                    <button class="btn-accion" style="background:var(--info)" onclick="resetStock('${d.id}')">Reset</button>
-                    <button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('inventario','${d.id}')">X</button>
+                h += `<tr><td><b>${data.plataforma}</b></td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>
+                    <button class="btn-accion" style="background:var(--info)" onclick="resetStock('${d.id}')">Limpiar Cupos</button>
+                    <button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('inventario','${d.id}')">Borrar</button>
                 </td></tr>`;
             });
             document.getElementById("tablaGestionStock").innerHTML = h;
+        });
+
+        onSnapshot(collection(db, "plataformas"), (snap) => {
+            let opts = ""; let tabla = "";
+            snap.forEach(d => {
+                const n = d.data().nombre;
+                opts += `<option value="${n}">${n}</option>`;
+                tabla += `<tr><td>${n}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('plataformas','${d.id}')">Quitar</button></td></tr>`;
+            });
+            document.getElementById("selectPlatUsuario").innerHTML = opts;
+            document.getElementById("selectPlatAdmin").innerHTML = opts;
+            document.getElementById("listaPlataformasGestion").innerHTML = tabla;
         });
 
         onSnapshot(collection(db, "users"), (snap) => {
             let h = "";
             snap.forEach(d => {
                 const u = d.data();
-                h += `<tr><td>${u.email}</td><td>${u.role}</td><td>${u.estado}</td><td>
-                    <button class="btn-accion" style="background:var(--secundario)" onclick="toggleSocio('${d.id}','${u.estado}')">Cambiar</button>
+                const badge = u.estado === "ON" ? "bg-on" : "bg-off";
+                h += `<tr><td>${u.email}</td><td>${u.role}</td><td><span class="badge ${badge}">${u.estado}</span></td><td>
+                    <button class="btn-accion" style="background:var(--secundario)" onclick="toggleSocio('${d.id}','${u.estado}')">Cambiar Estado</button>
                 </td></tr>`;
             });
             document.getElementById("tablaListaUsuarios").innerHTML = h;
         });
-
-        onSnapshot(collection(db, "plataformas"), (snap) => {
-            let o = ""; snap.forEach(d => o += `<option value="${d.data().nombre}">${d.data().nombre}</option>`);
-            document.getElementById("selectPlatUsuario").innerHTML = o;
-            document.getElementById("selectPlatAdmin").innerHTML = o;
-        });
     }
+
+    window.crearPlataforma = async () => {
+        const n = document.getElementById("nombreNuevaPlat").value.trim();
+        if(n) { await addDoc(collection(db, "plataformas"), { nombre: n }); document.getElementById("nombreNuevaPlat").value = ""; }
+    };
 
     window.procesarCargaMasivaTexto = async () => {
         const texto = document.getElementById("textoMasivoVip").value;
+        if(!texto) return;
         const lineas = texto.split('\n'); const batch = writeBatch(db);
-        lineas.forEach(l => {
-            if(l.trim()){
-                const ref = doc(collection(db, "vips"));
-                batch.set(ref, { nombre: l.trim(), numero: "S/N", pais: "Varios" });
-            }
-        });
-        await batch.commit(); alert("Cargados");
+        lineas.forEach(l => { if(l.trim()){ batch.set(doc(collection(db, "vips")), { nombre: l.trim(), numero: "S/N", pais: "General" }); }});
+        await batch.commit(); 
+        document.getElementById("textoMasivoVip").value = "";
+        alert("Lista VIP actualizada exitosamente.");
     };
 
     window.filtrarMiembros = () => {
@@ -261,8 +315,8 @@
         const sel = document.getElementById("selectMiembroVip"); sel.innerHTML = "";
         vipsLocales.filter(v => v.nombre.toLowerCase().includes(bus) || v.pais.toLowerCase().includes(bus)).forEach(v => {
             const opt = document.createElement("option");
-            opt.value = `${v.nombre} (${v.numero}) [${v.pais}]`;
-            opt.text = `📍 [${v.pais}] ${v.nombre}`; sel.appendChild(opt);
+            opt.value = `${v.nombre} [${v.pais}]`;
+            opt.text = `📍 [${v.pais.toUpperCase()}] - ${v.nombre}`; sel.appendChild(opt);
         });
     };
 
@@ -270,41 +324,58 @@
         const miembro = document.getElementById("selectMiembroVip").value;
         const plat = document.getElementById("selectPlatUsuario").value;
         const code = document.getElementById("codigoTV").value;
-        if(!miembro) return alert("Selecciona un cliente");
+        if(!miembro) return alert("Primero selecciona un Miembro de la lista");
+
         const meta = { vendedor: miEmail, nombreWsp: miembro, plataforma: plat, fechaHora: new Date().toLocaleString(), fechaSort: Date.now() };
 
         if(code) {
-            await addDoc(collection(db, "entregas"), { ...meta, cuenta: "TV: " + code }); alert("Activado TV");
+            await addDoc(collection(db, "entregas"), { ...meta, cuenta: "CÓDIGO TV: " + code }); 
+            alert("Activación de TV registrada.");
         } else {
             const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
             const stock = await getDocs(q);
-            if(stock.empty) return alert("Sin stock");
+            if(stock.empty) return alert("Lo siento, no hay cuentas disponibles para " + plat);
+            
             const dS = stock.docs[0], nU = (dS.data().usos || 0) + 1;
             await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
             await addDoc(collection(db, "entregas"), { ...meta, cuenta: dS.data().cuenta });
+            
             document.getElementById("resultadoPedido").style.display = "block";
             document.getElementById("textoCuenta").innerText = dS.data().cuenta;
+            window.scrollTo(0, document.body.scrollHeight);
         }
     };
 
     window.resetStock = async (id) => updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
     window.toggleSocio = async (id, est) => updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" });
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
+    window.eliminarDoc = async (col, id) => { if(confirm("¿Estás seguro de eliminar este registro?")) await deleteDoc(doc(db, col, id)); };
+    
     window.registrarUsuario = async () => {
         const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
-        const res = await createUserWithEmailAndPassword(auth, c, p);
-        await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" }); alert("Listo");
+        try {
+            const res = await createUserWithEmailAndPassword(auth, c, p);
+            await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" }); 
+            alert("Socio creado con éxito");
+        } catch(e) { alert("Error al crear usuario"); }
     };
+
     window.subirInventario = async () => {
         const c = document.getElementById("accCorreo").value, p = document.getElementById("selectPlatAdmin").value;
+        if(!c) return alert("Pega la cuenta");
         await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
+        document.getElementById("accCorreo").value = "";
     };
+
     window.verTab = (id) => {
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).style.display = 'block'; event.currentTarget.classList.add('active');
     };
-    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
+
+    window.copiarTodo = () => { 
+        navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); 
+        alert("¡Datos copiados!"); 
+    };
 </script>
 </body>
 </html>
