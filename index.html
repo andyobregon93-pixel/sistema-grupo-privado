@@ -36,7 +36,6 @@
         .on { background: var(--success); color: white; } 
         .off { background: var(--danger); color: white; }
 
-        /* CUPOS PROGRESS BAR */
         .progress-container { background: #eee; height: 8px; border-radius: 4px; width: 100%; margin-top: 5px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--accent); transition: 0.3s; }
     </style>
@@ -87,7 +86,7 @@
                 <input type="email" id="socio-correo" placeholder="Correo">
                 <input type="text" id="socio-pass" placeholder="Contraseña">
                 <select id="socio-rol"><option value="Socio">Socio</option><option value="Admin">Admin</option></select>
-                <button class="btn-add" onclick="agregarSocio()">CREAR ACCESO</button>
+                <button class="btn-add" onclick="descontarAutomatico(); agregarSocio();">CREAR ACCESO</button>
             </div>
             <div class="card">
                 <h3>Accesos Registrados</h3>
@@ -110,7 +109,7 @@
 
         <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>📊 Control de Cupos (0/8)</h3>
+                <h3>📊 Control de Cupos (0/8) - Automático</h3>
                 <table id="tabla-resumen">
                     <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
                     <tbody id="body-resumen"></tbody>
@@ -141,7 +140,7 @@
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('main-content').style.display='block';
             addLog(`Inició sesión: ${user.nombre}`);
-        } else { alert("Datos incorrectos o acceso desactivado"); }
+        } else { alert("Datos incorrectos"); }
     }
 
     function cerrarSesion() { location.reload(); }
@@ -153,8 +152,8 @@
         event.currentTarget.classList.add('active');
     }
 
-    // FUNCIONES STOCK & PLATAFORMA
     function crearPlataforma() { let n = document.getElementById('nueva-plat-nombre').value; if(n) { db.plataformas.push(n); addLog(`Plataforma creada: ${n}`); document.getElementById('nueva-plat-nombre').value=""; save(); } }
+    
     function agregarStock() {
         let c = document.getElementById('stock-correo').value;
         let p = document.getElementById('stock-clave').value;
@@ -162,44 +161,51 @@
         if(c && p) { db.stock.push({plat, cuenta: `${c}:${p}`, cupo: 0, max: 8}); addLog(`Nueva cuenta ${plat} agregada`); save(); }
     }
 
-    // FUNCIONES CUPOS (LA LÓGICA DE 8)
-    function usarCupo(i) {
-        if(db.stock[i].cupo < db.stock[i].max) {
-            db.stock[i].cupo++;
-            addLog(`Cupo vendido en ${db.stock[i].plat} (${db.stock[i].cupo}/8)`);
-            if(db.stock[i].cupo === 8) alert("¡CUENTA AGOTADA!");
-            save();
+    // LÓGICA AUTOMÁTICA: Descuenta del primer stock disponible cuando se pide algo
+    function descontarAutomatico() {
+        if(db.stock.length > 0) {
+            let index = db.stock.findIndex(s => s.cupo < s.max);
+            if(index !== -1) {
+                db.stock[index].cupo++;
+                addLog(`Descuento automático: ${db.stock[index].plat} (${db.stock[index].cupo}/8)`);
+                if(db.stock[index].cupo === 8) alert("¡CUENTA " + db.stock[index].plat + " AGOTADA!");
+                save();
+            }
         }
     }
+
     function resetCupo(i) { db.stock[i].cupo = 0; addLog(`Cupo reseteado: ${db.stock[i].plat}`); save(); }
     function eliminarCuenta(i) { if(confirm("¿Borrar cuenta?")) { db.stock.splice(i,1); save(); } }
 
-    // FUNCIONES SOCIOS
     function agregarSocio() {
         let n = document.getElementById('socio-nombre').value;
         let c = document.getElementById('socio-correo').value;
         let p = document.getElementById('socio-pass').value;
         let r = document.getElementById('socio-rol').value;
-        if(n && c && p) { db.socios.push({nombre: n, correo: c, pass: p, rol: r, estado: true}); addLog(`Socio ${n} creado`); save(); }
+        if(n && c && p) { db.socios.push({nombre: n, correo: c, pass: p, rol: r, estado: true}); save(); }
     }
+    
     function toggleSocio(i) { db.socios[i].estado = !db.socios[i].estado; save(); }
-
-    // FUNCIONES VIP Y MASIVOS
-    function agregarVIP() { let t = document.getElementById('input-vip-lista').value; if(t) { db.vip.push(t); save(); } }
+    function agregarVIP() { 
+        let t = document.getElementById('input-vip-lista').value; 
+        if(t) { 
+            db.vip.push(t); 
+            descontarAutomatico(); // También descuenta cuando agregas VIP
+            document.getElementById('input-vip-lista').value = "";
+            save(); 
+        } 
+    }
+    
     function limpiarHistorial() { db.historial = []; save(); }
     function borrarTodoStock() { if(confirm("¿Borrar TODO?")) { db.stock = []; save(); } }
     function resetUsadasGlobal() { db.stock.forEach(s => s.cupo = 0); save(); }
 
     function renderAll() {
-        // Historial
         document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div style="border-bottom:1px solid #334155; padding:5px; color:#fff;">${h}</div>`).join('');
-        // Select Stock
         document.getElementById('stock-plataforma-select').innerHTML = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
-        // VIP
         document.querySelector('#tabla-vip tbody').innerHTML = db.vip.map((v, i) => `<tr><td style="text-align:left;">${v}</td><td><button class="action-btn" style="background:var(--danger)" onclick="db.vip.splice(${i},1);save()">X</button></td></tr>`).join('');
-        // SOCIOS
         document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td><small>${s.correo}<br><b>${s.pass}</b></small></td><td>${s.rol}</td><td><span class="status-badge ${s.estado?'on':'off'}">${s.estado?'ON':'OFF'}</span></td><td><button class="action-btn" style="background:var(--accent)" onclick="toggleSocio(${i})">ON/OFF</button></td></tr>`).join('');
-        // RESUMEN Y STOCK DETALLADO
+        
         document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => {
             let pct = (s.cupo / s.max) * 100;
             return `<tr>
@@ -209,8 +215,7 @@
                     ${s.cupo} / ${s.max}
                     <div class="progress-container"><div class="progress-bar" style="width:${pct}%"></div></div>
                 </td>
-                <td style="display:flex; gap:2px;">
-                    <button class="action-btn" style="background:var(--success)" onclick="usarCupo(${i})">VENDER</button>
+                <td>
                     <button class="action-btn" style="background:var(--warning)" onclick="resetCupo(${i})">RESET</button>
                     <button class="action-btn" style="background:var(--danger)" onclick="eliminarCuenta(${i})">X</button>
                 </td>
