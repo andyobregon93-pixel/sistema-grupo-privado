@@ -7,34 +7,24 @@
     <style>
         :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
-
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index: 2000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--primary); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 2px solid var(--accent); }
-
         .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
         .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
         .nav-btn.active { background: var(--accent); }
-
+        .btn-logout { background: var(--danger) !important; color: white; }
         .container { padding: 15px; }
         .section { display: none; }
         .section.active { display: block; }
-
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; border-radius: 8px; overflow: hidden; }
         th { background: #1e2d3b; color: white; padding: 10px; font-size: 0.75rem; }
         td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 0.8rem; text-align: center; }
-
         input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        
-        /* DISEÑO DE LISTA SEGÚN TU IMAGEN */
+        /* DISEÑO VIP */
         .member-item { display: flex; justify-content: space-between; align-items: center; background: white; color: #333; padding: 15px; margin-bottom: 8px; border-radius: 4px; border-left: 5px solid #eee; }
-        .member-info { font-size: 0.85rem; font-weight: 500; flex: 1; }
-        .member-btns { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
-        .btn-edit { background: #ffa500; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
-
-        .log-item { border-bottom: 1px solid #334155; padding: 8px; font-size: 0.75rem; }
+        .log-item { border-bottom: 1px solid #334155; padding: 10px; font-size: 0.8rem; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -55,54 +45,53 @@
         <button class="nav-btn" onclick="showTab('tab-socios')">👥 SOCIOS</button>
         <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK</button>
         <button class="nav-btn" onclick="showTab('tab-resumen')">📊 TOTAL</button>
+        <button class="nav-btn btn-logout" onclick="cerrarSesion()">✖️ SALIR</button>
     </div>
 
     <div class="container">
-        <div id="tab-vip" class="section">
+        <div id="tab-historial" class="section active">
             <div class="card">
-                <h3>💎 Cargar Lista de Miembros VIP</h3>
-                <textarea id="input-masivo-vip" rows="5" placeholder="Pega aquí la lista de nombres y números..."></textarea>
-                <button class="btn-add" style="background:var(--accent);" onclick="cargarVipMasivo()">AÑADIR A LISTA</button>
-            </div>
-            
-            <div class="card" style="background: transparent; border: none; padding: 0;">
-                <div style="background: #f8fafc; color: #1e293b; padding: 10px; display: flex; justify-content: space-between; font-weight: bold; border-radius: 4px 4px 0 0;">
-                    <span>Nombre</span>
-                    <span>Acciones</span>
-                </div>
-                <div id="lista-miembros-despliegue"></div>
+                <h3>📜 Registro de Actividad</h3>
+                <div id="historial-lista" style="max-height: 450px; overflow-y: auto; background:#0f172a; padding:10px;"></div>
+                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Borrar Historial</button>
             </div>
         </div>
 
-        <div id="tab-historial" class="section active">
+        <div id="tab-vip" class="section">
             <div class="card">
-                <h3>📜 Registro de Entregas</h3>
-                <div id="historial-lista"></div>
+                <h3>💎 Miembros VIP / Pedidos</h3>
+                <textarea id="input-masivo-vip" rows="4" placeholder="Pega aquí la lista de nombres y números..."></textarea>
+                <button class="btn-add" onclick="cargarVipMasivo()">AÑADIR A LA LISTA</button>
+                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+                <input type="text" id="miembro-pedido" placeholder="Nombre del Miembro que pide">
+                <select id="select-plat-pedido"></select>
+                <button class="btn-add" style="background:var(--accent)" onclick="entregarPedido()">ENTREGAR Y REGISTRAR</button>
             </div>
+            <div id="lista-vip-despliegue"></div>
         </div>
 
         <div id="tab-socios" class="section">
             <div class="card">
                 <h3>👥 Socios</h3>
-                <input type="text" id="s-nom" placeholder="Nombre"><input type="email" id="s-cor" placeholder="Correo"><input type="text" id="s-pas" placeholder="Pass">
-                <button class="btn-add" onclick="aggSocio()">CREAR</button>
-                <table id="t-socios"><thead><tr><th>Nombre</th><th>Acceso</th><th>Acción</th></tr></thead><tbody></tbody></table>
+                <input type="text" id="soc-nom" placeholder="Nombre"><input type="email" id="soc-cor" placeholder="Correo"><input type="text" id="soc-pas" placeholder="Pass">
+                <button class="btn-add" onclick="agregarSocio()">CREAR</button>
+                <table id="tabla-socios"><thead><tr><th>Nombre</th><th>Acceso</th><th>Estado</th></tr></thead><tbody></tbody></table>
             </div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>📦 Inventario</h3>
+                <h3>📦 Stock</h3>
                 <input type="text" id="st-cor" placeholder="Correo"><input type="text" id="st-cla" placeholder="Clave">
-                <select id="st-plat"></select>
-                <button class="btn-add" onclick="aggStock()">GUARDAR</button>
+                <select id="st-plat-select"></select>
+                <button class="btn-add" onclick="agregarStock()">GUARDAR</button>
             </div>
         </div>
 
         <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>📊 Total Stock (0/8)</h3>
-                <table id="t-res"><thead><tr><th>Plat</th><th>Cuenta</th><th>Cupo</th><th>Acción</th></tr></thead><tbody id="b-res"></tbody></table>
+                <h3>📊 Control 0/8</h3>
+                <table id="tabla-resumen"><thead><tr><th>Plat</th><th>Cuenta</th><th>Cupo</th><th>Acción</th></tr></thead><tbody id="body-resumen"></tbody></table>
             </div>
         </div>
     </div>
@@ -110,12 +99,12 @@
 
 <script>
     let currentAdmin = "";
-    let db = JSON.parse(localStorage.getItem('andy_db_final_v10')) || {
+    let db = JSON.parse(localStorage.getItem('andy_db_final_v11')) || {
         historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+", "IPTV"],
         socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", estado: true}]
     };
 
-    function save() { localStorage.setItem('andy_db_final_v10', JSON.stringify(db)); renderAll(); }
+    function save() { localStorage.setItem('andy_db_final_v11', JSON.stringify(db)); renderAll(); }
 
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
@@ -124,80 +113,60 @@
         if(u) { currentAdmin = u.nombre; document.getElementById('login-overlay').style.display='none'; document.getElementById('main-content').style.display='block'; renderAll(); }
     }
 
-    // FUNCIÓN PARA CARGAR LISTA MASIVA
+    function cerrarSesion() { location.reload(); }
+
+    // HISTORIAL DETALLADO SEGÚN PEDISTE
+    function registrarEntrega(miembro, plataforma) {
+        let d = new Date();
+        db.historial.unshift({
+            fecha: d.toLocaleDateString(),
+            hora: d.toLocaleTimeString(),
+            socio: currentAdmin,
+            miembro: miembro,
+            plat: plataforma
+        });
+        save();
+    }
+
+    function entregarPedido() {
+        let m = document.getElementById('miembro-pedido').value;
+        let p = document.getElementById('select-plat-pedido').value;
+        if(m) {
+            let sIdx = db.stock.findIndex(s => s.plat === p && s.cupo < 8);
+            if(sIdx !== -1) {
+                db.stock[sIdx].cupo++;
+                registrarEntrega(m, p);
+                document.getElementById('miembro-pedido').value = "";
+            } else { alert("Sin stock para " + p); }
+        }
+    }
+
     function cargarVipMasivo() {
-        let texto = document.getElementById('input-masivo-vip').value;
-        if(texto) {
-            let lineas = texto.split('\n');
-            lineas.forEach(l => { if(l.trim()) db.vip.push(l.trim()); });
-            document.getElementById('input-masivo-vip').value = "";
-            save();
-        }
+        let t = document.getElementById('input-masivo-vip').value;
+        if(t) { t.split('\n').forEach(l => { if(l.trim()) db.vip.push(l.trim()); }); document.getElementById('input-masivo-vip').value = ""; save(); }
     }
 
-    function editarVip(i) {
-        let n = prompt("Editar Miembro:", db.vip[i]);
-        if(n) { db.vip[i] = n; save(); }
-    }
-
-    function eliminarVip(i) {
-        if(confirm("¿Eliminar?")) { db.vip.splice(i, 1); save(); }
-    }
-
-    function aggStock() {
-        let c = document.getElementById('st-cor').value;
-        let k = document.getElementById('st-cla').value;
-        let p = document.getElementById('st-plat').value;
-        if(c && k) { db.stock.push({plat: p, cuenta: `${c}:${k}`, cupo: 0, max: 8}); save(); }
-    }
-
-    function usarCupo(i, miembro) {
-        if(db.stock[i].cupo < 8) {
-            db.stock[i].cupo++;
-            let ahora = new Date();
-            db.historial.unshift(`[${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString()}] ${currentAdmin} entregó ${db.stock[i].plat} a ${miembro}`);
-            save();
-        }
-    }
-
-    function showTab(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
+    function editarVip(i) { let n = prompt("Editar:", db.vip[i]); if(n) { db.vip[i] = n; save(); } }
+    function borrarVip(i) { if(confirm("¿Borrar?")) { db.vip.splice(i, 1); save(); } }
+    function limpiarHistorial() { db.historial = []; save(); }
+    function agregarStock() { let c = document.getElementById('st-cor').value; let k = document.getElementById('st-cla').value; let p = document.getElementById('st-plat-select').value; if(c&&k) { db.stock.push({plat:p, cuenta:`${c}:${k}`, cupo:0}); save(); } }
+    function agregarSocio() { let n = document.getElementById('soc-nom').value; let c = document.getElementById('soc-cor').value; let p = document.getElementById('soc-pas').value; if(n&&c&&p) { db.socios.push({nombre:n, correo:c, pass:p, estado:true}); save(); } }
+    function showTab(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active'); }
 
     function renderAll() {
-        // Historial
-        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div class="log-item">${h}</div>`).join('');
+        // Historial Detallado
+        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div class="log-item"><span style="color:var(--accent)">[${h.fecha} ${h.hora}]</span> Socio: <span style="color:var(--warning)">${h.socio}</span> entregó <b>${h.plat}</b> a <b>${h.miembro}</b></div>`).join('');
         
-        // Lista VIP según tu imagen
-        document.getElementById('lista-miembros-despliegue').innerHTML = db.vip.map((v, i) => `
-            <div class="member-item">
-                <div class="member-info">${v}</div>
-                <div class="member-btns">
-                    <button class="btn-edit" onclick="editarVip(${i})">EDITAR</button>
-                    <button class="btn-del" onclick="eliminarVip(${i})">X</button>
-                </div>
-            </div>
-        `).join('');
+        // VIP Lista
+        document.getElementById('lista-vip-despliegue').innerHTML = db.vip.map((v, i) => `<div class="member-item"><span>${v}</span><div style="display:flex;flex-direction:column;gap:5px;"><button style="background:orange;color:white;border:none;padding:5px;border-radius:4px;" onclick="editarVip(${i})">EDITAR</button><button style="background:red;color:white;border:none;padding:5px;border-radius:4px;" onclick="borrarVip(${i})">X</button></div></div>`).join('');
 
-        // Select Plataformas
-        document.getElementById('st-plat').innerHTML = db.plataformas.map(p => `<option>${p}</option>`).join('');
-
-        // Resumen
-        document.getElementById('b-res').innerHTML = db.stock.map((s, i) => `
-            <tr>
-                <td>${s.plat}</td>
-                <td><small>${s.cuenta}</small></td>
-                <td>${s.cupo}/8</td>
-                <td><button onclick="resetCupo(${i})">RESET</button></td>
-            </tr>
-        `).join('');
+        // Selects y Tablas
+        let opts = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
+        document.getElementById('st-plat-select').innerHTML = opts;
+        document.getElementById('select-plat-pedido').innerHTML = opts;
+        document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map(s => `<tr><td>${s.nombre}</td><td>${s.correo}</td><td>ON</td></tr>`).join('');
+        document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => `<tr><td>${s.plat}</td><td><small>${s.cuenta}</small></td><td>${s.cupo}/8</td><td><button onclick="db.stock[i].cupo=0;save()">RESET</button></td></tr>`).join('');
     }
-    
-    function resetCupo(i) { db.stock[i].cupo = 0; save(); }
-
     renderAll();
 </script>
 </body>
