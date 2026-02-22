@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDVIP | Control Total</title>
+    <title>ANDVIP | Sistema Premium</title>
     <style>
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
@@ -21,16 +21,20 @@
         .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
         h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
+        .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         .btn-status { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; margin: 2px; }
         .on { background: var(--success); }
         .off { background: var(--danger); }
         .edit { background: #f59e0b; }
+        .entrega-box { background: #ffffff; color: #000000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
         .admin-only { display: none; }
-        .entrega-box { background: #ffffff; color: #000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
-        #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; }
+        #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
+        .plat-tag { display: inline-block; background: #111827; padding: 5px 10px; border-radius: 5px; margin: 5px; cursor: pointer; border: 1px solid var(--accent); }
         .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
@@ -59,13 +63,13 @@
             <div class="card admin-only" style="border: 2px solid #f59e0b; text-align: center;">
                 <h3>CONTROL DE SISTEMA</h3>
                 <div id="sistema-status-label" class="status-badge">ESTADO: CARGANDO...</div><br>
-                <button id="btn-toggle-sistema" onclick="toggleSistema()" class="btn-main" style="max-width: 300px;">CAMBIAR ESTADO</button>
-                <hr style="border: 0.5px solid var(--border); margin: 20px 0;">
-                <h3>Cargar Miembros</h3>
-                <textarea id="lista-masiva" placeholder="Nombre (Uno por línea)"></textarea>
-                <button id="btn-cargar-miembros" onclick="guardarMiembros()" class="btn-main btn-accent">AGREGAR A LA LISTA</button>
-                <div style="max-height: 200px; overflow-y: auto; margin-top: 15px;">
-                    <table style="width: 100%; border-collapse: collapse;"><tbody id="tabla-gestion-miembros"></tbody></table>
+                <button id="btn-toggle-sistema" onclick="toggleSistema()" class="btn-main" style="max-width: 300px; margin-bottom: 20px;">CAMBIAR ESTADO</button>
+                <hr style="border: 0.5px solid var(--border); margin-bottom: 20px;">
+                <h3>Gestión Miembros VIP</h3>
+                <textarea id="lista-masiva" placeholder="Nombre - Celular (Uno por línea)"></textarea>
+                <button id="btn-cargar-miembros" onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
+                <div class="table-wrapper" style="margin-top:10px; max-height:200px;">
+                    <table><tbody id="tabla-gestion-miembros"></tbody></table>
                 </div>
             </div>
 
@@ -95,12 +99,13 @@
             <div class="card">
                 <h3>Añadir Nuevo Stock</h3>
                 <div id="nombres-rapidos" style="margin-bottom: 10px;"></div>
-                <input type="text" id="st-nombre" placeholder="Nombre de la Plataforma">
-                <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas</option><option value="iptv">IPTV</option></select>
+                <input type="text" id="st-nombre" placeholder="Nombre de la Plataforma (Ej: Netflix)">
+                <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas (Correo/Pass)</option><option value="iptv">IPTV (Link)</option></select>
                 <div id="inputs-streaming"><input type="text" id="st-correo" placeholder="Correo"><input type="text" id="st-clave" placeholder="Clave"></div>
-                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL"></textarea></div>
-                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR</button>
+                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL IPTV"></textarea></div>
+                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR EN INVENTARIO</button>
             </div>
+            <h3>Inventario Activo</h3>
             <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
         </div>
 
@@ -112,7 +117,10 @@
                 <select id="socio-rol"><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
                 <button onclick="crearSocio()" class="btn-main btn-accent">CREAR SOCIO</button>
             </div>
-            <div class="table-wrapper"><table><thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="lista-socios"></tbody></table></div>
+            <div class="table-wrapper"><table>
+                <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead>
+                <tbody id="lista-socios"></tbody>
+            </table></div>
         </div>
     </div>
 </div>
@@ -137,16 +145,16 @@
 
     let sistemaActivo = true;
 
-    // --- CONTROL DE SISTEMA ---
+    // --- SISTEMA ON/OFF ---
     async function cargarEstadoSistema() {
         const docRef = doc(db, "ajustes", "estado_sistema");
         const snap = await getDoc(docRef);
         if (snap.exists()) {
             sistemaActivo = snap.data().activo;
-            actualizarInterfazSistema();
         } else {
             await setDoc(docRef, { activo: true });
         }
+        actualizarInterfazSistema();
     }
 
     function actualizarInterfazSistema() {
@@ -179,44 +187,14 @@
         actualizarInterfazSistema();
     };
 
-    // --- PROTECCIÓN DE 24 HORAS POR MIEMBRO ---
-    window.solicitarAuto = async () => {
-        if (!sistemaActivo) return alert("El sistema está apagado por el administrador.");
-        
-        const mNom = document.getElementById('sel-miembro').value;
-        const pNom = document.getElementById('sel-plat').value;
-        if(!mNom || !pNom) return alert("Selecciona nombre y plataforma.");
-
-        // REVISAR SI EL MIEMBRO YA PIDIÓ EN LAS ÚLTIMAS 24H
-        const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const qHistorial = query(collection(db, "pedidos_vip"), 
-            where("miembro", "==", mNom), 
-            where("timestamp", ">", hace24h)
-        );
-        
-        const snapHistorial = await getDocs(qHistorial);
-        if (!snapHistorial.empty) {
-            return alert("🚫 ABUSO DETECTADO: Ya pediste una cuenta hoy. Debes esperar 24 horas.");
-        }
-
-        try {
-            const qInv = query(collection(db, "inventario_vip"), where("nombre", "==", pNom));
-            const snapInv = await getDocs(qInv);
-            let cuenta = null;
-            snapInv.forEach(doc => { if(!cuenta && doc.data().usos < 5) cuenta = { id: doc.id, ...doc.data() }; });
-
-            if (cuenta) {
-                const info = cuenta.tipo === 'streaming' ? `USER: ${cuenta.correo} | PASS: ${cuenta.clave}` : `LINK: ${cuenta.url}`;
-                await updateDoc(doc(db, "inventario_vip", cuenta.id), { usos: increment(1) });
-                await addDoc(collection(db, "pedidos_vip"), { miembro: mNom, plataforma: pNom, datos: info, timestamp: serverTimestamp() });
-                
-                document.getElementById('datos-entregados').innerText = info;
-                document.getElementById('entrega-box').style.display = 'block';
-            } else { alert("Sin cupos disponibles."); }
-        } catch (e) { alert("Error."); }
+    // --- LOGIN/LOGOUT ---
+    window.login = async () => {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('password').value;
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error al entrar."); }
     };
+    window.logout = () => signOut(auth);
 
-    // --- INICIO Y CARGA ---
     onAuthStateChanged(auth, async user => {
         if(user) {
             const dU = await getDoc(doc(db, "usuarios", user.uid));
@@ -232,7 +210,38 @@
         }
     });
 
+    // --- SOLICITAR CUENTA (CON SEGURIDAD POR NOMBRE) ---
+    window.solicitarAuto = async () => {
+        if (!sistemaActivo) return alert("Sistema apagado.");
+        const mNom = document.getElementById('sel-miembro').value;
+        const pNom = document.getElementById('sel-plat').value;
+        if(!mNom || !pNom) return alert("Selecciona tu nombre y plataforma.");
+
+        try {
+            // Validar si este nombre ya pidió en las últimas 24h
+            const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            const qH = query(collection(db, "pedidos_vip"), where("miembro", "==", mNom), where("timestamp", ">", hace24h));
+            const snapH = await getDocs(qH);
+            if (!snapH.empty) return alert("🚫 " + mNom + ", ya pediste cuenta hoy. Espera 24h.");
+
+            const q = query(collection(db, "inventario_vip"), where("nombre", "==", pNom));
+            const snap = await getDocs(q);
+            let cuenta = null;
+            snap.forEach(doc => { if(!cuenta && doc.data().usos < 5) cuenta = { id: doc.id, ...doc.data() }; });
+
+            if (cuenta) {
+                const info = cuenta.tipo === 'streaming' ? `USER: ${cuenta.correo}\nPASS: ${cuenta.clave}` : `LINK: ${cuenta.url}`;
+                await updateDoc(doc(db, "inventario_vip", cuenta.id), { usos: increment(1) });
+                await addDoc(collection(db, "pedidos_vip"), { miembro: mNom, plataforma: pNom, datos: info, timestamp: serverTimestamp() });
+                document.getElementById('datos-entregados').innerText = info;
+                document.getElementById('entrega-box').style.display = 'block';
+                document.getElementById('entrega-box').scrollIntoView({ behavior: 'smooth' });
+            } else { alert("Sin cupos."); }
+        } catch (e) { alert("Error."); }
+    };
+
     function cargarDatos() {
+        // Miembros
         onSnapshot(collection(db, "config_vip"), s => {
             const sel = document.getElementById('sel-miembro');
             const tab = document.getElementById('tabla-gestion-miembros');
@@ -241,10 +250,11 @@
             s.forEach(d => {
                 const n = d.data().nombre;
                 sel.innerHTML += `<option value="${n}">${n}</option>`;
-                tab.innerHTML += `<tr><td style="padding:10px;">${n}</td><td><button class="btn-status edit" onclick="editarMiembro('${d.id}','${n}')">✎</button><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
+                tab.innerHTML += `<tr><td>${n}</td><td style="text-align:right;"><button class="btn-status edit" onclick="editarMiembro('${d.id}','${n}')">✎</button><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
             });
         });
 
+        // Stock
         onSnapshot(collection(db, "inventario_vip"), s => {
             const sel = document.getElementById('sel-plat');
             const div = document.getElementById('display-stock-list');
@@ -255,12 +265,22 @@
             s.forEach(d => {
                 const i = d.data(); u.add(i.nombre);
                 if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button><button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
             });
             u.forEach(n => rapido.innerHTML += `<span class="plat-tag" onclick="document.getElementById('st-nombre').value='${n}'">${n}</span>`);
         });
 
-        // (Snapshot de Pedidos y Usuarios igual al anterior...)
+        // Socios
+        onSnapshot(collection(db, "usuarios"), s => {
+            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
+            s.forEach(d => {
+                const u = d.data();
+                const st = u.activo !== false ? 'on' : 'off';
+                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td><button class="btn-status ${st}" onclick="toggleSocio('${d.id}', ${u.activo})">${st.toUpperCase()}</button></td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">BORRAR</button></td></tr>`;
+            });
+        });
+
+        // Pedidos
         onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), s => {
             const tb = document.getElementById('lista-pedidos'); tb.innerHTML = "";
             s.forEach(d => {
@@ -270,29 +290,50 @@
         });
     }
 
-    // Funciones de utilidad (Iguales para mantener estabilidad)
-    window.login = async () => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error."); }
+    window.crearSocio = async () => {
+        const e = document.getElementById('socio-email').value;
+        const p = document.getElementById('socio-pass').value;
+        const r = document.getElementById('socio-rol').value;
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "usuarios", res.user.uid), { email: e, role: r, activo: true, uid: res.user.uid });
+        alert("Socio Creado");
     };
-    window.logout = () => signOut(auth);
+
+    window.toggleSocio = async (id, act) => { await updateDoc(doc(db, "usuarios", id), { activo: !act }); };
+
+    window.guardarStock = async () => {
+        const t = document.getElementById('st-tipo').value;
+        const n = document.getElementById('st-nombre').value;
+        if(!n) return alert("Pon el nombre");
+        const d = { tipo: t, nombre: n, usos: 0, timestamp: serverTimestamp() };
+        if(t==='streaming'){ d.correo=document.getElementById('st-correo').value; d.clave=document.getElementById('st-clave').value; }
+        else { d.url=document.getElementById('st-url').value; }
+        await addDoc(collection(db, "inventario_vip"), d);
+        alert("Guardado");
+    };
+
     window.guardarMiembros = async () => {
+        const btn = document.getElementById('btn-cargar-miembros');
         const t = document.getElementById('lista-masiva').value.split('\n');
+        btn.innerText = "CARGANDO...";
         for(let l of t) { if(l.trim()!="") await addDoc(collection(db, "config_vip"), { nombre: l.trim() }); }
         document.getElementById('lista-masiva').value = "";
+        btn.innerText = "¡LISTO!";
+        setTimeout(() => btn.innerText = "CARGAR LISTA", 2000);
     };
+
     window.editarMiembro = async (id, nom) => {
         const n = prompt("Nuevo nombre:", nom);
         if(n) await updateDoc(doc(db, "config_vip", id), { nombre: n });
     };
-    window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
-    window.resetCupos = async (id) => await updateDoc(doc(db, "inventario_vip", id), { usos: 0 });
+
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active'); btn.classList.add('active');
     };
+    window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
+    window.resetCupos = async (id) => { await updateDoc(doc(db, "inventario_vip", id), { usos: 0 }); };
     window.toggleInputs = () => {
         const t = document.getElementById('st-tipo').value;
         document.getElementById('inputs-streaming').style.display = t === 'streaming' ? 'block' : 'none';
