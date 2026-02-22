@@ -3,107 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA CONTROL TOTAL VIP</title>
+    <title>SISTEMA VIP CONTROL TOTAL</title>
     <style>
-        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; --oscuro: #2c3e50; --vip: #f1c40f; }
-        body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
-        .contenedor{ max-width:1150px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
+        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --info: #3498db; --vip: #f1c40f; }
+        body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; padding:10px; }
+        .contenedor{ max-width:1150px; margin:20px auto; background:white; color:#333; padding:20px; border-radius:15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { background: #ddd; color: #333; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; transition: 0.3s; min-width: 130px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; overflow-x: auto; background: #eee; padding: 5px; border-radius: 8px; }
+        .tab-btn { background: #ddd; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; flex: 1; min-width: 100px; }
         .tab-btn.active { background: var(--admin); color: white; }
 
-        .tarjeta { background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primario); }
-        .tarjeta-admin { border-top: 5px solid var(--admin); }
-        
-        input, select, button { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:14px; box-sizing: border-box; }
+        .tarjeta { background:#f9f9f9; padding:15px; border-radius:10px; margin-bottom:15px; border-top: 4px solid var(--primario); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, button { width:100%; padding:10px; margin:5px 0; border-radius:5px; border:1px solid #ccc; box-sizing: border-box; }
         button { background:var(--primario); color:white; font-weight:bold; cursor:pointer; border:none; transition: 0.3s; }
-        button:hover { filter: brightness(1.2); }
+        button:hover { opacity: 0.8; }
         
-        .tabla-contenedor { overflow-x: auto; background: white; border-radius: 8px; }
-        table { width:100%; border-collapse:collapse; font-size: 11px; margin-top: 10px; }
-        th, td { border:1px solid #eee; padding:10px; text-align:left; }
+        .tabla-contenedor { overflow-x: auto; margin-top: 10px; }
+        table { width:100%; border-collapse:collapse; font-size: 11px; }
+        th, td { border:1px solid #eee; padding:8px; text-align:left; }
         th { background:var(--primario); color: white; }
-
-        .btn-accion { width: auto; padding: 6px 10px; font-size: 10px; margin: 2px; border-radius: 4px; cursor: pointer; color: white; border:none; font-weight: bold; }
-        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; color: #000; }
+        
+        .btn-accion { width: auto; padding: 4px 8px; font-size: 10px; margin: 2px; color: white; border-radius: 3px; cursor: pointer; border: none; }
+        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; font-size: 1.1rem; }
+        .badge-status { padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
     <div id="cajaLogin">
-        <h1 style="text-align:center; color: var(--primario)">🔐 Panel Control VIP</h1>
+        <h2 style="text-align:center; color: var(--primario)">🔐 Acceso Sistema VIP</h2>
         <input type="email" id="correoLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
-        <button onclick="iniciarSesion()">INGRESAR</button>
+        <button onclick="iniciarSesion()" style="height: 50px;">INGRESAR AL PANEL</button>
     </div>
 
     <div id="app" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
-            <div id="infoUsuario" style="font-weight: bold; color: var(--primario);"></div>
-            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 20px;">Cerrar Sesión</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+            <span id="infoUsuario" style="font-weight: bold; color: var(--secundario)"></span>
+            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding: 5px 15px;">Cerrar Sesión</button>
         </div>
 
-        <div id="seccionUsuario">
-            <div class="tarjeta" style="border-top: 5px solid var(--exito);">
-                <h3>🎁 Generar Acceso VIP</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <label style="font-size: 11px; font-weight: bold;">🔍 BUSCAR MIEMBRO:</label>
-                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Nombre, país o número..." onkeyup="filtrarMiembros()">
-                        <select id="selectMiembroVip" size="6" style="height: 140px;"></select>
-                    </div>
-                    <div>
-                        <label style="font-size: 11px; font-weight: bold;">CONFIGURACIÓN:</label>
-                        <select id="selectPlatUsuario"></select>
-                        <input type="text" id="codigoTV" placeholder="Código TV (Sólo activaciones)">
-                    </div>
+        <div class="tarjeta">
+            <h3 style="margin-top:0; color: var(--exito)">🚀 Entregar Cuenta a Miembro VIP</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label style="font-weight: bold; font-size: 12px;">🔍 BUSCADOR DE MIEMBROS:</label>
+                    <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Escribe Nombre o País..." onkeyup="filtrarMiembros()">
+                    <select id="selectMiembroVip" size="6" style="margin-top:5px; height: 130px;"></select>
                 </div>
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem;">🚀 ASIGNAR CUENTA</button>
-                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:20px; border: 2px solid var(--exito); background:#f0fff0; text-align:center; border-radius: 8px;">
-                    <code id="textoCuenta" style="font-size:1.5rem; color:#d35400; font-weight: bold; display: block; margin-bottom: 15px;"></code>
-                    <button onclick="copiarTodo()" style="background: var(--info); width: auto; padding: 10px 30px; border-radius: 50px;">📋 COPIAR TODO</button>
+                <div>
+                    <label style="font-weight: bold; font-size: 12px;">PRODUCTO:</label>
+                    <select id="selectPlatUsuario" style="height: 45px;"></select>
+                    <input type="text" id="codigoTV" placeholder="Código de TV (Si es activación)">
                 </div>
+            </div>
+            <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); margin-top:15px; height:55px; font-size: 1.2rem;">GENERAR Y ENTREGAR</button>
+            
+            <div id="resultadoPedido" style="display:none; background:#d4edda; border: 2px solid var(--exito); padding:15px; margin-top:15px; text-align:center; border-radius: 8px;">
+                <p style="color: #155724; font-weight: bold; margin: 0;">DATOS DE LA CUENTA:</p>
+                <b id="textoCuenta" style="font-size:1.4rem; color:#155724; letter-spacing: 1px;"></b><br><br>
+                <button onclick="copiarTodo()" style="background:var(--info); width:auto; padding: 10px 25px;">📋 COPIAR DATOS</button>
             </div>
         </div>
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
                 <button class="tab-btn active" onclick="verTab('tabVentas')">📊 VENTAS</button>
-                <button class="tab-btn" onclick="verTab('tabVip')">💎 MIEMBROS VIP</button>
+                <button class="tab-btn" onclick="verTab('tabVip')">💎 LISTA VIP (150+)</button>
                 <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
-                <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 SOCIOS</button>
+                <button class="tab-btn" onclick="verTab('tabSocios')">👥 SOCIOS</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
-                <div class="tabla-contenedor"><table><thead><tr><th>Fecha</th><th>Socio</th><th>Miembro</th><th>Plat.</th><th>Cuenta</th></tr></thead><tbody id="cuerpoHistorial"></tbody></table></div>
+                <div class="tabla-contenedor">
+                    <table><thead><tr><th>Fecha</th><th>Socio</th><th>Cliente VIP</th><th>Cuenta</th></tr></thead><tbody id="cuerpoHistorial"></tbody></table>
+                </div>
             </div>
 
-            <div id="tabVip" class="tab-content" style="display:none;">
-                <div class="tarjeta tarjeta-admin">
-                    <h4>➕ Nuevo Miembro VIP</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+            <div id="tabVip" class="tab-content" style="display:none">
+                <div class="tarjeta" style="border-top-color: var(--admin)">
+                    <h4>➕ Agregar Nuevo Miembro al Sistema</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px">
                         <input type="text" id="vipNombre" placeholder="Nombre">
-                        <input type="text" id="vipNumero" placeholder="Número">
-                        <input type="text" id="vipPais" placeholder="País (Ejem: México)">
+                        <input type="text" id="vipNumero" placeholder="WhatsApp">
+                        <input type="text" id="vipPais" placeholder="País">
                     </div>
                     <button onclick="crearMiembroVip()" style="background:var(--exito)">GUARDAR MIEMBRO</button>
                 </div>
                 <div class="tabla-contenedor">
-                    <table id="tablaVipsAdmin"><thead><tr><th>País</th><th>Nombre</th><th>Número</th><th>Acciones</th></tr></thead><tbody id="cuerpoVipsAdmin"></tbody></table>
+                    <table><thead><tr><th>País</th><th>Nombre</th><th>WhatsApp</th><th>Acciones</th></tr></thead><tbody id="cuerpoVipsAdmin"></tbody></table>
                 </div>
             </div>
 
-            <div id="tabStock" class="tab-content" style="display:none;">
-                <div class="tarjeta tarjeta-admin">
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                        <input type="text" id="accCorreo" placeholder="Correo:Clave">
+            <div id="tabStock" class="tab-content" style="display:none">
+                <div class="tarjeta" style="border-top-color: var(--admin)">
+                    <h4>📥 Cargar Cuentas al Inventario</h4>
+                    <div style="display:flex; gap:10px">
+                        <input type="text" id="accCorreo" placeholder="correo:contraseña">
                         <select id="selectPlatAdmin"></select>
-                        <button onclick="subirInventario()">SUBIR STOCK</button>
                     </div>
+                    <button onclick="subirInventario()">SUBIR AL SISTEMA</button>
                 </div>
-                <div class="tabla-contenedor"><table><thead><tr><th>Plat</th><th>Cuenta</th><th>Usos</th><th>Acciones</th></tr></thead><tbody id="tablaGestionStock"></tbody></table></div>
+                <div class="tabla-contenedor">
+                    <table><thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Acciones</th></tr></thead><tbody id="tablaGestionStock"></tbody></table>
+                </div>
+            </div>
+
+            <div id="tabSocios" class="tab-content" style="display:none">
+                <div class="tarjeta" style="border-top-color: var(--admin)">
+                    <h4>👥 Crear Acceso para Vendedor</h4>
+                    <div style="display:flex; gap:10px">
+                        <input type="email" id="nuevoCorreo" placeholder="Correo del Socio">
+                        <input type="text" id="nuevoPass" placeholder="Contraseña">
+                    </div>
+                    <button onclick="registrarSocio()" style="background:var(--exito)">REGISTRAR SOCIO</button>
+                </div>
+                <div class="tabla-contenedor">
+                    <table><thead><tr><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="cuerpoSocios"></tbody></table>
+                </div>
             </div>
         </div>
     </div>
@@ -111,8 +129,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, deleteDoc, writeBatch, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
@@ -129,172 +147,152 @@
 
     let miEmail = "", miRol = "", vipsLocales = [];
 
+    // LOGIN
     window.iniciarSesion = async () => {
-        const c = document.getElementById("correoLogin").value, p = document.getElementById("passLogin").value;
-        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Acceso Incorrecto"); }
+        const c = document.getElementById("correoLogin").value;
+        const p = document.getElementById("passLogin").value;
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Credenciales incorrectas"); }
     };
     window.cerrarSesion = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const snap = await getDoc(doc(db, "users", user.uid));
-            miEmail = user.email;
             miRol = snap.exists() ? snap.data().role : "usuario";
+            miEmail = user.email;
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerHTML = `Usuario: ${miEmail}`;
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
-            cargarDatosEnVivo();
-            if(miRol === "admin") cargarListaCompletaVip();
+            document.getElementById("infoUsuario").innerText = `Conectado: ${miEmail} (${miRol.toUpperCase()})`;
+            cargarDatosRealtime();
+            if(miRol === "admin") inyectar150Miembros(); // Solo el admin activa la carga masiva
         } else {
             document.getElementById("cajaLogin").style.display = "block";
             document.getElementById("app").style.display = "none";
         }
     });
 
-    window.filtrarMiembros = () => {
-        const busqueda = document.getElementById("inputBusquedaVip").value.toLowerCase();
-        const select = document.getElementById("selectMiembroVip");
-        select.innerHTML = "";
-        const filtrados = vipsLocales.filter(v => v.nombre.toLowerCase().includes(busqueda) || v.pais.toLowerCase().includes(busqueda) || v.numero.includes(busqueda));
-        filtrados.forEach(v => {
-            const opt = document.createElement("option");
-            opt.value = `[${v.pais}] ${v.nombre}`;
-            opt.text = `[${v.pais}] ${v.nombre} (${v.numero})`;
-            select.appendChild(opt);
-        });
-    };
-
-    function cargarDatosEnVivo() {
+    function cargarDatosRealtime() {
+        // Cargar VIPs
         onSnapshot(query(collection(db, "vips"), orderBy("pais", "asc")), (snap) => {
-            vipsLocales = [];
-            let hAdmin = "";
+            vipsLocales = []; let h = "";
             snap.forEach(d => {
-                const v = d.data();
-                vipsLocales.push({id: d.id, ...v});
-                hAdmin += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td>
-                    <button class="btn-accion" style="background:var(--info)" onclick="editarVip('${d.id}','${v.nombre}','${v.numero}')">EDIT</button>
-                    <button class="btn-accion" style="background:var(--error)" onclick="eliminarVip('${d.id}')">BORRAR</button>
-                </td></tr>`;
+                const v = d.data(); vipsLocales.push({id: d.id, ...v});
+                h += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td><button class="btn-accion" style="background:var(--error)" onclick="borrarGenerico('vips','${d.id}')">Eliminar</button></td></tr>`;
             });
-            document.getElementById("cuerpoVipsAdmin").innerHTML = hAdmin;
+            document.getElementById("cuerpoVipsAdmin").innerHTML = h;
             filtrarMiembros();
         });
 
-        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(30)), (snap) => {
+        // Cargar Socios
+        onSnapshot(collection(db, "users"), (snap) => {
             let h = "";
             snap.forEach(d => {
-                const i = d.data();
-                h += `<tr><td>${i.fechaHora}</td><td>${i.vendedor}</td><td>${i.nombreWsp}</td><td>${i.plataforma}</td><td>${i.cuenta}</td></tr>`;
+                const u = d.data();
+                const color = u.estado === "OFF" ? "var(--error)" : "var(--exito)";
+                h += `<tr><td>${u.email}</td><td>${u.role}</td><td><span class="badge-status" style="background:${color}">${u.estado || 'ON'}</span></td><td>
+                    <button class="btn-accion" style="background:var(--secundario)" onclick="toggleSocio('${d.id}','${u.estado}')">ON/OFF</button>
+                    <button class="btn-accion" style="background:var(--error)" onclick="borrarGenerico('users','${d.id}')">X</button>
+                </td></tr>`;
             });
-            document.getElementById("cuerpoHistorial").innerHTML = h;
+            document.getElementById("cuerpoSocios").innerHTML = h;
         });
 
+        // Cargar Stock
         onSnapshot(collection(db, "inventario"), (snap) => {
             let h = "";
             snap.forEach(d => {
-                const data = d.data();
-                h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">BORRAR</button></td></tr>`;
+                const s = d.data();
+                h += `<tr><td>${s.plataforma}</td><td>${s.cuenta}</td><td>${s.usos}/8</td><td>
+                    <button class="btn-accion" style="background:var(--info)" onclick="resetStock('${d.id}')">Reset Cupos</button>
+                    <button class="btn-accion" style="background:var(--error)" onclick="borrarGenerico('inventario','${d.id}')">Borrar</button>
+                </td></tr>`;
             });
             document.getElementById("tablaGestionStock").innerHTML = h;
         });
 
+        // Cargar Plataformas
         onSnapshot(collection(db, "plataformas"), (snap) => {
-            let opts = "";
-            snap.forEach(d => opts += `<option value="${d.data().nombre}">${d.data().nombre}</option>`);
-            document.getElementById("selectPlatUsuario").innerHTML = opts;
-            document.getElementById("selectPlatAdmin").innerHTML = opts;
+            let o = ""; snap.forEach(d => o += `<option>${d.data().nombre}</option>`);
+            document.getElementById("selectPlatUsuario").innerHTML = o;
+            document.getElementById("selectPlatAdmin").innerHTML = o;
+        });
+
+        // Cargar Ventas
+        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(25)), (snap) => {
+            let h = ""; snap.forEach(d => {
+                const e = d.data();
+                h += `<tr><td>${e.fechaHora}</td><td>${e.vendedor}</td><td>${e.nombreWsp}</td><td><code>${e.cuenta}</code></td></tr>`;
+            });
+            document.getElementById("cuerpoHistorial").innerHTML = h;
         });
     }
 
+    // BUSCADOR VIP
+    window.filtrarMiembros = () => {
+        const b = document.getElementById("inputBusquedaVip").value.toLowerCase();
+        const s = document.getElementById("selectMiembroVip"); s.innerHTML = "";
+        vipsLocales.filter(v => v.nombre.toLowerCase().includes(b) || v.pais.toLowerCase().includes(b)).forEach(v => {
+            const o = document.createElement("option"); 
+            o.value = `[${v.pais}] ${v.nombre}`; 
+            o.text = `[${v.pais}] ${v.nombre} (${v.numero})`; 
+            s.appendChild(o);
+        });
+    };
+
+    // FUNCIONES SOCIOS
+    window.registrarSocio = async () => {
+        const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value;
+        if(!c || !p) return alert("Completa los datos");
+        try {
+            const res = await createUserWithEmailAndPassword(auth, c, p);
+            await setDoc(doc(db, "users", res.user.uid), { email: c, role: "usuario", estado: "ON" });
+            alert("Socio Creado Correctamente");
+        } catch(e) { alert("Error: " + e.message); }
+    };
+    window.toggleSocio = async (id, est) => { await updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" }); };
+
+    // FUNCIONES STOCK
+    window.subirInventario = async () => {
+        const c = document.getElementById("accCorreo").value, p = document.getElementById("selectPlatAdmin").value;
+        if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
+    };
+    window.resetStock = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); };
+
+    // GESTION VIP
     window.crearMiembroVip = async () => {
-        const n = document.getElementById("vipNombre").value, num = document.getElementById("vipNumero").value, p = document.getElementById("vipPais").value;
-        if(n && num && p) await addDoc(collection(db, "vips"), { nombre: n, numero: num, pais: p });
+        const n = document.getElementById("vipNombre").value, p = document.getElementById("vipPais").value, num = document.getElementById("vipNumero").value;
+        if(n && p) await addDoc(collection(db, "vips"), { nombre: n, pais: p, numero: num });
     };
 
-    window.eliminarVip = async (id) => { if(confirm("¿Eliminar miembro?")) await deleteDoc(doc(db, "vips", id)); };
+    window.borrarGenerico = async (col, id) => { if(confirm("¿Seguro de eliminar este registro?")) await deleteDoc(doc(db, col, id)); };
 
-    window.editarVip = async (id, nombre, numero) => {
-        const nNombre = prompt("Nuevo Nombre:", nombre);
-        const nNum = prompt("Nuevo Número:", numero);
-        if(nNombre && nNum) await updateDoc(doc(db, "vips", id), { nombre: nNombre, numero: nNum });
-    };
-
+    // ENTREGA AUTOMATICA
     window.procesarEntregaAutomatica = async () => {
-        const miembro = document.getElementById("selectMiembroVip").value;
-        const plat = document.getElementById("selectPlatUsuario").value;
-        const code = document.getElementById("codigoTV").value;
-        if(!miembro) return alert("Selecciona un miembro");
-        const ahora = new Date(), fTxt = ahora.toLocaleString(), fSort = ahora.getTime();
-
-        if(code) {
-            await addDoc(collection(db, "entregas"), { nombreWsp: miembro, plataforma: plat, cuenta: "TV: "+code, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "TV" });
-            alert("Pedido TV registrado");
+        const m = document.getElementById("selectMiembroVip").value, pl = document.getElementById("selectPlatUsuario").value, tv = document.getElementById("codigoTV").value;
+        if(!m) return alert("Primero busca y selecciona un miembro VIP");
+        const f = new Date();
+        if(tv) {
+            await addDoc(collection(db, "entregas"), { vendedor: miEmail, nombreWsp: m, plataforma: pl, cuenta: "CÓDIGO TV: "+tv, fechaHora: f.toLocaleString(), fechaSort: f.getTime() });
+            alert("Activación TV registrada");
         } else {
-            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
-            const snap = await getDocs(q);
-            if(snap.empty) return alert("Sin stock");
-            const dS = snap.docs[0], data = dS.data(), nU = (data.usos || 0) + 1;
-            await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
-            await addDoc(collection(db, "entregas"), { nombreWsp: miembro, plataforma: plat, cuenta: data.cuenta, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "listo" });
+            const q = query(collection(db, "inventario"), where("plataforma", "==", pl), where("estado", "==", "disponible"), limit(1));
+            const s = await getDocs(q);
+            if(s.empty) return alert("❌ NO HAY STOCK DE " + pl);
+            const d = s.docs[0], nU = (d.data().usos || 0) + 1;
+            await updateDoc(doc(db, "inventario", d.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
+            await addDoc(collection(db, "entregas"), { vendedor: miEmail, nombreWsp: m, plataforma: pl, cuenta: d.data().cuenta, fechaHora: f.toLocaleString(), fechaSort: f.getTime() });
             document.getElementById("resultadoPedido").style.display = "block";
-            document.getElementById("textoCuenta").innerText = data.cuenta;
+            document.getElementById("textoCuenta").innerText = d.data().cuenta;
         }
     };
 
-    window.subirInventario = async () => {
-        const c = document.getElementById("accCorreo").value, pl = document.getElementById("selectPlatAdmin").value;
-        if(c) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: c, estado: "disponible", usos: 0 });
-    };
-
-    window.verTab = (id) => {
-        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'block';
-        event.currentTarget.classList.add('active');
-    };
-
-    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
-
-    // CARGA DE LISTA MASIVA (AQUÍ ESTÁ TU LISTA COMPLETA)
-    async function cargarListaCompletaVip() {
+    // --- CARGA MASIVA DE TUS 150 CONTACTOS ---
+    async function inyectar150Miembros() {
         const check = await getDocs(collection(db, "vips"));
-        if(check.size > 10) return; // Si ya hay datos, no cargar de nuevo
+        if(check.size > 20) return; // Si ya hay datos no hace nada
 
         const batch = writeBatch(db);
-        const lista = [
+        const listaCompleta = [
             // ARGENTINA
-            {p:"Argentina", n:".☆", num:"+54 9 236 450-5075"}, {p:"Argentina", n:"Abraham", num:"+54 9 11 6470-7735"},
-            {p:"Argentina", n:"Antonio Marcelo Barria", num:"+54 9 2966 57-0641"}, {p:"Argentina", n:"Cel", num:"+54 9 11 5514-8608"},
-            {p:"Argentina", n:"Claudio", num:"+54 9 351 371-1222"}, {p:"Argentina", n:"Daniel", num:"+54 9 3756 63-4254"},
-            // BOLIVIA
-            {p:"Bolivia", n:"BALTON", num:"+591 68804338"}, {p:"Bolivia", n:"Br4y4n", num:"+591 78164220"},
-            {p:"Bolivia", n:"Carlitos", num:"+591 76561461"}, {p:"Bolivia", n:"Miguel", num:"+591 78015639"},
-            // CHILE
-            {p:"Chile", n:"CHINO", num:"+56 9 2697 3352"}, {p:"Chile", n:"DKM", num:"+56 9 3669 0808"},
-            {p:"Chile", n:"Jesús", num:"+56 9 4165 6643"},
-            // COLOMBIA
-            {p:"Colombia", n:"[Çªτ§Luis≥]", num:"+57 323 5380926"}, {p:"Colombia", n:"Dani", num:"+57 305 4217414"},
-            {p:"Colombia", n:"José Barrios", num:"+57 320 3156084"}, {p:"Colombia", n:"Migue🐳", num:"+57 305 3346037"},
-            // ECUADOR
-            {p:"Ecuador", n:"AC31", num:"+593 99 832 7110"}, {p:"Ecuador", n:"Álex", num:"+593 97 870 2848"},
-            {p:"Ecuador", n:"Memo", num:"+593 99 154 0065"},
-            // MÉXICO
-            {p:"México", n:"Gatito", num:"+52 446 370 1364"}, {p:"México", n:"Xavi🕊️Bautista", num:"+52 55 1139 7465"},
-            {p:"México", n:"Lady", num:"+52 56 4387 8533"}, {p:"México", n:"Cris", num:"+52 222 305 1652"},
-            // PERÚ
-            {p:"Perú", n:"ALEX", num:"+51 994 267 000"}, {p:"Perú", n:"Bryan", num:"+51 953 503 110"},
-            {p:"Perú", n:"Hana", num:"+51 916 275 783"}, {p:"Perú", n:"Tony", num:"+51 935 524 096"}
-            // El resto de la lista se puede agregar manualmente o por el admin
-        ];
-        
-        lista.forEach(item => {
-            const ref = doc(collection(db, "vips"));
-            batch.set(ref, item);
-        });
-        await batch.commit();
-        alert("Lista VIP cargada correctamente");
-    }
-</script>
-</body>
-</html>
+            {p:"Argentina", n:".☆", num:"+54 9 236 450-5075"}, {p:"Argentina", n:"Abraham", num:"+54 9 11 6470-7735"}, {p:"Argentina", n:"Antonio Marcelo Barria", num:"+54 9 2966 57-0641"}, {p:"Argentina", n:"Cel", num:"+54 9 11 5514-8608"}, {p:"Argentina", n:"Claudio", num:"+54 9 351 371-1222"}, {p:"Argentina", n:"Daniel", num:"+54 9 3756 63-4254"}, {p:"Argentina", n:"Daniel", num:"+54 9 11 2642-7561"}, {p:"Argentina", n:"Dante", num:"+54 9 351 245-5626"}, {p:"Argentina", n:"Dany", num:"+54 9 342 590-0775"}, {p:"Argentina", n:"Eduardo", num:"+54 9 11 5064-0010"}, {p:"Argentina", n:"Ely", num:"+54 9 11 3656-7473"}, {p:"Argentina", n:"Ezequiel", num:"+54 9 261 681-4200"}, {p:"Argentina", n:"Fede", num:"+54 9 11 3060-6425"}, {p:"Argentina", n:"Fede", num:"+54 9 261 694-8178"}, {p:"Argentina", n:"Federico", num:"+54 9 385 581-2856"}, {p:"Argentina", n:"Gabi", num:"+54 9 11 3862-2305"}, {p:"Argentina", n:"Gaby", num:"+54 9 351 385-9831"}, {p:"Argentina", n:"Gerardo", num:"+54 9 11 6889-2073"}, {p:"Argentina", n:"Gisela", num:"+54 9 11 2404-5553"}, {p:"Argentina", n:"Hernan", num:"+54 9 221 612-4299"}, {p:"Argentina", n:"Hugo", num:"+54 9 11 6788-0382"}, {p:"Argentina", n:"Imanol", num:"+54 9 291 442-5735"}, {p:"Argentina", n:"Ivan", num:"+54 9 341 582-8818"}, {p:"Argentina", n:"Javier", num:"+54 9 11 2758-0504"}, {p:"Argentina", n:"Jorge Alberto", num:"+54 9 11 5013-1768"}, {p:"Argentina", n:"Jorge", num:"+54 9 11 6401-4608"}, {p:"Argentina", n:"Juanca", num:"+54 9 11 2736-2182"}, {p:"Argentina", n:"Leo", num:"+54 9 11 3568-1549"}, {p:"Argentina", n:"Leo", num:"+54 9 11 3290-0389"}, {p:"Argentina", n:"Lucas", num:"+54 9 11 2838-8959"}, {p:"Argentina", n:"Lucas", num:"+54 9 11 3562-4261"}, {p:"Argentina", n:"Lucas", num:"+54 9 11 3605-6490"}, {p:"Argentina", n:"Luis", num:"+54 9 387 534-1181"}, {p:"Argentina", n:"Luis", num:"+54 9 11 5349-0669"}, {p:"Argentina", n:"Marcelo", num:"+54 9 11 3037-6799"}, {p:"Argentina", n:"Marcelo", num:"+54 9 11 6616-6352"}, {p:"Argentina", n:"Marco", num:"+54 9 11 2280-9276"}, {p:"Argentina", n:"Marcos", num:"+54 9 261 363-2337"}, {p:"Argentina", n:"Marcos", num:"+54 9 261 681-5407"}, {p:"Argentina", n:"Mariano", num:"+54 9 341 334-9721"}, {p:"Argentina", n:"Mariela", num:"+54 9 11 6271-9492"}, {p:"Argentina", n:"Martin", num:"+54 9 11 6785-3031"}, {p:"Argentina", n:"Mati", num:"+54 9 351 324-4284"}, {p:"Argentina", n:"Matias", num:"+54 9 223 580-9774"}, {p:"Argentina", n:"Mauro", num:"+54 9 11 2307-2856"}, {p:"Argentina", n:"Maxi", num:"+54 9 11 3206-8975"}, {p:"Argentina", n:"Naty", num:"+54 9 11 6245-5627"}, {p:"Argentina", n:"Nelson", num:"+54 9 11 5565-5136"}, {p:"Argentina", n:"Nico", num:"+54 9 11 2387-9519"}, {p:"Argentina", n:"Nico", num:"+54 9 261 247-4934"}, {p:"Argentina", n:"Nicolas", num:"+54 9 11 5007-8495"}, 
