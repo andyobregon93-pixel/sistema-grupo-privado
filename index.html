@@ -17,8 +17,9 @@
         .btn-logout { background: var(--danger) !important; color: white; }
 
         .container { padding: 15px; }
-        .section { display: none; }
+        .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; border-radius: 8px; overflow: hidden; }
@@ -29,10 +30,15 @@
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
         .action-btn { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; margin: 2px; font-weight: bold; }
         
+        /* Estilos específicos para la lista de miembros anterior */
+        .member-list-item { display: flex; justify-content: space-between; align-items: center; background: white; color: #333; padding: 10px; margin-bottom: 5px; border-radius: 4px; }
+        .member-actions { display: flex; flex-direction: column; gap: 2px; }
+        .btn-edit-member { background: var(--warning); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; }
+        .btn-delete-member { background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; }
+
         .progress-container { background: #eee; height: 8px; border-radius: 4px; width: 100%; margin-top: 5px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--accent); transition: 0.3s; }
-        .log-item { border-bottom: 1px solid #334155; padding: 10px; font-size: 0.8rem; }
-        .log-header { color: var(--accent); font-weight: bold; display: block; margin-bottom: 4px; }
+        .log-item { border-bottom: 1px solid #334155; padding: 10px; font-size: 0.8rem; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -61,7 +67,7 @@
             <div class="card">
                 <h3>📜 Registro Detallado</h3>
                 <div id="historial-lista" style="max-height: 450px; overflow-y: auto; background:#0f172a; border-radius: 5px;"></div>
-                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Limpiar Registro</button>
+                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Limpiar Historial</button>
             </div>
         </div>
 
@@ -70,40 +76,44 @@
                 <h3>💎 Entregar a Miembro</h3>
                 <input type="text" id="nombre-miembro" placeholder="Nombre del Miembro">
                 <select id="select-plataforma-pedido"></select>
-                <button class="btn-add" onclick="procesarEntrega()">ENTREGAR Y DESCONTAR</button>
-                <table id="tabla-vip"><thead><tr><th>Miembro</th><th>Acción</th></tr></thead><tbody></tbody></table>
+                <button class="btn-add" onclick="procesarEntregaManual()">ENTREGAR Y DESCONTAR</button>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+                
+                <div style="background: #f1f5f9; padding: 5px; color: #1e2d3b; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 5px; border-radius: 4px;">
+                    <span>Nombre</span>
+                    <span>Acciones</span>
+                </div>
+                <div id="lista-miembros-anterior"></div>
             </div>
         </div>
 
         <div id="tab-socios" class="section">
             <div class="card">
                 <h3>👥 Socios</h3>
-                <input type="text" id="socio-nombre" placeholder="Nombre">
+                <input type="text" id="socio-nombre" placeholder="Nombre Socio">
                 <input type="email" id="socio-correo" placeholder="Correo">
                 <input type="text" id="socio-pass" placeholder="Contraseña">
                 <button class="btn-add" onclick="agregarSocio()">CREAR SOCIO</button>
             </div>
-            <table id="tabla-socios"><thead><tr><th>Nombre</th><th>Correo</th><th>Acción</th></tr></thead><tbody></tbody></table>
+            <div class="card"><table id="tabla-socios"><thead><tr><th>Nombre</th><th>Acceso</th><th>Estado</th><th>Acción</th></tr></thead><tbody></tbody></table></div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
                 <h3>📦 Inventario</h3>
                 <input type="text" id="nueva-plat-nombre" placeholder="Nombre Plataforma">
-                <button class="btn-add" style="background:var(--accent)" onclick="crearPlataforma()">+ CREAR PLATAFORMA</button>
-                <br><br>
-                <input type="text" id="stock-correo" placeholder="Correo">
-                <input type="text" id="stock-clave" placeholder="Clave">
+                <button class="btn-add" style="background:var(--accent); margin-bottom: 10px;" onclick="crearPlataforma()">CREAR PLATAFORMA</button>
+                <input type="text" id="stock-correo" placeholder="Correo"><input type="text" id="stock-clave" placeholder="Clave">
                 <select id="stock-plataforma-select"></select>
-                <button class="btn-add" onclick="agregarStock()">GUARDAR CUENTA</button>
+                <button class="btn-add" onclick="agregarStock()">AÑADIR A INVENTARIO</button>
             </div>
         </div>
 
         <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>📊 Estado de Cupos (0/8)</h3>
+                <h3>📊 Control de Cupos (0/8)</h3>
                 <table id="tabla-resumen">
-                    <thead><tr><th>Plat.</th><th>Cuenta</th><th>Uso</th><th>Acción</th></tr></thead>
+                    <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
                     <tbody id="body-resumen"></tbody>
                 </table>
             </div>
@@ -112,7 +122,7 @@
 </div>
 
 <script>
-    let logueadoComo = "";
+    let currentUser = "";
     let db = JSON.parse(localStorage.getItem('andy_v9_final')) || {
         historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+"],
         socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", estado: true}]
@@ -123,42 +133,50 @@
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
         let p = document.getElementById('login-pass').value;
-        let user = db.socios.find(u => u.correo === c && u.pass === p);
+        let user = db.socios.find(u => u.correo === c && u.pass === p && u.estado === true);
         if(user) {
-            logueadoComo = user.nombre;
+            currentUser = user.nombre;
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('main-content').style.display='block';
-        } else { alert("Error"); }
+        } else { alert("Datos incorrectos"); }
     }
 
     function cerrarSesion() { location.reload(); }
 
-    function procesarEntrega() {
+    function registrarAccion(miembro, plataforma) {
+        let ahora = new Date();
+        db.historial.unshift({
+            fecha: ahora.toLocaleDateString(),
+            hora: ahora.toLocaleTimeString(),
+            socio: currentUser,
+            miembro: miembro,
+            plat: plataforma
+        });
+        save();
+    }
+
+    function procesarEntregaManual() {
         let m = document.getElementById('nombre-miembro').value;
         let p = document.getElementById('select-plataforma-pedido').value;
-        
         if(m) {
             let stockIdx = db.stock.findIndex(s => s.plat === p && s.cupo < s.max);
             if(stockIdx !== -1) {
-                // Descuento automático
                 db.stock[stockIdx].cupo++;
-                
-                // Registro detallado
-                let ahora = new Date();
-                db.historial.unshift({
-                    fecha: ahora.toLocaleDateString(),
-                    hora: ahora.toLocaleTimeString(),
-                    socio: logueadoComo,
-                    miembro: m,
-                    plat: p
-                });
-                
                 db.vip.push(m);
+                registrarAccion(m, p);
                 document.getElementById('nombre-miembro').value = "";
                 save();
-                alert("Entregado con éxito");
             } else { alert("Sin stock para " + p); }
         }
+    }
+
+    function editarMiembro(i) {
+        let nuevo = prompt("Editar nombre del miembro:", db.vip[i]);
+        if(nuevo) { db.vip[i] = nuevo; save(); }
+    }
+
+    function eliminarMiembro(i) {
+        if(confirm("¿Eliminar miembro?")) { db.vip.splice(i,1); save(); }
     }
 
     function agregarStock() {
@@ -167,13 +185,14 @@
         let plt = document.getElementById('stock-plataforma-select').value;
         if(c && p) {
             db.stock.push({plat: plt, cuenta: `${c}:${p}`, cupo: 0, max: 8});
+            document.getElementById('stock-correo').value = ""; document.getElementById('stock-clave').value = "";
             save();
         }
     }
 
     function crearPlataforma() {
         let n = document.getElementById('nueva-plat-nombre').value;
-        if(n) { db.plataformas.push(n); save(); }
+        if(n) { db.plataformas.push(n); document.getElementById('nueva-plat-nombre').value = ""; save(); }
     }
 
     function agregarSocio() {
@@ -183,6 +202,8 @@
         if(n && c && p) { db.socios.push({nombre: n, correo: c, pass: p, estado: true}); save(); }
     }
 
+    function resetCupo(i) { db.stock[i].cupo = 0; save(); }
+    function eliminarCuenta(i) { db.stock.splice(i,1); save(); }
     function limpiarHistorial() { db.historial = []; save(); }
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -192,11 +213,10 @@
     }
 
     function renderAll() {
-        // Historial Detallado
         document.getElementById('historial-lista').innerHTML = db.historial.map(h => `
             <div class="log-item">
-                <span class="log-header">${h.fecha} - ${h.hora}</span>
-                El socio <b>${h.socio}</b> entregó <b>${h.plat}</b> al miembro <b>${h.miembro}</b>.
+                <span style="color:var(--accent)">[${h.fecha} ${h.hora}]</span> 
+                Socio: <span style="color:var(--warning)">${h.socio}</span> entregó <b>${h.plat}</b> a <b>${h.miembro}</b>
             </div>
         `).join('');
 
@@ -204,8 +224,18 @@
         document.getElementById('stock-plataforma-select').innerHTML = opts;
         document.getElementById('select-plataforma-pedido').innerHTML = opts;
 
-        document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.correo}</td><td><button class="action-btn" style="background:var(--danger)" onclick="db.socios.splice(${i},1);save()">X</button></td></tr>`).join('');
-        document.querySelector('#tabla-vip tbody').innerHTML = db.vip.map((v, i) => `<tr><td>${v}</td><td><button class="action-btn" style="background:var(--danger)" onclick="db.vip.splice(${i},1);save()">X</button></td></tr>`).join('');
+        // Render lista miembros anterior
+        document.getElementById('lista-miembros-anterior').innerHTML = db.vip.map((v, i) => `
+            <div class="member-list-item">
+                <span>${v}</span>
+                <div class="member-actions">
+                    <button class="btn-edit-member" onclick="editarMiembro(${i})">EDITAR</button>
+                    <button class="btn-delete-member" onclick="eliminarMiembro(${i})">X</button>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.correo}</td><td>${s.estado?'ON':'OFF'}</td><td><button class="action-btn" style="background:var(--accent)" onclick="db.socios[${i}].estado=!db.socios[${i}].estado;save()">ON/OFF</button></td></tr>`).join('');
         
         document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => {
             let pct = (s.cupo / s.max) * 100;
@@ -213,7 +243,10 @@
                 <td><b>${s.plat}</b></td>
                 <td><small>${s.cuenta}</small></td>
                 <td>${s.cupo}/8 <div class="progress-container"><div class="progress-bar" style="width:${pct}%"></div></div></td>
-                <td><button class="action-btn" style="background:var(--danger)" onclick="db.stock.splice(${i},1);save()">X</button></td>
+                <td>
+                    <button class="action-btn" style="background:var(--warning)" onclick="resetCupo(${i})">RESET</button>
+                    <button class="action-btn" style="background:var(--danger)" onclick="eliminarCuenta(${i})">X</button>
+                </td>
             </tr>`;
         }).join('');
     }
