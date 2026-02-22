@@ -3,221 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo Global - Andy Obregón</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+    <title>Sistema VIP ANDVIP - Full Control</title>
     <style>
-        :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
+        :root { --dark: #0f172a; --panel: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--text); margin: 0; padding-bottom: 30px; }
         
-        /* Navbar */
-        .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
-        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
-        .nav-btn.active { background: var(--accent); }
-        
-        /* Contenedores */
-        .container { padding: 15px; }
-        .section { display: none; }
+        /* Navegación Horizontal */
+        .nav-bar { display: flex; background: var(--panel); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); overflow-x: auto; }
+        .nav-btn { flex: 1; padding: 15px 10px; border: none; background: transparent; color: #94a3b8; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.3s; border-radius: 8px; }
+        .nav-btn.active { color: white; background: var(--accent); }
+
+        .container { padding: 15px; max-width: 1000px; margin: auto; }
+        .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
-        .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: var(--panel); padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: var(--dark); color: white; box-sizing: border-box; }
         
-        /* Tablas */
-        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; color: #333; min-width: 650px; }
-        th { background: #1e2d3b; color: white; padding: 12px; font-size: 0.75rem; text-transform: uppercase; }
-        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 0.8rem; text-align: center; }
-        
-        /* Inputs y Botones */
-        input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .action-btn { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin: 2px; }
-        
-        .cuenta-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1rem; color: #166534; word-break: break-all; text-align: center; border-radius: 8px; }
+        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-main { background: var(--accent); color: white; width: 100%; }
+        .btn-edit { background: var(--success); color: white; font-size: 0.7rem; }
+        .btn-del { background: var(--danger); color: white; font-size: 0.7rem; }
+        .btn-reset { background: #f59e0b; color: white; font-size: 0.7rem; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; font-size: 0.85rem; }
+        th { background: #1e293b; color: var(--accent); }
+
+        .entrega-box { background: white; color: #000; padding: 20px; border-radius: 12px; text-align: center; margin-top: 20px; display: none; }
+        .cupos-tag { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .full { background: var(--danger); }
+        .available { background: var(--success); }
     </style>
 </head>
 <body>
 
-<div id="main-content">
-    <div class="navbar" id="barra-nav">
-        <button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>
-        <button class="nav-btn" onclick="showTab('tab-historial')">🕒 HISTORIAL</button>
-        <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK/SOCIOS</button>
-        <button class="nav-btn" style="background:var(--danger)" onclick="location.reload()">SALIR</button>
+<div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
+    <div class="card" style="width: 320px; text-align: center;">
+        <h2>🔐 ANDVIP LOGIN</h2>
+        <input type="email" id="email" placeholder="Correo">
+        <input type="password" id="password" placeholder="Clave">
+        <button class="btn-main" onclick="login()">INGRESAR</button>
+    </div>
+</div>
+
+<div id="app" style="display:none;">
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="showTab('tab-historial', this)">🕒 HISTORIAL</button>
+        <button class="nav-btn" onclick="showTab('tab-stock', this)">📦 STOCK/IPTV</button>
+        <button class="nav-btn" onclick="showTab('tab-socios', this)">👥 SOCIOS</button>
+        <button class="nav-btn" onclick="showTab('tab-miembros', this)">💎 MIEMBROS VIP</button>
     </div>
 
     <div class="container">
-        <div id="tab-usuario" class="section active">
-            <div class="card">
-                <h3>🎁 Obtener mi Cuenta al Instante</h3>
-                <input type="text" id="user-cliente-nom" placeholder="Nombre del Cliente">
-                <select id="user-select-plat"></select>
-                <button class="btn-add" onclick="reclamarCuenta()">🚀 RECLAMAR CUENTA AHORA</button>
-                <div id="display-entrega" style="display:none; margin-top:20px;">
-                    <div style="font-weight: bold; text-align: center;">✅ ENTREGA EXITOSA:</div>
-                    <div class="cuenta-box" id="texto-cuenta"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-historial" class="section">
-            <div class="card">
-                <h3>📜 Registro Global de Entregas</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Fecha</th><th>Socio</th><th>Cliente</th><th>Plataforma</th><th>Cuenta</th></tr>
-                        </thead>
-                        <tbody id="historial-body"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div id="tab-historial" class="section active">
+            <h2>Registro de Entregas</h2>
+            <table>
+                <thead>
+                    <tr><th>Miembro</th><th>Plataforma</th><th>Fecha</th><th>Datos</th></tr>
+                </thead>
+                <tbody id="lista-pedidos"></tbody>
+            </table>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>🛠️ Gestionar Plataformas</h3>
-                <input type="text" id="nueva-plat-nombre" placeholder="Nombre (Ej: Netflix)">
-                <button class="btn-add" style="background:var(--accent)" onclick="crearPlat()">+ CREAR</button>
-                <div id="lista-plataformas" style="margin-top:10px;"></div>
-            </div>
-            
-            <div class="card">
-                <h3>📦 Añadir Cuentas al Inventario</h3>
-                <input type="text" id="st-cuenta" placeholder="correo:clave">
-                <select id="st-plat-select"></select>
-                <button class="btn-add" onclick="agregarStock()">GUARDAR EN NUBE</button>
+                <h3>Añadir Nueva Cuenta / IPTV</h3>
+                <select id="st-tipo" onchange="toggleInputs()">
+                    <option value="streaming">Cuenta (Correo/Clave)</option>
+                    <option value="iptv">Lista IPTV (URL)</option>
+                </select>
+                <input type="text" id="st-nombre" placeholder="Nombre Plataforma (Netflix, Magis, etc)">
+                <div id="inputs-streaming">
+                    <input type="text" id="st-correo" placeholder="Correo">
+                    <input type="text" id="st-clave" placeholder="Clave">
+                </div>
+                <div id="inputs-iptv" style="display:none;">
+                    <textarea id="st-url" placeholder="Pegue la URL de la lista aquí..."></textarea>
+                </div>
+                <button class="btn-main" onclick="guardarStock()">GUARDAR EN NUBE</button>
             </div>
 
+            <h3>Inventario Actual</h3>
+            <div id="display-stock-list"></div>
+        </div>
+
+        <div id="tab-socios" class="section">
             <div class="card">
-                <h3>👥 Gestionar Socios</h3>
-                <input type="text" id="soc-nom" placeholder="Nombre">
-                <input type="email" id="soc-cor" placeholder="Correo">
-                <input type="text" id="soc-pas" placeholder="Contraseña">
-                <button class="btn-add" style="background:var(--warning)" onclick="agregarSocio()">GUARDAR SOCIO</button>
+                <h3>Crear Nuevo Socio</h3>
+                <input type="email" id="socio-email" placeholder="Email">
+                <input type="password" id="socio-pass" placeholder="Contraseña">
+                <select id="socio-rol">
+                    <option value="vendedor">Vendedor (Normal)</option>
+                    <option value="admin">Administrador</option>
+                    <option value="dueno">Dueño</option>
+                </select>
+                <button class="btn-main" onclick="crearSocio()">REGISTRAR SOCIO</button>
+            </div>
+            <table id="tabla-usuarios">
+                <thead><tr><th>Socio</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="lista-socios"></tbody>
+            </table>
+        </div>
+
+        <div id="tab-miembros" class="section">
+            <div class="card">
+                <h3>Gestión de Lista VIP</h3>
+                <textarea id="lista-masiva" placeholder="Pegue aquí los nombres de sus miembros..."></textarea>
+                <button class="btn-main" style="background:#475569" onclick="guardarMiembros()">ACTUALIZAR LISTA VIP</button>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--accent);">
+                <h3>🎁 Solicitar Cuenta (Modo Usuario)</h3>
+                <label>Seleccione su nombre:</label>
+                <select id="sel-miembro"></select>
+                <input type="text" id="sel-celular" placeholder="Número de Celular">
+                <label>Plataforma que desea:</label>
+                <select id="sel-plat"></select>
+                <button class="btn-main" style="background:var(--success); margin-top:10px;" onclick="solicitarAuto()">GENERAR ACCESO</button>
+                
+                <div id="entrega-box" class="entrega-box">
+                    <h3 id="plat-entregada"></h3>
+                    <div id="datos-entregados" style="font-family: monospace; font-size: 1.1rem; margin: 15px 0;"></div>
+                    <button class="btn-main" style="background:#000;" onclick="copiarInfo()">COPIAR DATOS</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // --- 1. CONFIGURACIÓN FIREBASE (USANDO TUS LLAVES REALES) ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
-        authDomain: "sistema-grupo-privado.firebaseapp.com",
-        projectId: "sistema-grupo-privado",
-        storageBucket: "sistema-grupo-privado.firebasestorage.app",
-        messagingSenderId: "86750167453",
-        appId: "1:86750167453:web:165ff3a605105d525c6f74"
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig={
+        apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
+        authDomain:"sistema-ventas-64a4c.firebaseapp.com",
+        projectId:"sistema-ventas-64a4c",
+        storageBucket:"sistema-ventas-64a4c.firebasestorage.app",
+        messagingSenderId:"291577824119",
+        appId:"1:291577824119:web:894fe9842b427c9ac3d772"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // --- 2. FUNCIONES DE ENTREGA ---
-    async function reclamarCuenta() {
-        const plat = document.getElementById('user-select-plat').value;
-        const cliente = document.getElementById('user-cliente-nom').value;
-        if(!cliente) return alert("Escribe el nombre del cliente");
-
-        try {
-            const query = await db.collection("inventario")
-                .where("plataforma", "==", plat)
-                .where("cupos", "<", 8)
-                .limit(1).get();
-
-            if (!query.empty) {
-                const doc = query.docs[0];
-                const data = doc.data();
-
-                await db.collection("inventario").doc(doc.id).update({
-                    cupos: data.cupos + 1
-                });
-
-                await db.collection("entregas").add({
-                    cuenta: data.cuenta,
-                    estado: "listo",
-                    nombreWsp: cliente,
-                    plataforma: plat,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    usuarioEmail: "ayuda@gmail.com"
-                });
-
-                document.getElementById('texto-cuenta').innerText = data.cuenta;
-                document.getElementById('display-entrega').style.display = 'block';
-            } else {
-                alert("Sin stock de " + plat);
-            }
-        } catch (e) { alert("Error: Revisa tus reglas de Firebase"); }
-    }
-
-    // --- 3. FUNCIONES DE ADMINISTRACIÓN ---
-    async function crearPlat() {
-        const n = document.getElementById('nueva-plat-nombre').value;
-        if(n) await db.collection("plataformas").add({ nombre: n });
-        document.getElementById('nueva-plat-nombre').value = "";
-    }
-
-    async function agregarStock() {
-        const c = document.getElementById('st-cuenta').value;
-        const p = document.getElementById('st-plat-select').value;
-        if(c) await db.collection("inventario").add({ cuenta: c, plataforma: p, cupos: 0 });
-        document.getElementById('st-cuenta').value = "";
-        alert("Cuenta guardada");
-    }
-
-    async function agregarSocio() {
-        const n = document.getElementById('soc-nom').value;
-        const c = document.getElementById('soc-cor').value;
-        const p = document.getElementById('soc-pas').value;
-        if(n && c && p) await db.collection("users").add({ nombre: n, correo: c, pass: p, estado: true });
-        alert("Socio guardado");
-    }
-
-    // --- 4. SINCRONIZACIÓN EN TIEMPO REAL ---
-    function sincronizarTodo() {
-        // Cargar Plataformas
-        db.collection("plataformas").onSnapshot(snap => {
-            let options = "";
-            let list = "";
-            snap.forEach(doc => {
-                const p = doc.data().nombre;
-                options += `<option value="${p}">${p}</option>`;
-                list += `<div style="display:flex; justify-content:space-between; background:#334155; padding:5px; margin-bottom:2px; border-radius:4px;">
-                            <span>${p}</span>
-                            <button class="action-btn" style="background:red" onclick="eliminarDoc('plataformas','${doc.id}')">X</button>
-                         </div>`;
-            });
-            document.getElementById('user-select-plat').innerHTML = options;
-            document.getElementById('st-plat-select').innerHTML = options;
-            document.getElementById('lista-plataformas').innerHTML = list;
-        });
-
-        // Cargar Historial
-        db.collection("entregas").orderBy("timestamp", "desc").limit(20).onSnapshot(snap => {
-            let html = "";
-            snap.forEach(doc => {
-                const h = doc.data();
-                const fecha = h.timestamp ? new Date(h.timestamp.seconds * 1000).toLocaleDateString() : "...";
-                html += `<tr><td>${fecha}</td><td>${h.usuarioEmail}</td><td>${h.nombreWsp}</td><td>${h.plataforma}</td><td>${h.cuenta}</td></tr>`;
-            });
-            document.getElementById('historial-body').innerHTML = html;
-        });
-    }
-
-    async function eliminarDoc(coleccion, id) {
-        if(confirm("¿Eliminar?")) await db.collection(coleccion).doc(id).delete();
-    }
-
-    function showTab(id) {
+    window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    };
 
-    sincronizarTodo();
+    window.toggleInputs = () => {
+        const tipo = document.getElementById('st-tipo').value;
+        document.getElementById('inputs-streaming').style.display = tipo === 'streaming' ? 'block' : 'none';
+        document.getElementById('inputs-iptv').style.display = tipo === 'iptv' ? 'block' : 'none';
+    };
+
+    // --- LÓGICA DE STOCK ---
+    window.guardarStock = async () => {
+        const tipo = document.getElementById('st-tipo').value;
+        const data = {
+            tipo,
+            nombre: document.getElementById('st-nombre').value,
+            usos: 0,
+            timestamp: serverTimestamp()
+        };
+        if(tipo === 'streaming') {
+            data.correo = document.getElementById('st-correo').value;
+            data.clave = document.getElementById('st-clave').value;
+        } else {
+            data.url = document.getElementById('st-url').value;
+        }
+        await addDoc(collection(db, "inventario_vip"), data);
+        alert("Guardado correctamente");
+    };
+
+    // --- LÓGICA DE ENTREGA AUTOMÁTICA (MÁX 5) ---
+    window.solicitarAuto = async () => {
+        const plat = document.getElementById('sel-plat').value;
+        const miembro = document.getElementById('sel-miembro').value;
+        
+        // Buscar primera cuenta con usos < 5
+        const q = query(collection(db, "inventario_vip"), where("nombre", "==", plat), where("usos", "<", 5), orderBy("usos", "asc"));
+        onSnapshot(q, async (snap) => {
+            if(!snap.empty) {
+                const docRef = snap.docs[0];
+                const d = docRef.data();
+                
+                // Actualizar usos (+1)
+                await updateDoc(doc(db, "inventario_vip", docRef.id), { usos: increment(1) });
+
+                // Registrar Pedido
+                const datosTxt = d.tipo === 'streaming' ? `Correo: ${d.correo} | Clave: ${d.clave}` : `URL IPTV: ${d.url}`;
+                await addDoc(collection(db, "pedidos_vip"), {
+                    miembro, plataforma: plat, datos: datosTxt, timestamp: serverTimestamp()
+                });
+
+                // Mostrar en pantalla
+                document.getElementById('plat-entregada').innerText = "Acceso a " + plat;
+                document.getElementById('datos-entregados').innerText = datosTxt;
+                document.getElementById('entrega-box').style.display = 'block';
+            } else {
+                alert("No hay cuentas disponibles con cupos para " + plat);
+            }
+        }, {onlyOnce: true});
+    };
+
+    // --- CARGAS EN TIEMPO REAL ---
+    onAuthStateChanged(auth, user => {
+        if(user) {
+            document.getElementById('login-box').style.display='none';
+            document.getElementById('app').style.display='block';
+            
+            // Cargar Stock en tabla para Admin con botones editar/eliminar
+            onSnapshot(collection(db, "inventario_vip"), snap => {
+                const list = document.getElementById('display-stock-list');
+                const selPlat = document.getElementById('sel-plat');
+                list.innerHTML = ""; 
+                let options = "";
+                
+                snap.forEach(d => {
+                    const s = d.data();
+                    const color = s.usos >= 5 ? 'full' : 'available';
+                    options += `<option value="${s.nombre}">${s.nombre}</option>`;
+                    list.innerHTML += `
+                        <div class="card" style="margin-bottom:5px; padding:10px;">
+                            <b>${s.nombre}</b> <span class="cupos-tag ${color}">${s.usos}/5 Usos</span><br>
+                            <small>${s.correo || s.url}</small><br>
+                            <button class="btn-edit" onclick="editarStock('${d.id}')">Editar</button>
+                            <button class="btn-reset" onclick="resetCupos('${d.id}')">Reset Cupos</button>
+                            <button class="btn-del" onclick="borrarDoc('inventario_vip','${d.id}')">Eliminar</button>
+                        </div>`;
+                });
+                selPlat.innerHTML = options;
+            });
+
+            // Cargar Historial
+            onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), snap => {
+                const tb = document.getElementById('lista-pedidos');
+                tb.innerHTML = "";
+                snap.forEach(d => {
+                    const p = d.data();
+                    tb.innerHTML += `<tr><td>${p.miembro}</td><td>${p.plataforma}</td><td>Reciente</td><td>${p.datos}</td></tr>`;
+                });
+            });
+        }
+    });
+
+    window.resetCupos = async (id) => { await updateDoc(doc(db, "inventario_vip", id), { usos: 0 }); alert("Cupos reiniciados"); };
+    window.borrarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
+    window.copiarInfo = () => { navigator.clipboard.writeText(document.getElementById('datos-entregados').innerText); alert("Copiado!"); };
+    window.login = async () => { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); };
 </script>
 </body>
 </html>
