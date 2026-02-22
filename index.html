@@ -21,7 +21,7 @@
         .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
         h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
@@ -30,6 +30,7 @@
         .btn-status { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; margin: 2px; }
         .on { background: var(--success); }
         .off { background: var(--danger); }
+        .edit { background: #f59e0b; } /* Color naranja para editar */
         .entrega-box { background: #ffffff; color: #000000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
         .admin-only { display: none; }
         #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
@@ -61,8 +62,19 @@
             <div id="panel-admin-miembros" class="card admin-only">
                 <h3>Gestión Miembros VIP</h3>
                 <textarea id="lista-masiva" placeholder="Nombre - Celular (Uno por línea)"></textarea>
-                <button onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
-                <div class="table-wrapper" style="margin-top:10px; max-height:150px;"><table><tbody id="tabla-gestion-miembros"></tbody></table></div>
+                <button id="btn-cargar-miembros" onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
+                
+                <div class="table-wrapper" style="margin-top:20px; max-height:300px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre del Miembro</th>
+                                <th style="text-align:right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-gestion-miembros"></tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="card" style="border: 2px solid var(--accent); text-align:center;">
@@ -133,6 +145,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Lógica de Login/Logout
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
@@ -153,6 +166,107 @@
             document.getElementById('app').style.display='none';
         }
     });
+
+    // --- FUNCIONES DE MIEMBROS MEJORADAS ---
+
+    window.guardarMiembros = async () => {
+        const btn = document.getElementById('btn-cargar-miembros');
+        const t = document.getElementById('lista-masiva').value.split('\n');
+        let contador = 0;
+        
+        btn.innerText = "CARGANDO...";
+        btn.disabled = true;
+
+        for(let l of t) { 
+            if(l.trim()!="") {
+                await addDoc(collection(db, "config_vip"), { nombre: l.trim() }); 
+                contador++;
+            }
+        }
+        
+        // Feedback visual de éxito
+        document.getElementById('lista-masiva').value = "";
+        btn.innerText = `¡LISTO! (${contador} AGREGADOS)`;
+        btn.style.background = "var(--success)";
+        
+        setTimeout(() => {
+            btn.innerText = "CARGAR LISTA";
+            btn.style.background = "var(--accent)";
+            btn.disabled = false;
+        }, 3000);
+    };
+
+    window.editarMiembro = async (id, nombreActual) => {
+        const nuevoNombre = prompt("Editar nombre del miembro:", nombreActual);
+        if (nuevoNombre && nuevoNombre.trim() !== "") {
+            await updateDoc(doc(db, "config_vip", id), { nombre: nuevoNombre.trim() });
+        }
+    };
+
+    // --- CARGA DE DATOS REALTIME ---
+
+    function cargarDatos() {
+        // Miembros con Botón Editar y Eliminar
+        onSnapshot(collection(db, "config_vip"), s => {
+            const sel = document.getElementById('sel-miembro');
+            const tab = document.getElementById('tabla-gestion-miembros');
+            sel.innerHTML = '<option value="">-- NOMBRE --</option>';
+            tab.innerHTML = "";
+            s.forEach(d => {
+                const nombre = d.data().nombre;
+                sel.innerHTML += `<option value="${nombre}">${nombre}</option>`;
+                tab.innerHTML += `
+                    <tr>
+                        <td>${nombre}</td>
+                        <td style="text-align:right;">
+                            <button class="btn-status edit" onclick="editarMiembro('${d.id}', '${nombre}')">EDITAR</button>
+                            <button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">BORRAR</button>
+                        </td>
+                    </tr>`;
+            });
+        });
+
+        // Stock
+        onSnapshot(collection(db, "inventario_vip"), s => {
+            const sel = document.getElementById('sel-plat');
+            const div = document.getElementById('display-stock-list');
+            const rapido = document.getElementById('nombres-rapidos');
+            const nombresUnicos = new Set();
+            sel.innerHTML = '<option value="">-- SERVICIO --</option>';
+            div.innerHTML = "";
+            rapido.innerHTML = "";
+            s.forEach(d => {
+                const i = d.data();
+                nombresUnicos.add(i.nombre);
+                if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
+            });
+            nombresUnicos.forEach(n => {
+                rapido.innerHTML += `<span class="plat-tag" onclick="document.getElementById('st-nombre').value='${n}'">${n}</span>`;
+            });
+        });
+
+        // Socios
+        onSnapshot(collection(db, "usuarios"), s => {
+            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
+            s.forEach(d => {
+                const u = d.data();
+                const st = u.activo !== false ? 'on' : 'off';
+                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td><button class="btn-status ${st}" onclick="toggleSocio('${d.id}', ${u.activo})">${st.toUpperCase()}</button></td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">BORRAR</button></td></tr>`;
+            });
+        });
+
+        // Pedidos
+        onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), s => {
+            const tb = document.getElementById('lista-pedidos'); tb.innerHTML = "";
+            s.forEach(d => {
+                const p = d.data();
+                tb.innerHTML += `<tr><td>${p.timestamp?.toDate().toLocaleString() || '...'}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button class="btn-status off" onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
+            });
+        });
+    }
+
+    // --- RESTO DE FUNCIONES (SOCIOS, STOCK, UTILIDADES) ---
 
     window.solicitarAuto = async () => {
         const mNom = document.getElementById('sel-miembro').value;
@@ -176,59 +290,6 @@
         } catch (e) { alert("Error de conexión."); }
     };
 
-    function cargarDatos() {
-        // Miembros
-        onSnapshot(collection(db, "config_vip"), s => {
-            const sel = document.getElementById('sel-miembro');
-            const tab = document.getElementById('tabla-gestion-miembros');
-            sel.innerHTML = '<option value="">-- NOMBRE --</option>';
-            tab.innerHTML = "";
-            s.forEach(d => {
-                sel.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
-                tab.innerHTML += `<tr><td>${d.data().nombre}</td><td><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
-            });
-        });
-
-        // Stock y Sugerencia de Nombres
-        onSnapshot(collection(db, "inventario_vip"), s => {
-            const sel = document.getElementById('sel-plat');
-            const div = document.getElementById('display-stock-list');
-            const rapido = document.getElementById('nombres-rapidos');
-            const nombresUnicos = new Set();
-            sel.innerHTML = '<option value="">-- SERVICIO --</option>';
-            div.innerHTML = "";
-            rapido.innerHTML = "";
-            s.forEach(d => {
-                const i = d.data();
-                nombresUnicos.add(i.nombre);
-                if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
-            });
-            nombresUnicos.forEach(n => {
-                rapido.innerHTML += `<span class="plat-tag" onclick="document.getElementById('st-nombre').value='${n}'">${n}</span>`;
-            });
-        });
-
-        // Socios Completo
-        onSnapshot(collection(db, "usuarios"), s => {
-            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
-            s.forEach(d => {
-                const u = d.data();
-                const st = u.activo !== false ? 'on' : 'off';
-                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td><button class="btn-status ${st}" onclick="toggleSocio('${d.id}', ${u.activo})">${st.toUpperCase()}</button></td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">BORRAR</button></td></tr>`;
-            });
-        });
-
-        // Pedidos
-        onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), s => {
-            const tb = document.getElementById('lista-pedidos'); tb.innerHTML = "";
-            s.forEach(d => {
-                const p = d.data();
-                tb.innerHTML += `<tr><td>${p.timestamp?.toDate().toLocaleString() || '...'}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button class="btn-status off" onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
-            });
-        });
-    }
-
     window.crearSocio = async () => {
         const e = document.getElementById('socio-email').value;
         const p = document.getElementById('socio-pass').value;
@@ -251,24 +312,22 @@
         alert("Guardado");
     };
 
-    window.guardarMiembros = async () => {
-        const t = document.getElementById('lista-masiva').value.split('\n');
-        for(let l of t) { if(l.trim()!="") await addDoc(collection(db, "config_vip"), { nombre: l.trim() }); }
-        document.getElementById('lista-masiva').value = "";
-    };
-
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active'); btn.classList.add('active');
     };
-    window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
+    
+    window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar definitivamente?")) await deleteDoc(doc(db, c, id)); };
+    
     window.resetCupos = async (id) => { await updateDoc(doc(db, "inventario_vip", id), { usos: 0 }); };
+    
     window.toggleInputs = () => {
         const t = document.getElementById('st-tipo').value;
         document.getElementById('inputs-streaming').style.display = t === 'streaming' ? 'block' : 'none';
         document.getElementById('inputs-iptv').style.display = t === 'iptv' ? 'block' : 'none';
     };
+    
     window.copiarInfo = () => { navigator.clipboard.writeText(document.getElementById('datos-entregados').innerText); alert("Copiado"); };
 </script>
 </body>
