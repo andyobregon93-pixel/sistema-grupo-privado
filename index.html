@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA CONTROL TOTAL - FINAL</title>
+    <title>SISTEMA VIP - CONTROL TOTAL</title>
     <style>
-        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; --oscuro: #2c3e50; }
+        :root { --primario: #0f2027; --secundario: #2c5364; --exito: #27ae60; --error: #e74c3c; --admin: #e67e22; --tv: #8e44ad; --info: #3498db; --oscuro: #2c3e50; --vip: #f1c40f; }
         body{ margin:0; font-family: 'Segoe UI', sans-serif; background: #0f2027; color:white; min-height:100vh; padding:10px; }
         .contenedor{ max-width:1150px; margin:20px auto; background:rgba(255,255,255,0.98); color:#333; padding:25px; border-radius:15px; box-shadow:0 15px 35px rgba(0,0,0,0.5); }
         
@@ -27,13 +27,14 @@
 
         .btn-accion { width: auto; padding: 6px 10px; font-size: 10px; margin: 2px; border-radius: 4px; cursor: pointer; color: white; border:none; font-weight: bold; }
         .badge { padding: 4px 8px; border-radius: 5px; font-weight: bold; color: white; font-size: 10px; display: inline-block; }
+        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; color: #000; }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
     <div id="cajaLogin">
-        <h1 style="text-align:center; color: var(--primario)">🔐 Panel de Control</h1>
+        <h1 style="text-align:center; color: var(--primario)">🔐 Panel Control VIP</h1>
         <input type="email" id="correoLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
         <button onclick="iniciarSesion()">INGRESAR</button>
@@ -46,18 +47,25 @@
         </div>
 
         <div id="seccionUsuario">
-            <div class="tarjeta">
-                <h3>🎁 Entregar Cuenta</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="nombreWsp" placeholder="Nombre Cliente">
-                    <select id="selectPlatUsuario"></select>
+            <div class="tarjeta" style="border-top: 5px solid var(--exito);">
+                <h3>🎁 Generar Acceso a Miembro VIP</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: var(--admin);">🔍 BUSCAR EN LISTA VIP:</label>
+                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Escriba nombre o país..." onkeyup="filtrarMiembros()">
+                        <select id="selectMiembroVip" size="6" style="height: 140px; margin-top: 5px;"></select>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold;">CONFIGURACIÓN:</label>
+                        <select id="selectPlatUsuario" style="margin-top: 5px;"></select>
+                        <input type="text" id="codigoTV" placeholder="Código TV (Sólo para activaciones)">
+                    </div>
                 </div>
-                <input type="text" id="codigoTV" placeholder="Código TV (Solo si es activación)">
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem;">🚀 GENERAR ACCESO</button>
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem; margin-top: 15px;">🚀 ASIGNAR CUENTA</button>
                 
                 <div id="resultadoPedido" style="display:none; margin-top:20px; padding:20px; border: 2px solid var(--exito); background:#f0fff0; text-align:center; border-radius: 8px;">
-                    <p style="margin-bottom: 5px;"><b>DATOS GENERADOS:</b></p>
-                    <code id="textoCuenta" style="font-size:1.4rem; color:#d35400; font-weight: bold; display: block; margin-bottom: 15px; padding: 10px; background: #fff; border: 1px dashed var(--exito);"></code>
+                    <p><b>DATOS DE LA CUENTA:</b></p>
+                    <code id="textoCuenta" style="font-size:1.5rem; color:#d35400; font-weight: bold; display: block; margin-bottom: 15px; padding: 10px; background: #fff; border: 1px dashed var(--exito);"></code>
                     <button onclick="copiarTodo()" style="background: var(--info); width: auto; padding: 10px 30px; border-radius: 50px;">📋 COPIAR TODO</button>
                 </div>
             </div>
@@ -65,28 +73,43 @@
 
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
-                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 HISTORIAL</button>
-                <button class="tab-btn" onclick="verTab('tabStock')">📦 INVENTARIO</button>
-                <button class="tab-btn" onclick="verTab('tabPlataformas')">🛠 PLATAFORMAS</button>
+                <button class="tab-btn active" onclick="verTab('tabVentas')">📊 VENTAS</button>
+                <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
+                <button class="tab-btn" onclick="verTab('tabVip')">💎 MIEMBROS VIP</button>
+                <button class="tab-btn" onclick="verTab('tabPlataformas')">🛠 PLAT.</button>
                 <button class="tab-btn" onclick="verTab('tabUsuarios')">👥 SOCIOS</button>
             </div>
 
             <div id="tabVentas" class="tab-content">
                 <div class="tarjeta tarjeta-admin">
-                    <h4>📡 Monitor de Ventas en Vivo</h4>
-                    <div class="tabla-contenedor"><table><thead><tr><th>Fecha/Hora</th><th>Socio</th><th>Cliente</th><th>Plat.</th><th>Cuenta</th><th>Estado</th></tr></thead><tbody id="cuerpoHistorial"></tbody></table></div>
+                    <h4>📡 Monitor en Vivo</h4>
+                    <div class="tabla-contenedor"><table><thead><tr><th>Fecha</th><th>Socio</th><th>Miembro VIP</th><th>Plat.</th><th>Cuenta</th><th>Estado</th></tr></thead><tbody id="cuerpoHistorial"></tbody></table></div>
                 </div>
+            </div>
+
+            <div id="tabVip" class="tab-content" style="display:none;">
+                <div class="tarjeta tarjeta-admin">
+                    <h4>➕ Nuevo Miembro VIP</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                        <input type="text" id="vipNombre" placeholder="Nombre">
+                        <input type="text" id="vipNumero" placeholder="Número (+54...)">
+                        <select id="vipPais">
+                            <option value="Argentina">Argentina</option><option value="Bolivia">Bolivia</option><option value="Chile">Chile</option><option value="Colombia">Colombia</option><option value="Ecuador">Ecuador</option><option value="España">España</option><option value="México">México</option><option value="Perú">Perú</option><option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <button onclick="crearMiembroVip()" style="background:var(--exito)">AÑADIR A LA LISTA</button>
+                </div>
+                <div class="tabla-contenedor"><table><thead><tr><th>País</th><th>Nombre</th><th>Número</th><th>Acciones</th></tr></thead><tbody id="listaVipsAdmin"></tbody></table></div>
             </div>
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta tarjeta-admin">
                     <h4>📥 Agregar Cuenta</h4>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                        <input type="text" id="accCorreo" placeholder="Correo">
-                        <input type="text" id="accPass" placeholder="Contraseña">
+                        <input type="text" id="accCorreo" placeholder="Correo:Clave">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()" style="background:var(--secundario);">GUARDAR EN STOCK</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">GUARDAR STOCK</button>
                 </div>
                 <div class="tabla-contenedor"><table><thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaGestionStock"></tbody></table></div>
             </div>
@@ -109,7 +132,7 @@
                     </div>
                     <button onclick="registrarUsuario()" style="background:var(--exito)">CREAR CUENTA</button>
                 </div>
-                <div class="tabla-contenedor"><table><thead><tr><th>Correo</th><th>Clave</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaListaUsuarios"></tbody></table></div>
+                <div class="tabla-contenedor"><table><thead><tr><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaListaUsuarios"></tbody></table></div>
             </div>
         </div>
     </div>
@@ -118,7 +141,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
@@ -135,6 +158,7 @@
 
     let miEmail = "";
     let miRol = "";
+    let vipsLocales = [];
 
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value;
@@ -152,16 +176,115 @@
             miRol = snap.exists() ? snap.data().role : "usuario";
             document.getElementById("cajaLogin").style.display = "none";
             document.getElementById("app").style.display = "block";
-            document.getElementById("infoUsuario").innerHTML = `Usuario: <b>${miEmail}</b>`;
+            document.getElementById("infoUsuario").innerHTML = `Bienvenido: <b>${miEmail}</b>`;
             document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
-            document.getElementById("seccionUsuario").style.display = (miRol === "usuario") ? "block" : "none";
             cargarDatosEnVivo();
+            if(miRol === "admin") autoCargaVip();
         } else {
             document.getElementById("cajaLogin").style.display = "block";
             document.getElementById("app").style.display = "none";
         }
     });
 
+    // BUSCADOR REALTIME
+    window.filtrarMiembros = () => {
+        const busqueda = document.getElementById("inputBusquedaVip").value.toLowerCase();
+        const select = document.getElementById("selectMiembroVip");
+        select.innerHTML = "";
+        const filtrados = vipsLocales.filter(v => v.nombre.toLowerCase().includes(busqueda) || v.pais.toLowerCase().includes(busqueda) || v.numero.includes(busqueda));
+        filtrados.forEach(v => {
+            const opt = document.createElement("option");
+            opt.value = `[${v.pais}] ${v.nombre}`;
+            opt.text = `[${v.pais}] ${v.nombre} - ${v.numero}`;
+            select.appendChild(opt);
+        });
+    };
+
+    function cargarDatosEnVivo() {
+        // Miembros VIP
+        onSnapshot(query(collection(db, "vips"), orderBy("pais", "asc")), (snap) => {
+            vipsLocales = [];
+            let h = "";
+            snap.forEach(d => {
+                const v = d.data();
+                vipsLocales.push({id: d.id, ...v});
+                h += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarVip('${d.id}')">X</button></td></tr>`;
+            });
+            document.getElementById("listaVipsAdmin").innerHTML = h;
+            filtrarMiembros();
+        });
+
+        // Entregas
+        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(50)), (snap) => {
+            let h = "";
+            snap.forEach(d => {
+                const i = d.data();
+                h += `<tr><td>${i.fechaHora}</td><td>${i.vendedor}</td><td>${i.nombreWsp}</td><td><span class="badge" style="background:var(--secundario)">${i.plataforma}</span></td><td><code>${i.cuenta}</code></td><td>${i.estado}</td></tr>`;
+            });
+            document.getElementById("cuerpoHistorial").innerHTML = h;
+        });
+
+        // Plataformas e Inventario (Resto de funciones)
+        onSnapshot(collection(db, "plataformas"), (snap) => {
+            let opts = ""; let tabla = "";
+            snap.forEach(d => {
+                const n = d.data().nombre;
+                opts += `<option value="${n}">${n}</option>`;
+                tabla += `<tr><td>${n}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarPlataforma('${d.id}')">X</button></td></tr>`;
+            });
+            document.getElementById("selectPlatUsuario").innerHTML = opts;
+            document.getElementById("selectPlatAdmin").innerHTML = opts;
+            document.getElementById("listaPlataformasGestion").innerHTML = tabla;
+        });
+
+        onSnapshot(collection(db, "inventario"), (snap) => {
+            let h = "";
+            snap.forEach(d => {
+                const data = d.data();
+                h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>${data.estado}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">X</button></td></tr>`;
+            });
+            document.getElementById("tablaGestionStock").innerHTML = h;
+        });
+    }
+
+    // PROCESO DE ENTREGA
+    window.procesarEntregaAutomatica = async () => {
+        const miembro = document.getElementById("selectMiembroVip").value;
+        const plat = document.getElementById("selectPlatUsuario").value;
+        const code = document.getElementById("codigoTV").value;
+        if(!miembro) return alert("Seleccione un miembro de la lista");
+
+        const ahora = new Date(), fTxt = ahora.toLocaleString(), fSort = ahora.getTime();
+
+        if(code) {
+            await addDoc(collection(db, "entregas"), { nombreWsp: miembro, plataforma: plat, cuenta: "TV: " + code, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "pendiente" });
+            alert("Activación registrada");
+        } else {
+            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
+            const snap = await getDocs(q);
+            if(snap.empty) return alert("Sin stock de " + plat);
+            const dS = snap.docs[0], data = dS.data(), nU = (data.usos || 0) + 1;
+            await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
+            await addDoc(collection(db, "entregas"), { nombreWsp: miembro, plataforma: plat, cuenta: data.cuenta, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "listo" });
+            document.getElementById("resultadoPedido").style.display = "block";
+            document.getElementById("textoCuenta").innerText = data.cuenta;
+        }
+    };
+
+    window.crearMiembroVip = async () => {
+        const n = document.getElementById("vipNombre").value, num = document.getElementById("vipNumero").value, p = document.getElementById("vipPais").value;
+        if(n && num) await addDoc(collection(db, "vips"), { nombre: n, numero: num, pais: p });
+    };
+
+    window.eliminarVip = async (id) => { if(confirm("¿Borrar?")) await deleteDoc(doc(db, "vips", id)); };
+    window.eliminarCuenta = async (id) => { await deleteDoc(doc(db, "inventario", id)); };
+    window.eliminarPlataforma = async (id) => { await deleteDoc(doc(db, "plataformas", id)); };
+    window.crearPlataforma = async () => { const n = document.getElementById("nombreNuevaPlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
+    window.subirInventario = async () => {
+        const c = document.getElementById("accCorreo").value, pl = document.getElementById("selectPlatAdmin").value;
+        if(c) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: c, estado: "disponible", usos: 0 });
+    };
+    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
     window.verTab = (id) => {
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -169,96 +292,22 @@
         event.currentTarget.classList.add('active');
     };
 
-    function cargarDatosEnVivo() {
-        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(50)), (snap) => {
-            let h = "";
-            snap.forEach(d => {
-                const i = d.data();
-                h += `<tr><td>${i.fechaHora || 'S/F'}</td><td style="color:var(--admin)">${i.vendedor || '---'}</td><td>${i.nombreWsp}</td><td><span class="badge" style="background:var(--secundario)">${i.plataforma}</span></td><td><code>${i.cuenta}</code></td><td><span class="badge" style="background:${i.estado === 'listo' ? 'var(--exito)':'var(--tv)'}">${i.estado}</span></td></tr>`;
-            });
-            document.getElementById("cuerpoHistorial").innerHTML = h;
-        });
-
-        onSnapshot(collection(db, "plataformas"), (snap) => {
-            let opts = ""; let tabla = "";
-            snap.forEach(d => {
-                const n = d.data().nombre;
-                opts += `<option value="${n}">${n}</option>`;
-                tabla += `<tr><td>${n}</td><td><button class="btn-accion" style="background:var(--info)" onclick="editarPlataforma('${d.id}','${n}')">EDITAR</button><button class="btn-accion" style="background:var(--error)" onclick="eliminarPlataforma('${d.id}')">X</button></td></tr>`;
-            });
-            document.getElementById("selectPlatUsuario").innerHTML = opts;
-            document.getElementById("selectPlatAdmin").innerHTML = opts;
-            document.getElementById("listaPlataformasGestion").innerHTML = tabla;
-        });
-
-        if(miRol === "admin") {
-            onSnapshot(collection(db, "inventario"), (snap) => {
-                let h = "";
-                snap.forEach(d => {
-                    const data = d.data();
-                    h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)':'var(--error)'}">${data.estado}</span></td><td><button class="btn-accion" style="background:var(--info)" onclick="editarCuenta('${d.id}','${data.cuenta}')">EDIT</button><button class="btn-accion" style="background:var(--secundario)" onclick="resetCupos('${d.id}')">RESET</button><button class="btn-accion" style="background:var(--error)" onclick="eliminarCuenta('${d.id}')">X</button></td></tr>`;
-                });
-                document.getElementById("tablaGestionStock").innerHTML = h;
-            });
-
-            onSnapshot(collection(db, "users"), (snap) => {
-                let h = "";
-                snap.forEach(d => {
-                    const u = d.data();
-                    h += `<tr><td>${u.email}</td><td>${u.password}</td><td>${u.role}</td><td>${u.estado}</td><td><button class="btn-accion" style="background:var(--oscuro)" onclick="toggleUser('${d.id}','${u.estado}')">ON/OFF</button><button class="btn-accion" style="background:var(--error)" onclick="eliminarUsuario('${d.id}')">X</button></td></tr>`;
-                });
-                document.getElementById("tablaListaUsuarios").innerHTML = h;
-            });
-        }
+    // AUTO CARGA DE TU LISTADO
+    async function autoCargaVip() {
+        const c = await getDocs(collection(db, "vips"));
+        if(!c.empty) return;
+        const batch = writeBatch(db);
+        const lista = [
+            {n:".☆", num:"+54 9 236 450-5075", p:"Argentina"},{n:"Abraham", num:"+54 9 11 6470-7735", p:"Argentina"},
+            {n:"BALTON", num:"+591 68804338", p:"Bolivia"},{n:"CHINO", num:"+56 9 2697 3352", p:"Chile"},
+            {n:"[Çªτ§Luis≥]", num:"+57 323 5380926", p:"Colombia"},{n:"AC31", num:"+593 99 832 7110", p:"Ecuador"},
+            {n:"ADAM (RONI)", num:"+34 651 47 75 90", p:"España"},{n:"...MEX", num:"+52 961 282 2707", p:"México"},
+            {n:"ALEX PERU", num:"+51 994 267 000", p:"Perú"}
+        ];
+        lista.forEach(i => batch.set(doc(collection(db, "vips")), i));
+        await batch.commit();
+        alert("Lista VIP Inicial Cargada");
     }
-
-    // BOTÓN COPIAR TODO
-    window.copiarTodo = () => {
-        const texto = document.getElementById("textoCuenta").innerText;
-        if(texto) {
-            navigator.clipboard.writeText(texto).then(() => {
-                alert("✅ Datos copiados al portapapeles");
-            });
-        }
-    };
-
-    window.crearPlataforma = async () => { const n = document.getElementById("nombreNuevaPlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
-    window.editarPlataforma = async (id, viejo) => { const n = prompt("Nuevo nombre:", viejo); if(n) await updateDoc(doc(db, "plataformas", id), { nombre: n }); };
-    window.eliminarPlataforma = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "plataformas", id)); };
-    window.subirInventario = async () => {
-        const c = document.getElementById("accCorreo").value;
-        const p = document.getElementById("accPass").value;
-        const pl = document.getElementById("selectPlatAdmin").value;
-        if(c && p) await addDoc(collection(db, "inventario"), { plataforma: pl, cuenta: `${c}:${p}`, estado: "disponible", usos: 0 });
-    };
-    window.editarCuenta = async (id, vieja) => { const n = prompt("Editar:", vieja); if(n) await updateDoc(doc(db, "inventario", id), { cuenta: n }); };
-    window.resetCupos = async (id) => { if(confirm("¿Resetear?")) await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); };
-    window.eliminarCuenta = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "inventario", id)); };
-    window.registrarUsuario = async () => {
-        const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
-        try { const res = await createUserWithEmailAndPassword(auth, c, p); await setDoc(doc(db, "users", res.user.uid), { email: c, password: p, role: r, estado: "ON" }); alert("Socio Creado"); } catch(e) { alert(e.message); }
-    };
-    window.toggleUser = async (id, est) => { await updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" }); };
-    window.eliminarUsuario = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "users", id)); };
-
-    window.procesarEntregaAutomatica = async () => {
-        const nom = document.getElementById("nombreWsp").value, plat = document.getElementById("selectPlatUsuario").value, code = document.getElementById("codigoTV").value;
-        if(!nom) return alert("Falta nombre");
-        const ahora = new Date(), fTxt = ahora.toLocaleString(), fSort = ahora.getTime();
-        if(code) {
-            await addDoc(collection(db, "entregas"), { nombreWsp: nom, plataforma: plat, cuenta: "TV: " + code, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "pendiente" });
-            alert("Pedido TV registrado");
-        } else {
-            const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
-            const snap = await getDocs(q);
-            if(snap.empty) return alert("Sin stock");
-            const dS = snap.docs[0], data = dS.data(), nU = (data.usos || 0) + 1;
-            await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
-            await addDoc(collection(db, "entregas"), { nombreWsp: nom, plataforma: plat, cuenta: data.cuenta, vendedor: miEmail, fechaHora: fTxt, fechaSort: fSort, estado: "listo" });
-            document.getElementById("resultadoPedido").style.display = "block";
-            document.getElementById("textoCuenta").innerText = data.cuenta;
-        }
-    };
 </script>
 </body>
 </html>
