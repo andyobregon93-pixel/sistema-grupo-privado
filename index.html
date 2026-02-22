@@ -10,71 +10,27 @@
             --danger: #ef4444; --success: #10b981; --text: #f8fafc; 
             --border: #334155; --glow: rgba(59, 130, 246, 0.5);
         }
-
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: var(--bg); color: var(--text); 
-            margin: 0; display: flex; flex-direction: column; min-height: 100vh;
-        }
-
-        .nav-bar { 
-            display: flex; background: var(--card); padding: 10px; 
-            position: sticky; top: 0; z-index: 1000; 
-            border-bottom: 2px solid var(--accent); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            gap: 8px; overflow-x: auto; scrollbar-width: none;
-        }
-        .nav-bar::-webkit-scrollbar { display: none; }
-
-        .nav-btn { 
-            flex: 1; padding: 12px 15px; border: none; background: transparent; 
-            color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 10px; 
-            font-size: 0.8rem; white-space: nowrap; transition: 0.3s;
-        }
-        .nav-btn.active { color: white; background: var(--accent); box-shadow: 0 0 10px var(--glow); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); gap: 8px; overflow-x: auto; }
+        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 10px; font-size: 0.8rem; white-space: nowrap; }
+        .nav-btn.active { color: white; background: var(--accent); }
         .logout-btn { background: var(--danger); color: white; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-
         .container { padding: 20px; max-width: 1100px; margin: auto; width: 90%; }
-        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section { display: none; }
         .section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { 
-            background: var(--card); padding: 20px; border-radius: 16px; 
-            margin-bottom: 20px; border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        h3 { color: var(--accent); margin-top: 0; }
-        input, select, textarea { 
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; 
-            border: 1px solid var(--border); background: #111827; color: white; 
-            box-sizing: border-box; font-size: 1rem; outline: none;
-        }
-
-        .btn-main { 
-            width: 100%; padding: 15px; border: none; border-radius: 12px; 
-            font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase;
-        }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
+        h3 { color: var(--accent); }
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
-
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #0f172a; color: var(--accent); padding: 15px; text-align: left; font-size: 0.75rem; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         .btn-status { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .on { background: var(--success); }
         .off { background: var(--danger); }
-
-        .entrega-box { 
-            background: #fff; color: #0f172a; padding: 25px; border-radius: 16px; 
-            text-align: center; margin-top: 25px; display: none;
-            border: 4px solid var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-        }
-
+        .entrega-box { background: #fff; color: #0f172a; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 4px solid var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
         .admin-only { display: none; }
         #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
     </style>
@@ -102,11 +58,8 @@
     <div class="container">
         <div id="tab-historial" class="section">
             <div class="card">
-                <h3>🕒 Historial de Entregas</h3>
-                <div class="table-wrapper"><table id="tabla-historial">
-                    <thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead>
-                    <tbody id="lista-pedidos"></tbody>
-                </table></div>
+                <h3>🕒 Historial</h3>
+                <div class="table-wrapper"><table><thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div>
             </div>
         </div>
 
@@ -118,55 +71,43 @@
                     <option value="iptv">IPTV (Link/URL)</option>
                 </select>
                 <input type="text" id="st-nombre" placeholder="Nombre Plataforma">
-                <div id="inputs-streaming">
-                    <input type="text" id="st-correo" placeholder="Correo">
-                    <input type="text" id="st-clave" placeholder="Clave">
-                </div>
-                <div id="inputs-iptv" style="display:none;">
-                    <textarea id="st-url" placeholder="URL IPTV"></textarea>
-                </div>
+                <div id="inputs-streaming"><input type="text" id="st-correo" placeholder="Correo"><input type="text" id="st-clave" placeholder="Clave"></div>
+                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL IPTV"></textarea></div>
                 <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR STOCK</button>
             </div>
-            <h3>Inventario (Máx 5 perfiles por cuenta)</h3>
             <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
         </div>
 
         <div id="tab-socios" class="section">
             <div class="card">
                 <h3>👥 Nuevo Socio</h3>
-                <input type="email" id="socio-email" placeholder="Email">
-                <input type="password" id="socio-pass" placeholder="Clave">
+                <input type="email" id="socio-email" placeholder="Email"><input type="password" id="socio-pass" placeholder="Clave">
                 <select id="socio-rol"><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
                 <button onclick="crearSocio()" class="btn-main btn-accent">CREAR USUARIO</button>
             </div>
-            <div class="table-wrapper"><table>
-                <thead><tr><th>Email</th><th>Clave</th><th>Rol</th><th>Estado</th><th>X</th></tr></thead>
-                <tbody id="lista-socios"></tbody>
-            </table></div>
+            <div class="table-wrapper"><table><thead><tr><th>Email</th><th>Clave</th><th>Rol</th><th>Estado</th><th>X</th></tr></thead><tbody id="lista-socios"></tbody></table></div>
         </div>
 
         <div id="tab-miembros" class="section active">
             <div id="panel-admin-miembros" class="card admin-only">
-                <h3>🛠 Carga de Miembros</h3>
+                <h3>🛠 Gestión Miembros</h3>
                 <textarea id="lista-masiva" placeholder="Nombre - Celular (Uno por línea)"></textarea>
                 <button onclick="guardarMiembros()" class="btn-main btn-accent">ACTUALIZAR LISTA</button>
-                <div class="table-wrapper" style="margin-top:10px; max-height:150px;">
-                    <table><tbody id="tabla-gestion-miembros"></tbody></table>
-                </div>
+                <div class="table-wrapper" style="margin-top:10px; max-height:150px;"><table><tbody id="tabla-gestion-miembros"></tbody></table></div>
             </div>
 
             <div class="card" style="border: 2px solid var(--accent); text-align:center;">
                 <h2>SOLICITAR ACCESO VIP</h2>
-                <label>Selecciona tu Nombre:</label>
+                <label>Tu Nombre:</label>
                 <select id="sel-miembro"></select>
-                <label>Plataforma deseada:</label>
+                <label>Servicio:</label>
                 <select id="sel-plat"></select>
                 <button onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:15px;">OBTENER CUENTA</button>
             </div>
 
             <div id="entrega-box" class="entrega-box">
-                <p>TUS DATOS:</p>
-                <div id="datos-entregados" style="font-size:1.3rem; font-weight:bold; margin-bottom:15px;"></div>
+                <p>TUS CREDENCIALES:</p>
+                <div id="datos-entregados" style="font-size:1.4rem; font-weight:bold; margin:15px 0; color:#000; word-break: break-all;"></div>
                 <button onclick="copiarInfo()" class="btn-main btn-accent" style="background:#000;">COPIAR DATOS</button>
             </div>
         </div>
@@ -193,7 +134,7 @@
 
     window.login = async () => {
         try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
-        catch(e) { alert("Credenciales incorrectas"); }
+        catch(e) { alert("Error"); }
     };
     window.logout = () => signOut(auth);
 
@@ -204,7 +145,6 @@
             document.getElementById('login-box').style.display='none';
             document.getElementById('app').style.display='block';
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'block' : 'none');
-            if(!isAdmin) showTab('tab-miembros', document.getElementById('btn-miembros'));
             cargarDatos();
         } else {
             document.getElementById('login-box').style.display='flex';
@@ -212,23 +152,22 @@
         }
     });
 
-    // FUNCIONES DE CARGA
     window.crearSocio = async () => {
         const e = document.getElementById('socio-email').value;
         const p = document.getElementById('socio-pass').value;
         const r = document.getElementById('socio-rol').value;
         const res = await createUserWithEmailAndPassword(auth, e, p);
         await setDoc(doc(db, "usuarios", res.user.uid), { email: e, password: p, role: r, activo: true, uid: res.user.uid });
-        alert("Socio creado");
+        alert("Socio Creado");
     };
 
     window.guardarStock = async () => {
         const t = document.getElementById('st-tipo').value;
-        const data = { tipo: t, nombre: document.getElementById('st-nombre').value, usos: 0, timestamp: serverTimestamp() };
-        if(t === 'streaming') { data.correo = document.getElementById('st-correo').value; data.clave = document.getElementById('st-clave').value; }
-        else { data.url = document.getElementById('st-url').value; }
-        await addDoc(collection(db, "inventario_vip"), data);
-        alert("Guardado");
+        const d = { tipo: t, nombre: document.getElementById('st-nombre').value, usos: 0, timestamp: serverTimestamp() };
+        if(t === 'streaming') { d.correo = document.getElementById('st-correo').value; d.clave = document.getElementById('st-clave').value; }
+        else { d.url = document.getElementById('st-url').value; }
+        await addDoc(collection(db, "inventario_vip"), d);
+        alert("Cargado");
     };
 
     window.guardarMiembros = async () => {
@@ -237,27 +176,41 @@
         document.getElementById('lista-masiva').value = "";
     };
 
-    // LÓGICA DE ENTREGA (ESTO ES LO QUE ARREGLÉ: DE 1 EN 1)
+    // --- CORRECCIÓN FINAL DE ENTREGA ---
     window.solicitarAuto = async () => {
-        const m = document.getElementById('sel-mimember').value || document.getElementById('sel-miembro').value;
+        const m = document.getElementById('sel-miembro').value;
         const p = document.getElementById('sel-plat').value;
-        if(!m || !p) return alert("Selecciona tu nombre y la plataforma");
+        if(!m || !p) return alert("Selecciona tu nombre y plataforma");
 
+        // Usamos getDocs (una sola vez) para evitar bucles de onSnapshot
         const q = query(collection(db, "inventario_vip"), where("nombre", "==", p), where("usos", "<", 5), limit(1));
         const snap = await getDocs(q);
 
         if(!snap.empty) {
             const dR = snap.docs[0];
             const d = dR.data();
-            const creds = d.tipo === 'streaming' ? `C: ${d.correo} | P: ${d.clave}` : d.url;
+            
+            // Definir qué datos mostrar según el tipo
+            const infoFinal = d.tipo === 'streaming' ? `USUARIO: ${d.correo} | CLAVE: ${d.clave}` : `LINK: ${d.url}`;
 
-            // ACTUALIZA SOLO 1 CUPO
+            // Actualizar Firebase (Suma 1 cupo)
             await updateDoc(doc(db, "inventario_vip", dR.id), { usos: increment(1) });
-            await addDoc(collection(db, "pedidos_vip"), { miembro: m, plataforma: p, datos: creds, timestamp: serverTimestamp() });
+            
+            // Guardar en Historial
+            await addDoc(collection(db, "pedidos_vip"), { miembro: m, plataforma: p, datos: infoFinal, timestamp: serverTimestamp() });
 
-            document.getElementById('datos-entregados').innerText = creds;
-            document.getElementById('entrega-box').style.display = 'block';
-        } else { alert("Sin cupos para " + p); }
+            // MOSTRAR DATOS AL USUARIO INMEDIATAMENTE
+            const box = document.getElementById('entrega-box');
+            const txt = document.getElementById('datos-entregados');
+            
+            txt.innerText = infoFinal;
+            box.style.display = 'block';
+            
+            // Desplazar la pantalla hacia el resultado para que el usuario lo vea
+            box.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert("No hay perfiles disponibles actualmente para " + p);
+        }
     };
 
     function cargarDatos() {
@@ -271,16 +224,17 @@
 
         onSnapshot(collection(db, "inventario_vip"), s => {
             const div = document.getElementById('display-stock-list'); const sel = document.getElementById('sel-plat');
-            div.innerHTML = ""; sel.innerHTML = '<option value="">-- PLATAFORMA --</option>';
+            div.innerHTML = ""; sel.innerHTML = '<option value="">-- SELECCIONAR --</option>';
             s.forEach(d => {
-                const i = d.data(); if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+                const i = d.data(); 
+                if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
                 div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>${i.usos}/5 Perfiles<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
             });
         });
 
         onSnapshot(collection(db, "config_vip"), s => {
             const tab = document.getElementById('tabla-gestion-miembros'); const sel = document.getElementById('sel-miembro');
-            tab.innerHTML = ""; sel.innerHTML = '<option value="">-- TU NOMBRE --</option>';
+            tab.innerHTML = ""; sel.innerHTML = '<option value="">-- BUSCAR NOMBRE --</option>';
             s.forEach(d => {
                 tab.innerHTML += `<tr><td>${d.data().nombre}</td><td style="text-align:right"><button onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
                 sel.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
