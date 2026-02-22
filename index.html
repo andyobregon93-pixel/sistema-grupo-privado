@@ -3,200 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA VIP TOTAL - PANEL ADMIN</title>
+    <title>SISTEMA VIP TOTAL - PANEL COMPLETO</title>
     <style>
         :root { 
-            --primario: #0f2027; 
-            --exito: #27ae60; 
-            --error: #e74c3c; 
-            --admin: #2980b9; 
-            --fondo: #f4f7f6;
-            --oscuro: #2c3e50;
+            --primario: #0f2027; --exito: #27ae60; --error: #e74c3c; 
+            --admin: #2980b9; --fondo: #f4f7f6; --oscuro: #2c3e50; --secundario: #f39c12;
         }
-        
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        
-        body { 
-            margin: 0; 
-            background-color: var(--fondo); 
-            color: #333; 
-            overflow-y: auto; 
-            padding: 20px;
-        }
-
-        .contenedor-principal {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header-panel {
-            background: var(--oscuro);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        /* Secciones Estilo Card */
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-            border: 1px solid #ddd;
-        }
-
-        h2 { 
-            font-size: 1.2rem; 
-            color: var(--oscuro); 
-            margin-top: 0;
-            border-left: 4px solid var(--admin);
-            padding-left: 10px;
-            text-transform: uppercase;
-        }
-
-        /* Grid para Inputs */
-        .grid-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        /* Tablas */
+        body { margin: 0; background-color: var(--fondo); color: #333; overflow-y: auto; padding: 20px; }
+        .contenedor-principal { max-width: 1200px; margin: 0 auto; }
+        .header-panel { background: var(--oscuro); color: white; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #ddd; }
+        h2 { font-size: 1.2rem; color: var(--oscuro); margin-top: 0; border-left: 4px solid var(--admin); padding-left: 10px; text-transform: uppercase; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
         .tabla-contenedor { overflow-x: auto; }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            font-size: 13px;
-        }
-
-        th {
-            background: var(--oscuro);
-            color: white;
-            padding: 12px;
-            text-align: left;
-            position: sticky;
-            top: 0;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            word-break: break-all;
-        }
-
-        /* Botones */
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; margin-top: 10px; }
+        th { background: var(--oscuro); color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .btn { padding: 8px 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
         .btn-block { width: 100%; padding: 12px; font-size: 14px; }
-        .btn-azul { background: var(--admin); }
-        .btn-rojo { background: var(--error); }
-        .btn-verde { background: var(--exito); }
-        .btn-gris { background: #7f8c8d; }
-
-        .badge {
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: bold;
-            color: white;
-        }
-
-        #cajaLogin {
-            max-width: 400px;
-            margin: 100px auto;
-            background: var(--oscuro);
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            color: white;
-        }
-
+        .btn-azul { background: var(--admin); } .btn-rojo { background: var(--error); }
+        .btn-verde { background: var(--exito); } .btn-naranja { background: var(--secundario); }
+        .badge { padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; }
         .oculto { display: none !important; }
     </style>
 </head>
 <body>
 
 <div id="cajaLogin">
-    <h2>👑 ACCESO PANEL VIP</h2>
-    <input type="email" id="correoLogin" placeholder="Correo electrónico" style="margin-bottom:10px;">
-    <input type="password" id="passLogin" placeholder="Contraseña" style="margin-bottom:20px;">
-    <button class="btn btn-verde btn-block" onclick="iniciarSesion()">ENTRAR AL SISTEMA</button>
+    <div style="max-width:400px; margin: 100px auto; background:var(--oscuro); padding:30px; border-radius:10px; text-align:center; color:white;">
+        <h2>👑 ACCESO VIP</h2>
+        <input type="email" id="correoLogin" placeholder="Correo" style="margin-bottom:10px;">
+        <input type="password" id="passLogin" placeholder="Clave" style="margin-bottom:20px;">
+        <button class="btn btn-verde btn-block" onclick="iniciarSesion()">ENTRAR</button>
+    </div>
 </div>
 
 <div id="app" class="contenedor-principal oculto">
     
     <div class="header-panel">
         <div>USUARIO: <span id="infoUsuario"></span></div>
-        <button class="btn btn-rojo" onclick="cerrarSesion()">CERRAR SESIÓN</button>
+        <button class="btn btn-rojo" onclick="cerrarSesion()">SALIR</button>
     </div>
 
     <div class="card">
-        <h2>🚀 Generar Entrega a VIP</h2>
+        <h2>🚀 Generar Entrega</h2>
         <div class="grid-inputs">
             <div>
-                <label>Buscar Miembro:</label>
-                <input type="text" id="inputBusquedaVip" placeholder="🔍 Escribe nombre..." onkeyup="filtrarMiembros()">
+                <input type="text" id="inputBusquedaVip" placeholder="🔍 Filtrar VIP..." onkeyup="filtrarMiembros()">
                 <select id="selectMiembroVip" size="4" style="margin-top:5px;"></select>
             </div>
             <div>
-                <label>Plataforma:</label>
                 <select id="selectPlatUsuario"></select>
                 <button class="btn btn-verde btn-block" style="margin-top:15px;" onclick="procesarEntregaAutomatica()">GENERAR CUENTA</button>
             </div>
         </div>
         <div id="resultadoPedido" class="oculto" style="margin-top:15px; padding:15px; border:2px dashed var(--exito); background:#f0fff0; text-align:center;">
-            <div id="textoCuenta" style="font-size:18px; font-weight:bold; margin-bottom:10px;"></div>
-            <button class="btn btn-azul" onclick="copiarTodo()">COPIAR DATOS</button>
+            <div id="textoCuenta" style="font-size:16px; font-weight:bold; margin-bottom:10px;"></div>
+            <button class="btn btn-azul" onclick="copiarTodo()">COPIAR</button>
         </div>
     </div>
 
     <div id="panelAdmin" class="oculto">
         
         <div class="card">
-            <h2>📥 Cargar Nueva Cuenta al Inventario</h2>
+            <h2>👥 Gestión de Socios / Usuarios</h2>
             <div class="grid-inputs">
-                <input type="text" id="accCorreo" placeholder="cuenta:contraseña">
-                <select id="selectPlatAdmin"></select>
-                <button class="btn btn-azul" onclick="subirInventario()">Añadir a Inventario</button>
+                <input type="email" id="nuevoCorreo" placeholder="Correo Nuevo Socio">
+                <input type="text" id="nuevoPass" placeholder="Contraseña">
+                <select id="nuevoRol">
+                    <option value="usuario">Rol: Socio</option>
+                    <option value="admin">Rol: Admin</option>
+                </select>
+                <button class="btn btn-verde" onclick="registrarUsuario()">CREAR USUARIO</button>
             </div>
-        </div>
-
-        <div class="card">
-            <h2>📝 Editar/Eliminar Stock Existente</h2>
             <div class="tabla-contenedor">
                 <table>
                     <thead>
                         <tr>
-                            <th>Plataforma</th>
-                            <th>Cuenta</th>
-                            <th>Usos</th>
+                            <th>Email</th>
+                            <th>Rol</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
+                    </thead>
+                    <tbody id="tablaListaUsuarios"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📦 Inventario de Cuentas</h2>
+            <div class="grid-inputs">
+                <input type="text" id="accCorreo" placeholder="correo:clave">
+                <select id="selectPlatAdmin"></select>
+                <button class="btn btn-azul" onclick="subirInventario()">AÑADIR STOCK</button>
+            </div>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                        <tr><th>Plataforma</th><th>Cuenta</th><th>Usos</th><th>Estado</th><th>Acciones</th></tr>
                     </thead>
                     <tbody id="tablaGestionStock"></tbody>
                 </table>
@@ -204,31 +111,27 @@
         </div>
 
         <div class="card">
-            <h2>💎 Gestión de Miembros VIP</h2>
-            <textarea id="textoMasivoVip" rows="3" placeholder="Pega los nombres aquí, uno por línea..."></textarea>
-            <button class="btn btn-azul" style="margin-top:10px;" onclick="procesarCargaMasivaTexto()">CARGAR LISTA VIP</button>
+            <h2>💎 Miembros VIP (Carga Masiva)</h2>
+            <textarea id="textoMasivoVip" rows="3" placeholder="Nombres línea por línea..."></textarea>
+            <button class="btn btn-azul" style="margin-top:10px;" onclick="procesarCargaMasivaTexto()">CARGAR LISTA</button>
         </div>
 
         <div class="card">
-            <h2>➕ Configurar Plataformas</h2>
+            <h2>🛠️ Configurar Plataformas</h2>
             <div class="grid-inputs" style="grid-template-columns: 1fr auto;">
-                <input type="text" id="nombreNuevaPlat" placeholder="Nombre (Ej: Netflix, Disney)">
+                <input type="text" id="nombreNuevaPlat" placeholder="Ej: Netflix">
                 <button class="btn btn-gris" onclick="crearPlataforma()">CREAR</button>
             </div>
-            <table style="margin-top:10px;">
-                <tbody id="listaPlataformasGestion"></tbody>
-            </table>
+            <table id="listaPlataformasGestion"></table>
         </div>
-
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, getDocs, addDoc, collection, onSnapshot, query, where, limit, updateDoc, orderBy, deleteDoc, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // TU CONFIGURACIÓN (Mantenla tal cual)
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -242,13 +145,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let miEmail = "", miRol = "", vipsLocales = [];
+    let miEmail = "", vipsLocales = [];
 
-    // --- AUTENTICACIÓN ---
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value.trim();
         const p = document.getElementById("passLogin").value.trim();
-        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error: Verifica tus credenciales"); }
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Acceso Denegado"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
@@ -257,9 +159,7 @@
         if (user) {
             miEmail = user.email;
             const snap = await getDoc(doc(db, "users", user.uid));
-            // Verificación para tu correo admin directo o por rol en DB
             if (user.email === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin")) {
-                miRol = "admin";
                 document.getElementById("panelAdmin").classList.remove("oculto");
             }
             document.getElementById("cajaLogin").classList.add("oculto");
@@ -272,26 +172,36 @@
         }
     });
 
-    // --- CARGA DE DATOS ---
     function cargarDatos() {
-        // VIPs
-        onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
-            vipsLocales = []; 
-            snap.forEach(d => vipsLocales.push({id: d.id, ...d.data()}));
-            filtrarMiembros();
+        // Usuarios / Socios
+        onSnapshot(collection(db, "users"), (snap) => {
+            let h = "";
+            snap.forEach(d => {
+                const u = d.data();
+                const colorEstado = u.estado === "ON" ? "var(--exito)" : "var(--error)";
+                h += `<tr>
+                    <td>${u.email}</td>
+                    <td><b style="text-transform:uppercase">${u.role}</b></td>
+                    <td><span class="badge" style="background:${colorEstado}">${u.estado}</span></td>
+                    <td>
+                        <button class="btn btn-naranja" onclick="toggleSocio('${d.id}','${u.estado}')">ON/OFF</button>
+                        <button class="btn btn-rojo" onclick="eliminarDoc('users','${d.id}')">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById("tablaListaUsuarios").innerHTML = h;
         });
 
-        // Inventario (Tabla estilo la imagen que pasaste)
+        // Inventario Stock
         onSnapshot(collection(db, "inventario"), (snap) => {
-            let h = ""; 
+            let h = "";
             snap.forEach(d => {
                 const data = d.data();
-                const badgeColor = data.estado === "disponible" ? "var(--exito)" : "var(--error)";
                 h += `<tr>
                     <td><b>${data.plataforma}</b></td>
                     <td>${data.cuenta}</td>
-                    <td>${data.usos || 0} / 8</td>
-                    <td><span class="badge" style="background:${badgeColor}">${data.estado}</span></td>
+                    <td>${data.usos}/8</td>
+                    <td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)' : 'var(--error)'}">${data.estado}</span></td>
                     <td>
                         <button class="btn btn-azul" onclick="resetStock('${d.id}')">RESET</button>
                         <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
@@ -301,13 +211,17 @@
             document.getElementById("tablaGestionStock").innerHTML = h;
         });
 
-        // Plataformas
+        // Vips y Plataformas
+        onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
+            vipsLocales = []; snap.forEach(d => vipsLocales.push({id: d.id, ...d.data()}));
+            filtrarMiembros();
+        });
+
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let opts = ""; let lista = "";
             snap.forEach(d => {
-                const n = d.data().nombre;
-                opts += `<option value="${n}">${n}</option>`;
-                lista += `<tr><td>${n}</td><td style="text-align:right;"><button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">🗑️</button></td></tr>`;
+                opts += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
+                lista += `<tr><td width="80%">${d.data().nombre}</td><td><button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">🗑️</button></td></tr>`;
             });
             document.getElementById("selectPlatUsuario").innerHTML = opts;
             document.getElementById("selectPlatAdmin").innerHTML = opts;
@@ -315,64 +229,46 @@
         });
     }
 
-    // --- FUNCIONES DE LÓGICA ---
+    // --- ACCIONES ---
+    window.registrarUsuario = async () => {
+        const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
+        if(!c || !p) return alert("Completa los datos");
+        try {
+            const res = await createUserWithEmailAndPassword(auth, c, p);
+            await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" });
+            alert("Usuario Creado");
+        } catch(e) { alert("Error al crear"); }
+    };
+
+    window.toggleSocio = async (id, est) => updateDoc(doc(db, "users", id), { estado: est === "ON" ? "OFF" : "ON" });
+    window.subirInventario = async () => {
+        const c = document.getElementById("accCorreo").value, p = document.getElementById("selectPlatAdmin").value;
+        if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
+    };
+    window.resetStock = async (id) => updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
+    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
+    
     window.filtrarMiembros = () => {
         const bus = document.getElementById("inputBusquedaVip").value.toLowerCase();
-        const sel = document.getElementById("selectMiembroVip"); 
-        sel.innerHTML = "";
+        const sel = document.getElementById("selectMiembroVip"); sel.innerHTML = "";
         vipsLocales.filter(v => v.nombre.toLowerCase().includes(bus)).forEach(v => {
-            const opt = document.createElement("option"); 
-            opt.value = v.nombre; opt.text = v.nombre; 
-            sel.appendChild(opt);
+            const opt = document.createElement("option"); opt.value = v.nombre; opt.text = v.nombre; sel.appendChild(opt);
         });
     };
 
     window.procesarEntregaAutomatica = async () => {
         const miembro = document.getElementById("selectMiembroVip").value;
         const plat = document.getElementById("selectPlatUsuario").value;
-        if(!miembro) return alert("Selecciona un miembro de la lista");
-
         const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
         const stock = await getDocs(q);
-
-        if(stock.empty) return alert("No hay stock disponible para " + plat);
-
+        if(stock.empty) return alert("Sin stock");
         const dS = stock.docs[0], nU = (dS.data().usos || 0) + 1;
         await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
-        
         document.getElementById("resultadoPedido").classList.remove("oculto");
         document.getElementById("textoCuenta").innerText = dS.data().cuenta;
     };
 
-    window.subirInventario = async () => {
-        const c = document.getElementById("accCorreo").value.trim();
-        const p = document.getElementById("selectPlatAdmin").value;
-        if(c) {
-            await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
-            document.getElementById("accCorreo").value = "";
-        }
-    };
-
-    window.crearPlataforma = async () => {
-        const n = document.getElementById("nombreNuevaPlat").value.trim();
-        if(n) { await addDoc(collection(db, "plataformas"), { nombre: n }); document.getElementById("nombreNuevaPlat").value = ""; }
-    };
-
-    window.procesarCargaMasivaTexto = async () => {
-        const t = document.getElementById("textoMasivoVip").value;
-        if(!t.trim()) return;
-        const batch = writeBatch(db);
-        t.split('\n').forEach(l => { 
-            if(l.trim()) batch.set(doc(collection(db,"vips")), { nombre: l.trim() }); 
-        });
-        await batch.commit();
-        alert("Lista VIP actualizada");
-        document.getElementById("textoMasivoVip").value = "";
-    };
-
-    window.resetStock = async (id) => { if(confirm("¿Resetear usos de esta cuenta?")) await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); };
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Seguro que deseas eliminar esto?")) await deleteDoc(doc(db, col, id)); };
-    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado al portapapeles"); };
+    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
 </script>
 </body>
 </html>
