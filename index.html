@@ -8,9 +8,9 @@
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
             --danger: #ef4444; --success: #10b981; --text: #f8fafc; 
-            --border: #334155; --glow: rgba(59, 130, 246, 0.5);
+            --border: #334155;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; }
         .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); gap: 8px; overflow-x: auto; }
         .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 10px; font-size: 0.8rem; white-space: nowrap; }
         .nav-btn.active { color: white; background: var(--accent); }
@@ -18,10 +18,10 @@
         .container { padding: 20px; max-width: 1100px; margin: auto; width: 95%; }
         .section { display: none; }
         .section.active { display: block; }
-        .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
         h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
@@ -30,8 +30,7 @@
         .btn-status { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .on { background: var(--success); }
         .off { background: var(--danger); }
-        /* CAJA DE ENTREGA MEJORADA */
-        .entrega-box { background: #ffffff; color: #000000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 5px solid var(--success); box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        .entrega-box { background: #ffffff; color: #000000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
         .admin-only { display: none; }
         #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
     </style>
@@ -71,37 +70,38 @@
                 <select id="sel-miembro"></select>
                 <label>Plataforma:</label>
                 <select id="sel-plat"></select>
-                <button onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:20px;">GENERAR ACCESO</button>
+                <button onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:20px;">OBTENER CUENTA</button>
             </div>
 
             <div id="entrega-box" class="entrega-box">
-                <h3 style="color:#000;">¡AQUÍ TIENES TU CUENTA!</h3>
-                <div id="datos-entregados" style="font-size:1.4rem; font-weight:bold; margin:20px 0; border: 2px dashed #000; padding: 15px; background: #f0f0f0;"></div>
+                <h3 style="color:#000;">DATOS DE TU ACCESO</h3>
+                <div id="datos-entregados" style="font-size:1.3rem; font-weight:bold; margin:20px 0; border: 3px dashed #333; padding: 15px; background: #f8f9fa; color:#d91b5c;"></div>
                 <button onclick="copiarInfo()" class="btn-main btn-accent" style="background:#000;">COPIAR DATOS</button>
             </div>
         </div>
 
         <div id="tab-historial" class="section">
-            <div class="card"><h3>Historial</h3><div class="table-wrapper"><table><thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div></div>
+            <div class="card"><h3>Historial de Pedidos</h3><div class="table-wrapper"><table><thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div></div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>Añadir Stock</h3>
-                <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas</option><option value="iptv">IPTV</option></select>
-                <input type="text" id="st-nombre" placeholder="Nombre">
+                <h3>Añadir Nuevo Stock</h3>
+                <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas (Correo/Pass)</option><option value="iptv">IPTV (Link)</option></select>
+                <input type="text" id="st-nombre" placeholder="Nombre de la Plataforma">
                 <div id="inputs-streaming"><input type="text" id="st-correo" placeholder="Correo"><input type="text" id="st-clave" placeholder="Clave"></div>
-                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL"></textarea></div>
-                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR</button>
+                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL IPTV"></textarea></div>
+                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR STOCK</button>
             </div>
+            <h3>Inventario Activo</h3>
             <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
         </div>
 
         <div id="tab-socios" class="section">
             <div class="card">
-                <h3>Socios</h3>
+                <h3>Gestión de Socios</h3>
                 <input type="email" id="socio-email" placeholder="Email"><input type="password" id="socio-pass" placeholder="Clave">
-                <button onclick="crearSocio()" class="btn-main btn-accent">CREAR</button>
+                <button onclick="crearSocio()" class="btn-main btn-accent">CREAR SOCIO</button>
             </div>
             <div class="table-wrapper"><table><tbody id="lista-socios"></tbody></table></div>
         </div>
@@ -126,10 +126,11 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // LOGIN
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error al entrar"); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error al entrar."); }
     };
     window.logout = () => signOut(auth);
 
@@ -147,113 +148,100 @@
         }
     });
 
-    // --- FUNCIÓN DE SOLICITUD REVISADA ---
+    // --- SOLICITAR CUENTA (MEJORADO SIN ERROR DE CONEXIÓN) ---
     window.solicitarAuto = async () => {
-        const miembroNom = document.getElementById('sel-miembro').value;
-        const platNom = document.getElementById('sel-plat').value;
+        const mNom = document.getElementById('sel-miembro').value;
+        const pNom = document.getElementById('sel-plat').value;
 
-        if(!miembroNom || !platNom) {
-            return alert("Por favor selecciona tu nombre y la plataforma");
-        }
+        if(!mNom || !pNom) return alert("Selecciona tu nombre y plataforma.");
 
         try {
-            // Buscamos la cuenta en el inventario que tenga menos de 5 perfiles usados
-            const q = query(collection(db, "inventario_vip"), where("nombre", "==", platNom), where("usos", "<", 5), limit(1));
-            const querySnapshot = await getDocs(q);
+            // Consulta simple (Evita error de índice compuesto)
+            const q = query(collection(db, "inventario_vip"), where("nombre", "==", pNom));
+            const snap = await getDocs(q);
 
-            if (!querySnapshot.empty) {
-                const docSnap = querySnapshot.docs[0];
-                const item = docSnap.data();
-                
-                // Formateamos los datos a entregar
-                const info = item.tipo === 'streaming' 
-                    ? `USUARIO: ${item.correo} \nCLAVE: ${item.clave}` 
-                    : `LISTA IPTV: ${item.url}`;
+            let cuentaEncontrada = null;
 
-                // 1. Actualizamos el contador de usos (+1)
-                await updateDoc(doc(db, "inventario_vip", docSnap.id), { usos: increment(1) });
+            snap.forEach(doc => {
+                if(!cuentaEncontrada && doc.data().usos < 5) {
+                    cuentaEncontrada = { id: doc.id, ...doc.data() };
+                }
+            });
 
-                // 2. Guardamos el pedido para el historial
+            if (cuentaEncontrada) {
+                const info = cuentaEncontrada.tipo === 'streaming' 
+                    ? `USUARIO: ${cuentaEncontrada.correo}\nCLAVE: ${cuentaEncontrada.clave}` 
+                    : `LINK: ${cuentaEncontrada.url}`;
+
+                // 1. Descontar cupo
+                await updateDoc(doc(db, "inventario_vip", cuentaEncontrada.id), { usos: increment(1) });
+
+                // 2. Guardar Historial
                 await addDoc(collection(db, "pedidos_vip"), {
-                    miembro: miembroNom,
-                    plataforma: platNom,
-                    datos: info,
-                    timestamp: serverTimestamp()
+                    miembro: mNom, plataforma: pNom, datos: info, timestamp: serverTimestamp()
                 });
 
-                // 3. MOSTRAMOS LOS DATOS EN PANTALLA
-                const caja = document.getElementById('entrega-box');
-                const texto = document.getElementById('datos-entregados');
-                
-                texto.innerText = info;
-                caja.style.display = 'block';
-
-                // Scroll suave para que el usuario lo vea
-                caja.scrollIntoView({ behavior: 'smooth' });
+                // 3. Mostrar en pantalla
+                document.getElementById('datos-entregados').innerText = info;
+                document.getElementById('entrega-box').style.display = 'block';
+                document.getElementById('entrega-box').scrollIntoView({ behavior: 'smooth' });
 
             } else {
-                alert("No hay perfiles disponibles para " + platNom);
+                alert("No hay perfiles libres para: " + pNom);
             }
-        } catch (error) {
-            console.error(error);
-            alert("Error de conexión: Verifica tu señal.");
+        } catch (e) {
+            console.error(e);
+            alert("Error al obtener cuenta. Intenta de nuevo.");
         }
     };
 
     function cargarDatos() {
-        // Cargar Miembros en el Select
+        // Miembros
         onSnapshot(collection(db, "config_vip"), s => {
             const sel = document.getElementById('sel-miembro');
             const tab = document.getElementById('tabla-gestion-miembros');
-            sel.innerHTML = '<option value="">-- BUSCAR MI NOMBRE --</option>';
+            sel.innerHTML = '<option value="">-- SELECCIONAR NOMBRE --</option>';
             tab.innerHTML = "";
             s.forEach(d => {
-                const n = d.data().nombre;
-                sel.innerHTML += `<option value="${n}">${n}</option>`;
-                tab.innerHTML += `<tr><td>${n}</td><td><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
+                sel.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
+                tab.innerHTML += `<tr><td>${d.data().nombre}</td><td><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
             });
         });
 
-        // Cargar Plataformas en el Select y Lista de Stock
+        // Stock y Select de Plataformas
         onSnapshot(collection(db, "inventario_vip"), s => {
             const sel = document.getElementById('sel-plat');
             const div = document.getElementById('display-stock-list');
-            sel.innerHTML = '<option value="">-- ELEGIR SERVICIO --</option>';
+            const nombresUnicos = new Set();
+            sel.innerHTML = '<option value="">-- SELECCIONAR SERVICIO --</option>';
             div.innerHTML = "";
             s.forEach(d => {
                 const i = d.data();
-                if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
+                if(i.usos < 5) nombresUnicos.add(i.nombre);
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Perfiles: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
             });
+            nombresUnicos.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
         });
 
-        // Historial
+        // Pedidos
         onSnapshot(query(collection(db, "pedidos_vip"), orderBy("timestamp", "desc")), s => {
             const tb = document.getElementById('lista-pedidos'); tb.innerHTML = "";
             s.forEach(d => {
                 const p = d.data();
-                tb.innerHTML += `<tr><td>${p.timestamp?.toDate().toLocaleString() || '...'}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
-            });
-        });
-
-        // Socios
-        onSnapshot(collection(db, "usuarios"), s => {
-            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
-            s.forEach(d => {
-                const u = d.data();
-                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td><button onclick="eliminarDoc('usuarios','${d.id}')">X</button></td></tr>`;
+                const fecha = p.timestamp ? p.timestamp.toDate().toLocaleString() : "...";
+                tb.innerHTML += `<tr><td>${fecha}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
             });
         });
     }
 
+    // Funciones Admin
     window.guardarStock = async () => {
         const t = document.getElementById('st-tipo').value;
-        const n = document.getElementById('st-nombre').value;
-        const d = { tipo: t, nombre: n, usos: 0, timestamp: serverTimestamp() };
+        const d = { tipo: t, nombre: document.getElementById('st-nombre').value, usos: 0, timestamp: serverTimestamp() };
         if(t==='streaming'){ d.correo=document.getElementById('st-correo').value; d.clave=document.getElementById('st-clave').value; }
         else { d.url=document.getElementById('st-url').value; }
         await addDoc(collection(db, "inventario_vip"), d);
-        alert("Guardado");
+        alert("Stock guardado");
     };
 
     window.guardarMiembros = async () => {
