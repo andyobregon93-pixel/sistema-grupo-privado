@@ -3,103 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA VIP - ADMINISTRACIÓN DIRECTA</title>
+    <title>SISTEMA VIP - CONTROL TOTAL</title>
     <style>
-        :root { 
-            --primario: #1a2a6c; --exito: #27ae60; --error: #e74c3c; 
-            --admin: #2980b9; --fondo: #f0f2f5; --oscuro: #2c3e50; --oro: #f39c12;
-        }
+        :root { --p: #1a2a6c; --ok: #27ae60; --err: #e74c3c; --bg: #f0f2f5; --txt: #2c3e50; }
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { margin: 0; background-color: var(--fondo); color: #333; padding: 15px; }
-        .contenedor { max-width: 1100px; margin: 0 auto; }
+        body { margin: 0; background: var(--bg); color: var(--txt); padding: 10px; }
+        .contenedor { max-width: 900px; margin: 0 auto; }
         
-        /* Header */
-        .header-panel { 
-            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-            color: white; padding: 20px; border-radius: 12px; 
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+        /* Encabezado */
+        .header { background: linear-gradient(135deg, #0f2027, #2c5364); color: white; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        
+        /* Tarjetas */
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { font-size: 1rem; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
 
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e1e4e8; }
-        h2 { font-size: 1.1rem; color: var(--oscuro); margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        /* Cuadritos Seleccionables (Socio) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 10px; }
+        .item { background: white; border: 2px solid #ddd; padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .item.active { border-color: var(--ok); background: #eafff0; transform: scale(0.98); }
 
-        /* Grid de Cuadritos para Socio */
-        .grid-seleccion { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 10px; max-height: 250px; overflow-y: auto; padding: 10px;
-            background: #f8f9fa; border-radius: 10px; border: 1px solid #ddd;
-        }
-        .item-card { 
-            background: white; border: 2px solid #eee; padding: 10px; border-radius: 10px;
-            text-align: center; cursor: pointer; transition: 0.2s; font-size: 0.85rem;
-        }
-        .item-card.selected { border-color: var(--exito); background: #eafff0; }
+        /* Tablas (Admin) */
+        .table-ready { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { background: #f4f4f4; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
 
         /* Botones */
-        .btn { padding: 8px 12px; border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.75rem; font-weight: 600; margin-right: 5px; }
-        .btn-verde { background: var(--exito); } .btn-azul { background: var(--admin); } .btn-rojo { background: var(--error); } .btn-naranja { background: var(--oro); }
+        .btn { padding: 8px 12px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .btn-ok { background: var(--ok); } .btn-err { background: var(--err); } .btn-info { background: #2980b9; } .btn-warn { background: #f39c12; }
         
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
         .oculto { display: none !important; }
-        input, select, textarea { padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; width: 100%; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
     </style>
 </head>
 <body>
 
-<div id="seccionLogin" class="contenedor" style="max-width:400px; margin-top:100px;">
+<div id="divLogin" class="contenedor" style="max-width:350px; margin-top:100px;">
     <div class="card" style="text-align:center;">
-        <h2>🔐 INGRESO AL SISTEMA</h2>
-        <input type="email" id="correoLogin" placeholder="Correo">
-        <input type="password" id="passLogin" placeholder="Contraseña">
-        <button class="btn btn-azul" style="width:100%" onclick="iniciarSesion()">ENTRAR</button>
+        <h2>🔑 ACCESO AL SISTEMA</h2>
+        <input type="email" id="logEmail" placeholder="Correo">
+        <input type="password" id="logPass" placeholder="Clave">
+        <button class="btn btn-info" style="width:100%; padding:15px;" onclick="entrar()">INGRESAR</button>
     </div>
 </div>
 
-<div id="app" class="contenedor oculto">
-    <div class="header-panel">
-        <div id="tituloEncabezado" style="font-weight:bold;">SISTEMA</div>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <span id="infoUsuario" style="font-size:0.8rem;"></span>
-            <button class="btn btn-rojo" onclick="cerrarSesion()">SALIR</button>
-        </div>
+<div id="divApp" class="contenedor oculto">
+    <div class="header">
+        <div><b id="txtRol">SISTEMA</b><br><small id="txtUser"></small></div>
+        <button class="btn btn-err" onclick="salir()">SALIR</button>
     </div>
 
-    <div id="vistaSocio" class="oculto">
+    <div id="panelSocio" class="oculto">
         <div class="card">
-            <h2>🚀 GENERAR ENTREGA VIP</h2>
-            <p>1. Selecciona Miembro:</p>
-            <div class="grid-seleccion" id="gridVipsEntrega"></div>
-            <p style="margin-top:20px;">2. Selecciona Plataforma:</p>
-            <div class="grid-seleccion" id="gridPlatsEntrega"></div>
-            <button class="btn btn-verde" style="width:100%; margin-top:25px; padding:15px;" onclick="procesarEntrega()">GENERAR CUENTA AHORA</button>
-            <div id="resultadoPedido" class="oculto" style="margin-top:15px; border:2px dashed var(--exito); padding:10px; text-align:center;">
-                <b id="textoCuenta"></b><br><br>
-                <button class="btn btn-azul" onclick="copiarCuenta()">COPIAR</button>
+            <h2>🚀 GENERAR ENTREGA</h2>
+            <p><small>1. Elige Miembro:</small></p>
+            <div class="grid" id="gridVips"></div>
+            <p><small>2. Elige Plataforma:</small></p>
+            <div class="grid" id="gridPlats" style="max-height:120px;"></div>
+            <button class="btn btn-ok" style="width:100%; margin-top:20px; padding:15px;" onclick="generar()">GENERAR CUENTA</button>
+            <div id="res" class="oculto" style="margin-top:15px; border:2px dashed var(--ok); padding:15px; text-align:center;">
+                <b id="txtCuenta"></b><br><br>
+                <button class="btn btn-info" onclick="copiar()">COPIAR DATOS</button>
             </div>
         </div>
+        <div class="card">
+            <h2>📜 MI HISTORIAL</h2>
+            <div class="table-ready"><table><thead><tr><th>VIP</th><th>Plat.</th><th>Fecha</th></tr></thead><tbody id="hisSocio"></tbody></table></div>
+        </div>
     </div>
 
-    <div id="vistaAdmin" class="oculto">
+    <div id="panelAdmin" class="oculto">
         <div class="card">
-            <h2>💎 MIEMBROS VIP</h2>
-            <textarea id="textoMasivo" placeholder="Carga masiva: nombres línea por línea..." rows="2"></textarea>
-            <button class="btn btn-azul" onclick="cargaMasivaVip()" style="width:100%">CARGAR LISTA</button>
-            <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="tablaVipsAdmin"></tbody></table>
+            <h2>💎 MIEMBROS VIP (CARGA E HISTORIAL)</h2>
+            <textarea id="csvVip" placeholder="Carga masiva: pega los nombres aquí..." rows="2"></textarea>
+            <button class="btn btn-info" style="width:100%" onclick="batchVip()">CARGAR LISTA</button>
+            <div class="table-ready" style="margin-top:15px;">
+                <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="admVips"></tbody></table>
+            </div>
         </div>
 
         <div class="card">
-            <h2>📦 INVENTARIO (CUENTAS)</h2>
-            <div style="display:flex; gap:10px;"><input type="text" id="accDato" placeholder="cuenta:clave"><select id="selectPlatStock"></select><button class="btn btn-azul" onclick="subirStock()">AÑADIR</button></div>
-            <table><thead><tr><th>Plat.</th><th>Cuenta</th><th>Usos</th><th>Acciones</th></tr></thead><tbody id="tablaStockAdmin"></tbody></table>
+            <h2>📦 STOCK Y PLATAFORMAS</h2>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="addAcc" placeholder="cuenta:clave">
+                <select id="selPlat"></select>
+                <button class="btn btn-info" onclick="addStock()">+</button>
+            </div>
+            <div class="table-ready">
+                <table><thead><tr><th>Plat.</th><th>Cuenta</th><th>Uso</th><th>Acciones</th></tr></thead><tbody id="admStock"></tbody></table>
+            </div>
+            <hr>
+            <div style="display:flex; gap:5px; margin-top:10px;">
+                <input type="text" id="newPlat" placeholder="Nueva Plataforma">
+                <button class="btn btn-ok" onclick="addPlat()">CREAR</button>
+            </div>
+            <div id="admPlats" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;"></div>
         </div>
 
         <div class="card">
-            <h2>🛠️ PLATAFORMAS</h2>
-            <div style="display:flex; gap:10px;"><input type="text" id="nombrePlat" placeholder="Nueva Plataforma"><button class="btn btn-verde" onclick="crearPlataforma()">CREAR</button></div>
-            <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="tablaPlatsAdmin"></tbody></table>
+            <h2>🌍 HISTORIAL GLOBAL</h2>
+            <div class="table-ready"><table><thead><tr><th>Socio</th><th>VIP</th><th>Plat.</th></tr></thead><tbody id="hisGlobal"></tbody></table></div>
         </div>
     </div>
 </div>
@@ -122,104 +125,111 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let vipSel = null, platSel = null;
+    let vSel = null, pSel = null, uMail = "";
 
-    window.iniciarSesion = async () => {
-        const c = document.getElementById("correoLogin").value;
-        const p = document.getElementById("passLogin").value;
-        try { await signInWithEmailAndPassword(auth, c, p); } catch(e) { alert("Error: Verifica tus datos"); }
+    window.entrar = async () => {
+        try { await signInWithEmailAndPassword(auth, logEmail.value, logPass.value); } 
+        catch(e) { alert("Error de acceso"); }
     };
+    window.salir = () => signOut(auth).then(() => location.reload());
 
-    window.cerrarSesion = () => signOut(auth).then(() => location.reload());
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            document.getElementById("seccionLogin").classList.add("oculto");
-            document.getElementById("app").classList.remove("oculto");
-            document.getElementById("infoUsuario").innerText = user.email;
+    onAuthStateChanged(auth, async (u) => {
+        if (u) {
+            uMail = u.email;
+            divLogin.classList.add("oculto");
+            divApp.classList.remove("oculto");
+            txtUser.innerText = uMail;
             
-            const snap = await getDoc(doc(db, "users", user.uid));
-            const isAdmin = user.email === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin");
+            const snap = await getDoc(doc(db, "users", u.uid));
+            const isAdmin = uMail === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin");
 
             if(isAdmin) {
-                document.getElementById("tituloEncabezado").innerText = "👑 ADMINISTRACIÓN DIRECTA";
-                document.getElementById("vistaAdmin").classList.remove("oculto");
-                document.getElementById("vistaSocio").classList.add("oculto");
+                txtRol.innerText = "👑 ADMINISTRACIÓN DIRECTA";
+                panelAdmin.classList.remove("oculto");
+                panelSocio.classList.add("oculto");
             } else {
-                document.getElementById("tituloEncabezado").innerText = "💼 PANEL SOCIO";
-                document.getElementById("vistaSocio").classList.remove("oculto");
+                txtRol.innerText = "💼 PANEL DE VENTAS";
+                panelSocio.classList.remove("oculto");
+                panelAdmin.classList.add("oculto");
             }
-            escucharDatos();
+            initData();
         } else {
-            document.getElementById("seccionLogin").classList.remove("oculto");
-            document.getElementById("app").classList.add("oculto");
+            divLogin.classList.remove("oculto");
+            divApp.classList.add("oculto");
         }
     });
 
-    function escucharDatos() {
-        onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
-            const grid = document.getElementById("gridVipsEntrega");
-            const tabla = document.getElementById("tablaVipsAdmin");
-            grid.innerHTML = ""; tabla.innerHTML = "";
-            snap.forEach(d => {
-                grid.innerHTML += `<div class="item-card" onclick="selVip(this, '${d.data().nombre}')">👤<br>${d.data().nombre}</div>`;
-                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td>
-                    <button class="btn btn-azul" onclick="editarDoc('vips','${d.id}','nombre','${d.data().nombre}')">EDITAR</button>
-                    <button class="btn btn-rojo" onclick="eliminarDoc('vips','${d.id}')">BORRAR</button>
+    function initData() {
+        // VIPs
+        onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (s) => {
+            gridVips.innerHTML = ""; admVips.innerHTML = "";
+            s.forEach(d => {
+                const n = d.data().nombre;
+                gridVips.innerHTML += `<div class="item" onclick="selV(this,'${n}')">👤<br>${n}</div>`;
+                admVips.innerHTML += `<tr><td>${n}</td><td>
+                    <button class="btn btn-warn" onclick="editD('vips','${d.id}','nombre','${n}')">EDITAR</button>
+                    <button class="btn btn-err" onclick="delD('vips','${d.id}')">X</button>
                 </td></tr>`;
             });
         });
 
-        onSnapshot(collection(db, "inventario"), (snap) => {
-            const tabla = document.getElementById("tablaStockAdmin");
-            tabla.innerHTML = "";
-            snap.forEach(d => {
+        // Plataformas
+        onSnapshot(collection(db, "plataformas"), (s) => {
+            gridPlats.innerHTML = ""; selPlat.innerHTML = ""; admPlats.innerHTML = "";
+            s.forEach(d => {
+                const n = d.data().nombre;
+                gridPlats.innerHTML += `<div class="item" onclick="selP(this,'${n}')">📺<br>${n}</div>`;
+                selPlat.innerHTML += `<option value="${n}">${n}</option>`;
+                admPlats.innerHTML += `<div style="background:#ddd; padding:5px; border-radius:5px; font-size:0.7rem;">${n} <b style="color:red;cursor:pointer" onclick="delD('plataformas','${d.id}')">X</b></div>`;
+            });
+        });
+
+        // Stock
+        onSnapshot(collection(db, "inventario"), (s) => {
+            admStock.innerHTML = "";
+            s.forEach(d => {
                 const i = d.data();
-                tabla.innerHTML += `<tr><td>${i.plataforma}</td><td>${i.cuenta}</td><td>${i.usos}/8</td><td>
-                    <button class="btn btn-naranja" onclick="regresarCupo('${d.id}')">REGRESAR CUPO</button>
-                    <button class="btn btn-azul" onclick="editarDoc('inventario','${d.id}','cuenta','${i.cuenta}')">EDITAR</button>
-                    <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
+                admStock.innerHTML += `<tr><td>${i.plataforma}</td><td>${i.cuenta.substring(0,10)}...</td><td>${i.usos}/8</td><td>
+                    <button class="btn btn-ok" onclick="resetC('${d.id}')">RESET</button>
+                    <button class="btn btn-err" onclick="delD('inventario','${d.id}')">X</button>
                 </td></tr>`;
             });
         });
-        
-        onSnapshot(collection(db, "plataformas"), (snap) => {
-            const grid = document.getElementById("gridPlatsEntrega");
-            const tabla = document.getElementById("tablaPlatsAdmin");
-            const select = document.getElementById("selectPlatStock");
-            grid.innerHTML = ""; tabla.innerHTML = ""; select.innerHTML = "";
-            snap.forEach(d => {
-                grid.innerHTML += `<div class="item-card" onclick="selPlat(this, '${d.data().nombre}')">📺<br>${d.data().nombre}</div>`;
-                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td>
-                    <button class="btn btn-azul" onclick="editarDoc('plataformas','${d.id}','nombre','${d.data().nombre}')">EDITAR</button>
-                    <button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">BORRAR</button>
-                </td></tr>`;
-                select.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
+
+        // Historiales
+        onSnapshot(query(collection(db,"entregas"), orderBy("fecha","desc"), limit(10)), (s) => {
+            hisSocio.innerHTML = ""; hisGlobal.innerHTML = "";
+            s.forEach(d => {
+                const e = d.data();
+                const fila = `<tr><td>${e.vip}</td><td>${e.plataforma}</td><td>${new Date(e.fecha).toLocaleTimeString()}</td></tr>`;
+                if(e.user === uMail) hisSocio.innerHTML += fila;
+                hisGlobal.innerHTML += `<tr><td>${e.user.split('@')[0]}</td><td>${e.vip}</td><td>${e.plataforma}</td></tr>`;
             });
         });
     }
 
-    // Acciones globales
-    window.selVip = (el, n) => { document.querySelectorAll("#gridVipsEntrega .item-card").forEach(i => i.classList.remove("selected")); el.classList.add("selected"); vipSel = n; };
-    window.selPlat = (el, n) => { document.querySelectorAll("#gridPlatsEntrega .item-card").forEach(i => i.classList.remove("selected")); el.classList.add("selected"); platSel = n; };
-    window.regresarCupo = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); alert("Cupo reiniciado"); };
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
-    window.editarDoc = async (col, id, campo, valor) => { const n = prompt("Nuevo valor:", valor); if(n) await updateDoc(doc(db, col, id), { [campo]: n }); };
-    window.crearPlataforma = async () => { const n = document.getElementById("nombrePlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
-    window.subirStock = async () => { const c = document.getElementById("accDato").value, p = document.getElementById("selectPlatStock").value; if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" }); };
-    window.cargaMasivaVip = async () => { const batch = writeBatch(db); document.getElementById("textoMasivo").value.split('\n').forEach(l => { if(l.trim()) batch.set(doc(collection(db, "vips")), { nombre: l.trim() }); }); await batch.commit(); document.getElementById("textoMasivo").value = ""; };
-    
-    window.procesarEntrega = async () => {
-        if(!vipSel || !platSel) return alert("Selecciona Miembro y Plataforma");
-        const q = query(collection(db, "inventario"), where("plataforma", "==", platSel), where("estado", "==", "disponible"), limit(1));
-        const res = await getDocs(q);
-        if(res.empty) return alert("Sin stock");
-        const d = res.docs[0], nU = (d.data().usos || 0) + 1;
+    // Acciones Admin
+    window.selV = (el, n) => { document.querySelectorAll("#gridVips .item").forEach(i=>i.classList.remove("active")); el.classList.add("active"); vSel=n; };
+    window.selP = (el, n) => { document.querySelectorAll("#gridPlats .item").forEach(i=>i.classList.remove("active")); el.classList.add("active"); pSel=n; };
+    window.resetC = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); };
+    window.delD = async (c, id) => { if(confirm("¿Borrar?")) await deleteDoc(doc(db, c, id)); };
+    window.editD = async (c, id, f, v) => { const n = prompt("Nuevo valor:", v); if(n) await updateDoc(doc(db, c, id), { [f]: n }); };
+    window.addPlat = async () => { if(newPlat.value) await addDoc(collection(db, "plataformas"), { nombre: newPlat.value }); newPlat.value=""; };
+    window.addStock = async () => { if(addAcc.value) await addDoc(collection(db, "inventario"), { cuenta: addAcc.value, plataforma: selPlat.value, usos: 0, estado: "disponible" }); addAcc.value=""; };
+    window.batchVip = async () => { const b = writeBatch(db); csvVip.value.split('\n').forEach(l => { if(l.trim()) b.set(doc(collection(db, "vips")), { nombre: l.trim() }); }); await b.commit(); csvVip.value=""; };
+
+    // Acción Generar
+    window.generar = async () => {
+        if(!vSel || !pSel) return alert("Falta selección");
+        const q = query(collection(db, "inventario"), where("plataforma", "==", pSel), where("estado", "==", "disponible"), limit(1));
+        const s = await getDocs(q);
+        if(s.empty) return alert("Sin stock");
+        const d = s.docs[0], nU = (d.data().usos || 0) + 1;
         await updateDoc(doc(db, "inventario", d.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
-        document.getElementById("resultadoPedido").classList.remove("oculto");
-        document.getElementById("textoCuenta").innerText = d.data().cuenta;
+        await addDoc(collection(db, "entregas"), { user: uMail, vip: vSel, plataforma: pSel, fecha: Date.now() });
+        res.classList.remove("oculto"); txtCuenta.innerText = d.data().cuenta;
     };
-    window.copiarCuenta = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
+    window.copiar = () => { navigator.clipboard.writeText(txtCuenta.innerText); alert("Copiado!"); };
 </script>
 </body>
 </html>
