@@ -21,7 +21,7 @@
         .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
         h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
@@ -67,7 +67,7 @@
                 <hr style="border: 0.5px solid var(--border); margin-bottom: 20px;">
                 <h3>Gestión Miembros VIP</h3>
                 <textarea id="lista-masiva" placeholder="Nombre (Uno por línea)"></textarea>
-                <button id="btn-cargar-miembros" onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
+                <button onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
                 <div class="table-wrapper" style="margin-top:10px; max-height:200px;"><table><tbody id="tabla-gestion-miembros"></tbody></table></div>
             </div>
 
@@ -91,20 +91,24 @@
         <div id="tab-historial" class="section">
             <div class="card"><h3>Historial de Pedidos</h3><div class="table-wrapper"><table><thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div></div>
         </div>
+
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>Añadir Stock</h3>
+                <h3>Añadir Nuevo Stock</h3>
                 <div id="nombres-rapidos" style="margin-bottom: 10px;"></div>
-                <input type="text" id="st-nombre" placeholder="Nombre">
+                <input type="text" id="st-nombre" placeholder="Plataforma">
                 <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas</option><option value="iptv">IPTV</option></select>
                 <div id="inputs-streaming"><input type="text" id="st-correo" placeholder="Correo"><input type="text" id="st-clave" placeholder="Clave"></div>
-                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL"></textarea></div>
-                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR</button>
+                <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL IPTV"></textarea></div>
+                <button onclick="guardarStock()" class="btn-main btn-save">GUARDAR STOCK</button>
             </div>
+            <h3>Inventario Activo</h3>
             <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
         </div>
+
         <div id="tab-socios" class="section">
             <div class="card">
+                <h3>Gestión de Socios</h3>
                 <input type="email" id="socio-email" placeholder="Email"><input type="password" id="socio-pass" placeholder="Clave">
                 <select id="socio-rol"><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
                 <button onclick="crearSocio()" class="btn-main btn-accent">CREAR SOCIO</button>
@@ -134,6 +138,7 @@
 
     let sistemaActivo = true;
 
+    // --- SISTEMA ON/OFF ---
     async function cargarEstadoSistema() {
         const docRef = doc(db, "ajustes", "estado_sistema");
         const snap = await getDoc(docRef);
@@ -144,12 +149,10 @@
 
     function actualizarInterfazSistema() {
         const label = document.getElementById('sistema-status-label');
-        const msg = document.getElementById('msg-sistema-off');
-        const btnSol = document.getElementById('btn-solicitar');
+        document.getElementById('msg-sistema-off').style.display = sistemaActivo ? 'none' : 'block';
+        document.getElementById('btn-solicitar').disabled = !sistemaActivo;
         label.innerText = sistemaActivo ? "SISTEMA: ENCENDIDO" : "SISTEMA: APAGADO";
-        label.className = sistemaActivo ? "status-badge on" : "status-badge off";
-        msg.style.display = sistemaActivo ? 'none' : 'block';
-        btnSol.disabled = !sistemaActivo;
+        label.className = "status-badge " + (sistemaActivo ? "on" : "off");
     }
 
     window.toggleSistema = async () => {
@@ -158,6 +161,7 @@
         actualizarInterfazSistema();
     };
 
+    // --- SOLICITAR CUENTA (CON LÍMITE ESTRICTO) ---
     window.solicitarAuto = async () => {
         if (!sistemaActivo) return alert("Sistema apagado.");
         const mNom = document.getElementById('sel-miembro').value;
@@ -165,16 +169,16 @@
         if(!mNom || !pNom) return alert("Selecciona nombre y plataforma.");
 
         try {
-            // SEGURIDAD: Intentar checar historial, si falla por permisos, avisar pero no bloquear todo
+            // BUSCAR PEDIDOS DE ESTE NOMBRE EN LAS ÚLTIMAS 24H
             const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
             const qH = query(collection(db, "pedidos_vip"), where("miembro", "==", mNom), where("timestamp", ">", hace24h));
-            const snapH = await getDocs(qH).catch(err => {
-                console.warn("Error de índice/permisos, saltando validación 24h.");
-                return { empty: true }; 
-            });
+            const snapH = await getDocs(qH);
 
-            if (!snapH.empty) return alert("🚫 " + mNom + ", ya pediste cuenta hoy.");
+            if (!snapH.empty) {
+                return alert("🚫 LÍMITE 24H: " + mNom + ", ya recibiste una cuenta. Intenta mañana.");
+            }
 
+            // BUSCAR CUENTA DISPONIBLE
             const qInv = query(collection(db, "inventario_vip"), where("nombre", "==", pNom));
             const snapInv = await getDocs(qInv);
             let cuenta = null;
@@ -186,10 +190,15 @@
                 await addDoc(collection(db, "pedidos_vip"), { miembro: mNom, plataforma: pNom, datos: info, timestamp: serverTimestamp() });
                 document.getElementById('datos-entregados').innerText = info;
                 document.getElementById('entrega-box').style.display = 'block';
-            } else { alert("Sin cupos."); }
-        } catch (e) { alert("Error al procesar. Revisa las reglas de Firebase."); }
+                document.getElementById('entrega-box').scrollIntoView({ behavior: 'smooth' });
+            } else { alert("❌ SIN STOCK DISPONIBLE."); }
+        } catch (e) { 
+            console.error(e);
+            alert("Error de permisos. Asegúrate de que las reglas de Firebase sean 'allow read, write: if true;'."); 
+        }
     };
 
+    // --- CARGA DE DATOS ---
     onAuthStateChanged(auth, async user => {
         if(user) {
             const dU = await getDoc(doc(db, "usuarios", user.uid));
@@ -209,8 +218,7 @@
         onSnapshot(collection(db, "config_vip"), s => {
             const sel = document.getElementById('sel-miembro');
             const tab = document.getElementById('tabla-gestion-miembros');
-            sel.innerHTML = '<option value="">-- NOMBRE --</option>';
-            tab.innerHTML = "";
+            sel.innerHTML = '<option value="">-- NOMBRE --</option>'; tab.innerHTML = "";
             s.forEach(d => {
                 const n = d.data().nombre;
                 sel.innerHTML += `<option value="${n}">${n}</option>`;
@@ -223,12 +231,11 @@
             const div = document.getElementById('display-stock-list');
             const rapido = document.getElementById('nombres-rapidos');
             const u = new Set();
-            sel.innerHTML = '<option value="">-- SERVICIO --</option>';
-            div.innerHTML = ""; rapido.innerHTML = "";
+            sel.innerHTML = '<option value="">-- SERVICIO --</option>'; div.innerHTML = ""; rapido.innerHTML = "";
             s.forEach(d => {
                 const i = d.data(); u.add(i.nombre);
                 if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">X</button></div>`;
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESTABLECER</button> <button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">BORRAR</button></div>`;
             });
             u.forEach(n => rapido.innerHTML += `<span class="plat-tag" onclick="document.getElementById('st-nombre').value='${n}'">${n}</span>`);
         });
@@ -240,14 +247,31 @@
                 tb.innerHTML += `<tr><td>${p.timestamp?.toDate().toLocaleString() || '...'}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button class="btn-status off" onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
             });
         });
+
+        onSnapshot(collection(db, "usuarios"), s => {
+            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
+            s.forEach(d => {
+                const u = d.data();
+                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td>ACTIVO</td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">BORRAR</button></td></tr>`;
+            });
+        });
     }
 
+    // --- FUNCIONES EXTRA ---
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error."); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Credenciales incorrectas."); }
     };
     window.logout = () => signOut(auth);
+    window.crearSocio = async () => {
+        const e = document.getElementById('socio-email').value;
+        const p = document.getElementById('socio-pass').value;
+        const r = document.getElementById('socio-rol').value;
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "usuarios", res.user.uid), { email: e, role: r, activo: true, uid: res.user.uid });
+        alert("Socio Creado");
+    };
     window.guardarMiembros = async () => {
         const t = document.getElementById('lista-masiva').value.split('\n');
         for(let l of t) { if(l.trim()!="") await addDoc(collection(db, "config_vip"), { nombre: l.trim() }); }
@@ -260,7 +284,9 @@
         if(t==='streaming'){ d.correo=document.getElementById('st-correo').value; d.clave=document.getElementById('st-clave').value; }
         else { d.url=document.getElementById('st-url').value; }
         await addDoc(collection(db, "inventario_vip"), d);
+        alert("Stock Guardado");
     };
+    window.resetCupos = async (id) => { await updateDoc(doc(db, "inventario_vip", id), { usos: 0 }); alert("Cupos restablecidos"); };
     window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
