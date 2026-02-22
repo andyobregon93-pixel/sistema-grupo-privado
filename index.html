@@ -12,31 +12,31 @@
         
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index: 2000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--primary); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 2px solid var(--accent); }
+        
         .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
         .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
         .nav-btn.active { background: var(--accent); }
         .btn-logout { background: var(--danger) !important; color: white; }
         
-        .container { padding: 15px; }
+        .container { padding: 10px; }
         .section { display: none; }
         .section.active { display: block; }
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; border-radius: 8px; overflow: hidden; }
-        th { background: #1e2d3b; color: white; padding: 10px; font-size: 0.75rem; }
-        td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 0.8rem; text-align: center; }
+        /* TABLAS RELLENAS EN HORIZONTAL */
+        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; color: #333; min-width: 600px; }
+        th { background: #1e2d3b; color: white; padding: 12px; font-size: 0.75rem; text-transform: uppercase; }
+        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 0.8rem; text-align: center; }
         
         input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .action-btn { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; margin: 2px; font-weight: bold; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin: 2px; }
         
         .member-item { display: flex; justify-content: space-between; align-items: center; background: white; color: #333; padding: 15px; margin-bottom: 8px; border-radius: 4px; border-left: 5px solid var(--accent); }
-        .log-item { border-bottom: 1px solid #334155; padding: 10px; font-size: 0.8rem; line-height: 1.4; color: white; }
 
-        /* CUADRO DE ENTREGA DETALLADO (IGUAL A TU IMAGEN) */
         #display-entrega { display: none; margin-top: 20px; padding: 15px; border: 2px solid var(--success); border-radius: 8px; background: #f0fdf4; color: #166534; text-align: center; }
-        .cuenta-box { background: white; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1.1rem; color: #333; word-break: break-all; }
-        .btn-copy { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .cuenta-box { background: white; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1rem; color: #333; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -44,8 +44,8 @@
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="color:var(--accent)">🛡️ PANEL ANDY</h2>
-        <input type="email" id="login-email" placeholder="Correo">
-        <input type="password" id="login-pass" placeholder="Clave">
+        <input type="email" id="login-email" placeholder="andyobregon799@gmail.com">
+        <input type="password" id="login-pass" placeholder="123456">
         <button class="btn-add" onclick="verificarLogin()">ENTRAR</button>
     </div>
 </div>
@@ -57,41 +57,50 @@
         <div id="tab-usuario" class="section">
             <div class="card">
                 <h3>🎁 Obtener mi Cuenta al Instante</h3>
-                <label>Tu Nombre:</label>
                 <select id="user-select-miembro"></select>
-                <label>Plataforma:</label>
                 <select id="user-select-plat"></select>
                 <button class="btn-add" style="background:var(--success)" onclick="usuarioPideCuenta()">🚀 RECLAMAR CUENTA AHORA</button>
-
                 <div id="display-entrega">
-                    <div style="font-weight: bold;">✅ ¡ENTREGA EXITOSA! AQUÍ TIENES TU CUENTA:</div>
+                    <div style="font-weight: bold;">✅ ENTREGA EXITOSA:</div>
                     <div class="cuenta-box" id="texto-cuenta"></div>
-                    <button class="btn-copy" onclick="copiarTodo()">📋 COPIAR TODO</button>
-                    <p style="font-size: 0.7rem; margin-top: 10px;">Copia y pega estos datos en la aplicación.</p>
+                    <button class="action-btn" style="background:#1e293b; padding:10px 20px;" onclick="copiarTodo()">📋 COPIAR TODO</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="tab-historial" class="section active">
+            <div class="card">
+                <h3>📜 Registro Completo de Actividad</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Socio/Vendedor</th>
+                                <th>Miembro VIP</th>
+                                <th>Plataforma</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historial-body"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add" style="background:var(--danger); margin-top:15px;" onclick="db.historial=[];save();">🗑️ LIMPIAR HISTORIAL</button>
             </div>
         </div>
 
         <div id="tab-vip" class="section">
             <div class="card">
-                <h3>💎 Carga Masiva Miembros VIP</h3>
-                <textarea id="input-masivo-vip" rows="4" placeholder="Nombre - Numero..."></textarea>
-                <button class="btn-add" onclick="cargarVipMasivo()">CARGAR LISTA</button>
+                <h3>💎 Miembros VIP</h3>
+                <textarea id="input-masivo-vip" rows="4" placeholder="Pega la lista aquí..."></textarea>
+                <button class="btn-add" onclick="cargarVipMasivo()">AÑADIR A LA LISTA</button>
             </div>
             <div id="lista-vip-despliegue"></div>
         </div>
 
-        <div id="tab-historial" class="section active">
-            <div class="card">
-                <h3>📜 Registro de Entregas</h3>
-                <div id="historial-lista" style="max-height: 400px; overflow-y: auto;"></div>
-                <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="db.historial=[];save();">BORRAR TODO</button>
-            </div>
-        </div>
-
         <div id="tab-socios" class="section">
             <div class="card">
-                <h3>👥 Gestión de Accesos</h3>
+                <h3>👥 Crear Nuevo Acceso</h3>
                 <input type="text" id="soc-nom" placeholder="Nombre">
                 <input type="email" id="soc-cor" placeholder="Correo">
                 <input type="text" id="soc-pas" placeholder="Contraseña">
@@ -100,17 +109,33 @@
                     <option value="Socio">Socio</option>
                     <option value="Usuario">Usuario Normal</option>
                 </select>
-                <button class="btn-add" onclick="agregarSocio()">CREAR ACCESO</button>
+                <button class="btn-add" onclick="agregarSocio()">GUARDAR SOCIO</button>
             </div>
-            <table id="tabla-socios"><thead><tr><th>Nombre</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody></tbody></table>
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Contraseña</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="socios-body"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
                 <h3>📦 Inventario</h3>
-                <input type="text" id="nueva-plat-nombre" placeholder="Nueva Plataforma">
+                <input type="text" id="nueva-plat-nombre" placeholder="Nombre Plataforma">
                 <button class="btn-add" style="background:var(--accent)" onclick="crearPlat()">+ CREAR PLATAFORMA</button>
-                <hr>
+                <hr style="margin:15px 0; border:0; border-top:1px solid #444;">
                 <input type="text" id="st-cor" placeholder="Correo"><input type="text" id="st-cla" placeholder="Clave">
                 <select id="st-plat-select"></select>
                 <button class="btn-add" onclick="agregarStock()">GUARDAR CUENTA</button>
@@ -119,8 +144,13 @@
 
         <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>📊 Control 0/8</h3>
-                <table id="tabla-resumen"><thead><tr><th>Plat</th><th>Cuenta</th><th>Uso</th><th>Acción</th></tr></thead><tbody id="body-resumen"></tbody></table>
+                <h3>📊 Resumen de Stock (0/8)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
+                        <tbody id="body-resumen"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -128,12 +158,12 @@
 
 <script>
     let session = { user: null };
-    let db = JSON.parse(localStorage.getItem('andy_v16_final')) || {
+    let db = JSON.parse(localStorage.getItem('andy_v17_final')) || {
         historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+"],
         socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", rol: "Admin", estado: true}]
     };
 
-    function save() { localStorage.setItem('andy_v16_final', JSON.stringify(db)); renderAll(); }
+    function save() { localStorage.setItem('andy_v17_final', JSON.stringify(db)); renderAll(); }
 
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
@@ -144,23 +174,23 @@
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('main-content').style.display='block';
             configurarNav(u.rol);
-        } else { alert("Acceso Incorrecto"); }
+        } else { alert("Acceso denegado"); }
     }
 
     function configurarNav(rol) {
         let nav = document.getElementById('barra-nav');
-        let html = '';
+        let btns = '';
         if(rol === 'Admin' || rol === 'Socio') {
-            html += `<button class="nav-btn active" onclick="showTab('tab-historial')">🕒 HISTORIAL</button>`;
-            html += `<button class="nav-btn" onclick="showTab('tab-vip')">💎 VIP</button>`;
-            html += `<button class="nav-btn" onclick="showTab('tab-socios')">👥 SOCIOS</button>`;
-            html += `<button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK</button>`;
-            html += `<button class="nav-btn" onclick="showTab('tab-resumen')">📊 TOTAL</button>`;
+            btns = `<button class="nav-btn active" onclick="showTab('tab-historial')">🕒 HISTORIAL</button>
+                    <button class="nav-btn" onclick="showTab('tab-vip')">💎 VIP</button>
+                    <button class="nav-btn" onclick="showTab('tab-socios')">👥 SOCIOS</button>
+                    <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK</button>
+                    <button class="nav-btn" onclick="showTab('tab-resumen')">📊 TOTAL</button>`;
         } else {
-            html += `<button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>`;
+            btns = `<button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>`;
         }
-        html += `<button class="nav-btn btn-logout" onclick="location.reload()">✖️ SALIR</button>`;
-        nav.innerHTML = html;
+        btns += `<button class="nav-btn btn-logout" onclick="location.reload()">✖️ SALIR</button>`;
+        nav.innerHTML = btns;
         showTab(rol === 'Usuario' ? 'tab-usuario' : 'tab-historial');
     }
 
@@ -168,44 +198,39 @@
         let m = document.getElementById('user-select-miembro').value;
         let p = document.getElementById('user-select-plat').value;
         let sIdx = db.stock.findIndex(s => s.plat === p && s.cupo < 8);
-        
         if(sIdx !== -1) {
             db.stock[sIdx].cupo++;
             let d = new Date();
             db.historial.unshift({ fecha: d.toLocaleDateString(), hora: d.toLocaleTimeString(), socio: session.user.nombre, miembro: m, plat: p });
-            
-            // MOSTRAR CUADRO DETALLADO EN VEZ DE ALERT
             document.getElementById('texto-cuenta').innerText = db.stock[sIdx].cuenta;
             document.getElementById('display-entrega').style.display = 'block';
-            
             save();
-        } else { 
-            alert("No hay cupos disponibles"); 
-            document.getElementById('display-entrega').style.display = 'none';
-        }
+        } else { alert("Sin Stock"); }
     }
 
-    function copiarTodo() {
-        let texto = document.getElementById('texto-cuenta').innerText;
-        navigator.clipboard.writeText(texto).then(() => {
-            alert("¡Copiado al portapapeles!");
-        });
-    }
-
+    function copiarTodo() { navigator.clipboard.writeText(document.getElementById('texto-cuenta').innerText); alert("Copiado"); }
     function cargarVipMasivo() { let t = document.getElementById('input-masivo-vip').value; if(t){ t.split('\n').forEach(l => { if(l.trim()) db.vip.push(l.trim()); }); document.getElementById('input-masivo-vip').value=""; save(); } }
     function crearPlat() { let n = document.getElementById('nueva-plat-nombre').value; if(n){ db.plataformas.push(n); document.getElementById('nueva-plat-nombre').value=""; save(); } }
     function agregarStock() { let c = document.getElementById('st-cor').value; let k = document.getElementById('st-cla').value; let p = document.getElementById('st-plat-select').value; if(c&&k){ db.stock.push({plat:p, cuenta:`${c}:${k}`, cupo:0}); save(); } }
-    function agregarSocio() { let n = document.getElementById('soc-nom').value; let c = document.getElementById('soc-cor').value; let p = document.getElementById('soc-pas').value; let r = document.getElementById('soc-rol').value; if(n&&c&&p){ db.socios.push({nombre:n, correo:c, pass:p, rol:r, estado:true}); save(); } }
+    function agregarSocio() { 
+        let n = document.getElementById('soc-nom').value; let c = document.getElementById('soc-cor').value; let p = document.getElementById('soc-pas').value; let r = document.getElementById('soc-rol').value;
+        if(n&&c&&p){ db.socios.push({nombre:n, correo:c, pass:p, rol:r, estado:true}); save(); } 
+    }
     function showTab(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
     function renderAll() {
-        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div class="log-item"><span style="color:var(--accent)">[${h.fecha} ${h.hora}]</span> <b>${h.socio}</b> dio <b>${h.plat}</b> a <b>${h.miembro}</b></div>`).join('');
-        document.getElementById('lista-vip-despliegue').innerHTML = db.vip.map((v, i) => `<div class="member-item"><span>${v}</span><div style="display:flex;flex-direction:column;gap:5px;"><button class="action-btn" style="background:orange" onclick="let n=prompt('Edit',db.vip[${i}]);if(n){db.vip[${i}]=n;save()}">EDITAR</button><button class="action-btn" style="background:red" onclick="db.vip.splice(${i},1);save()">X</button></div></div>`).join('');
+        // Render Historial (Horizontal)
+        document.getElementById('historial-body').innerHTML = db.historial.map(h => `<tr><td>${h.fecha}</td><td>${h.hora}</td><td>${h.socio}</td><td>${h.miembro}</td><td><b>${h.plat}</b></td></tr>`).join('');
+        
+        // Render Socios (Detallado Completo)
+        document.getElementById('socios-body').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.correo}</td><td>${s.pass}</td><td>${s.rol}</td><td style="color:${s.estado?'green':'red'}"><b>${s.estado?'ON':'OFF'}</b></td><td><button class="action-btn" style="background:var(--accent)" onclick="db.socios[${i}].estado=!db.socios[${i}].estado;save()">ON/OFF</button></td></tr>`).join('');
+
+        // Otros Renders
+        document.getElementById('lista-vip-despliegue').innerHTML = db.vip.map((v, i) => `<div class="member-item"><span>${v}</span><div><button class="action-btn" style="background:orange" onclick="let n=prompt('Edit',db.vip[${i}]);if(n){db.vip[${i}]=n;save()}">EDITAR</button><button class="action-btn" style="background:red" onclick="db.vip.splice(${i},1);save()">X</button></div></div>`).join('');
         let pOpts = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
         document.getElementById('st-plat-select').innerHTML = pOpts;
         document.getElementById('user-select-plat').innerHTML = pOpts;
         document.getElementById('user-select-miembro').innerHTML = db.vip.map(v => `<option value="${v}">${v}</option>`).join('');
-        document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.rol}</td><td>${s.estado?'ON':'OFF'}</td><td><button class="action-btn" style="background:var(--accent)" onclick="db.socios[${i}].estado=!db.socios[${i}].estado;save()">ON/OFF</button></td></tr>`).join('');
         document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => `<tr><td>${s.plat}</td><td><small>${s.cuenta}</small></td><td>${s.cupo}/8</td><td><button class="action-btn" style="background:var(--warning)" onclick="db.stock[${i}].cupo=0;save()">RESET</button></td></tr>`).join('');
     }
     renderAll();
