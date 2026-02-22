@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo Persistente</title>
+    <title>Panel Administrativo Pro - Versión Final</title>
     <style>
         :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
 
-        /* NAVEGACIÓN SUPERIOR */
         .navbar { display: flex; background: var(--primary); padding: 10px; gap: 8px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
         .nav-btn { background: #334155; color: white; border: none; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.8rem; }
         .nav-btn.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
@@ -18,13 +17,11 @@
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* TABLAS ESTILO TU IMAGEN */
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; border-radius: 8px; overflow: hidden; }
         th { background: #1e2d3b; color: white; padding: 10px; font-size: 0.8rem; }
         td { border-bottom: 1px solid #ddd; padding: 8px; font-size: 0.85rem; }
 
-        /* BOTONES Y INPUTS */
         input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
         .action-btn { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; margin: 2px; font-weight: bold; }
@@ -48,20 +45,19 @@
 
     <div id="tab-historial" class="section active">
         <div class="card">
-            <h3>Historial de Actividad</h3>
-            <div id="historial-lista" style="max-height: 400px; overflow-y: auto;">
-                </div>
-            <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Limpiar Todo el Historial</button>
+            <h3>Historial Detallado</h3>
+            <div id="historial-lista" style="max-height: 400px; overflow-y: auto;"></div>
+            <button class="btn-add" style="background:var(--danger); margin-top:10px;" onclick="limpiarHistorial()">🗑️ Limpiar Historial</button>
         </div>
     </div>
 
     <div id="tab-vip" class="section">
         <div class="card">
-            <h3>Agregar Miembros VIP</h3>
-            <textarea id="input-vip-lista" placeholder="Pega el listado aquí (Nombre - Número)"></textarea>
-            <button class="btn-add" onclick="agregarVIP()">PROCESAR LISTADO</button>
+            <h3>Gestión Miembros VIP</h3>
+            <textarea id="input-vip-lista" placeholder="Pega el listado (Nombre - Número)"></textarea>
+            <button class="btn-add" onclick="agregarVIP()">PROCESAR LISTADO VIP</button>
             <table id="tabla-vip">
-                <thead><tr><th>Nombre</th><th>Acción</th></tr></thead>
+                <thead><tr><th>Miembro</th><th>Acción</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -69,12 +65,20 @@
 
     <div id="tab-socios" class="section">
         <div class="card">
-            <h3>Gestión de Socios/Admin</h3>
-            <input type="text" id="socio-nombre" placeholder="Nombre del Socio">
-            <select id="socio-rol"><option value="Socio">Socio</option><option value="Admin">Admin</option></select>
-            <button class="btn-add" onclick="agregarSocio()">CREAR SOCIO</button>
+            <h3>Crear Nuevo Socio / Admin</h3>
+            <input type="text" id="socio-nombre" placeholder="Nombre Completo">
+            <input type="email" id="socio-correo" placeholder="Correo Electrónico">
+            <input type="text" id="socio-pass" placeholder="Contraseña de Acceso">
+            <select id="socio-rol">
+                <option value="Socio">Rol: Socio</option>
+                <option value="Admin">Rol: Admin</option>
+            </select>
+            <button class="btn-add" onclick="agregarSocio()">CREAR CUENTA DE ACCESO</button>
+        </div>
+        <div class="card">
+            <h3>Lista de Accesos</h3>
             <table id="tabla-socios">
-                <thead><tr><th>Nombre</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead>
+                <thead><tr><th>Nombre</th><th>Acceso (Correo/Pass)</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -82,20 +86,23 @@
 
     <div id="tab-stock" class="section">
         <div class="card">
-            <h3>Cargar Nueva Cuenta</h3>
+            <h3>➕ Nueva Plataforma</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="nueva-plat-nombre" placeholder="Nombre (Ej: Netflix)">
+                <button class="btn-add" style="width:120px;" onclick="crearPlataforma()">CREAR</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>📥 Cargar Cuentas</h3>
             <input type="text" id="stock-correo" placeholder="Correo">
             <input type="text" id="stock-clave" placeholder="Clave">
-            <select id="stock-plataforma">
-                <option value="Netflix">Netflix</option>
-                <option value="DISNYE premium">DISNYE premium</option>
-                <option value="HBO Max">HBO Max</option>
-            </select>
+            <select id="stock-plataforma-select"></select>
             <button class="btn-add" onclick="agregarStock()">AÑADIR A INVENTARIO</button>
         </div>
         <div class="card">
-            <h3>Editar/Eliminar Stock</h3>
+            <h3>📋 Stock Existente</h3>
             <table id="tabla-stock">
-                <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Estado</th><th>Acción</th></tr></thead>
+                <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Estado</th><th>Acciones</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -103,33 +110,24 @@
 
     <div id="tab-resumen" class="section">
         <div class="card">
-            <h3>📊 Resumen de Inventario</h3>
-            <div style="font-size: 1.5rem; margin: 10px 0;">Total Stock: <span id="res-total" style="color:var(--accent)">0</span></div>
-            <div style="font-size: 1.5rem; margin: 10px 0;">Cuentas Usadas: <span id="res-usadas" style="color:var(--warning)">0</span></div>
-            <button class="btn-add" onclick="resetUsadas()">🔄 Resetear Contador de Usadas</button>
+            <h3>Estadísticas Generales</h3>
+            <div style="font-size: 1.5rem; margin: 10px 0;">Cuentas en Stock: <span id="res-total">0</span></div>
+            <div style="font-size: 1.5rem; margin: 10px 0;">Cuentas Vendidas/Usadas: <span id="res-usadas">0</span></div>
+            <button class="btn-add" onclick="resetUsadas()">🔄 Reiniciar Contador de Usadas</button>
+            <button class="btn-add" style="background:var(--danger)" onclick="borrarTodoStock()">🔥 Vaciar Todo el Stock</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- LÓGICA DE PERSISTENCIA (SAVES EVERYTHING) ---
-    let db = JSON.parse(localStorage.getItem('mi_sistema_pro')) || {
-        historial: [], vip: [], socios: [], stock: [], usadas: 0
+    let db = JSON.parse(localStorage.getItem('sistema_v3')) || {
+        historial: [], vip: [], socios: [], stock: [], plataformas: ["Netflix", "Disney+", "IPTV"], usadas: 0
     };
 
-    function save() {
-        localStorage.setItem('mi_sistema_pro', JSON.stringify(db));
-        renderAll();
-    }
+    function save() { localStorage.setItem('sistema_v3', JSON.stringify(db)); renderAll(); }
+    function addLog(msg) { let time = new Date().toLocaleTimeString(); db.historial.unshift(`[${time}] ${msg}`); save(); }
 
-    function addLog(msg) {
-        let time = new Date().toLocaleTimeString();
-        db.historial.unshift(`[${time}] ${msg}`);
-        save();
-    }
-
-    // --- NAVEGACIÓN ---
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -137,82 +135,58 @@
         event.currentTarget.classList.add('active');
     }
 
-    // --- FUNCIONES VIP ---
-    function agregarVIP() {
-        let texto = document.getElementById('input-vip-lista').value;
-        if(texto) {
-            db.vip.push(texto);
-            addLog("Agregó lista VIP");
-            document.getElementById('input-vip-lista').value = "";
-        }
+    function crearPlataforma() {
+        let n = document.getElementById('nueva-plat-nombre').value.trim();
+        if(n && !db.plataformas.includes(n)) { db.plataformas.push(n); addLog(`Plataforma ${n} creada`); document.getElementById('nueva-plat-nombre').value = ""; save(); }
     }
 
-    // --- FUNCIONES SOCIOS ---
-    function agregarSocio() {
-        let nom = document.getElementById('socio-nombre').value;
-        let rol = document.getElementById('socio-rol').value;
-        if(nom) {
-            db.socios.push({nombre: nom, rol: rol, estado: true});
-            addLog(`Socio ${nom} creado`);
-            document.getElementById('socio-nombre').value = "";
-            save();
-        }
-    }
-
-    function toggleSocio(index) {
-        db.socios[index].estado = !db.socios[index].estado;
-        addLog(`Socio ${db.socios[index].nombre} cambió estado`);
-        save();
-    }
-
-    // --- FUNCIONES STOCK ---
     function agregarStock() {
         let c = document.getElementById('stock-correo').value;
         let p = document.getElementById('stock-clave').value;
-        let plat = document.getElementById('stock-plataforma').value;
-        if(c && p) {
-            db.stock.push({plat, cuenta: `${c}:${p}`, estado: 'disponible'});
-            addLog(`Cuenta ${plat} cargada`);
+        let plat = document.getElementById('stock-plataforma-select').value;
+        if(c && p) { db.stock.push({plat, cuenta: `${c}:${p}`, estado: 'disponible'}); addLog(`Stock cargado en ${plat}`); document.getElementById('stock-correo').value = ""; document.getElementById('stock-clave').value = ""; save(); }
+    }
+
+    function agregarSocio() {
+        let n = document.getElementById('socio-nombre').value;
+        let c = document.getElementById('socio-correo').value;
+        let p = document.getElementById('socio-pass').value;
+        let r = document.getElementById('socio-rol').value;
+        if(n && c && p) {
+            db.socios.push({nombre: n, correo: c, pass: p, rol: r, estado: true});
+            addLog(`Acceso creado para ${n} (${r})`);
+            document.getElementById('socio-nombre').value = "";
+            document.getElementById('socio-correo').value = "";
+            document.getElementById('socio-pass').value = "";
             save();
         }
     }
 
-    function borrarStock(index) {
-        db.stock.splice(index, 1);
-        db.usadas++;
-        addLog("Cuenta eliminada/usada");
-        save();
-    }
+    function toggleSocio(i) { db.socios[i].estado = !db.socios[i].estado; addLog(`Acceso de ${db.socios[i].nombre} ${db.socios[i].estado?'activado':'desactivado'}`); save(); }
+    function borrarSocio(i) { if(confirm("¿Eliminar acceso de este socio?")) { db.socios.splice(i,1); save(); } }
+    function borrarStock(i) { db.stock.splice(i,1); db.usadas++; addLog("Cuenta entregada/eliminada"); save(); }
+    function agregarVIP() { let t = document.getElementById('input-vip-lista').value; if(t) { db.vip.push(t); addLog("Lista VIP agregada"); document.getElementById('input-vip-lista').value = ""; save(); } }
+    function resetUsadas() { db.usadas = 0; save(); }
+    function limpiarHistorial() { db.historial = []; save(); }
+    function borrarTodoStock() { if(confirm("¿Borrar todo?")) { db.stock = []; save(); } }
 
-    function resetUsadas() {
-        db.usadas = 0;
-        addLog("Contador de usadas reseteado");
-        save();
-    }
-
-    function limpiarHistorial() {
-        db.historial = [];
-        save();
-    }
-
-    // --- RENDERIZADO (DIBUJAR TODO) ---
     function renderAll() {
-        // Historial
-        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div style="border-bottom:1px solid #334155; padding:5px;">${h}</div>`).join('');
-        
-        // VIP
+        document.getElementById('historial-lista').innerHTML = db.historial.map(h => `<div style="border-bottom:1px solid #334155; padding:5px; font-size:0.8rem;">${h}</div>`).join('');
+        document.getElementById('stock-plataforma-select').innerHTML = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
         document.querySelector('#tabla-vip tbody').innerHTML = db.vip.map((v, i) => `<tr><td>${v}</td><td><button class="action-btn" style="background:var(--danger)" onclick="db.vip.splice(${i},1);save()">X</button></td></tr>`).join('');
         
-        // Socios
         document.querySelector('#tabla-socios tbody').innerHTML = db.socios.map((s, i) => `
             <tr>
                 <td>${s.nombre}</td>
+                <td><small>${s.correo}<br><b>${s.pass}</b></small></td>
                 <td>${s.rol}</td>
                 <td><span class="status-badge ${s.estado?'on':'off'}">${s.estado?'ON':'OFF'}</span></td>
-                <td><button class="action-btn" style="background:var(--accent)" onclick="toggleSocio(${i})">Switch</button></td>
+                <td>
+                    <button class="action-btn" style="background:var(--accent)" onclick="toggleSocio(${i})">ON/OFF</button>
+                    <button class="action-btn" style="background:var(--danger)" onclick="borrarSocio(${i})">X</button>
+                </td>
             </tr>`).join('');
 
-        // Stock
         document.querySelector('#tabla-stock tbody').innerHTML = db.stock.map((s, i) => `
             <tr>
                 <td>${s.plat}</td>
@@ -221,12 +195,10 @@
                 <td><button class="action-btn" style="background:var(--danger)" onclick="borrarStock(${i})">BORRAR</button></td>
             </tr>`).join('');
 
-        // Resumen
         document.getElementById('res-total').innerText = db.stock.length;
         document.getElementById('res-usadas').innerText = db.usadas;
     }
 
-    // Iniciar
     renderAll();
 </script>
 
