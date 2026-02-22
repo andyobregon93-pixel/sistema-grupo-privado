@@ -23,9 +23,8 @@
         .section.active { display: block; }
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         
-        /* TABLAS RELLENAS EN HORIZONTAL */
         .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; color: #333; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; color: #333; min-width: 650px; }
         th { background: #1e2d3b; color: white; padding: 12px; font-size: 0.75rem; text-transform: uppercase; }
         td { border-bottom: 1px solid #eee; padding: 10px; font-size: 0.8rem; text-align: center; }
         
@@ -33,7 +32,7 @@
         .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
         .action-btn { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin: 2px; }
         
-        .member-item { display: flex; justify-content: space-between; align-items: center; background: white; color: #333; padding: 15px; margin-bottom: 8px; border-radius: 4px; border-left: 5px solid var(--accent); }
+        .item-list { background: #334155; padding: 10px; border-radius: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
 
         #display-entrega { display: none; margin-top: 20px; padding: 15px; border: 2px solid var(--success); border-radius: 8px; background: #f0fdf4; color: #166534; text-align: center; }
         .cuenta-box { background: white; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1rem; color: #333; word-break: break-all; }
@@ -44,8 +43,8 @@
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="color:var(--accent)">🛡️ PANEL ANDY</h2>
-        <input type="email" id="login-email" placeholder="andyobregon799@gmail.com">
-        <input type="password" id="login-pass" placeholder="123456">
+        <input type="email" id="login-email" placeholder="Correo">
+        <input type="password" id="login-pass" placeholder="Clave">
         <button class="btn-add" onclick="verificarLogin()">ENTRAR</button>
     </div>
 </div>
@@ -70,29 +69,22 @@
 
         <div id="tab-historial" class="section active">
             <div class="card">
-                <h3>📜 Registro Completo de Actividad</h3>
+                <h3>📜 Registro Completo</h3>
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                                <th>Socio/Vendedor</th>
-                                <th>Miembro VIP</th>
-                                <th>Plataforma</th>
-                            </tr>
+                            <tr><th>Fecha</th><th>Hora</th><th>Socio</th><th>Miembro</th><th>Plataforma</th></tr>
                         </thead>
                         <tbody id="historial-body"></tbody>
                     </table>
                 </div>
-                <button class="btn-add" style="background:var(--danger); margin-top:15px;" onclick="db.historial=[];save();">🗑️ LIMPIAR HISTORIAL</button>
             </div>
         </div>
 
         <div id="tab-vip" class="section">
             <div class="card">
                 <h3>💎 Miembros VIP</h3>
-                <textarea id="input-masivo-vip" rows="4" placeholder="Pega la lista aquí..."></textarea>
+                <textarea id="input-masivo-vip" rows="4" placeholder="Nombre - Numero..."></textarea>
                 <button class="btn-add" onclick="cargarVipMasivo()">AÑADIR A LA LISTA</button>
             </div>
             <div id="lista-vip-despliegue"></div>
@@ -100,54 +92,38 @@
 
         <div id="tab-socios" class="section">
             <div class="card">
-                <h3>👥 Crear Nuevo Acceso</h3>
+                <h3>👥 Gestión de Accesos</h3>
                 <input type="text" id="soc-nom" placeholder="Nombre">
                 <input type="email" id="soc-cor" placeholder="Correo">
                 <input type="text" id="soc-pas" placeholder="Contraseña">
-                <select id="soc-rol">
-                    <option value="Admin">Admin</option>
-                    <option value="Socio">Socio</option>
-                    <option value="Usuario">Usuario Normal</option>
-                </select>
+                <select id="soc-rol"><option value="Admin">Admin</option><option value="Socio">Socio</option><option value="Usuario">Usuario</option></select>
                 <button class="btn-add" onclick="agregarSocio()">GUARDAR SOCIO</button>
             </div>
-            <div class="card">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Correo</th>
-                                <th>Contraseña</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="socios-body"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="table-container"><table style="background:white;"><thead><tr><th>Nombre</th><th>Correo</th><th>Pass</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="socios-body"></tbody></table></div>
         </div>
 
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>📦 Inventario</h3>
-                <input type="text" id="nueva-plat-nombre" placeholder="Nombre Plataforma">
+                <h3>🛠️ Gestionar Plataformas</h3>
+                <input type="text" id="nueva-plat-nombre" placeholder="Nombre de Plataforma (Ej: Netflix)">
                 <button class="btn-add" style="background:var(--accent)" onclick="crearPlat()">+ CREAR PLATAFORMA</button>
-                <hr style="margin:15px 0; border:0; border-top:1px solid #444;">
-                <input type="text" id="st-cor" placeholder="Correo"><input type="text" id="st-cla" placeholder="Clave">
+                <div id="lista-plataformas-edit" style="margin-top:10px;"></div>
+            </div>
+            <div class="card">
+                <h3>📦 Añadir Cuentas al Stock</h3>
+                <input type="text" id="st-cor" placeholder="Correo Cuenta">
+                <input type="text" id="st-cla" placeholder="Clave Cuenta">
                 <select id="st-plat-select"></select>
-                <button class="btn-add" onclick="agregarStock()">GUARDAR CUENTA</button>
+                <button class="btn-add" onclick="agregarStock()">GUARDAR EN INVENTARIO</button>
             </div>
         </div>
 
         <div id="tab-resumen" class="section">
             <div class="card">
-                <h3>📊 Resumen de Stock (0/8)</h3>
+                <h3>📊 Resumen Stock (0/8)</h3>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>Plat</th><th>Cuenta</th><th>Cupos</th><th>Acciones</th></tr></thead>
                         <tbody id="body-resumen"></tbody>
                     </table>
                 </div>
@@ -158,12 +134,12 @@
 
 <script>
     let session = { user: null };
-    let db = JSON.parse(localStorage.getItem('andy_v17_final')) || {
+    let db = JSON.parse(localStorage.getItem('andy_v18_final')) || {
         historial: [], vip: [], stock: [], plataformas: ["Netflix", "Disney+"],
         socios: [{nombre: "Andy Obregon", correo: "andyobregon799@gmail.com", pass: "123456", rol: "Admin", estado: true}]
     };
 
-    function save() { localStorage.setItem('andy_v17_final', JSON.stringify(db)); renderAll(); }
+    function save() { localStorage.setItem('andy_v18_final', JSON.stringify(db)); renderAll(); }
 
     function verificarLogin() {
         let c = document.getElementById('login-email').value;
@@ -174,7 +150,7 @@
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('main-content').style.display='block';
             configurarNav(u.rol);
-        } else { alert("Acceso denegado"); }
+        } else { alert("Datos incorrectos"); }
     }
 
     function configurarNav(rol) {
@@ -186,9 +162,7 @@
                     <button class="nav-btn" onclick="showTab('tab-socios')">👥 SOCIOS</button>
                     <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK</button>
                     <button class="nav-btn" onclick="showTab('tab-resumen')">📊 TOTAL</button>`;
-        } else {
-            btns = `<button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>`;
-        }
+        } else { btns = `<button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>`; }
         btns += `<button class="nav-btn btn-logout" onclick="location.reload()">✖️ SALIR</button>`;
         nav.innerHTML = btns;
         showTab(rol === 'Usuario' ? 'tab-usuario' : 'tab-historial');
@@ -205,33 +179,44 @@
             document.getElementById('texto-cuenta').innerText = db.stock[sIdx].cuenta;
             document.getElementById('display-entrega').style.display = 'block';
             save();
-        } else { alert("Sin Stock"); }
+        } else { alert("Sin Stock disponible"); }
     }
 
     function copiarTodo() { navigator.clipboard.writeText(document.getElementById('texto-cuenta').innerText); alert("Copiado"); }
     function cargarVipMasivo() { let t = document.getElementById('input-masivo-vip').value; if(t){ t.split('\n').forEach(l => { if(l.trim()) db.vip.push(l.trim()); }); document.getElementById('input-masivo-vip').value=""; save(); } }
+    
+    // FUNCIONES DE PLATAFORMA
     function crearPlat() { let n = document.getElementById('nueva-plat-nombre').value; if(n){ db.plataformas.push(n); document.getElementById('nueva-plat-nombre').value=""; save(); } }
+    function eliminarPlat(idx) { if(confirm("¿Eliminar plataforma?")){ db.plataformas.splice(idx,1); save(); } }
+
     function agregarStock() { let c = document.getElementById('st-cor').value; let k = document.getElementById('st-cla').value; let p = document.getElementById('st-plat-select').value; if(c&&k){ db.stock.push({plat:p, cuenta:`${c}:${k}`, cupo:0}); save(); } }
     function agregarSocio() { 
         let n = document.getElementById('soc-nom').value; let c = document.getElementById('soc-cor').value; let p = document.getElementById('soc-pas').value; let r = document.getElementById('soc-rol').value;
         if(n&&c&&p){ db.socios.push({nombre:n, correo:c, pass:p, rol:r, estado:true}); save(); } 
     }
+    
     function showTab(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
     function renderAll() {
-        // Render Historial (Horizontal)
         document.getElementById('historial-body').innerHTML = db.historial.map(h => `<tr><td>${h.fecha}</td><td>${h.hora}</td><td>${h.socio}</td><td>${h.miembro}</td><td><b>${h.plat}</b></td></tr>`).join('');
-        
-        // Render Socios (Detallado Completo)
         document.getElementById('socios-body').innerHTML = db.socios.map((s, i) => `<tr><td>${s.nombre}</td><td>${s.correo}</td><td>${s.pass}</td><td>${s.rol}</td><td style="color:${s.estado?'green':'red'}"><b>${s.estado?'ON':'OFF'}</b></td><td><button class="action-btn" style="background:var(--accent)" onclick="db.socios[${i}].estado=!db.socios[${i}].estado;save()">ON/OFF</button></td></tr>`).join('');
+        
+        // Render Plataformas en Stock
+        document.getElementById('lista-plataformas-edit').innerHTML = db.plataformas.map((p, i) => `<div class="item-list"><span>${p}</span><button class="action-btn" style="background:var(--danger)" onclick="eliminarPlat(${i})">X</button></div>`).join('');
 
-        // Otros Renders
         document.getElementById('lista-vip-despliegue').innerHTML = db.vip.map((v, i) => `<div class="member-item"><span>${v}</span><div><button class="action-btn" style="background:orange" onclick="let n=prompt('Edit',db.vip[${i}]);if(n){db.vip[${i}]=n;save()}">EDITAR</button><button class="action-btn" style="background:red" onclick="db.vip.splice(${i},1);save()">X</button></div></div>`).join('');
+        
         let pOpts = db.plataformas.map(p => `<option value="${p}">${p}</option>`).join('');
         document.getElementById('st-plat-select').innerHTML = pOpts;
         document.getElementById('user-select-plat').innerHTML = pOpts;
         document.getElementById('user-select-miembro').innerHTML = db.vip.map(v => `<option value="${v}">${v}</option>`).join('');
-        document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => `<tr><td>${s.plat}</td><td><small>${s.cuenta}</small></td><td>${s.cupo}/8</td><td><button class="action-btn" style="background:var(--warning)" onclick="db.stock[${i}].cupo=0;save()">RESET</button></td></tr>`).join('');
+        
+        // Render Stock con botón EDITAR
+        document.getElementById('body-resumen').innerHTML = db.stock.map((s, i) => `<tr><td>${s.plat}</td><td><small>${s.cuenta}</small></td><td>${s.cupo}/8</td><td>
+            <button class="action-btn" style="background:orange" onclick="let nc=prompt('Nueva cuenta (correo:clave)',db.stock[${i}].cuenta); if(nc){db.stock[${i}].cuenta=nc;save()}">EDITAR</button>
+            <button class="action-btn" style="background:var(--warning)" onclick="db.stock[${i}].cupo=0;save()">RESET</button>
+            <button class="action-btn" style="background:var(--danger)" onclick="db.stock.splice(${i},1);save()">X</button>
+        </td></tr>`).join('');
     }
     renderAll();
 </script>
