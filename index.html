@@ -20,8 +20,8 @@
         th, td { border:1px solid #eee; padding:12px; text-align:left; }
         th { background:var(--primario); color: white; }
         .btn-accion { width: auto; padding: 6px 12px; font-size: 11px; margin: 2px; border-radius: 4px; cursor: pointer; color: white; border:none; font-weight: bold; }
-        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; font-size: 16px; }
-        textarea { height: 100px; font-family: monospace; font-size: 12px; background: #f9f9f9; }
+        .buscador-vip { background: #fffbe6 !important; border: 2px solid var(--vip) !important; font-weight: bold; font-size: 16px; color: #000; }
+        textarea { height: 100px; font-family: monospace; background: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -29,36 +29,42 @@
 <div class="contenedor">
     <div id="cajaLogin">
         <h1 style="text-align:center; color: var(--primario);">👑 PANEL VIP</h1>
+        <p style="text-align:center; color: #666;">Ingresa con tu correo de administrador</p>
         <input type="email" id="correoLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
-        <button onclick="iniciarSesion()" style="height: 55px; font-size: 18px;">ENTRAR</button>
+        <button onclick="iniciarSesion()" style="height: 55px; font-size: 18px;">ENTRAR AL SISTEMA</button>
     </div>
 
     <div id="app" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <div id="infoUsuario"></div>
-            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 25px;">Cerrar</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+            <div id="infoUsuario" style="font-size: 1.1rem;"></div>
+            <button onclick="cerrarSesion()" style="width:auto; background:var(--error); padding:8px 25px; border-radius: 50px;">Cerrar Sesión</button>
         </div>
 
         <div id="seccionUsuario">
             <div class="tarjeta" style="border-top-color: var(--exito);">
-                <h2>🎁 Entrega Automática VIP</h2>
+                <h2 style="color: var(--exito);">🎁 Entrega Automática VIP</h2>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div>
-                        <label>🔍 BUSCAR MIEMBRO:</label>
-                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Nombre o País..." onkeyup="filtrarMiembros()">
-                        <select id="selectMiembroVip" size="8"></select>
+                        <label>🔍 BUSCAR MIEMBRO DEL GRUPO:</label>
+                        <input type="text" id="inputBusquedaVip" class="buscador-vip" placeholder="Nombre o país..." onkeyup="filtrarMiembros()">
+                        <select id="selectMiembroVip" size="8" style="height: 180px;"></select>
                     </div>
                     <div>
-                        <label>CONFIGURACIÓN:</label>
+                        <label>CONFIGURACIÓN DEL PEDIDO:</label>
                         <select id="selectPlatUsuario"></select>
-                        <input type="text" id="codigoTV" placeholder="Código TV (Solo si es activación)">
+                        <div style="background: #f0f0f0; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                            <label style="font-size: 11px;">CÓDIGO TV (Opcional):</label>
+                            <input type="text" id="codigoTV" placeholder="Ej: 123-456">
+                        </div>
                     </div>
                 </div>
-                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.2rem; margin-top:15px;">🚀 ENTREGAR ACCESO</button>
-                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:20px; border:2px dashed var(--exito); text-align:center; background:#f9fff9;">
-                    <b>DATOS DE CUENTA:</b><br><div id="textoCuenta" style="font-size:1.5rem; margin:10px 0; color:var(--admin); font-weight:bold;"></div>
-                    <button onclick="copiarTodo()" style="background:var(--info); width:auto; padding:10px 30px;">📋 COPIAR DATOS</button>
+                <button onclick="procesarEntregaAutomatica()" style="background:var(--exito); height: 60px; font-size: 1.3rem; margin-top: 15px;">🚀 GENERAR ACCESO</button>
+                
+                <div id="resultadoPedido" style="display:none; margin-top:20px; padding:20px; border: 3px dashed var(--exito); background:#fafffa; text-align:center; border-radius: 12px;">
+                    <p><b>DATOS PARA EL CLIENTE:</b></p>
+                    <div id="textoCuenta" style="font-size:1.6rem; color:var(--admin); font-weight: bold; background: white; padding: 15px; border: 1px solid #ddd;"></div>
+                    <button onclick="copiarTodo()" style="background: var(--info); width: auto; padding: 12px 40px; margin-top: 10px;">📋 COPIAR DATOS</button>
                 </div>
             </div>
         </div>
@@ -66,7 +72,7 @@
         <div id="seccionAdmin" style="display:none;">
             <div class="tabs">
                 <button class="tab-btn active" onclick="verTab('tabVentas')">📊 HISTORIAL</button>
-                <button class="tab-btn" onclick="verTab('tabVip')">💎 GESTIÓN VIP</button>
+                <button class="tab-btn" onclick="verTab('tabVip')">💎 VIPs</button>
                 <button class="tab-btn" onclick="verTab('tabStock')">📦 STOCK</button>
                 <button class="tab-btn" onclick="verTab('tabSocios')">👥 SOCIOS</button>
             </div>
@@ -82,23 +88,13 @@
 
             <div id="tabVip" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>⚡ Carga Inteligente (Pegar Lista)</h3>
-                    <p style="font-size:11px; color:#666;">Pega el texto tal cual: "Nombre +54 9..." o por líneas. El sistema lo detectará.</p>
-                    <textarea id="textoMasivoVip" placeholder="Ejemplo: Juan Perez +54911223344 (Argentina)"></textarea>
-                    <button onclick="procesarCargaMasivaTexto()" style="background:var(--admin)">🚀 SUBIR TODO AL SISTEMA</button>
-                </div>
-                <div class="tarjeta">
-                    <h3>➕ Agregar Individual</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                        <input type="text" id="vipNombre" placeholder="Nombre">
-                        <input type="text" id="vipNumero" placeholder="WhatsApp">
-                        <input type="text" id="vipPais" placeholder="País">
-                    </div>
-                    <button onclick="crearMiembroVip()">GUARDAR</button>
+                    <h3>⚡ Carga Masiva (Pegar Texto)</h3>
+                    <textarea id="textoMasivoVip" placeholder="Pega aquí tu lista de contactos..."></textarea>
+                    <button onclick="procesarCargaMasivaTexto()" style="background:var(--admin)">SUBIR TODO A LA BASE DE DATOS</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>País</th><th>Nombre</th><th>WhatsApp</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>País</th><th>Nombre</th><th>Número</th><th>Acción</th></tr></thead>
                         <tbody id="listaVipsAdmin"></tbody>
                     </table>
                 </div>
@@ -106,16 +102,16 @@
 
             <div id="tabStock" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>📥 Cargar Stock</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                    <h3>📥 Cargar Cuentas</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <input type="text" id="accCorreo" placeholder="correo:contraseña">
                         <select id="selectPlatAdmin"></select>
                     </div>
-                    <button onclick="subirInventario()">AÑADIR</button>
+                    <button onclick="subirInventario()" style="background:var(--secundario);">AÑADIR STOCK</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="tablaGestionStock"></tbody>
                     </table>
                 </div>
@@ -123,17 +119,17 @@
 
             <div id="tabSocios" class="tab-content" style="display:none;">
                 <div class="tarjeta">
-                    <h3>👥 Nuevo Socio / Admin</h3>
+                    <h3>👥 Nuevo Socio</h3>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
                         <input type="email" id="nuevoCorreo" placeholder="Correo">
-                        <input type="text" id="nuevoPass" placeholder="Clave">
-                        <select id="nuevoRol"><option value="usuario">Vendedor</option><option value="admin">Admin</option></select>
+                        <input type="text" id="nuevoPass" placeholder="Contraseña">
+                        <select id="nuevoRol"><option value="usuario">Socio</option><option value="admin">Admin</option></select>
                     </div>
-                    <button onclick="registrarUsuario()">CREAR ACCESO</button>
+                    <button onclick="registrarUsuario()" style="background:var(--exito)">CREAR ACCESO</button>
                 </div>
                 <div class="tabla-contenedor">
                     <table>
-                        <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="tablaListaUsuarios"></tbody>
                     </table>
                 </div>
@@ -165,21 +161,31 @@
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value.trim();
         const p = document.getElementById("passLogin").value.trim();
-        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error: " + e.message); }
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Error de acceso"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            // --- PARCHE DE EMERGENCIA PARA EL DUEÑO ---
+            if (user.email === "andyobregon799@gmail.com") {
+                miRol = "admin"; miEmail = user.email;
+                document.getElementById("cajaLogin").style.display = "none";
+                document.getElementById("app").style.display = "block";
+                document.getElementById("seccionAdmin").style.display = "block";
+                document.getElementById("infoUsuario").innerHTML = `👑 <b>DUEÑO: ${miEmail}</b>`;
+                cargarDatos();
+                return;
+            }
+
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists() && snap.data().estado === "ON") {
-                miRol = snap.data().role;
-                miEmail = user.email;
+                miRol = snap.data().role; miEmail = user.email;
                 document.getElementById("cajaLogin").style.display = "none";
                 document.getElementById("app").style.display = "block";
                 document.getElementById("seccionAdmin").style.display = (miRol === "admin") ? "block" : "none";
-                document.getElementById("infoUsuario").innerHTML = `Conectado: <b>${miEmail}</b>`;
+                document.getElementById("infoUsuario").innerHTML = `👤 <b>${miEmail}</b>`;
                 cargarDatos();
             } else { alert("Usuario desactivado"); signOut(auth); }
         } else {
@@ -193,13 +199,13 @@
             vipsLocales = []; let h = "";
             snap.forEach(d => {
                 const v = d.data(); vipsLocales.push({id: d.id, ...v});
-                h += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('vips','${d.id}')">Eliminar</button></td></tr>`;
+                h += `<tr><td>${v.pais}</td><td>${v.nombre}</td><td>${v.numero}</td><td><button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('vips','${d.id}')">X</button></td></tr>`;
             });
             document.getElementById("listaVipsAdmin").innerHTML = h;
             filtrarMiembros();
         });
 
-        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(50)), (snap) => {
+        onSnapshot(query(collection(db, "entregas"), orderBy("fechaSort", "desc"), limit(30)), (snap) => {
             let h = "";
             snap.forEach(d => {
                 const i = d.data();
@@ -212,7 +218,10 @@
             let h = "";
             snap.forEach(d => {
                 const data = d.data();
-                h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td><button class="btn-accion" style="background:var(--info)" onclick="resetStock('${d.id}')">Reset</button></td></tr>`;
+                h += `<tr><td>${data.plataforma}</td><td>${data.cuenta}</td><td>${data.usos}/8</td><td>${data.estado}</td><td>
+                    <button class="btn-accion" style="background:var(--info)" onclick="resetStock('${d.id}')">Reset</button>
+                    <button class="btn-accion" style="background:var(--error)" onclick="eliminarDoc('inventario','${d.id}')">X</button>
+                </td></tr>`;
             });
             document.getElementById("tablaGestionStock").innerHTML = h;
         });
@@ -221,7 +230,9 @@
             let h = "";
             snap.forEach(d => {
                 const u = d.data();
-                h += `<tr><td>${u.email}</td><td>${u.role}</td><td>${u.estado}</td><td><button class="btn-accion" style="background:var(--secundario)" onclick="toggleSocio('${d.id}','${u.estado}')">Cambiar</button></td></tr>`;
+                h += `<tr><td>${u.email}</td><td>${u.role}</td><td>${u.estado}</td><td>
+                    <button class="btn-accion" style="background:var(--secundario)" onclick="toggleSocio('${d.id}','${u.estado}')">Cambiar</button>
+                </td></tr>`;
             });
             document.getElementById("tablaListaUsuarios").innerHTML = h;
         });
@@ -233,54 +244,25 @@
         });
     }
 
-    // CARGA MASIVA INTELIGENTE
     window.procesarCargaMasivaTexto = async () => {
         const texto = document.getElementById("textoMasivoVip").value;
-        if(!texto) return alert("Pega el texto primero");
-        
-        const lineas = texto.split('\n');
-        const batch = writeBatch(db);
-        let contador = 0;
-
-        lineas.forEach(linea => {
-            if(linea.trim() === "") return;
-            
-            // Regex para detectar número de WhatsApp
-            const numMatch = linea.match(/\+?\d[\d\s-]{7,}\d/);
-            const numero = numMatch ? numMatch[0].replace(/[\s-]/g, '') : "Sin número";
-            
-            // Intentar detectar país (entre paréntesis o palabras clave)
-            let pais = "Varios";
-            if(linea.toLowerCase().includes("arg")) pais = "Argentina";
-            if(linea.toLowerCase().includes("bol")) pais = "Bolivia";
-            if(linea.toLowerCase().includes("chi")) pais = "Chile";
-            if(linea.toLowerCase().includes("ecua")) pais = "Ecuador";
-            if(linea.toLowerCase().includes("mex")) pais = "México";
-            if(linea.toLowerCase().includes("per")) pais = "Perú";
-            if(linea.toLowerCase().includes("espa")) pais = "España";
-
-            // Nombre (lo que queda antes del número)
-            const nombre = linea.split(numero)[0].trim() || "Miembro VIP";
-
-            const ref = doc(collection(db, "vips"));
-            batch.set(ref, { nombre, numero, pais });
-            contador++;
+        const lineas = texto.split('\n'); const batch = writeBatch(db);
+        lineas.forEach(l => {
+            if(l.trim()){
+                const ref = doc(collection(db, "vips"));
+                batch.set(ref, { nombre: l.trim(), numero: "S/N", pais: "Varios" });
+            }
         });
-
-        await batch.commit();
-        alert(`Se cargaron ${contador} miembros exitosamente.`);
-        document.getElementById("textoMasivoVip").value = "";
+        await batch.commit(); alert("Cargados");
     };
 
     window.filtrarMiembros = () => {
         const bus = document.getElementById("inputBusquedaVip").value.toLowerCase();
-        const sel = document.getElementById("selectMiembroVip");
-        sel.innerHTML = "";
+        const sel = document.getElementById("selectMiembroVip"); sel.innerHTML = "";
         vipsLocales.filter(v => v.nombre.toLowerCase().includes(bus) || v.pais.toLowerCase().includes(bus)).forEach(v => {
             const opt = document.createElement("option");
             opt.value = `${v.nombre} (${v.numero}) [${v.pais}]`;
-            opt.text = `📍 [${v.pais}] ${v.nombre} - ${v.numero}`;
-            sel.appendChild(opt);
+            opt.text = `📍 [${v.pais}] ${v.nombre}`; sel.appendChild(opt);
         });
     };
 
@@ -288,13 +270,11 @@
         const miembro = document.getElementById("selectMiembroVip").value;
         const plat = document.getElementById("selectPlatUsuario").value;
         const code = document.getElementById("codigoTV").value;
-        if(!miembro) return alert("Selecciona un miembro");
-
+        if(!miembro) return alert("Selecciona un cliente");
         const meta = { vendedor: miEmail, nombreWsp: miembro, plataforma: plat, fechaHora: new Date().toLocaleString(), fechaSort: Date.now() };
 
         if(code) {
-            await addDoc(collection(db, "entregas"), { ...meta, cuenta: "CÓDIGO TV: " + code });
-            alert("Activación TV registrada");
+            await addDoc(collection(db, "entregas"), { ...meta, cuenta: "TV: " + code }); alert("Activado TV");
         } else {
             const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
             const stock = await getDocs(q);
@@ -309,28 +289,20 @@
 
     window.resetStock = async (id) => updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
     window.toggleSocio = async (id, est) => updateDoc(doc(db, "users", id), { estado: est === "OFF" ? "ON" : "OFF" });
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Seguro?")) await deleteDoc(doc(db, col, id)); };
+    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
     window.registrarUsuario = async () => {
         const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
         const res = await createUserWithEmailAndPassword(auth, c, p);
-        await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" });
-        alert("Socio Creado");
+        await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" }); alert("Listo");
     };
     window.subirInventario = async () => {
         const c = document.getElementById("accCorreo").value, p = document.getElementById("selectPlatAdmin").value;
         await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
-        alert("Stock añadido");
-    };
-    window.crearMiembroVip = async () => {
-        const n = document.getElementById("vipNombre").value, num = document.getElementById("vipNumero").value, p = document.getElementById("vipPais").value;
-        await addDoc(collection(db, "vips"), { nombre: n, numero: num, pais: p });
-        alert("VIP Guardado");
     };
     window.verTab = (id) => {
         document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'block';
-        event.currentTarget.classList.add('active');
+        document.getElementById(id).style.display = 'block'; event.currentTarget.classList.add('active');
     };
     window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
 </script>
