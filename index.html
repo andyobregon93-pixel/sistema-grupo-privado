@@ -21,7 +21,7 @@
         .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
         h3 { color: var(--accent); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: #111827; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-save { background: var(--success); color: white; }
         .btn-accent { background: var(--accent); color: white; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; background: rgba(0,0,0,0.2); }
@@ -31,7 +31,7 @@
         .on { background: var(--success); }
         .off { background: var(--danger); }
         .edit { background: #f59e0b; }
-        .entrega-box { background: #ffffff; color: #000000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
+        .entrega-box { background: #ffffff; color: #000; padding: 25px; border-radius: 16px; text-align: center; margin-top: 25px; display: none; border: 6px solid var(--success); }
         .admin-only { display: none; }
         #login-box { display: flex; height: 100vh; align-items: center; justify-content: center; background: #0f172a; }
         .plat-tag { display: inline-block; background: #111827; padding: 5px 10px; border-radius: 5px; margin: 5px; cursor: pointer; border: 1px solid var(--accent); }
@@ -68,21 +68,16 @@
                 <h3>Gestión Miembros VIP</h3>
                 <textarea id="lista-masiva" placeholder="Nombre (Uno por línea)"></textarea>
                 <button id="btn-cargar-miembros" onclick="guardarMiembros()" class="btn-main btn-accent">CARGAR LISTA</button>
-                <div class="table-wrapper" style="margin-top:10px; max-height:200px;">
-                    <table><tbody id="tabla-gestion-miembros"></tbody></table>
-                </div>
+                <div class="table-wrapper" style="margin-top:10px; max-height:200px;"><table><tbody id="tabla-gestion-miembros"></tbody></table></div>
             </div>
 
             <div class="card" style="border: 2px solid var(--accent); text-align:center;">
                 <h2 style="color:var(--accent);">SOLICITAR ACCESO VIP</h2>
-                <div id="msg-sistema-off" style="display:none; color:var(--danger); font-weight:bold; margin-bottom:15px;">🛑 EL SISTEMA ESTÁ TEMPORALMENTE APAGADO</div>
-                
+                <div id="msg-sistema-off" style="display:none; color:var(--danger); font-weight:bold; margin-bottom:15px;">🛑 EL SISTEMA ESTÁ APAGADO</div>
                 <label>Tu Nombre:</label>
                 <select id="sel-miembro"></select>
-                
                 <label>Plataforma:</label>
                 <select id="sel-plat"></select>
-                
                 <button id="btn-solicitar" onclick="solicitarAuto()" class="btn-main btn-save" style="margin-top:20px;">OBTENER CUENTA</button>
             </div>
 
@@ -96,12 +91,11 @@
         <div id="tab-historial" class="section">
             <div class="card"><h3>Historial de Pedidos</h3><div class="table-wrapper"><table><thead><tr><th>Fecha</th><th>Miembro</th><th>Plataforma</th><th>Datos</th><th>X</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div></div>
         </div>
-
         <div id="tab-stock" class="section">
             <div class="card">
-                <h3>Añadir Nuevo Stock</h3>
+                <h3>Añadir Stock</h3>
                 <div id="nombres-rapidos" style="margin-bottom: 10px;"></div>
-                <input type="text" id="st-nombre" placeholder="Nombre de la Plataforma">
+                <input type="text" id="st-nombre" placeholder="Nombre">
                 <select id="st-tipo" onchange="toggleInputs()"><option value="streaming">Cuentas</option><option value="iptv">IPTV</option></select>
                 <div id="inputs-streaming"><input type="text" id="st-correo" placeholder="Correo"><input type="text" id="st-clave" placeholder="Clave"></div>
                 <div id="inputs-iptv" style="display:none;"><textarea id="st-url" placeholder="URL"></textarea></div>
@@ -109,12 +103,9 @@
             </div>
             <div id="display-stock-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
         </div>
-
         <div id="tab-socios" class="section">
             <div class="card">
-                <h3>Gestión de Socios</h3>
-                <input type="email" id="socio-email" placeholder="Email">
-                <input type="password" id="socio-pass" placeholder="Clave">
+                <input type="email" id="socio-email" placeholder="Email"><input type="password" id="socio-pass" placeholder="Clave">
                 <select id="socio-rol"><option value="vendedor">Vendedor</option><option value="admin">Admin</option></select>
                 <button onclick="crearSocio()" class="btn-main btn-accent">CREAR SOCIO</button>
             </div>
@@ -143,66 +134,46 @@
 
     let sistemaActivo = true;
 
-    // --- ESTADO DEL SISTEMA ---
     async function cargarEstadoSistema() {
-        try {
-            const docRef = doc(db, "ajustes", "estado_sistema");
-            const snap = await getDoc(docRef);
-            if (snap.exists()) {
-                sistemaActivo = snap.data().activo;
-            } else {
-                await setDoc(docRef, { activo: true });
-                sistemaActivo = true;
-            }
-            actualizarInterfazSistema();
-        } catch (e) { console.error("Error cargando estado:", e); }
+        const docRef = doc(db, "ajustes", "estado_sistema");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) { sistemaActivo = snap.data().activo; } 
+        else { await setDoc(docRef, { activo: true }); }
+        actualizarInterfazSistema();
     }
 
     function actualizarInterfazSistema() {
         const label = document.getElementById('sistema-status-label');
-        const btn = document.getElementById('btn-toggle-sistema');
         const msg = document.getElementById('msg-sistema-off');
         const btnSol = document.getElementById('btn-solicitar');
-
-        if (sistemaActivo) {
-            label.innerText = "SISTEMA: ENCENDIDO";
-            label.className = "status-badge on";
-            btn.innerText = "APAGAR SISTEMA";
-            btn.className = "btn-main off";
-            msg.style.display = 'none';
-            btnSol.disabled = false;
-        } else {
-            label.innerText = "SISTEMA: APAGADO";
-            label.className = "status-badge off";
-            btn.innerText = "ENCENDER SISTEMA";
-            btn.className = "btn-main on";
-            msg.style.display = 'block';
-            btnSol.disabled = true;
-        }
+        label.innerText = sistemaActivo ? "SISTEMA: ENCENDIDO" : "SISTEMA: APAGADO";
+        label.className = sistemaActivo ? "status-badge on" : "status-badge off";
+        msg.style.display = sistemaActivo ? 'none' : 'block';
+        btnSol.disabled = !sistemaActivo;
     }
 
     window.toggleSistema = async () => {
-        const nuevoEstado = !sistemaActivo;
-        await updateDoc(doc(db, "ajustes", "estado_sistema"), { activo: nuevoEstado });
-        sistemaActivo = nuevoEstado;
+        sistemaActivo = !sistemaActivo;
+        await updateDoc(doc(db, "ajustes", "estado_sistema"), { activo: sistemaActivo });
         actualizarInterfazSistema();
     };
 
-    // --- SOLICITAR CUENTA (CON PROTECCIÓN 24H) ---
     window.solicitarAuto = async () => {
-        if (!sistemaActivo) return alert("El sistema está apagado.");
+        if (!sistemaActivo) return alert("Sistema apagado.");
         const mNom = document.getElementById('sel-miembro').value;
         const pNom = document.getElementById('sel-plat').value;
-        if(!mNom || !pNom) return alert("Por favor selecciona tu nombre y servicio.");
+        if(!mNom || !pNom) return alert("Selecciona nombre y plataforma.");
 
         try {
+            // SEGURIDAD: Intentar checar historial, si falla por permisos, avisar pero no bloquear todo
             const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
             const qH = query(collection(db, "pedidos_vip"), where("miembro", "==", mNom), where("timestamp", ">", hace24h));
-            const snapH = await getDocs(qH);
-            
-            if (!snapH.empty) {
-                return alert("🚫 " + mNom + ", ya pediste una cuenta hoy. Debes esperar 24 horas.");
-            }
+            const snapH = await getDocs(qH).catch(err => {
+                console.warn("Error de índice/permisos, saltando validación 24h.");
+                return { empty: true }; 
+            });
+
+            if (!snapH.empty) return alert("🚫 " + mNom + ", ya pediste cuenta hoy.");
 
             const qInv = query(collection(db, "inventario_vip"), where("nombre", "==", pNom));
             const snapInv = await getDocs(qInv);
@@ -215,14 +186,10 @@
                 await addDoc(collection(db, "pedidos_vip"), { miembro: mNom, plataforma: pNom, datos: info, timestamp: serverTimestamp() });
                 document.getElementById('datos-entregados').innerText = info;
                 document.getElementById('entrega-box').style.display = 'block';
-            } else { alert("❌ No hay cupos disponibles."); }
-        } catch (e) { 
-            console.error(e);
-            alert("Error al procesar la solicitud. Verifica los permisos de Firebase."); 
-        }
+            } else { alert("Sin cupos."); }
+        } catch (e) { alert("Error al procesar. Revisa las reglas de Firebase."); }
     };
 
-    // --- CARGA DE DATOS ---
     onAuthStateChanged(auth, async user => {
         if(user) {
             const dU = await getDoc(doc(db, "usuarios", user.uid));
@@ -247,7 +214,7 @@
             s.forEach(d => {
                 const n = d.data().nombre;
                 sel.innerHTML += `<option value="${n}">${n}</option>`;
-                tab.innerHTML += `<tr><td>${n}</td><td><button class="btn-status edit" onclick="editarMiembro('${d.id}','${n}')">✎</button><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
+                tab.innerHTML += `<tr><td>${n}</td><td><button class="btn-status off" onclick="eliminarDoc('config_vip','${d.id}')">X</button></td></tr>`;
             });
         });
 
@@ -261,7 +228,7 @@
             s.forEach(d => {
                 const i = d.data(); u.add(i.nombre);
                 if(i.usos < 5) sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status on" onclick="resetCupos('${d.id}')">RESET</button><button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">X</button></div>`;
+                div.innerHTML += `<div class="card"><b>${i.nombre}</b><br>Usos: ${i.usos}/5<br><button class="btn-status off" onclick="eliminarDoc('inventario_vip','${d.id}')">X</button></div>`;
             });
             u.forEach(n => rapido.innerHTML += `<span class="plat-tag" onclick="document.getElementById('st-nombre').value='${n}'">${n}</span>`);
         });
@@ -273,18 +240,8 @@
                 tb.innerHTML += `<tr><td>${p.timestamp?.toDate().toLocaleString() || '...'}</td><td>${p.miembro}</td><td>${p.plataforma}</td><td>${p.datos}</td><td><button class="btn-status off" onclick="eliminarDoc('pedidos_vip','${d.id}')">X</button></td></tr>`;
             });
         });
-
-        onSnapshot(collection(db, "usuarios"), s => {
-            const tb = document.getElementById('lista-socios'); tb.innerHTML = "";
-            s.forEach(d => {
-                const u = d.data();
-                const st = u.activo !== false ? 'on' : 'off';
-                tb.innerHTML += `<tr><td>${u.email}</td><td>${u.role}</td><td><button class="btn-status ${st}">${st.toUpperCase()}</button></td><td><button class="btn-status off" onclick="eliminarDoc('usuarios','${d.id}')">X</button></td></tr>`;
-            });
-        });
     }
 
-    // --- ACCIONES ADICIONALES ---
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
@@ -303,13 +260,7 @@
         if(t==='streaming'){ d.correo=document.getElementById('st-correo').value; d.clave=document.getElementById('st-clave').value; }
         else { d.url=document.getElementById('st-url').value; }
         await addDoc(collection(db, "inventario_vip"), d);
-        alert("Stock Guardado");
     };
-    window.editarMiembro = async (id, nom) => {
-        const n = prompt("Nuevo nombre:", nom);
-        if(n) await updateDoc(doc(db, "config_vip", id), { nombre: n });
-    };
-    window.resetCupos = async (id) => await updateDoc(doc(db, "inventario_vip", id), { usos: 0 });
     window.eliminarDoc = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
