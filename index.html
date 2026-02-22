@@ -75,40 +75,31 @@
             <p style="margin-top:20px;">2. Selecciona Plataforma:</p>
             <div class="grid-seleccion" id="gridPlatsEntrega"></div>
             <button class="btn btn-verde" style="width:100%; margin-top:25px; padding:15px;" onclick="procesarEntrega()">GENERAR CUENTA AHORA</button>
+            <div id="resultadoPedido" class="oculto" style="margin-top:15px; border:2px dashed var(--exito); padding:10px; text-align:center;">
+                <b id="textoCuenta"></b><br><br>
+                <button class="btn btn-azul" onclick="copiarCuenta()">COPIAR</button>
+            </div>
         </div>
     </div>
 
     <div id="vistaAdmin" class="oculto">
         <div class="card">
-            <h2>💎 GESTIÓN DE MIEMBROS VIP</h2>
-            <textarea id="textoMasivo" placeholder="Pega nombres línea por línea..." rows="2"></textarea>
+            <h2>💎 MIEMBROS VIP</h2>
+            <textarea id="textoMasivo" placeholder="Carga masiva: nombres línea por línea..." rows="2"></textarea>
             <button class="btn btn-azul" onclick="cargaMasivaVip()" style="width:100%">CARGAR LISTA</button>
-            <table>
-                <tbody id="tablaVipsAdmin"></tbody>
-            </table>
+            <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="tablaVipsAdmin"></tbody></table>
         </div>
 
         <div class="card">
             <h2>📦 INVENTARIO (CUENTAS)</h2>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="accDato" placeholder="cuenta:contraseña">
-                <select id="selectPlatStock"></select>
-                <button class="btn btn-azul" onclick="subirStock()">AÑADIR</button>
-            </div>
-            <table>
-                <tbody id="tablaStockAdmin"></tbody>
-            </table>
+            <div style="display:flex; gap:10px;"><input type="text" id="accDato" placeholder="cuenta:clave"><select id="selectPlatStock"></select><button class="btn btn-azul" onclick="subirStock()">AÑADIR</button></div>
+            <table><thead><tr><th>Plat.</th><th>Cuenta</th><th>Usos</th><th>Acciones</th></tr></thead><tbody id="tablaStockAdmin"></tbody></table>
         </div>
 
         <div class="card">
             <h2>🛠️ PLATAFORMAS</h2>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="nombrePlat" placeholder="Nueva Plataforma">
-                <button class="btn btn-verde" onclick="crearPlataforma()">CREAR</button>
-            </div>
-            <table>
-                <tbody id="tablaPlatsAdmin"></tbody>
-            </table>
+            <div style="display:flex; gap:10px;"><input type="text" id="nombrePlat" placeholder="Nueva Plataforma"><button class="btn btn-verde" onclick="crearPlataforma()">CREAR</button></div>
+            <table><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="tablaPlatsAdmin"></tbody></table>
         </div>
     </div>
 </div>
@@ -131,10 +122,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let vipSel = null, platSel = null;
+
     window.iniciarSesion = async () => {
         const c = document.getElementById("correoLogin").value;
         const p = document.getElementById("passLogin").value;
-        try { await signInWithEmailAndPassword(auth, c, p); } catch(e) { alert("Error al entrar"); }
+        try { await signInWithEmailAndPassword(auth, c, p); } catch(e) { alert("Error: Verifica tus datos"); }
     };
 
     window.cerrarSesion = () => signOut(auth).then(() => location.reload());
@@ -151,7 +144,7 @@
             if(isAdmin) {
                 document.getElementById("tituloEncabezado").innerText = "👑 ADMINISTRACIÓN DIRECTA";
                 document.getElementById("vistaAdmin").classList.remove("oculto");
-                document.getElementById("vistaSocio").classList.add("oculto"); // El admin no ve el cuadro de generar
+                document.getElementById("vistaSocio").classList.add("oculto");
             } else {
                 document.getElementById("tituloEncabezado").innerText = "💼 PANEL SOCIO";
                 document.getElementById("vistaSocio").classList.remove("oculto");
@@ -164,7 +157,6 @@
     });
 
     function escucharDatos() {
-        // VIPs
         onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
             const grid = document.getElementById("gridVipsEntrega");
             const tabla = document.getElementById("tablaVipsAdmin");
@@ -178,7 +170,6 @@
             });
         });
 
-        // Stock y Plataformas
         onSnapshot(collection(db, "inventario"), (snap) => {
             const tabla = document.getElementById("tablaStockAdmin");
             tabla.innerHTML = "";
@@ -186,6 +177,7 @@
                 const i = d.data();
                 tabla.innerHTML += `<tr><td>${i.plataforma}</td><td>${i.cuenta}</td><td>${i.usos}/8</td><td>
                     <button class="btn btn-naranja" onclick="regresarCupo('${d.id}')">REGRESAR CUPO</button>
+                    <button class="btn btn-azul" onclick="editarDoc('inventario','${d.id}','cuenta','${i.cuenta}')">EDITAR</button>
                     <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
                 </td></tr>`;
             });
@@ -198,19 +190,36 @@
             grid.innerHTML = ""; tabla.innerHTML = ""; select.innerHTML = "";
             snap.forEach(d => {
                 grid.innerHTML += `<div class="item-card" onclick="selPlat(this, '${d.data().nombre}')">📺<br>${d.data().nombre}</div>`;
-                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td><button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">BORRAR</button></td></tr>`;
+                tabla.innerHTML += `<tr><td>${d.data().nombre}</td><td>
+                    <button class="btn btn-azul" onclick="editarDoc('plataformas','${d.id}','nombre','${d.data().nombre}')">EDITAR</button>
+                    <button class="btn btn-rojo" onclick="eliminarDoc('plataformas','${d.id}')">BORRAR</button>
+                </td></tr>`;
                 select.innerHTML += `<option value="${d.data().nombre}">${d.data().nombre}</option>`;
             });
         });
     }
 
-    // Funciones de acción
-    window.regresarCupo = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); alert("Cupo regresado!"); };
+    // Acciones globales
+    window.selVip = (el, n) => { document.querySelectorAll("#gridVipsEntrega .item-card").forEach(i => i.classList.remove("selected")); el.classList.add("selected"); vipSel = n; };
+    window.selPlat = (el, n) => { document.querySelectorAll("#gridPlatsEntrega .item-card").forEach(i => i.classList.remove("selected")); el.classList.add("selected"); platSel = n; };
+    window.regresarCupo = async (id) => { await updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" }); alert("Cupo reiniciado"); };
     window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
     window.editarDoc = async (col, id, campo, valor) => { const n = prompt("Nuevo valor:", valor); if(n) await updateDoc(doc(db, col, id), { [campo]: n }); };
     window.crearPlataforma = async () => { const n = document.getElementById("nombrePlat").value; if(n) await addDoc(collection(db, "plataformas"), { nombre: n }); };
     window.subirStock = async () => { const c = document.getElementById("accDato").value, p = document.getElementById("selectPlatStock").value; if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" }); };
     window.cargaMasivaVip = async () => { const batch = writeBatch(db); document.getElementById("textoMasivo").value.split('\n').forEach(l => { if(l.trim()) batch.set(doc(collection(db, "vips")), { nombre: l.trim() }); }); await batch.commit(); document.getElementById("textoMasivo").value = ""; };
+    
+    window.procesarEntrega = async () => {
+        if(!vipSel || !platSel) return alert("Selecciona Miembro y Plataforma");
+        const q = query(collection(db, "inventario"), where("plataforma", "==", platSel), where("estado", "==", "disponible"), limit(1));
+        const res = await getDocs(q);
+        if(res.empty) return alert("Sin stock");
+        const d = res.docs[0], nU = (d.data().usos || 0) + 1;
+        await updateDoc(doc(db, "inventario", d.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
+        document.getElementById("resultadoPedido").classList.remove("oculto");
+        document.getElementById("textoCuenta").innerText = d.data().cuenta;
+    };
+    window.copiarCuenta = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
 </script>
 </body>
 </html>
