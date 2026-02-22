@@ -3,104 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Privado - Acceso Restringido</title>
+    <title>Panel Administrativo Global - Andy Obregón</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <style>
-        :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; }
+        :root { --primary: #1e293b; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; --warning: #f59e0b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: var(--text); margin: 0; padding-bottom: 50px; }
         
-        /* Pantalla de Login */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
-        .login-card { background: var(--primary); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        
-        /* Panel Principal */
-        #main-app { display: none; }
-        .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
-        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-size: 0.75rem; font-weight: bold; }
+        /* Navbar */
+        .navbar { display: flex; background: var(--primary); padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 1000; overflow-x: auto; border-bottom: 2px solid var(--accent); }
+        .nav-btn { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; flex: 1; font-size: 0.75rem; }
         .nav-btn.active { background: var(--accent); }
+        
+        /* Contenedores */
         .container { padding: 15px; }
         .section { display: none; }
         .section.active { display: block; }
         .card { background: #1e293b; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; }
         
-        input, select { background: #0f172a; border: 1px solid #475569; color: white; padding: 12px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
-        .btn { background: var(--accent); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .btn-add { background: var(--success); }
-        .btn-logout { background: var(--danger); margin-top: 10px; }
+        /* Tablas */
+        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; color: #333; min-width: 650px; }
+        th { background: #1e2d3b; color: white; padding: 12px; font-size: 0.75rem; text-transform: uppercase; }
+        td { border-bottom: 1px solid #eee; padding: 10px; font-size: 0.8rem; text-align: center; }
         
-        .admin-only { display: none; } /* Oculto por defecto */
-        .cuenta-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 15px; margin-top: 10px; color: #166534; text-align: center; border-radius: 8px; font-weight: bold; }
+        /* Inputs y Botones */
+        input, select, textarea { background: #0f172a; border: 1px solid #475569; color: white; padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-add { background: var(--success); color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin: 2px; }
+        
+        .cuenta-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 15px; margin: 10px 0; font-family: monospace; font-size: 1rem; color: #166534; word-break: break-all; text-align: center; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-card">
-        <h2 style="text-align:center">🔐 Acceso al Sistema</h2>
-        <input type="email" id="login-email" placeholder="Correo electrónico">
-        <input type="password" id="login-pass" placeholder="Contraseña">
-        <button class="btn" onclick="iniciarSesion()">INGRESAR</button>
-        <p id="login-error" style="color:red; font-size:0.8rem; text-align:center; margin-top:10px;"></p>
-    </div>
-</div>
-
-<div id="main-app">
-    <div class="navbar">
-        <button class="nav-btn active" onclick="showTab('tab-pedir')">📥 PEDIR</button>
+<div id="main-content">
+    <div class="navbar" id="barra-nav">
+        <button class="nav-btn active" onclick="showTab('tab-usuario')">📥 PEDIR</button>
         <button class="nav-btn" onclick="showTab('tab-historial')">🕒 HISTORIAL</button>
-        <button class="nav-btn admin-only" id="btn-admin-tab" onclick="showTab('tab-admin')">⚙️ GESTIÓN</button>
-        <button class="nav-btn" style="background:var(--danger)" onclick="cerrarSesion()">SALIR</button>
+        <button class="nav-btn" onclick="showTab('tab-stock')">📦 STOCK/SOCIOS</button>
+        <button class="nav-btn" style="background:var(--danger)" onclick="location.reload()">SALIR</button>
     </div>
 
     <div class="container">
-        <div id="tab-pedir" class="section active">
+        <div id="tab-usuario" class="section active">
             <div class="card">
-                <h3>🚀 Entrega de Cuentas</h3>
-                <input type="text" id="cliente-nom" placeholder="Nombre del Cliente">
-                <select id="select-plat"></select>
-                <button class="btn btn-add" onclick="reclamarCuenta()">ENTREGAR AHORA</button>
-                <div id="box-resultado" style="display:none" class="cuenta-box"></div>
+                <h3>🎁 Obtener mi Cuenta al Instante</h3>
+                <input type="text" id="user-cliente-nom" placeholder="Nombre del Cliente">
+                <select id="user-select-plat"></select>
+                <button class="btn-add" onclick="reclamarCuenta()">🚀 RECLAMAR CUENTA AHORA</button>
+                <div id="display-entrega" style="display:none; margin-top:20px;">
+                    <div style="font-weight: bold; text-align: center;">✅ ENTREGA EXITOSA:</div>
+                    <div class="cuenta-box" id="texto-cuenta"></div>
+                </div>
             </div>
         </div>
 
         <div id="tab-historial" class="section">
             <div class="card">
-                <h3>📜 Registro de Ventas</h3>
-                <div id="lista-historial" style="font-size: 0.8rem;"></div>
+                <h3>📜 Registro Global de Entregas</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Fecha</th><th>Socio</th><th>Cliente</th><th>Plataforma</th><th>Cuenta</th></tr>
+                        </thead>
+                        <tbody id="historial-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div id="tab-admin" class="section">
+        <div id="tab-stock" class="section">
             <div class="card">
-                <h3>🛠️ Crear Plataformas</h3>
-                <input type="text" id="new-plat" placeholder="Ej: Netflix">
-                <button class="btn" onclick="crearPlataforma()">+ CREAR</button>
+                <h3>🛠️ Gestionar Plataformas</h3>
+                <input type="text" id="nueva-plat-nombre" placeholder="Nombre (Ej: Netflix)">
+                <button class="btn-add" style="background:var(--accent)" onclick="crearPlat()">+ CREAR</button>
+                <div id="lista-plataformas" style="margin-top:10px;"></div>
             </div>
+            
             <div class="card">
-                <h3>📦 Cargar Inventario</h3>
-                <input type="text" id="stock-mail" placeholder="correo:clave">
-                <select id="stock-plat"></select>
-                <button class="btn btn-add" onclick="subirStock()">GUARDAR CUENTA</button>
+                <h3>📦 Añadir Cuentas al Inventario</h3>
+                <input type="text" id="st-cuenta" placeholder="correo:clave">
+                <select id="st-plat-select"></select>
+                <button class="btn-add" onclick="agregarStock()">GUARDAR EN NUBE</button>
             </div>
+
             <div class="card">
-                <h3>👥 Usuarios/Roles</h3>
-                <input type="email" id="new-user-email" placeholder="Correo nuevo socio">
-                <select id="new-user-role">
-                    <option value="vendedor">Vendedor</option>
-                    <option value="admin">Administrador</option>
-                </select>
-                <p style="font-size:0.7rem; color:gray">*El socio debe estar registrado en Auth primero.</p>
-                <button class="btn" style="background:var(--success)" onclick="asignarRol()">ASIGNAR ROL</button>
+                <h3>👥 Gestionar Socios</h3>
+                <input type="text" id="soc-nom" placeholder="Nombre">
+                <input type="email" id="soc-cor" placeholder="Correo">
+                <input type="text" id="soc-pas" placeholder="Contraseña">
+                <button class="btn-add" style="background:var(--warning)" onclick="agregarSocio()">GUARDAR SOCIO</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. CONFIGURACIÓN (TUS DATOS)
+    // --- 1. CONFIGURACIÓN FIREBASE (USANDO TUS LLAVES REALES) ---
     const firebaseConfig = {
         apiKey: "AIzaSyBXqBGXf8vOzPnbO7MDKEmhdvJsA3sFczA",
         authDomain: "sistema-grupo-privado.firebaseapp.com",
@@ -111,107 +113,101 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // 2. LÓGICA DE ACCESO Y ROLES
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            checkUserRole(user);
-        } else {
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-        }
-    });
-
-    async function checkUserRole(user) {
-        const doc = await db.collection("users").doc(user.email).get();
-        const userData = doc.data();
-
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-
-        if (userData && userData.rol === 'admin') {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
-        } else {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-        }
-        sincronizarDatos();
-    }
-
-    // 3. FUNCIONES DE AUTH
-    function iniciarSesion() {
-        const email = document.getElementById('login-email').value;
-        const pass = document.getElementById('login-pass').value;
-        auth.signInWithEmailAndPassword(email, pass).catch(err => {
-            document.getElementById('login-error').innerText = "Datos incorrectos";
-        });
-    }
-
-    function cerrarSesion() { auth.signOut(); location.reload(); }
-
-    // 4. FUNCIONES DE NEGOCIO
+    // --- 2. FUNCIONES DE ENTREGA ---
     async function reclamarCuenta() {
-        const plat = document.getElementById('select-plat').value;
-        const cliente = document.getElementById('cliente-nom').value;
-        if(!cliente) return alert("Nombre del cliente?");
+        const plat = document.getElementById('user-select-plat').value;
+        const cliente = document.getElementById('user-cliente-nom').value;
+        if(!cliente) return alert("Escribe el nombre del cliente");
 
-        const snap = await db.collection("inventario").where("plataforma","==",plat).where("cupos","<",8).limit(1).get();
-        if(!snap.empty) {
-            const doc = snap.docs[0];
-            await db.collection("inventario").doc(doc.id).update({ cupos: doc.data().cupos + 1 });
-            await db.collection("entregas").add({
-                cuenta: doc.data().cuenta,
-                cliente: cliente,
-                plataforma: plat,
-                socio: auth.currentUser.email,
-                fecha: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById('box-resultado').innerText = doc.data().cuenta;
-            document.getElementById('box-resultado').style.display = 'block';
-        } else { alert("Sin Stock"); }
+        try {
+            const query = await db.collection("inventario")
+                .where("plataforma", "==", plat)
+                .where("cupos", "<", 8)
+                .limit(1).get();
+
+            if (!query.empty) {
+                const doc = query.docs[0];
+                const data = doc.data();
+
+                await db.collection("inventario").doc(doc.id).update({
+                    cupos: data.cupos + 1
+                });
+
+                await db.collection("entregas").add({
+                    cuenta: data.cuenta,
+                    estado: "listo",
+                    nombreWsp: cliente,
+                    plataforma: plat,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    usuarioEmail: "ayuda@gmail.com"
+                });
+
+                document.getElementById('texto-cuenta').innerText = data.cuenta;
+                document.getElementById('display-entrega').style.display = 'block';
+            } else {
+                alert("Sin stock de " + plat);
+            }
+        } catch (e) { alert("Error: Revisa tus reglas de Firebase"); }
     }
 
-    // 5. FUNCIONES ADMIN
-    async function crearPlataforma() {
-        const n = document.getElementById('new-plat').value;
+    // --- 3. FUNCIONES DE ADMINISTRACIÓN ---
+    async function crearPlat() {
+        const n = document.getElementById('nueva-plat-nombre').value;
         if(n) await db.collection("plataformas").add({ nombre: n });
-        document.getElementById('new-plat').value = "";
+        document.getElementById('nueva-plat-nombre').value = "";
     }
 
-    async function subirStock() {
-        const c = document.getElementById('stock-mail').value;
-        const p = document.getElementById('stock-plat').value;
-        await db.collection("inventario").add({ cuenta: c, plataforma: p, cupos: 0 });
-        alert("Guardado");
+    async function agregarStock() {
+        const c = document.getElementById('st-cuenta').value;
+        const p = document.getElementById('st-plat-select').value;
+        if(c) await db.collection("inventario").add({ cuenta: c, plataforma: p, cupos: 0 });
+        document.getElementById('st-cuenta').value = "";
+        alert("Cuenta guardada");
     }
 
-    async function asignarRol() {
-        const email = document.getElementById('new-user-email').value;
-        const rol = document.getElementById('new-user-role').value;
-        await db.collection("users").doc(email).set({ rol: rol });
-        alert("Rol asignado a " + email);
+    async function agregarSocio() {
+        const n = document.getElementById('soc-nom').value;
+        const c = document.getElementById('soc-cor').value;
+        const p = document.getElementById('soc-pas').value;
+        if(n && c && p) await db.collection("users").add({ nombre: n, correo: c, pass: p, estado: true });
+        alert("Socio guardado");
     }
 
-    // 6. SINCRONIZACIÓN
-    function sincronizarDatos() {
+    // --- 4. SINCRONIZACIÓN EN TIEMPO REAL ---
+    function sincronizarTodo() {
+        // Cargar Plataformas
         db.collection("plataformas").onSnapshot(snap => {
-            let h = "";
-            snap.forEach(doc => h += `<option value="${doc.data().nombre}">${doc.data().nombre}</option>`);
-            document.getElementById('select-plat').innerHTML = h;
-            document.getElementById('stock-plat').innerHTML = h;
+            let options = "";
+            let list = "";
+            snap.forEach(doc => {
+                const p = doc.data().nombre;
+                options += `<option value="${p}">${p}</option>`;
+                list += `<div style="display:flex; justify-content:space-between; background:#334155; padding:5px; margin-bottom:2px; border-radius:4px;">
+                            <span>${p}</span>
+                            <button class="action-btn" style="background:red" onclick="eliminarDoc('plataformas','${doc.id}')">X</button>
+                         </div>`;
+            });
+            document.getElementById('user-select-plat').innerHTML = options;
+            document.getElementById('st-plat-select').innerHTML = options;
+            document.getElementById('lista-plataformas').innerHTML = list;
         });
 
-        db.collection("entregas").orderBy("fecha","desc").limit(15).onSnapshot(snap => {
-            let h = "";
+        // Cargar Historial
+        db.collection("entregas").orderBy("timestamp", "desc").limit(20).onSnapshot(snap => {
+            let html = "";
             snap.forEach(doc => {
-                const d = doc.data();
-                h += `<div class="card" style="margin-bottom:5px; padding:10px; font-size:0.7rem">
-                    <b>${d.cliente}</b> -> ${d.plataforma}<br>${d.cuenta}<br><small>${d.socio}</small>
-                </div>`;
+                const h = doc.data();
+                const fecha = h.timestamp ? new Date(h.timestamp.seconds * 1000).toLocaleDateString() : "...";
+                html += `<tr><td>${fecha}</td><td>${h.usuarioEmail}</td><td>${h.nombreWsp}</td><td>${h.plataforma}</td><td>${h.cuenta}</td></tr>`;
             });
-            document.getElementById('lista-historial').innerHTML = h;
+            document.getElementById('historial-body').innerHTML = html;
         });
+    }
+
+    async function eliminarDoc(coleccion, id) {
+        if(confirm("¿Eliminar?")) await db.collection(coleccion).doc(id).delete();
     }
 
     function showTab(id) {
@@ -220,6 +216,8 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         event.currentTarget.classList.add('active');
     }
+
+    sincronizarTodo();
 </script>
 </body>
 </html>
