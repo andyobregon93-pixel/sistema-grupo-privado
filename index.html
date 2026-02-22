@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA VIP TOTAL - PANEL COMPLETO</title>
+    <title>SISTEMA VIP TOTAL - ACTUALIZACIÓN INSTANTÁNEA</title>
     <style>
         :root { 
             --primario: #0f2027; --exito: #27ae60; --error: #e74c3c; 
@@ -16,15 +16,22 @@
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #ddd; }
         h2 { font-size: 1.2rem; color: var(--oscuro); margin-top: 0; border-left: 4px solid var(--admin); padding-left: 10px; text-transform: uppercase; }
         .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 10px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: var(--admin); outline: none; background: #f0f7ff; }
         .tabla-contenedor { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; margin-top: 10px; }
         th { background: var(--oscuro); color: white; padding: 12px; text-align: left; }
         td { padding: 12px; border-bottom: 1px solid #eee; }
-        .btn { padding: 8px 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
+        
+        /* Botones con Feedback */
+        .btn { padding: 8px 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn:disabled { background: #ccc !important; cursor: not-allowed; }
         .btn-block { width: 100%; padding: 12px; font-size: 14px; }
         .btn-azul { background: var(--admin); } .btn-rojo { background: var(--error); }
         .btn-verde { background: var(--exito); } .btn-naranja { background: var(--secundario); }
+        .btn-gris { background: #7f8c8d; }
+
         .badge { padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; }
         .oculto { display: none !important; }
     </style>
@@ -33,61 +40,52 @@
 
 <div id="cajaLogin">
     <div style="max-width:400px; margin: 100px auto; background:var(--oscuro); padding:30px; border-radius:10px; text-align:center; color:white;">
-        <h2>👑 ACCESO VIP</h2>
-        <input type="email" id="correoLogin" placeholder="Correo" style="margin-bottom:10px;">
-        <input type="password" id="passLogin" placeholder="Clave" style="margin-bottom:20px;">
-        <button class="btn btn-verde btn-block" onclick="iniciarSesion()">ENTRAR</button>
+        <h2>👑 ACCESO SISTEMA</h2>
+        <input type="email" id="correoLogin" placeholder="Correo">
+        <input type="password" id="passLogin" placeholder="Clave" style="margin-top:10px;">
+        <button class="btn btn-verde btn-block" style="margin-top:20px;" onclick="iniciarSesion(this)">ENTRAR</button>
     </div>
 </div>
 
 <div id="app" class="contenedor-principal oculto">
     
     <div class="header-panel">
-        <div>USUARIO: <span id="infoUsuario"></span></div>
+        <div>SESIÓN: <span id="infoUsuario"></span></div>
         <button class="btn btn-rojo" onclick="cerrarSesion()">SALIR</button>
     </div>
 
     <div class="card">
-        <h2>🚀 Generar Entrega</h2>
+        <h2>🚀 Generar Entrega VIP</h2>
         <div class="grid-inputs">
             <div>
-                <input type="text" id="inputBusquedaVip" placeholder="🔍 Filtrar VIP..." onkeyup="filtrarMiembros()">
-                <select id="selectMiembroVip" size="4" style="margin-top:5px;"></select>
+                <label style="font-size:11px; color:gray;">Selecciona Miembro:</label>
+                <input type="text" id="inputBusquedaVip" placeholder="🔍 Buscar contacto..." onkeyup="filtrarMiembros()">
+                <select id="selectMiembroVip" size="6" style="margin-top:5px;"></select>
             </div>
             <div>
+                <label style="font-size:11px; color:gray;">Selecciona Plataforma:</label>
                 <select id="selectPlatUsuario"></select>
-                <button class="btn btn-verde btn-block" style="margin-top:15px;" onclick="procesarEntregaAutomatica()">GENERAR CUENTA</button>
+                <button class="btn btn-verde btn-block" style="margin-top:25px;" onclick="procesarEntregaAutomatica(this)">GENERAR CUENTA</button>
             </div>
         </div>
         <div id="resultadoPedido" class="oculto" style="margin-top:15px; padding:15px; border:2px dashed var(--exito); background:#f0fff0; text-align:center;">
             <div id="textoCuenta" style="font-size:16px; font-weight:bold; margin-bottom:10px;"></div>
-            <button class="btn btn-azul" onclick="copiarTodo()">COPIAR</button>
+            <button class="btn btn-azul" onclick="copiarTodo(this)">COPIAR</button>
         </div>
     </div>
 
     <div id="panelAdmin" class="oculto">
-        
         <div class="card">
-            <h2>👥 Gestión de Socios / Usuarios</h2>
+            <h2>👥 Gestión de Socios</h2>
             <div class="grid-inputs">
-                <input type="email" id="nuevoCorreo" placeholder="Correo Nuevo Socio">
-                <input type="text" id="nuevoPass" placeholder="Contraseña">
-                <select id="nuevoRol">
-                    <option value="usuario">Rol: Socio</option>
-                    <option value="admin">Rol: Admin</option>
-                </select>
-                <button class="btn btn-verde" onclick="registrarUsuario()">CREAR USUARIO</button>
+                <input type="email" id="nuevoCorreo" placeholder="Correo">
+                <input type="text" id="nuevoPass" placeholder="Clave">
+                <select id="nuevoRol"><option value="usuario">Socio</option><option value="admin">Admin</option></select>
+                <button class="btn btn-verde" onclick="registrarUsuario(this)">CREAR</button>
             </div>
             <div class="tabla-contenedor">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Email</th><th>Estado</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaListaUsuarios"></tbody>
                 </table>
             </div>
@@ -98,29 +96,27 @@
             <div class="grid-inputs">
                 <input type="text" id="accCorreo" placeholder="correo:clave">
                 <select id="selectPlatAdmin"></select>
-                <button class="btn btn-azul" onclick="subirInventario()">AÑADIR STOCK</button>
+                <button class="btn btn-azul" onclick="subirInventario(this)">AÑADIR</button>
             </div>
             <div class="tabla-contenedor">
                 <table>
-                    <thead>
-                        <tr><th>Plataforma</th><th>Cuenta</th><th>Usos</th><th>Estado</th><th>Acciones</th></tr>
-                    </thead>
+                    <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Usos</th><th>Estado</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaGestionStock"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="card">
-            <h2>💎 Miembros VIP (Carga Masiva)</h2>
-            <textarea id="textoMasivoVip" rows="3" placeholder="Nombres línea por línea..."></textarea>
-            <button class="btn btn-azul" style="margin-top:10px;" onclick="procesarCargaMasivaTexto()">CARGAR LISTA</button>
+            <h2>💎 Carga Masiva de VIPs</h2>
+            <textarea id="textoMasivoVip" rows="5" placeholder="Pega los nombres aquí..."></textarea>
+            <button class="btn btn-azul btn-block" style="margin-top:10px;" onclick="procesarCargaMasivaTexto(this)">CARGAR LISTA AHORA</button>
         </div>
 
         <div class="card">
-            <h2>🛠️ Configurar Plataformas</h2>
+            <h2>🛠️ Plataformas</h2>
             <div class="grid-inputs" style="grid-template-columns: 1fr auto;">
-                <input type="text" id="nombreNuevaPlat" placeholder="Ej: Netflix">
-                <button class="btn btn-gris" onclick="crearPlataforma()">CREAR</button>
+                <input type="text" id="nombreNuevaPlat" placeholder="Nueva Plataforma">
+                <button class="btn btn-gris" onclick="crearPlataforma(this)">AÑADIR</button>
             </div>
             <table id="listaPlataformasGestion"></table>
         </div>
@@ -145,26 +141,38 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let miEmail = "", vipsLocales = [];
+    let vipsLocales = [];
 
-    window.iniciarSesion = async () => {
-        const c = document.getElementById("correoLogin").value.trim();
-        const p = document.getElementById("passLogin").value.trim();
-        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Acceso Denegado"); }
+    // --- UTILS ---
+    function feedback(btn, textoOriginal, exito = true) {
+        btn.disabled = true;
+        btn.innerText = exito ? "¡HECHO!" : "ERROR";
+        btn.style.background = exito ? "var(--exito)" : "var(--error)";
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerText = textoOriginal;
+            btn.style.background = "";
+        }, 1500);
+    }
+
+    // --- AUTH ---
+    window.iniciarSesion = async (btn) => {
+        const c = document.getElementById("correoLogin").value;
+        const p = document.getElementById("passLogin").value;
+        try { await signInWithEmailAndPassword(auth, c, p); } catch (e) { alert("Credenciales incorrectas"); }
     };
 
     window.cerrarSesion = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            miEmail = user.email;
             const snap = await getDoc(doc(db, "users", user.uid));
             if (user.email === "andyobregon799@gmail.com" || (snap.exists() && snap.data().role === "admin")) {
                 document.getElementById("panelAdmin").classList.remove("oculto");
             }
             document.getElementById("cajaLogin").classList.add("oculto");
             document.getElementById("app").classList.remove("oculto");
-            document.getElementById("infoUsuario").innerText = miEmail;
+            document.getElementById("infoUsuario").innerText = user.email;
             cargarDatos();
         } else {
             document.getElementById("cajaLogin").classList.remove("oculto");
@@ -172,51 +180,37 @@
         }
     });
 
+    // --- CARGA DE DATOS EN TIEMPO REAL ---
     function cargarDatos() {
-        // Usuarios / Socios
+        // Usuarios
         onSnapshot(collection(db, "users"), (snap) => {
-            let h = "";
-            snap.forEach(d => {
+            let h = ""; snap.forEach(d => {
                 const u = d.data();
-                const colorEstado = u.estado === "ON" ? "var(--exito)" : "var(--error)";
-                h += `<tr>
-                    <td>${u.email}</td>
-                    <td><b style="text-transform:uppercase">${u.role}</b></td>
-                    <td><span class="badge" style="background:${colorEstado}">${u.estado}</span></td>
-                    <td>
-                        <button class="btn btn-naranja" onclick="toggleSocio('${d.id}','${u.estado}')">ON/OFF</button>
-                        <button class="btn btn-rojo" onclick="eliminarDoc('users','${d.id}')">🗑️</button>
-                    </td>
-                </tr>`;
+                h += `<tr><td>${u.email}</td><td><span class="badge" style="background:${u.estado === 'ON' ? 'var(--exito)' : 'var(--error)'}">${u.estado}</span></td>
+                <td><button class="btn btn-naranja" onclick="toggleSocio('${d.id}','${u.estado}')">ON/OFF</button> <button class="btn btn-rojo" onclick="eliminarDoc('users','${d.id}')">🗑️</button></td></tr>`;
             });
             document.getElementById("tablaListaUsuarios").innerHTML = h;
         });
 
-        // Inventario Stock
+        // Stock
         onSnapshot(collection(db, "inventario"), (snap) => {
-            let h = "";
-            snap.forEach(d => {
+            let h = ""; snap.forEach(d => {
                 const data = d.data();
-                h += `<tr>
-                    <td><b>${data.plataforma}</b></td>
-                    <td>${data.cuenta}</td>
-                    <td>${data.usos}/8</td>
-                    <td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)' : 'var(--error)'}">${data.estado}</span></td>
-                    <td>
-                        <button class="btn btn-azul" onclick="resetStock('${d.id}')">RESET</button>
-                        <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">BORRAR</button>
-                    </td>
-                </tr>`;
+                h += `<tr><td><b>${data.plataforma}</b></td><td>${data.cuenta}</td><td>${data.usos}/8</td>
+                <td><span class="badge" style="background:${data.estado === 'disponible' ? 'var(--exito)' : 'var(--error)'}">${data.estado}</span></td>
+                <td><button class="btn btn-azul" onclick="resetStock('${d.id}')">🔄</button> <button class="btn btn-rojo" onclick="eliminarDoc('inventario','${d.id}')">🗑️</button></td></tr>`;
             });
             document.getElementById("tablaGestionStock").innerHTML = h;
         });
 
-        // Vips y Plataformas
+        // VIPS (ESTO HACE QUE APAREZCAN AL INSTANTE)
         onSnapshot(query(collection(db, "vips"), orderBy("nombre", "asc")), (snap) => {
-            vipsLocales = []; snap.forEach(d => vipsLocales.push({id: d.id, ...d.data()}));
-            filtrarMiembros();
+            vipsLocales = []; 
+            snap.forEach(d => vipsLocales.push({id: d.id, ...d.data()}));
+            filtrarMiembros(); // Refresca el selector al instante
         });
 
+        // Plataformas
         onSnapshot(collection(db, "plataformas"), (snap) => {
             let opts = ""; let lista = "";
             snap.forEach(d => {
@@ -229,46 +223,84 @@
         });
     }
 
-    // --- ACCIONES ---
-    window.registrarUsuario = async () => {
-        const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
-        if(!c || !p) return alert("Completa los datos");
-        try {
-            const res = await createUserWithEmailAndPassword(auth, c, p);
-            await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" });
-            alert("Usuario Creado");
-        } catch(e) { alert("Error al crear"); }
-    };
-
-    window.toggleSocio = async (id, est) => updateDoc(doc(db, "users", id), { estado: est === "ON" ? "OFF" : "ON" });
-    window.subirInventario = async () => {
-        const c = document.getElementById("accCorreo").value, p = document.getElementById("selectPlatAdmin").value;
-        if(c) await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
-    };
-    window.resetStock = async (id) => updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
-    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
-    
+    // --- FUNCIONES ---
     window.filtrarMiembros = () => {
         const bus = document.getElementById("inputBusquedaVip").value.toLowerCase();
-        const sel = document.getElementById("selectMiembroVip"); sel.innerHTML = "";
+        const sel = document.getElementById("selectMiembroVip"); 
+        sel.innerHTML = "";
         vipsLocales.filter(v => v.nombre.toLowerCase().includes(bus)).forEach(v => {
             const opt = document.createElement("option"); opt.value = v.nombre; opt.text = v.nombre; sel.appendChild(opt);
         });
     };
 
-    window.procesarEntregaAutomatica = async () => {
+    window.procesarCargaMasivaTexto = async (btn) => {
+        const t = document.getElementById("textoMasivoVip").value.trim();
+        if(!t) return alert("Pega nombres");
+        const originalText = btn.innerText;
+        btn.innerText = "CARGANDO...";
+        
+        const batch = writeBatch(db);
+        const lineas = t.split('\n');
+        lineas.forEach(l => {
+            if(l.trim()) batch.set(doc(collection(db, "vips")), { nombre: l.trim() });
+        });
+
+        await batch.commit();
+        document.getElementById("textoMasivoVip").value = "";
+        feedback(btn, originalText);
+    };
+
+    window.subirInventario = async (btn) => {
+        const c = document.getElementById("accCorreo").value;
+        const p = document.getElementById("selectPlatAdmin").value;
+        if(c) {
+            await addDoc(collection(db, "inventario"), { cuenta: c, plataforma: p, usos: 0, estado: "disponible" });
+            document.getElementById("accCorreo").value = "";
+            feedback(btn, "AÑADIR");
+        }
+    };
+
+    window.registrarUsuario = async (btn) => {
+        const c = document.getElementById("nuevoCorreo").value, p = document.getElementById("nuevoPass").value, r = document.getElementById("nuevoRol").value;
+        try {
+            const res = await createUserWithEmailAndPassword(auth, c, p);
+            await setDoc(doc(db, "users", res.user.uid), { email: c, role: r, estado: "ON" });
+            document.getElementById("nuevoCorreo").value = ""; document.getElementById("nuevoPass").value = "";
+            feedback(btn, "CREAR");
+        } catch(e) { alert("Error al crear"); }
+    };
+
+    window.procesarEntregaAutomatica = async (btn) => {
         const miembro = document.getElementById("selectMiembroVip").value;
         const plat = document.getElementById("selectPlatUsuario").value;
+        if(!miembro) return alert("Elige un VIP");
+        
         const q = query(collection(db, "inventario"), where("plataforma", "==", plat), where("estado", "==", "disponible"), limit(1));
         const stock = await getDocs(q);
         if(stock.empty) return alert("Sin stock");
+
         const dS = stock.docs[0], nU = (dS.data().usos || 0) + 1;
         await updateDoc(doc(db, "inventario", dS.id), { usos: nU, estado: nU >= 8 ? "agotado" : "disponible" });
         document.getElementById("resultadoPedido").classList.remove("oculto");
         document.getElementById("textoCuenta").innerText = dS.data().cuenta;
+        feedback(btn, "GENERAR CUENTA");
     };
 
-    window.copiarTodo = () => { navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); alert("Copiado"); };
+    window.toggleSocio = async (id, est) => updateDoc(doc(db, "users", id), { estado: est === "ON" ? "OFF" : "ON" });
+    window.resetStock = async (id) => updateDoc(doc(db, "inventario", id), { usos: 0, estado: "disponible" });
+    window.eliminarDoc = async (col, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); };
+    window.crearPlataforma = async (btn) => {
+        const n = document.getElementById("nombreNuevaPlat").value;
+        if(n) { 
+            await addDoc(collection(db, "plataformas"), { nombre: n }); 
+            document.getElementById("nombreNuevaPlat").value = ""; 
+            feedback(btn, "AÑADIR");
+        }
+    };
+    window.copiarTodo = (btn) => { 
+        navigator.clipboard.writeText(document.getElementById("textoCuenta").innerText); 
+        feedback(btn, "COPIAR");
+    };
 </script>
 </body>
 </html>
