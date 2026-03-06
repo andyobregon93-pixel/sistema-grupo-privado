@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANDVIP | Sistema Profesional</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
@@ -12,7 +14,6 @@
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         
-        /* Navegación */
         .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); gap: 5px; overflow-x: auto; align-items: center; }
         .nav-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #94a3b8; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 0.75rem; white-space: nowrap; transition: 0.3s; }
         .nav-btn.active { color: white; background: var(--accent); }
@@ -29,21 +30,16 @@
         .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .btn-save { background: var(--success); color: white; }
         
-        /* Tablas */
         .table-wrapper { overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         td, th { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; text-align: left; }
 
-        /* FACTURA PROFESIONAL */
-        #factura-preview { background: white; color: #000; padding: 30px; border-radius: 4px; margin-top: 15px; display: none; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        /* FACTURA */
+        #factura-preview { background: white; color: #000; padding: 30px; border-radius: 4px; margin-top: 15px; display: none; font-family: 'Courier New', Courier, monospace; }
         .fac-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
-        .fac-header h1 { margin: 0; letter-spacing: 4px; }
         .fac-body p { margin: 5px 0; font-size: 0.9rem; display: flex; justify-content: space-between; }
         .fac-total { font-size: 1.6rem; font-weight: bold; text-align: center; border-top: 2px dashed #000; padding-top: 10px; margin-top: 20px; }
-        .fac-footer { text-align: center; margin-top: 20px; font-size: 0.7rem; border-top: 1px solid #eee; padding-top: 10px; }
-        
-        /* Código de barras falso (visual) */
-        .barcode { width: 100%; height: 50px; background: repeating-linear-gradient(90deg, #000, #000 2px, #fff 2px, #fff 4px); margin-top: 15px; }
+        .barcode { width: 100%; height: 40px; background: repeating-linear-gradient(90deg, #000, #000 2px, #fff 2px, #fff 4px); margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -93,7 +89,7 @@
         <div id="tab-factura" class="section">
             <div class="card">
                 <h3>Emitir Factura Profesional</h3>
-                <input type="text" id="f-cliente-nombre" readonly placeholder="Selecciona '📜' en clientes" style="background:#1e293b;">
+                <input type="text" id="f-cliente-nombre" readonly placeholder="Selecciona '📜' en clientes">
                 <input type="hidden" id="f-cliente-movil">
                 <input type="hidden" id="f-cliente-plan">
                 <input type="hidden" id="f-cliente-validez">
@@ -102,10 +98,7 @@
             </div>
 
             <div id="factura-preview">
-                <div class="fac-header">
-                    <h1>ANDVIP</h1>
-                    <small>SISTEMA DE PAGOS DIGITALES</small>
-                </div>
+                <div class="fac-header"><h1>ANDVIP</h1><small>SISTEMA DE PAGOS DIGITALES</small></div>
                 <div class="fac-body">
                     <p><span>Nº FACTURA:</span> <b id="fac-num"></b></p>
                     <p><span>EMITIDO:</span> <b id="fac-full-date"></b></p>
@@ -117,17 +110,37 @@
                 </div>
                 <div class="fac-total">PAGADO: $<span id="fac-monto"></span></div>
                 <div class="barcode"></div>
-                <div class="fac-footer">
-                    <p>Cualquier duda o queja contáctenos a:</p>
-                    <b style="font-size: 0.9rem;">andyobregon70@gmail.com</b>
-                    <p style="margin-top:10px;">¡Gracias por tu preferencia!</p>
+                <div style="text-align:center; font-size:0.7rem; margin-top:10px;">
+                    <p>andyobregon70@gmail.com</p>
+                    <b>¡Gracias por tu preferencia!</b>
                 </div>
-                <button onclick="enviarFacturaWhatsApp()" class="btn-main" style="background:#25d366; color:white; margin-top:20px;">ENVIAR A WHATSAPP</button>
+            </div>
+            <button id="btn-wa" onclick="enviarFacturaWhatsApp()" class="btn-main" style="display:none; background:#25d366; color:white; margin-top:20px;">DESCARGAR PDF Y ABRIR WHATSAPP</button>
+        </div>
+
+        <div id="tab-stock" class="section">
+            <div class="card">
+                <h3>📦 Inventario de Productos</h3>
+                <input type="text" id="s-prod" placeholder="Producto">
+                <input type="number" id="s-cant" placeholder="Cantidad">
+                <button onclick="guardarStock()" class="btn-main btn-save">AGREGAR STOCK</button>
+            </div>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Producto</th><th>Cantidad</th><th>Acciones</th></tr></thead>
+                        <tbody id="lista-stock"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div id="tab-stock" class="section">...</div>
-        <div id="tab-historial" class="section">...</div>
+        <div id="tab-historial" class="section">
+            <div class="card">
+                <h3>🕒 Historial de Actividad</h3>
+                <div id="log-actividad"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -136,7 +149,6 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Tu Configuración (No cambiar)
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
         authDomain: "sistema-ventas-64a4c.firebaseapp.com",
@@ -150,88 +162,136 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // LOGIN / LOGOUT
+    // LOGIN
     window.login = async () => {
         try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
-        catch(e) { alert("Clave incorrecta"); }
+        catch(e) { alert("Acceso denegado"); }
     };
     window.logout = () => signOut(auth);
-
     onAuthStateChanged(auth, user => {
         document.getElementById('login-box').style.display = user ? 'none' : 'flex';
         document.getElementById('app').style.display = user ? 'block' : 'none';
     });
 
-    // REAL-TIME CLIENTES
+    // CLIENTES: GUARDAR / EDITAR / LISTAR
+    window.guardarCliente = async () => {
+        const id = document.getElementById('edit-id-cliente').value;
+        const data = {
+            nombre: document.getElementById('m-nombre').value,
+            movil: document.getElementById('m-movil').value,
+            plan: document.getElementById('m-plan').value,
+            inicio: document.getElementById('m-inicio').value,
+            fin: document.getElementById('m-fin').value,
+            timestamp: serverTimestamp()
+        };
+        if(!data.nombre || !data.movil) return alert("Faltan datos");
+        id ? await updateDoc(doc(db, "membresias_vip", id), data) : await addDoc(collection(db, "membresias_vip"), data);
+        limpiarCli();
+    };
+
+    function limpiarCli() {
+        document.querySelectorAll('#tab-membresias input').forEach(i => i.value = "");
+        document.getElementById('form-title-cliente').innerText = "Nuevo Registro VIP";
+    }
+
     onSnapshot(query(collection(db, "membresias_vip"), orderBy("timestamp", "desc")), s => {
-        const tbody = document.getElementById('lista-clientes');
-        tbody.innerHTML = "";
+        const tb = document.getElementById('lista-clientes');
+        tb.innerHTML = "";
         s.forEach(d => {
             const m = d.data();
-            tbody.innerHTML += `<tr>
-                <td><b>${m.nombre}</b><br><small>${m.plan}</small></td>
+            tb.innerHTML += `<tr>
+                <td onclick="editCli('${d.id}',${JSON.stringify(m).replace(/"/g, '&quot;')})"><b>${m.nombre}</b><br><small>${m.plan}</small></td>
                 <td>${m.fin}</td>
                 <td>
-                    <button style="background:var(--gold); border:none; border-radius:4px; cursor:pointer;" onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.inicio} al ${m.fin}')">📜</button>
-                    <button style="background:var(--danger); border:none; border-radius:4px; color:white; cursor:pointer;" onclick="eliminar('membresias_vip','${d.id}')">🗑️</button>
+                    <button onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.inicio} al ${m.fin}')">📜</button>
+                    <button onclick="eliminar('membresias_vip','${d.id}')">🗑️</button>
                 </td>
             </tr>`;
         });
     });
 
-    // LÓGICA DE FACTURA PROFESIONAL
-    window.prepararFactura = (nom, mov, plan, val) => {
-        document.getElementById('f-cliente-nombre').value = nom;
-        document.getElementById('f-cliente-movil').value = mov;
-        document.getElementById('f-cliente-plan').value = plan;
-        document.getElementById('f-cliente-validez').value = val;
+    window.editCli = (id, m) => {
+        document.getElementById('edit-id-cliente').value = id;
+        document.getElementById('m-nombre').value = m.nombre;
+        document.getElementById('m-movil').value = m.movil;
+        document.getElementById('m-plan').value = m.plan;
+        document.getElementById('m-inicio').value = m.inicio;
+        document.getElementById('m-fin').value = m.fin;
+        document.getElementById('form-title-cliente').innerText = "Editando Cliente";
+    };
+
+    // FACTURA PROFESIONAL A PDF
+    window.prepararFactura = (n, m, p, v) => {
+        document.getElementById('f-cliente-nombre').value = n;
+        document.getElementById('f-cliente-movil').value = m;
+        document.getElementById('f-cliente-plan').value = p;
+        document.getElementById('f-cliente-validez').value = v;
         showTab('tab-factura', document.querySelector('[onclick*="tab-factura"]'));
     };
 
     window.generarFacturaFinal = () => {
-        const p = document.getElementById('f-precio').value;
-        if(!p) return alert("Ingresa el monto");
-
-        const ahora = new Date();
-        document.getElementById('fac-num').innerText = Math.floor(Math.random() * 90000) + 10000;
-        document.getElementById('fac-full-date').innerText = ahora.toLocaleDateString() + " | " + ahora.toLocaleTimeString();
-        document.getElementById('fac-nombre').innerText = document.getElementById('f-cliente-nombre').value.toUpperCase();
+        if(!document.getElementById('f-precio').value) return alert("Monto vacío");
+        document.getElementById('fac-num').innerText = Math.floor(Math.random() * 9999);
+        document.getElementById('fac-full-date').innerText = new Date().toLocaleString();
+        document.getElementById('fac-nombre').innerText = document.getElementById('f-cliente-nombre').value;
         document.getElementById('fac-tel').innerText = document.getElementById('f-cliente-movil').value;
         document.getElementById('fac-plan').innerText = document.getElementById('f-cliente-plan').value;
         document.getElementById('fac-periodo').innerText = document.getElementById('f-cliente-validez').value;
-        document.getElementById('fac-monto').innerText = p;
-
+        document.getElementById('fac-monto').innerText = document.getElementById('f-precio').value;
         document.getElementById('factura-preview').style.display = 'block';
+        document.getElementById('btn-wa').style.display = 'block';
     };
 
     window.enviarFacturaWhatsApp = async () => {
+        const { jsPDF } = window.jspdf;
+        const div = document.getElementById('factura-preview');
+        const canvas = await html2canvas(div);
+        const img = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(img, 'PNG', 10, 10, 180, 0);
         const nom = document.getElementById('fac-nombre').innerText;
-        const mov = document.getElementById('fac-tel').innerText;
-        const total = document.getElementById('fac-monto').innerText;
-        const date = document.getElementById('fac-full-date').innerText;
-        
-        const text = `*📄 RECIBO OFICIAL ANDVIP*%0A` +
-                     `*EMISIÓN:* ${date}%0A` +
-                     `--------------------------%0A` +
-                     `*CLIENTE:* ${nom}%0A` +
-                     `*TOTAL:* $${total}%0A` +
-                     `--------------------------%0A` +
-                     `_Dudas o quejas:_ andyobregon70@gmail.com%0A` +
-                     `¡Gracias por tu confianza!`;
-        
-        window.open(`https://wa.me/${mov}?text=${text}`, '_blank');
-        await addDoc(collection(db, "historial_vip"), { msg: `Factura enviada a ${nom} por $${total}`, timestamp: serverTimestamp() });
+        pdf.save(`Factura_${nom}.pdf`);
+
+        const msg = `*📄 RECIBO OFICIAL ANDVIP*%0AEstimado/a ${nom}, adjunto su comprobante no editable.`;
+        window.open(`https://wa.me/${document.getElementById('fac-tel').innerText}?text=${msg}`, '_blank');
+        await addDoc(collection(db, "historial_vip"), { msg: `Factura a ${nom}`, timestamp: serverTimestamp() });
     };
 
+    // STOCK
+    window.guardarStock = async () => {
+        await addDoc(collection(db, "stock"), { 
+            p: document.getElementById('s-prod').value, 
+            c: document.getElementById('s-cant').value, 
+            timestamp: serverTimestamp() 
+        });
+        document.getElementById('s-prod').value = ""; document.getElementById('s-cant').value = "";
+    };
+
+    onSnapshot(query(collection(db, "stock"), orderBy("timestamp", "desc")), s => {
+        const tb = document.getElementById('lista-stock'); tb.innerHTML = "";
+        s.forEach(d => {
+            const st = d.data();
+            tb.innerHTML += `<tr><td>${st.p}</td><td>${st.c}</td><td><button onclick="eliminar('stock','${d.id}')">🗑️</button></td></tr>`;
+        });
+    });
+
+    // HISTORIAL
+    onSnapshot(query(collection(db, "historial_vip"), orderBy("timestamp", "desc")), s => {
+        const log = document.getElementById('log-actividad'); log.innerHTML = "";
+        s.forEach(d => {
+            const h = d.data();
+            log.innerHTML += `<div class="card"><small>${h.timestamp?.toDate().toLocaleString() || ""}</small><br>${h.msg}</div>`;
+        });
+    });
+
+    // GENERAL
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
-        document.getElementById('factura-preview').style.display = 'none';
     };
-
-    window.eliminar = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
+    window.eliminar = async (c, id) => { if(confirm("¿Borrar?")) await deleteDoc(doc(db, c, id)); };
 </script>
 </body>
 </html>
