@@ -3,95 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDVIP | Premium System</title>
+    <title>ANDVIP | Gestión Total Real-Time</title>
     <style>
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
             --danger: #ef4444; --success: #10b981; --text: #f8fafc; 
-            --border: #334155; --gold: #fbbf24; --accent-hover: #2563eb;
+            --border: #334155; --gold: #fbbf24;
         }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         
-        /* Navegación con feedback visual */
-        .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); gap: 8px; overflow-x: auto; }
-        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: #1e293b; color: #94a3b8; font-weight: bold; cursor: pointer; border-radius: 10px; transition: 0.2s; white-space: nowrap; border: 1px solid transparent; }
-        .nav-btn:active { transform: scale(0.95); }
-        .nav-btn.active { color: white; background: var(--accent); border-color: #60a5fa; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        /* Navegación Responsive */
+        .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); gap: 5px; overflow-x: auto; scrollbar-width: none; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #94a3b8; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 0.75rem; white-space: nowrap; transition: 0.3s; }
+        .nav-btn.active { color: white; background: var(--accent); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
         
-        .container { padding: 20px; max-width: 900px; margin: auto; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
-        .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .container { padding: 15px; max-width: 1000px; margin: auto; }
+        .section { display: none; }
+        .section.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: #0f172a; color: white; font-size: 1rem; transition: 0.3s; }
-        input:focus { border-color: var(--accent); outline: none; background: #111e36; }
-
-        .btn-main { width: 100%; padding: 16px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-main:active { transform: scale(0.98); brightness: 0.9; }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
+        h3 { color: var(--accent); margin-top: 0; font-size: 1.1rem; display: flex; justify-content: space-between; }
+        
+        /* Inputs y Botones */
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; font-size: 0.9rem; }
+        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .btn-save { background: var(--success); color: white; }
-        .btn-accent { background: var(--accent); color: white; }
-        .btn-whatsapp { background: #25d366; color: white; margin-top: 15px; }
-
-        /* Tabla de Membresías */
+        .btn-edit { background: var(--accent); color: white; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; border: none; cursor: pointer; margin-right: 4px; }
+        .btn-del { background: var(--danger); color: white; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; border: none; cursor: pointer; }
+        .btn-fac { background: var(--gold); color: #000; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; border: none; cursor: pointer; }
+        
+        /* Tablas Responsive */
         .table-wrapper { overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #334155; padding: 12px; text-align: left; font-size: 0.8rem; }
-        td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; padding: 12px; font-size: 0.75rem; color: #94a3b8; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 
-        /* Factura Profesional */
-        #factura-preview { background: #fff; color: #1a1a1a; padding: 25px; border-radius: 12px; margin-top: 20px; display: none; border: 2px solid #ddd; }
-        .ticket-header { text-align: center; border-bottom: 2px dashed #ccc; margin-bottom: 15px; padding-bottom: 10px; }
-        .ticket-row { display: flex; justify-content: space-between; margin: 8px 0; font-family: monospace; }
-        .total-box { font-size: 1.4rem; font-weight: 900; text-align: center; border-top: 2px solid #1a1a1a; margin-top: 15px; padding-top: 10px; }
-
-        .footer-help { text-align: center; padding: 30px; color: #64748b; font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 20px; }
+        /* Factura */
+        #factura-preview { background: white; color: #000; padding: 20px; border-radius: 12px; margin-top: 15px; display: none; font-family: monospace; border: 2px solid #ddd; }
+        .t-center { text-align: center; border-bottom: 1px dashed #000; margin-bottom: 10px; padding-bottom: 10px; }
+        .t-total { font-size: 1.4rem; font-weight: bold; text-align: center; border-top: 2px solid #000; padding-top: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
-    <div class="card" style="width:350px; text-align:center; border: 2px solid var(--accent);">
-        <h1 style="color:var(--accent); margin-bottom:5px;">ANDVIP</h1>
-        <p style="margin-top:0; font-size:0.8rem; color:#94a3b8;">SISTEMA DE GESTIÓN PREMIUM</p>
-        <input type="email" id="email" placeholder="Usuario/Email">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()" class="btn-main btn-accent">INGRESAR AL SISTEMA</button>
-    </div>
-</div>
-
-<div id="app" style="display:none;">
+<div id="app">
     <div class="nav-bar">
-        <button id="nav-mem" class="nav-btn active" onclick="showTab('tab-membresias', this)">💳 MEMBRESÍAS</button>
-        <button id="nav-fac" class="nav-btn" onclick="showTab('tab-factura', this)">📄 FACTURAR</button>
-        <button id="nav-sto" class="nav-btn" onclick="showTab('tab-stock', this)">📦 STOCK</button>
-        <button onclick="logout()" style="background:var(--danger); color:white; padding:10px; border-radius:10px; border:none; font-weight:bold;">SALIR</button>
+        <button class="nav-btn active" onclick="showTab('tab-membresias', this)">💳 CLIENTES</button>
+        <button class="nav-btn" onclick="showTab('tab-stock', this)">📦 STOCK</button>
+        <button class="nav-btn" onclick="showTab('tab-factura', this)">📄 FACTURA</button>
+        <button class="nav-btn" onclick="showTab('tab-historial', this)">🕒 HISTORIAL</button>
     </div>
 
     <div class="container">
-        
         <div id="tab-membresias" class="section active">
             <div class="card">
-                <h3>Nueva Membresía VIP</h3>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input type="text" id="m-nombre" placeholder="Nombre Cliente">
-                    <input type="text" id="m-movil" placeholder="WhatsApp (Ej: 57300...)">
-                    <input type="date" id="m-inicio" title="Fecha Inicio">
-                    <input type="date" id="m-fin" title="Fecha Vencimiento">
-                </div>
+                <h3 id="form-title-cliente">Nuevo Cliente VIP</h3>
+                <input type="hidden" id="edit-id-cliente">
+                <input type="text" id="m-nombre" placeholder="Nombre Completo">
+                <input type="text" id="m-movil" placeholder="WhatsApp (Ej: 57300...)">
                 <input type="text" id="m-plan" placeholder="Servicio (Ej: Netflix 1 Perfil)">
-                <button onclick="guardarMembresia()" class="btn-main btn-save">✅ REGISTRAR Y ACTIVAR</button>
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1;"><small>Inicio:</small><input type="date" id="m-inicio"></div>
+                    <div style="flex:1;"><small>Vence:</small><input type="date" id="m-fin"></div>
+                </div>
+                <button id="btn-save-cliente" onclick="guardarCliente()" class="btn-main btn-save">GUARDAR CLIENTE</button>
             </div>
-
             <div class="card">
                 <h3>Membresías Activas</h3>
                 <div class="table-wrapper">
                     <table>
-                        <thead>
-                            <tr><th>CLIENTE</th><th>PLAN</th><th>VENCE</th><th>ESTADO</th></tr>
-                        </thead>
-                        <tbody id="lista-membresias"></tbody>
+                        <thead><tr><th>Nombre</th><th>Plan</th><th>Vence</th><th>Acciones</th></tr></thead>
+                        <tbody id="lista-clientes"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-stock" class="section">
+            <div class="card">
+                <h3 id="form-title-stock">Gestionar Plataformas</h3>
+                <input type="hidden" id="edit-id-stock">
+                <input type="text" id="st-nombre" placeholder="Nombre Plataforma (NETFLIX, IPTV, etc)">
+                <textarea id="st-datos" placeholder="Datos de acceso (User:Pass o Link)"></textarea>
+                <button id="btn-save-stock" onclick="guardarStock()" class="btn-main btn-save">GUARDAR EN STOCK</button>
+            </div>
+            <div class="card">
+                <h3>Inventario Disponible</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Plataforma</th><th>Datos</th><th>Acciones</th></tr></thead>
+                        <tbody id="lista-stock"></tbody>
                     </table>
                 </div>
             </div>
@@ -99,54 +101,44 @@
 
         <div id="tab-factura" class="section">
             <div class="card">
-                <h3>Generar Factura Profesional</h3>
-                <label>Seleccionar Cliente Activo:</label>
-                <select id="f-cliente-sel" onchange="autoCompletarPrecio()"></select>
+                <h3>Generar Factura</h3>
+                <input type="text" id="f-cliente-nombre" readonly placeholder="Selecciona 'Facturar' en Clientes" style="background:#1e293b; color: #94a3b8;">
+                <input type="hidden" id="f-cliente-movil">
+                <input type="hidden" id="f-cliente-plan">
+                <input type="hidden" id="f-cliente-validez">
                 <input type="number" id="f-precio" placeholder="Monto a cobrar ($)">
-                <button onclick="generarFactura()" class="btn-main btn-accent">📊 GENERAR VISTA PREVIA</button>
+                <button onclick="generarPreview()" class="btn-main btn-save" style="background:var(--accent);">VER VISTA PREVIA</button>
             </div>
-
             <div id="factura-preview">
-                <div id="factura-contenido">
-                    <div class="ticket-header">
-                        <h2 style="margin:0; letter-spacing: 2px;">ANDVIP</h2>
-                        <small>Premium Service & Streaming</small>
-                    </div>
-                    <div class="ticket-row"><span>FECHA:</span> <b id="fac-fecha"></b></div>
-                    <div class="ticket-row"><span>CLIENTE:</span> <b id="fac-cliente"></b></div>
-                    <div class="ticket-row"><span>TEL:</span> <b id="fac-tel"></b></div>
-                    <hr style="border: 1px dashed #ccc;">
-                    <div class="ticket-row"><span>SERVICIO:</span> <b id="fac-plan"></b></div>
-                    <div class="ticket-row"><span>PERIODO:</span> <small id="fac-validez"></small></div>
-                    <div class="total-box">TOTAL: $<span id="fac-total"></span></div>
-                    <p style="text-align:center; font-size:0.7rem; margin-top:15px; color:#666;">
-                        Este es un comprobante oficial de ANDVIP.<br>Soporte: andyobregon70@gmail.com
-                    </p>
+                <div class="t-center"><h2>ANDVIP</h2><small>Premium Service</small></div>
+                <div style="font-size: 0.8rem;">
+                    <p><b>FECHA:</b> <span id="fac-fecha"></span></p>
+                    <p><b>CLIENTE:</b> <span id="fac-nombre"></span></p>
+                    <p><b>PLAN:</b> <span id="fac-plan"></span></p>
+                    <p><b>VIGENCIA:</b> <span id="fac-periodo"></span></p>
                 </div>
-                <button onclick="enviarWhatsApp()" class="btn-main btn-whatsapp">📱 ENVIAR POR WHATSAPP</button>
+                <div class="t-total">TOTAL: $<span id="fac-monto"></span></div>
+                <button onclick="enviarWhatsApp()" class="btn-main" style="background:#25d366; color:white; margin-top:15px;">ENVIAR POR WHATSAPP</button>
             </div>
         </div>
 
-        <div id="tab-stock" class="section">
+        <div id="tab-historial" class="section">
             <div class="card">
-                <h3>Cargar Stock</h3>
-                <input type="text" id="st-nombre" placeholder="Nombre del Servicio">
-                <textarea id="st-datos" placeholder="Datos de la cuenta (User:Pass)"></textarea>
-                <button onclick="guardarStock()" class="btn-main btn-save">📦 GUARDAR EN STOCK</button>
+                <h3>Registro de Movimientos</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Fecha</th><th>Detalle</th><th>Acciones</th></tr></thead>
+                        <tbody id="lista-historial"></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-
-        <div class="footer-help">
-            Soporte Técnico y Ayuda: <b>andyobregon70@gmail.com</b><br>
-            Desarrollado para ANDVIP v2.0
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -158,123 +150,177 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let clientesGlobal = [];
-
-    // --- SESIÓN ---
-    window.login = async () => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Acceso Denegado"); }
-    };
-    window.logout = () => signOut(auth);
-
-    onAuthStateChanged(auth, user => {
-        if(user) {
-            document.getElementById('login-box').style.display='none';
-            document.getElementById('app').style.display='block';
-            cargarMembresias();
-        } else {
-            document.getElementById('login-box').style.display='flex';
-            document.getElementById('app').style.display='none';
-        }
+    // --- ESCUCHA EN TIEMPO REAL: CLIENTES ---
+    onSnapshot(query(collection(db, "membresias_vip"), orderBy("timestamp", "desc")), s => {
+        const tbody = document.getElementById('lista-clientes');
+        tbody.innerHTML = "";
+        s.forEach(d => {
+            const m = d.data();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><b>${m.nombre}</b></td>
+                <td>${m.plan}</td>
+                <td>${m.fin}</td>
+                <td>
+                    <button class="btn-fac" onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.inicio} al ${m.fin}')">📜</button>
+                    <button class="btn-edit" onclick="cargarEditarCliente('${d.id}','${m.nombre}','${m.movil}','${m.plan}','${m.inicio}','${m.fin}')">✏️</button>
+                    <button class="btn-del" onclick="eliminar('membresias_vip','${d.id}')">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
     });
 
-    // --- MEMBRESÍAS ---
-    window.guardarMembresia = async () => {
-        const btn = event.target;
-        btn.innerText = "GUARDANDO...";
+    // --- ESCUCHA EN TIEMPO REAL: STOCK ---
+    onSnapshot(query(collection(db, "inventario_vip"), orderBy("timestamp", "desc")), s => {
+        const tbody = document.getElementById('lista-stock');
+        tbody.innerHTML = "";
+        s.forEach(d => {
+            const st = d.data();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><b>${st.nombre}</b></td>
+                <td><small>${st.datos}</small></td>
+                <td>
+                    <button class="btn-edit" onclick="cargarEditarStock('${d.id}','${st.nombre}','${st.datos}')">✏️</button>
+                    <button class="btn-del" onclick="eliminar('inventario_vip','${d.id}')">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    });
+
+    // --- FUNCIONES CLIENTES ---
+    window.guardarCliente = async () => {
+        const id = document.getElementById('edit-id-cliente').value;
         const data = {
             nombre: document.getElementById('m-nombre').value,
             movil: document.getElementById('m-movil').value,
+            plan: document.getElementById('m-plan').value,
             inicio: document.getElementById('m-inicio').value,
             fin: document.getElementById('m-fin').value,
-            plan: document.getElementById('m-plan').value,
             timestamp: serverTimestamp()
         };
-        if(!data.nombre || !data.fin) { alert("Faltan datos"); btn.innerText = "✅ REGISTRAR Y ACTIVAR"; return; }
-        await addDoc(collection(db, "membresias_vip"), data);
-        alert("¡Membresía Guardada!");
-        btn.innerText = "✅ REGISTRAR Y ACTIVAR";
-        limpiarCampos();
+        if(!data.nombre) return alert("Nombre obligatorio");
+        
+        if(id) {
+            await updateDoc(doc(db, "membresias_vip", id), data);
+            document.getElementById('edit-id-cliente').value = "";
+            document.getElementById('form-title-cliente').innerText = "Nuevo Cliente VIP";
+        } else {
+            await addDoc(collection(db, "membresias_vip"), data);
+            await registrarHistorial(`Nuevo cliente: ${data.nombre}`);
+        }
+        limpiarCampos('tab-membresias');
     };
 
-    function cargarMembresias() {
-        onSnapshot(query(collection(db, "membresias_vip"), orderBy("fin", "asc")), s => {
-            const tbody = document.getElementById('lista-membresias');
-            const selectFac = document.getElementById('f-cliente-sel');
-            tbody.innerHTML = "";
-            selectFac.innerHTML = '<option value="">-- SELECCIONE UN CLIENTE --</option>';
-            clientesGlobal = [];
+    window.cargarEditarCliente = (id, nom, mov, plan, ini, fin) => {
+        document.getElementById('edit-id-cliente').value = id;
+        document.getElementById('m-nombre').value = nom;
+        document.getElementById('m-movil').value = mov;
+        document.getElementById('m-plan').value = plan;
+        document.getElementById('m-inicio').value = ini;
+        document.getElementById('m-fin').value = fin;
+        document.getElementById('form-title-cliente').innerText = "Editando Cliente...";
+        window.scrollTo(0,0);
+    };
 
-            s.forEach(d => {
-                const m = d.data(); m.id = d.id;
-                clientesGlobal.push(m);
-                const dias = Math.ceil((new Date(m.fin) - new Date()) / (86400000));
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${m.nombre}</b></td>
-                        <td>${m.plan}</td>
-                        <td>${m.fin}</td>
-                        <td><span style="color:${dias<3?'#ef4444':'#10b981'}; font-weight:bold;">${dias} días</span></td>
-                    </tr>`;
-                selectFac.innerHTML += `<option value="${m.id}">${m.nombre} - ${m.plan}</option>`;
-            });
-        });
+    // --- FUNCIONES STOCK ---
+    window.guardarStock = async () => {
+        const id = document.getElementById('edit-id-stock').value;
+        const data = {
+            nombre: document.getElementById('st-nombre').value,
+            datos: document.getElementById('st-datos').value,
+            timestamp: serverTimestamp()
+        };
+        if(!data.nombre) return alert("Nombre obligatorio");
+
+        if(id) {
+            await updateDoc(doc(db, "inventario_vip", id), data);
+            document.getElementById('edit-id-stock').value = "";
+            document.getElementById('form-title-stock').innerText = "Gestionar Plataformas";
+        } else {
+            await addDoc(collection(db, "inventario_vip"), data);
+        }
+        limpiarCampos('tab-stock');
+    };
+
+    window.cargarEditarStock = (id, nom, datos) => {
+        document.getElementById('edit-id-stock').value = id;
+        document.getElementById('st-nombre').value = nom;
+        document.getElementById('st-datos').value = datos;
+        document.getElementById('form-title-stock').innerText = "Editando Stock...";
+        window.scrollTo(0,0);
+    };
+
+    // --- FACTURACIÓN ---
+    window.prepararFactura = (nom, mov, plan, val) => {
+        document.getElementById('f-cliente-nombre').value = nom;
+        document.getElementById('f-cliente-movil').value = mov;
+        document.getElementById('f-cliente-plan').value = plan;
+        document.getElementById('f-cliente-validez').value = val;
+        showTab('tab-factura', document.querySelector('[onclick*="tab-factura"]'));
+    };
+
+    window.generarPreview = () => {
+        const p = document.getElementById('f-precio').value;
+        if(!p) return alert("Indica el precio");
+        document.getElementById('fac-fecha').innerText = new Date().toLocaleDateString();
+        document.getElementById('fac-nombre').innerText = document.getElementById('f-cliente-nombre').value;
+        document.getElementById('fac-plan').innerText = document.getElementById('f-cliente-plan').value;
+        document.getElementById('fac-periodo').innerText = document.getElementById('f-cliente-validez').value;
+        document.getElementById('fac-monto').innerText = p;
+        document.getElementById('factura-preview').style.display = 'block';
+    };
+
+    window.enviarWhatsApp = async () => {
+        const nom = document.getElementById('fac-nombre').innerText;
+        const mov = document.getElementById('f-cliente-movil').value;
+        const plan = document.getElementById('fac-plan').innerText;
+        const total = document.getElementById('fac-monto').innerText;
+        const text = `*FACTURA ANDVIP*%0A*Cliente:* ${nom}%0A*Plan:* ${plan}%0A*Total:* $${total}%0A_Servicio Activo._`;
+        window.open(`https://wa.me/${mov}?text=${text}`, '_blank');
+        await registrarHistorial(`Factura enviada a: ${nom} por $${total}`);
+    };
+
+    // --- UTILIDADES ---
+    window.eliminar = async (coll, id) => {
+        if(confirm("¿Seguro que quieres eliminar este registro?")) {
+            await deleteDoc(doc(db, coll, id));
+            await registrarHistorial(`Eliminado registro en ${coll}`);
+        }
+    };
+
+    async function registrarHistorial(msg) {
+        await addDoc(collection(db, "historial_vip"), { msg, timestamp: serverTimestamp() });
     }
 
-    // --- FACTURACIÓN Y WHATSAPP ---
-    window.generarFactura = () => {
-        const id = document.getElementById('f-cliente-sel').value;
-        const precio = document.getElementById('f-precio').value;
-        const cliente = clientesGlobal.find(c => c.id === id);
+    onSnapshot(query(collection(db, "historial_vip"), orderBy("timestamp", "desc")), s => {
+        const tbody = document.getElementById('lista-historial');
+        tbody.innerHTML = "";
+        s.forEach(d => {
+            const h = d.data();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><small>${h.timestamp?.toDate().toLocaleString() || '...'}</small></td>
+                <td>${h.msg}</td>
+                <td><button class="btn-del" onclick="eliminar('historial_vip','${d.id}')">X</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    });
 
-        if(!cliente || !precio) { alert("Seleccione cliente y precio"); return; }
-
-        document.getElementById('fac-fecha').innerText = new Date().toLocaleDateString();
-        document.getElementById('fac-cliente').innerText = cliente.nombre.toUpperCase();
-        document.getElementById('fac-tel').innerText = cliente.movil;
-        document.getElementById('fac-plan').innerText = cliente.plan.toUpperCase();
-        document.getElementById('fac-validez').innerText = `${cliente.inicio} al ${cliente.fin}`;
-        document.getElementById('fac-total').innerText = precio;
-        
-        document.getElementById('factura-preview').style.display = 'block';
-        window.scrollTo(0, document.body.scrollHeight);
-    };
-
-    window.enviarWhatsApp = () => {
-        const c = document.getElementById('fac-cliente').innerText;
-        const p = document.getElementById('fac-plan').innerText;
-        const v = document.getElementById('fac-validez').innerText;
-        const t = document.getElementById('fac-total').innerText;
-        const tel = document.getElementById('fac-tel').innerText;
-
-        const mensaje = `*FACTURA DE PAGO - ANDVIP*%0A` +
-                        `------------------------------%0A` +
-                        `*CLIENTE:* ${c}%0A` +
-                        `*SERVICIO:* ${p}%0A` +
-                        `*PERIODO:* ${v}%0A` +
-                        `*TOTAL PAGADO:* $${t}%0A` +
-                        `------------------------------%0A` +
-                        `¡Gracias por preferir *ANDVIP*! Su servicio ha sido activado correctamente.`;
-        
-        window.open(`https://wa.me/${tel}?text=${mensaje}`, '_blank');
-    };
-
-    // --- UI LOGIC ---
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
-        document.getElementById('factura-preview').style.display = 'none';
     };
 
-    function limpiarCampos() {
-        document.querySelectorAll('#tab-membresias input').forEach(i => i.value = "");
+    function limpiarCampos(id) {
+        document.querySelectorAll(`#${id} input, #${id} textarea`).forEach(i => i.value = "");
     }
 </script>
 </body>
