@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDVIP | Gestión Total Real-Time</title>
+    <title>ANDVIP | Sistema Profesional</title>
     <style>
         :root { 
             --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; 
@@ -12,44 +12,44 @@
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         
-        /* Navegación Responsive */
-        .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); gap: 5px; overflow-x: auto; scrollbar-width: none; align-items: center; }
+        /* Navegación */
+        .nav-bar { display: flex; background: var(--card); padding: 10px; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--accent); gap: 5px; overflow-x: auto; align-items: center; }
         .nav-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #94a3b8; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 0.75rem; white-space: nowrap; transition: 0.3s; }
-        .nav-btn.active { color: white; background: var(--accent); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
-        
-        /* Estilo para el botón Salir */
-        .btn-logout { background: var(--danger); color: white; padding: 10px 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.75rem; margin-left: 5px; transition: 0.2s; }
-        .btn-logout:active { transform: scale(0.9); opacity: 0.8; }
+        .nav-btn.active { color: white; background: var(--accent); }
+        .btn-logout { background: var(--danger); color: white; padding: 10px 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
 
         .container { padding: 15px; max-width: 1000px; margin: auto; }
         .section { display: none; }
-        .section.active { display: block; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section.active { display: block; }
         
         .card { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
-        h3 { color: var(--accent); margin-top: 0; font-size: 1.1rem; display: flex; justify-content: space-between; }
+        h3 { color: var(--accent); margin-top: 0; font-size: 1.1rem; }
         
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; }
         .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .btn-save { background: var(--success); color: white; }
-        .btn-edit { background: var(--accent); color: white; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; border: none; cursor: pointer; margin-right: 4px; }
-        .btn-del { background: var(--danger); color: white; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; border: none; cursor: pointer; }
-        .btn-fac { background: var(--gold); color: #000; padding: 5px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; border: none; cursor: pointer; }
         
+        /* Tablas */
         .table-wrapper { overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { text-align: left; padding: 12px; font-size: 0.75rem; color: #94a3b8; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        td, th { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; text-align: left; }
 
-        #factura-preview { background: white; color: #000; padding: 20px; border-radius: 12px; margin-top: 15px; display: none; font-family: monospace; border: 2px solid #ddd; }
-        .t-center { text-align: center; border-bottom: 1px dashed #000; margin-bottom: 10px; padding-bottom: 10px; }
-        .t-total { font-size: 1.4rem; font-weight: bold; text-align: center; border-top: 2px solid #000; padding-top: 10px; margin-top: 10px; }
+        /* FACTURA PROFESIONAL */
+        #factura-preview { background: white; color: #000; padding: 30px; border-radius: 4px; margin-top: 15px; display: none; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .fac-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+        .fac-header h1 { margin: 0; letter-spacing: 4px; }
+        .fac-body p { margin: 5px 0; font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .fac-total { font-size: 1.6rem; font-weight: bold; text-align: center; border-top: 2px dashed #000; padding-top: 10px; margin-top: 20px; }
+        .fac-footer { text-align: center; margin-top: 20px; font-size: 0.7rem; border-top: 1px solid #eee; padding-top: 10px; }
+        
+        /* Código de barras falso (visual) */
+        .barcode { width: 100%; height: 50px; background: repeating-linear-gradient(90deg, #000, #000 2px, #fff 2px, #fff 4px); margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
-    <div class="card" style="width:350px; text-align:center; border: 2px solid var(--accent);">
+    <div class="card" style="width:320px; text-align:center;">
         <h1 style="color:var(--accent);">ANDVIP</h1>
         <input type="email" id="email" placeholder="Usuario">
         <input type="password" id="password" placeholder="Clave">
@@ -69,42 +69,22 @@
     <div class="container">
         <div id="tab-membresias" class="section active">
             <div class="card">
-                <h3 id="form-title-cliente">Nuevo Cliente VIP</h3>
+                <h3 id="form-title-cliente">Nuevo Registro VIP</h3>
                 <input type="hidden" id="edit-id-cliente">
-                <input type="text" id="m-nombre" placeholder="Nombre Completo">
+                <input type="text" id="m-nombre" placeholder="Nombre del Cliente">
                 <input type="text" id="m-movil" placeholder="WhatsApp (Ej: 57300...)">
-                <input type="text" id="m-plan" placeholder="Servicio (Ej: Netflix 1 Perfil)">
+                <input type="text" id="m-plan" placeholder="Plan/Servicio">
                 <div style="display:flex; gap:10px;">
                     <div style="flex:1;"><small>Inicio:</small><input type="date" id="m-inicio"></div>
                     <div style="flex:1;"><small>Vence:</small><input type="date" id="m-fin"></div>
                 </div>
-                <button id="btn-save-cliente" onclick="guardarCliente()" class="btn-main btn-save">GUARDAR CLIENTE</button>
+                <button onclick="guardarCliente()" class="btn-main btn-save">ACTUALIZAR / GUARDAR</button>
             </div>
             <div class="card">
-                <h3>Membresías Activas</h3>
                 <div class="table-wrapper">
                     <table>
-                        <thead><tr><th>Nombre</th><th>Plan</th><th>Vence</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>Cliente</th><th>Vence</th><th>Acciones</th></tr></thead>
                         <tbody id="lista-clientes"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-stock" class="section">
-            <div class="card">
-                <h3 id="form-title-stock">Gestionar Plataformas</h3>
-                <input type="hidden" id="edit-id-stock">
-                <input type="text" id="st-nombre" placeholder="Nombre Plataforma">
-                <textarea id="st-datos" placeholder="Datos de acceso"></textarea>
-                <button id="btn-save-stock" onclick="guardarStock()" class="btn-main btn-save">GUARDAR EN STOCK</button>
-            </div>
-            <div class="card">
-                <h3>Inventario Disponible</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>Plataforma</th><th>Datos</th><th>Acciones</th></tr></thead>
-                        <tbody id="lista-stock"></tbody>
                     </table>
                 </div>
             </div>
@@ -112,38 +92,42 @@
 
         <div id="tab-factura" class="section">
             <div class="card">
-                <h3>Generar Factura</h3>
-                <input type="text" id="f-cliente-nombre" readonly placeholder="Seleccione 'Facturar' en Clientes" style="background:#1e293b;">
+                <h3>Emitir Factura Profesional</h3>
+                <input type="text" id="f-cliente-nombre" readonly placeholder="Selecciona '📜' en clientes" style="background:#1e293b;">
                 <input type="hidden" id="f-cliente-movil">
                 <input type="hidden" id="f-cliente-plan">
                 <input type="hidden" id="f-cliente-validez">
-                <input type="number" id="f-precio" placeholder="Monto a cobrar ($)">
-                <button onclick="generarPreview()" class="btn-main btn-save" style="background:var(--accent);">VER VISTA PREVIA</button>
+                <input type="number" id="f-precio" placeholder="Monto total ($)">
+                <button onclick="generarFacturaFinal()" class="btn-main btn-save" style="background:var(--accent);">GENERAR COMPROBANTE</button>
             </div>
+
             <div id="factura-preview">
-                <div class="t-center"><h2>ANDVIP</h2><small>Premium Service</small></div>
-                <div style="font-size: 0.8rem;">
-                    <p><b>FECHA:</b> <span id="fac-fecha"></span></p>
-                    <p><b>CLIENTE:</b> <span id="fac-nombre"></span></p>
-                    <p><b>PLAN:</b> <span id="fac-plan"></span></p>
-                    <p><b>VIGENCIA:</b> <span id="fac-periodo"></span></p>
+                <div class="fac-header">
+                    <h1>ANDVIP</h1>
+                    <small>SISTEMA DE PAGOS DIGITALES</small>
                 </div>
-                <div class="t-total">TOTAL: $<span id="fac-monto"></span></div>
-                <button onclick="enviarWhatsApp()" class="btn-main" style="background:#25d366; color:white; margin-top:15px;">ENVIAR POR WHATSAPP</button>
+                <div class="fac-body">
+                    <p><span>Nº FACTURA:</span> <b id="fac-num"></b></p>
+                    <p><span>EMITIDO:</span> <b id="fac-full-date"></b></p>
+                    <p><span>CLIENTE:</span> <b id="fac-nombre"></b></p>
+                    <p><span>TELÉFONO:</span> <b id="fac-tel"></b></p>
+                    <hr>
+                    <p><span>PRODUCTO:</span> <b id="fac-plan"></b></p>
+                    <p><span>VIGENCIA:</span> <b id="fac-periodo"></b></p>
+                </div>
+                <div class="fac-total">PAGADO: $<span id="fac-monto"></span></div>
+                <div class="barcode"></div>
+                <div class="fac-footer">
+                    <p>Cualquier duda o queja contáctenos a:</p>
+                    <b style="font-size: 0.9rem;">andyobregon70@gmail.com</b>
+                    <p style="margin-top:10px;">¡Gracias por tu preferencia!</p>
+                </div>
+                <button onclick="enviarFacturaWhatsApp()" class="btn-main" style="background:#25d366; color:white; margin-top:20px;">ENVIAR A WHATSAPP</button>
             </div>
         </div>
 
-        <div id="tab-historial" class="section">
-            <div class="card">
-                <h3>Registro de Movimientos</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>Fecha</th><th>Detalle</th><th>Acciones</th></tr></thead>
-                        <tbody id="lista-historial"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <div id="tab-stock" class="section">...</div>
+        <div id="tab-historial" class="section">...</div>
     </div>
 </div>
 
@@ -152,6 +136,7 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Tu Configuración (No cambiar)
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
         authDomain: "sistema-ventas-64a4c.firebaseapp.com",
@@ -165,123 +150,36 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- AUTENTICACIÓN ---
+    // LOGIN / LOGOUT
     window.login = async () => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Acceso denegado"); }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
+        catch(e) { alert("Clave incorrecta"); }
     };
     window.logout = () => signOut(auth);
 
     onAuthStateChanged(auth, user => {
-        if(user) {
-            document.getElementById('login-box').style.display='none';
-            document.getElementById('app').style.display='block';
-        } else {
-            document.getElementById('login-box').style.display='flex';
-            document.getElementById('app').style.display='none';
-        }
+        document.getElementById('login-box').style.display = user ? 'none' : 'flex';
+        document.getElementById('app').style.display = user ? 'block' : 'none';
     });
 
-    // --- REAL-TIME: CLIENTES ---
+    // REAL-TIME CLIENTES
     onSnapshot(query(collection(db, "membresias_vip"), orderBy("timestamp", "desc")), s => {
         const tbody = document.getElementById('lista-clientes');
         tbody.innerHTML = "";
         s.forEach(d => {
             const m = d.data();
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td><b>${m.nombre}</b></td><td>${m.plan}</td><td>${m.fin}</td>
+            tbody.innerHTML += `<tr>
+                <td><b>${m.nombre}</b><br><small>${m.plan}</small></td>
+                <td>${m.fin}</td>
                 <td>
-                    <button class="btn-fac" onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.inicio} al ${m.fin}')">📜</button>
-                    <button class="btn-edit" onclick="cargarEditarCliente('${d.id}','${m.nombre}','${m.movil}','${m.plan}','${m.inicio}','${m.fin}')">✏️</button>
-                    <button class="btn-del" onclick="eliminar('membresias_vip','${d.id}')">🗑️</button>
-                </td>`;
-            tbody.appendChild(tr);
+                    <button style="background:var(--gold); border:none; border-radius:4px; cursor:pointer;" onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.inicio} al ${m.fin}')">📜</button>
+                    <button style="background:var(--danger); border:none; border-radius:4px; color:white; cursor:pointer;" onclick="eliminar('membresias_vip','${d.id}')">🗑️</button>
+                </td>
+            </tr>`;
         });
     });
 
-    // --- REAL-TIME: STOCK ---
-    onSnapshot(query(collection(db, "inventario_vip"), orderBy("timestamp", "desc")), s => {
-        const tbody = document.getElementById('lista-stock');
-        tbody.innerHTML = "";
-        s.forEach(d => {
-            const st = d.data();
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td><b>${st.nombre}</b></td><td><small>${st.datos}</small></td>
-                <td>
-                    <button class="btn-edit" onclick="cargarEditarStock('${d.id}','${st.nombre}','${st.datos}')">✏️</button>
-                    <button class="btn-del" onclick="eliminar('inventario_vip','${d.id}')">🗑️</button>
-                </td>`;
-            tbody.appendChild(tr);
-        });
-    });
-
-    // --- REAL-TIME: HISTORIAL ---
-    onSnapshot(query(collection(db, "historial_vip"), orderBy("timestamp", "desc")), s => {
-        const tbody = document.getElementById('lista-historial');
-        tbody.innerHTML = "";
-        s.forEach(d => {
-            const h = d.data();
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td><small>${h.timestamp?.toDate().toLocaleString() || '...'}</small></td>
-                <td>${h.msg}</td><td><button class="btn-del" onclick="eliminar('historial_vip','${d.id}')">X</button></td>`;
-            tbody.appendChild(tr);
-        });
-    });
-
-    // --- ACCIONES ---
-    window.guardarCliente = async () => {
-        const id = document.getElementById('edit-id-cliente').value;
-        const data = {
-            nombre: document.getElementById('m-nombre').value,
-            movil: document.getElementById('m-movil').value,
-            plan: document.getElementById('m-plan').value,
-            inicio: document.getElementById('m-inicio').value,
-            fin: document.getElementById('m-fin').value,
-            timestamp: serverTimestamp()
-        };
-        if(!data.nombre) return alert("Nombre obligatorio");
-        if(id) await updateDoc(doc(db, "membresias_vip", id), data);
-        else {
-            await addDoc(collection(db, "membresias_vip"), data);
-            await registrarHistorial(`Cliente registrado: ${data.nombre}`);
-        }
-        limpiar('tab-membresias');
-        document.getElementById('edit-id-cliente').value = "";
-        document.getElementById('form-title-cliente').innerText = "Nuevo Cliente VIP";
-    };
-
-    window.cargarEditarCliente = (id, nom, mov, plan, ini, fin) => {
-        document.getElementById('edit-id-cliente').value = id;
-        document.getElementById('m-nombre').value = nom;
-        document.getElementById('m-movil').value = mov;
-        document.getElementById('m-plan').value = plan;
-        document.getElementById('m-inicio').value = ini;
-        document.getElementById('m-fin').value = fin;
-        document.getElementById('form-title-cliente').innerText = "Editando Cliente...";
-    };
-
-    window.guardarStock = async () => {
-        const id = document.getElementById('edit-id-stock').value;
-        const data = {
-            nombre: document.getElementById('st-nombre').value,
-            datos: document.getElementById('st-datos').value,
-            timestamp: serverTimestamp()
-        };
-        if(id) await updateDoc(doc(db, "inventario_vip", id), data);
-        else await addDoc(collection(db, "inventario_vip"), data);
-        limpiar('tab-stock');
-        document.getElementById('edit-id-stock').value = "";
-        document.getElementById('form-title-stock').innerText = "Gestionar Plataformas";
-    };
-
-    window.cargarEditarStock = (id, nom, datos) => {
-        document.getElementById('edit-id-stock').value = id;
-        document.getElementById('st-nombre').value = nom;
-        document.getElementById('st-datos').value = datos;
-        document.getElementById('form-title-stock').innerText = "Editando Stock...";
-    };
-
+    // LÓGICA DE FACTURA PROFESIONAL
     window.prepararFactura = (nom, mov, plan, val) => {
         document.getElementById('f-cliente-nombre').value = nom;
         document.getElementById('f-cliente-movil').value = mov;
@@ -290,43 +188,50 @@
         showTab('tab-factura', document.querySelector('[onclick*="tab-factura"]'));
     };
 
-    window.generarPreview = () => {
+    window.generarFacturaFinal = () => {
         const p = document.getElementById('f-precio').value;
-        if(!p) return alert("Indica el precio");
-        document.getElementById('fac-fecha').innerText = new Date().toLocaleDateString();
-        document.getElementById('fac-nombre').innerText = document.getElementById('f-cliente-nombre').value;
+        if(!p) return alert("Ingresa el monto");
+
+        const ahora = new Date();
+        document.getElementById('fac-num').innerText = Math.floor(Math.random() * 90000) + 10000;
+        document.getElementById('fac-full-date').innerText = ahora.toLocaleDateString() + " | " + ahora.toLocaleTimeString();
+        document.getElementById('fac-nombre').innerText = document.getElementById('f-cliente-nombre').value.toUpperCase();
+        document.getElementById('fac-tel').innerText = document.getElementById('f-cliente-movil').value;
         document.getElementById('fac-plan').innerText = document.getElementById('f-cliente-plan').value;
         document.getElementById('fac-periodo').innerText = document.getElementById('f-cliente-validez').value;
         document.getElementById('fac-monto').innerText = p;
+
         document.getElementById('factura-preview').style.display = 'block';
     };
 
-    window.enviarWhatsApp = async () => {
+    window.enviarFacturaWhatsApp = async () => {
         const nom = document.getElementById('fac-nombre').innerText;
-        const mov = document.getElementById('f-cliente-movil').value;
+        const mov = document.getElementById('fac-tel').innerText;
         const total = document.getElementById('fac-monto').innerText;
-        const text = `*FACTURA ANDVIP*%0A*Cliente:* ${nom}%0A*Monto:* $${total}%0A_Activo._`;
+        const date = document.getElementById('fac-full-date').innerText;
+        
+        const text = `*📄 RECIBO OFICIAL ANDVIP*%0A` +
+                     `*EMISIÓN:* ${date}%0A` +
+                     `--------------------------%0A` +
+                     `*CLIENTE:* ${nom}%0A` +
+                     `*TOTAL:* $${total}%0A` +
+                     `--------------------------%0A` +
+                     `_Dudas o quejas:_ andyobregon70@gmail.com%0A` +
+                     `¡Gracias por tu confianza!`;
+        
         window.open(`https://wa.me/${mov}?text=${text}`, '_blank');
-        await registrarHistorial(`Factura enviada a ${nom}`);
+        await addDoc(collection(db, "historial_vip"), { msg: `Factura enviada a ${nom} por $${total}`, timestamp: serverTimestamp() });
     };
-
-    window.eliminar = async (c, id) => {
-        if(confirm("¿Eliminar registro?")) {
-            await deleteDoc(doc(db, c, id));
-            await registrarHistorial(`Registro eliminado de ${c}`);
-        }
-    };
-
-    async function registrarHistorial(msg) { await addDoc(collection(db, "historial_vip"), { msg, timestamp: serverTimestamp() }); }
 
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
+        document.getElementById('factura-preview').style.display = 'none';
     };
 
-    function limpiar(id) { document.querySelectorAll(`#${id} input, #${id} textarea`).forEach(i => i.value = ""); }
+    window.eliminar = async (c, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, c, id)); };
 </script>
 </body>
 </html>
