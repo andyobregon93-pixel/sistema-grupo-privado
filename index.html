@@ -3,171 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDVIP | Admin Panel Pro</title>
+    <title>ANDY RIFAS | Sorteos Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --bg: #0a0f1e; --card: #161e31; --accent: #2563eb; 
-            --danger: #ef4444; --success: #10b981; --text: #f1f5f9; 
-            --border: #2d3748; --gold: #f59e0b; --purple: #8b5cf6;
+            --bg: #0f172a; --card: #1e293b; --accent: #f59e0b; 
+            --danger: #ef4444; --success: #22c55e; --text: #f8fafc; 
+            --border: #334155; --wa: #25d366;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
         
-        /* Navegación */
         .nav-bar { 
             display: flex; background: var(--card); padding: 10px; 
             position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent);
-            justify-content: space-around; flex-wrap: wrap;
+            justify-content: space-around;
         }
         .nav-btn { 
-            padding: 10px 12px; border: none; background: transparent; 
-            color: #64748b; font-weight: 600; cursor: pointer; transition: 0.3s;
-            border-radius: 8px; font-size: 0.8rem;
+            padding: 10px; border: none; background: transparent; 
+            color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 0.8rem;
         }
         .nav-btn.active { color: white; background: var(--accent); }
 
-        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; animation: fadeIn 0.3s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Tarjetas y UI */
-        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input, select, textarea { 
+        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        
+        input, select { 
             width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; 
             border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; 
         }
-        textarea { height: 150px; resize: none; font-family: inherit; }
         
         .btn-main { 
             width: 100%; padding: 15px; border: none; border-radius: 8px; 
-            font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 10px;
+            font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 10px; text-transform: uppercase;
         }
         .btn-save { background: var(--success); color: white; }
-        .btn-purple { background: var(--purple); color: white; }
+        .btn-wa { background: var(--wa); color: white; }
+        .btn-draw { background: var(--accent); color: #000; font-size: 1.2rem; }
 
-        .client-item { 
+        .participant-item { 
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px; border-bottom: 1px solid var(--border); 
+            padding: 15px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);
+            margin-bottom: 5px; border-radius: 8px;
         }
-        .client-info b { color: var(--gold); font-size: 1.1rem; }
-        .actions button { margin-left: 5px; padding: 8px; border-radius: 5px; border: none; cursor: pointer; }
-
-        /* DISEÑO RECIBO PDF */
-        #factura-render { 
-            width: 350px; background: white; color: #000; padding: 30px; 
-            position: absolute; left: -9999px; font-family: 'Courier New', monospace;
-        }
-        .watermark { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 40px; color: rgba(0,0,0,0.05); font-weight: bold; white-space: nowrap; pointer-events: none;
+        .ticket-badge { background: var(--accent); color: black; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+        .status-paid { color: var(--success); font-size: 0.7rem; font-weight: bold; }
+        
+        /* Modal Ganador */
+        #winner-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
-    <div class="card" style="width:320px; text-align:center; border: 2px solid var(--accent);">
-        <h1 style="color:var(--accent); margin:0;">ANDY VIP</h1>
-        <p style="font-size:0.8rem; color:#64748b;">SYSTEM ADMIN V2.0</p>
+    <div class="card" style="width:320px; text-align:center;">
+        <h1 style="color:var(--accent); margin:0;">ANDY RIFAS</h1>
+        <p style="font-size:0.8rem; color:#94a3b8;">SORTEOS & PREMIOS</p>
         <input type="email" id="email" placeholder="Usuario">
         <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()" class="btn-main btn-save">ACCEDER AL PANEL</button>
+        <button onclick="login()" class="btn-main btn-save">ENTRAR AL SISTEMA</button>
     </div>
 </div>
 
 <div id="app" style="display:none;">
     <div class="nav-bar">
-        <button class="nav-btn active" onclick="showTab('tab-membresias', this)">👥 CLIENTES</button>
-        <button class="nav-btn" onclick="showTab('tab-factura', this)">🧾 FACTURAR</button>
-        <button class="nav-btn" onclick="showTab('tab-config-pagos', this)">💳 PAGOS</button>
-        <button class="nav-btn" onclick="showTab('tab-historial', this)">📜 LOGS</button>
-        <button onclick="logout()" style="background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;">SALIR</button>
+        <button class="nav-btn active" onclick="showTab('tab-registro', this)">🎟️ BOLETOS</button>
+        <button class="nav-btn" onclick="showTab('tab-sorteo', this)">🏆 SORTEAR</button>
+        <button class="nav-btn" onclick="showTab('tab-config', this)">⚙️ AJUSTES</button>
+        <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer;">X</button>
     </div>
 
     <div class="container">
-        <div id="tab-membresias" class="section active">
+        <div id="tab-registro" class="section active">
             <div class="card">
-                <h3 id="form-title" style="margin-top:0;">📝 Registro de Miembro</h3>
-                <input type="hidden" id="edit-id">
-                <input type="text" id="m-nombre" placeholder="Nombre Completo">
-                <div class="grid-inputs">
-                    <input type="text" id="m-movil" placeholder="WhatsApp (Ej: 521...)">
-                    <input type="text" id="m-plan" placeholder="Nombre del Plan">
+                <h3>🎟️ Registrar Participante</h3>
+                <input type="text" id="p-nombre" placeholder="Nombre del Cliente">
+                <input type="text" id="p-whatsapp" placeholder="WhatsApp (Ej: 573...)">
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="p-cupo" placeholder="N° Boleto">
+                    <select id="p-estado">
+                        <option value="Pendiente">⏳ Pendiente</option>
+                        <option value="Pagado">✅ Pagado</option>
+                    </select>
                 </div>
-                <div class="grid-inputs">
-                    <div><small>Fecha Inicio</small><input type="date" id="m-inicio"></div>
-                    <div><small>Fecha Vence</small><input type="date" id="m-fin"></div>
-                </div>
-                <button onclick="guardarCliente()" id="btn-submit" class="btn-main btn-save">GUARDAR MIEMBRO</button>
+                <button onclick="registrarBoleto()" class="btn-main btn-save">RESERVAR CUPO</button>
             </div>
             
-            <div class="card" style="padding:0;"><div id="lista-clientes"></div></div>
+            <div id="lista-participantes"></div>
         </div>
 
-        <div id="tab-factura" class="section">
-            <div class="card">
-                <h3>💎 Generar Recibo de Pago</h3>
-                <p>Cliente seleccionado: <b id="f-display-nom" style="color:var(--accent);">Ninguno</b></p>
-                <input type="number" id="f-precio" placeholder="Monto Total ($)">
-                <button onclick="generarPDF()" class="btn-main" style="background:var(--accent); color:white;">GENERAR PDF Y ENVIAR</button>
-                
-                <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
-                    <p style="text-align:center; color:#64748b; font-size:0.8rem;">¿Solo quieres enviar tus datos de pago?</p>
-                    <button onclick="enviarMisMetodos()" class="btn-main btn-purple">🚀 MANDAR MÉTODOS DE PAGO</button>
-                </div>
+        <div id="tab-sorteo" class="section">
+            <div class="card" style="text-align: center;">
+                <h2 style="color:var(--accent);">MODO SORTEO</h2>
+                <p>Solo participan los números marcados como <b>PAGADOS</b>.</p>
+                <div id="contador-pagados" style="font-size: 2rem; font-weight: 900; margin: 20px 0;">0</div>
+                <button onclick="iniciarSorteo()" class="btn-main btn-draw">🔥 ¡GIRAR RULETA!</button>
             </div>
         </div>
 
-        <div id="tab-config-pagos" class="section">
+        <div id="tab-config" class="section">
             <div class="card">
-                <h3>💳 Configurar mis Métodos de Pago</h3>
-                <p style="font-size:0.8rem; color:#64748b;">Escribe aquí tus cuentas (Nequi, PayPal, Zelle, etc.). Esto es lo que se enviará al cliente con un solo clic.</p>
-                <textarea id="txt-mis-metodos" placeholder="Ejemplo:
-💰 MIS MÉTODOS DE PAGO:
------------------------
-🏦 NEQUI: 123456789
-💳 BANCO: 000-111-222
-👤 TITULAR: Andy VIP"></textarea>
-                <button onclick="guardarConfigPagos()" class="btn-main btn-save">GUARDAR MÉTODOS</button>
-            </div>
-        </div>
-
-        <div id="tab-historial" class="section">
-            <div class="card">
-                <h3>🕒 Registro de Actividad</h3>
-                <div id="historial-list"></div>
+                <h3>📢 Mensaje Personalizado Ganador</h3>
+                <textarea id="msg-ganador" style="width:100%; height:100px; background:#0f172a; color:white; border-radius:8px; padding:10px;">¡FELICIDADES! 🎉 Eres el ganador de nuestra rifa. Gracias por participar con ANDY RIFAS. 🏆</textarea>
             </div>
         </div>
     </div>
 </div>
 
-<div id="factura-render">
-    <div class="watermark">MEMBER ANDY VIP</div>
-    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">
-        <h2 style="margin:0;">ANDY VIP</h2>
-        <small>Servicios Premium de Entretenimiento</small>
-    </div>
-    <div style="margin-top:20px; font-size: 0.9rem;">
-        <p><b>FECHA:</b> <span id="p-fecha"></span></p>
-        <p><b>FOLIO:</b> #<span id="p-folio"></span></p>
-        <div style="border-top: 1px dashed #000; margin: 10px 0;"></div>
-        <p><b>CLIENTE:</b> <span id="p-nom"></span></p>
-        <p><b>PLAN:</b> <span id="p-plan"></span></p>
-        <p><b>VENCE:</b> <span id="p-vence"></span></p>
-        <div style="border-top: 1px dashed #000; margin: 10px 0;"></div>
-        <h3 style="text-align:right;">TOTAL PAGADO: $<span id="p-total"></span></h3>
-    </div>
+<div id="winner-overlay">
+    <h1 style="color:var(--accent); font-size: 3rem;">¡GANADOR!</h1>
+    <div id="winner-info" style="font-size: 2rem; margin: 20px;"></div>
+    <button id="btn-wa-ganador" class="btn-main btn-wa" style="width: 250px;">NOTIFICAR POR WA</button>
+    <button onclick="cerrarGanador()" style="margin-top:20px; background:none; border:none; color:white; text-decoration:underline; cursor:pointer;">Cerrar</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -182,32 +144,11 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- CARGAR MÉTODOS GUARDADOS ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const saved = localStorage.getItem('andy_vip_metodos');
-        if(saved) document.getElementById('txt-mis-metodos').value = saved;
-    });
-
-    window.guardarConfigPagos = () => {
-        const val = document.getElementById('txt-mis-metodos').value;
-        localStorage.setItem('andy_vip_metodos', val);
-        alert("Métodos de pago actualizados correctamente.");
-    };
-
-    window.enviarMisMetodos = () => {
-        if(!clienteActivo.tel) return alert("Por favor, selecciona un cliente primero.");
-        const metodos = localStorage.getItem('andy_vip_metodos');
-        if(!metodos) return alert("Primero escribe tus métodos en la pestaña de PAGOS.");
-        
-        const url = `https://wa.me/${clienteActivo.tel}?text=${encodeURIComponent(metodos)}`;
-        window.open(url, '_blank');
-    };
-
-    // --- LÓGICA CORE ---
+    // --- AUTENTICACIÓN ---
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error de acceso"); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Acceso denegado"); }
     };
     window.logout = () => signOut(auth);
     onAuthStateChanged(auth, u => {
@@ -215,79 +156,93 @@
         document.getElementById('app').style.display = u ? 'block' : 'none';
     });
 
-    window.guardarCliente = async () => {
-        const id = document.getElementById('edit-id').value;
+    // --- GESTIÓN DE RIFAS ---
+    window.registrarBoleto = async () => {
         const d = {
-            nombre: document.getElementById('m-nombre').value,
-            movil: document.getElementById('m-movil').value,
-            plan: document.getElementById('m-plan').value,
-            inicio: document.getElementById('m-inicio').value,
-            fin: document.getElementById('m-fin').value,
+            nombre: document.getElementById('p-nombre').value,
+            wa: document.getElementById('p-whatsapp').value,
+            cupo: document.getElementById('p-cupo').value,
+            estado: document.getElementById('p-estado').value,
             timestamp: serverTimestamp()
         };
-        try {
-            if(id) await updateDoc(doc(db, "membresias_vip", id), d);
-            else await addDoc(collection(db, "membresias_vip"), d);
-            limpiarForm();
-        } catch(e) { alert("Error al guardar"); }
+        if(!d.nombre || !d.cupo) return alert("Llena los campos");
+        await addDoc(collection(db, "rifa_activa"), d);
+        document.getElementById('p-nombre').value = "";
+        document.getElementById('p-cupo').value = "";
     };
 
-    function limpiarForm() {
-        document.getElementById('edit-id').value = "";
-        document.getElementById('m-nombre').value = "";
-        document.getElementById('m-movil').value = "";
-        document.getElementById('form-title').innerText = "📝 Registro de Miembro";
-    }
+    let participantesPagados = [];
 
-    onSnapshot(query(collection(db, "membresias_vip"), orderBy("timestamp", "desc")), s => {
-        const lista = document.getElementById('lista-clientes');
+    onSnapshot(query(collection(db, "rifa_activa"), orderBy("timestamp", "desc")), s => {
+        const lista = document.getElementById('lista-participantes');
         lista.innerHTML = "";
+        participantesPagados = [];
+        let contador = 0;
+
         s.forEach(docSnap => {
-            const m = docSnap.data();
+            const p = docSnap.data();
+            if(p.estado === 'Pagado') {
+                participantesPagados.push({id: docSnap.id, ...p});
+                contador++;
+            }
+            
             const div = document.createElement('div');
-            div.className = 'client-item';
+            div.className = 'participant-item';
             div.innerHTML = `
-                <div class="client-info"><b>${m.nombre}</b><br><small>${m.plan} | Vence: ${m.fin}</small></div>
+                <div>
+                    <span class="ticket-badge">#${p.cupo}</span> <b>${p.nombre}</b><br>
+                    <span class="${p.estado === 'Pagado' ? 'status-paid' : ''}">${p.estado}</span>
+                </div>
                 <div class="actions">
-                    <button onclick="prepararFactura('${m.nombre}','${m.movil}','${m.plan}','${m.fin}')" style="background:var(--accent); color:white;">🧾</button>
-                    <button onclick="eliminarCliente('${docSnap.id}')" style="background:var(--danger); color:white;">🗑️</button>
+                    <button onclick="confirmarPago('${docSnap.id}')" style="background:var(--success); border:none; padding:5px; border-radius:4px; cursor:pointer;">✅</button>
+                    <button onclick="eliminar('${docSnap.id}')" style="background:var(--danger); border:none; padding:5px; border-radius:4px; cursor:pointer;">🗑️</button>
                 </div>`;
             lista.appendChild(div);
         });
+        document.getElementById('contador-pagados').innerText = contador;
     });
 
-    let clienteActivo = {};
-    window.prepararFactura = (n, t, p, v) => {
-        clienteActivo = { nombre: n, tel: t, plan: p, vence: v };
-        document.getElementById('f-display-nom').innerText = n;
-        showTab('tab-factura');
+    window.confirmarPago = async (id) => {
+        await updateDoc(doc(db, "rifa_activa", id), { estado: "Pagado" });
     };
 
-    window.generarPDF = async () => {
-        const precio = document.getElementById('f-precio').value;
-        if(!precio) return alert("Ingresa el monto");
+    window.eliminar = async (id) => { if(confirm("¿Eliminar registro?")) await deleteDoc(doc(db, "rifa_activa", id)); };
 
-        document.getElementById('p-nom').innerText = clienteActivo.nombre;
-        document.getElementById('p-plan').innerText = clienteActivo.plan;
-        document.getElementById('p-vence').innerText = clienteActivo.vence;
-        document.getElementById('p-total').innerText = precio;
-        document.getElementById('p-fecha').innerText = new Date().toLocaleDateString();
-        document.getElementById('p-folio').innerText = Math.floor(1000 + Math.random() * 9000);
-
-        const canvas = await html2canvas(document.getElementById('factura-render'), { scale: 2 });
-        const img = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ unit: 'mm', format: [80, 160] });
-        pdf.addImage(img, 'PNG', 0, 0, 80, 0);
-        pdf.save(`Recibo_${clienteActivo.nombre}.pdf`);
-
-        const msg = `*💎 PAGO CONFIRMADO - ANDY VIP*%0AHola *${clienteActivo.nombre}*, hemos recibido tu pago de $${precio}.%0A📅 Vence: ${clienteActivo.vence}%0AGracias por tu preferencia.`;
-        window.open(`https://wa.me/${clienteActivo.tel}?text=${msg}`, '_blank');
+    // --- LÓGICA DEL SORTEO ---
+    window.iniciarSorteo = () => {
+        if(participantesPagados.length === 0) return alert("No hay participantes con boletos pagados.");
         
-        await addDoc(collection(db, "historial_vip"), { detalle: `Pago de ${clienteActivo.nombre} por $${precio}`, timestamp: serverTimestamp() });
+        let count = 0;
+        const interval = setInterval(() => {
+            const randomPick = participantesPagados[Math.floor(Math.random() * participantesPagados.length)];
+            document.getElementById('contador-pagados').innerText = `#${randomPick.cupo}`;
+            count++;
+            if(count > 20) {
+                clearInterval(interval);
+                mostrarGanador(randomPick);
+            }
+        }, 100);
     };
 
-    window.eliminarCliente = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "membresias_vip", id)); };
+    function mostrarGanador(ganador) {
+        const overlay = document.getElementById('winner-overlay');
+        const info = document.getElementById('winner-info');
+        const btnWa = document.getElementById('btn-wa-ganador');
+        const msgCustom = document.getElementById('msg-ganador').value;
+
+        info.innerHTML = `<span style="font-size:4rem;">#${ganador.cupo}</span><br>${ganador.nombre}`;
+        overlay.style.display = 'flex';
+
+        btnWa.onclick = () => {
+            const text = encodeURIComponent(`*${msgCustom}*\n\n👤 Ganador: ${ganador.nombre}\n🎟️ Boleto: #${ganador.cupo}`);
+            window.open(`https://wa.me/${ganador.wa}?text=${text}`, '_blank');
+        };
+    }
+
+    window.cerrarGanador = () => {
+        document.getElementById('winner-overlay').style.display = 'none';
+        document.getElementById('contador-pagados').innerText = participantesPagados.length;
+    };
 
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -295,17 +250,6 @@
         document.getElementById(id).classList.add('active');
         if(btn) btn.classList.add('active');
     };
-
-    onSnapshot(query(collection(db, "historial_vip"), orderBy("timestamp", "desc")), s => {
-        const hList = document.getElementById('historial-list');
-        hList.innerHTML = "";
-        s.forEach(d => {
-            const h = d.data();
-            hList.innerHTML += `<div style="font-size:0.8rem; padding:8px; border-bottom:1px solid #2d3748;">
-                <span style="color:var(--accent)">[${h.timestamp?.toDate().toLocaleString() || '...'}]</span> ${h.detalle}
-            </div>`;
-        });
-    });
 </script>
 
 </body>
