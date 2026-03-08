@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDY VIP | Admin Pro Staff & Sales</title>
+    <title>ANDY VIP | Admin Master Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -43,7 +43,8 @@
         
         .btn-main { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 5px; }
         .btn-save { background: var(--success); color: white; }
-        .btn-delete { background: var(--danger); color: white; padding: 5px 10px; border-radius: 5px; }
+        .btn-edit { background: var(--gold); color: black; padding: 5px 8px; border-radius: 5px; border:none; font-size: 0.7rem; cursor:pointer;}
+        .btn-delete { background: var(--danger); color: white; padding: 5px 8px; border-radius: 5px; border:none; cursor:pointer;}
         
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
@@ -53,7 +54,6 @@
         .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
         .bg-money { background: #064e3b; color: #34d399; }
 
-        /* Estilo Recibo */
         #factura-render { 
             width: 350px; background: white; color: #000; padding: 30px; 
             position: absolute; left: -9999px; font-family: 'Courier New', monospace;
@@ -65,64 +65,73 @@
 <div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
     <div class="card" style="width:320px; text-align:center; border: 2px solid var(--accent);">
         <h1 style="color:var(--accent); margin:0;">ANDY VIP</h1>
-        <p style="font-size:0.8rem; color:#64748b;">STAFF & CLIENT MANAGEMENT</p>
-        <input type="email" id="email" placeholder="Admin Email">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="login()" class="btn-main btn-save">ENTRAR</button>
+        <p style="font-size:0.8rem; color:#64748b;">MASTER ADMIN PANEL</p>
+        <input type="email" id="email" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()" class="btn-main btn-save">INGRESAR</button>
     </div>
 </div>
 
 <div id="app" style="display:none;">
     <div class="nav-bar">
-        <button class="nav-btn active" onclick="showTab('tab-staff', this)">👷 PERSONAL</button>
-        <button class="nav-btn" onclick="showTab('tab-deudores', this)">💸 DEUDORES</button>
+        <button class="nav-btn active" onclick="showTab('tab-staff', this)">👷 STAFF</button>
         <button class="nav-btn" onclick="showTab('tab-clientes', this)">👥 CLIENTES</button>
-        <button class="nav-btn" onclick="showTab('tab-logs', this)">📜 HISTORIAL</button>
-        <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer;">SALIR</button>
+        <button class="nav-btn" onclick="showTab('tab-deudores', this)">💸 DEUDORES</button>
+        <button class="nav-btn" onclick="showTab('tab-logs', this)">📜 LOGS</button>
+        <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">SALIR</button>
     </div>
 
     <div class="container">
         
         <div id="tab-staff" class="section active">
             <div class="card">
-                <h3>👷 Gestión de Personal</h3>
+                <h3 id="staff-form-title">👷 Registrar Personal</h3>
                 <input type="hidden" id="s-id">
-                <input type="text" id="s-nombre" placeholder="Nombre del Trabajador">
+                <input type="text" id="s-nombre" placeholder="Nombre completo">
                 <input type="text" id="s-movil" placeholder="WhatsApp (Ej: 521...)">
-                <textarea id="s-pago" placeholder="Métodos de Pago de este trabajador (Cuentas, Banco, etc.)"></textarea>
+                <textarea id="s-pago" placeholder="Métodos de pago (Ej: Nequi 123..., Banco X, PayPal...)"></textarea>
                 <div class="grid-inputs">
-                    <div><small>Fecha de Pago</small><input type="date" id="s-fecha"></div>
-                    <div><small>Sueldo/Comisión</small><input type="number" id="s-monto" placeholder="$0.00"></div>
+                    <div><small>Próximo Pago</small><input type="date" id="s-fecha"></div>
+                    <div><small>Sueldo/Corte</small><input type="number" id="s-monto" placeholder="$0.00"></div>
                 </div>
-                <button onclick="guardarStaff()" class="btn-main btn-save">GUARDAR TRABAJADOR</button>
+                <button onclick="guardarStaff()" id="btn-staff-save" class="btn-main btn-save">GUARDAR TRABAJADOR</button>
+                <button onclick="resetStaff()" id="btn-staff-cancel" style="display:none;" class="btn-main">CANCELAR</button>
             </div>
             <div id="lista-staff"></div>
         </div>
 
+        <div id="tab-clientes" class="section">
+            <div class="card">
+                <h3>👥 Gestión de Clientes</h3>
+                <input type="hidden" id="c-id">
+                <input type="text" id="c-nombre" placeholder="Nombre del Cliente">
+                <input type="text" id="c-movil" placeholder="WhatsApp">
+                <div class="grid-inputs">
+                    <div><small>Fecha Renovación</small><input type="date" id="c-fecha"></div>
+                    <input type="text" id="c-plan" placeholder="Plan (Ej: VIP 1 Mes)">
+                </div>
+                <button onclick="guardarCliente()" class="btn-main btn-save">REGISTRAR CLIENTE</button>
+            </div>
+            <div id="lista-clientes-full"></div>
+        </div>
+
         <div id="tab-deudores" class="section">
             <div class="card">
-                <h3>💸 Clientes con Deuda</h3>
-                <input type="text" id="d-nombre" placeholder="Nombre del Cliente">
+                <h3>💸 Control de Deudores</h3>
+                <input type="text" id="d-nombre" placeholder="Nombre">
                 <input type="text" id="d-movil" placeholder="WhatsApp">
                 <div class="grid-inputs">
-                    <input type="number" id="d-monto" placeholder="Monto Deuda $">
-                    <input type="text" id="d-concepto" placeholder="¿Por qué debe?">
+                    <input type="number" id="d-monto" placeholder="Monto $">
+                    <input type="text" id="d-concepto" placeholder="Concepto de deuda">
                 </div>
                 <button onclick="guardarDeudores()" class="btn-main btn-save" style="background:var(--purple)">REGISTRAR DEUDA</button>
             </div>
             <div id="lista-deudores"></div>
         </div>
 
-        <div id="tab-clientes" class="section">
-            <div class="card">
-                <h3>👥 Directorio de Clientes</h3>
-                <div id="lista-clientes-full"></div>
-            </div>
-        </div>
-
         <div id="tab-logs" class="section">
             <div class="card">
-                <h3>📜 Historial Global de Pagos</h3>
+                <h3>📜 Historial Global</h3>
                 <div id="historial-list"></div>
             </div>
         </div>
@@ -133,15 +142,16 @@
 <div id="factura-render">
     <div style="text-align: center; border-bottom: 2px solid #000;">
         <h2 style="margin:0;">ANDY VIP</h2>
-        <p>Comprobante Oficial</p>
+        <p>Comprobante Digital</p>
     </div>
     <div style="margin-top:20px;">
         <p><b>FECHA:</b> <span id="p-fecha"></span></p>
-        <p><b>PARA:</b> <span id="p-nom"></span></p>
+        <p><b>FOLIO:</b> <span id="p-folio"></span></p>
+        <p><b>CLIENTE:</b> <span id="p-nom"></span></p>
         <p><b>CONCEPTO:</b> <span id="p-concepto"></span></p>
         <hr>
         <h3 style="text-align:right;">TOTAL: $<span id="p-total"></span></h3>
-        <p style="font-size: 0.7rem; text-align: center; margin-top: 30px;">Gracias por confiar en Andy VIP</p>
+        <p style="font-size: 0.7rem; text-align: center; margin-top: 30px;">ID Transacción: <br>ANDYVIP-TRX-882</p>
     </div>
 </div>
 
@@ -163,11 +173,11 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- AUTH ---
+    // AUTH
     window.login = async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error"); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Credenciales incorrectas"); }
     };
     window.logout = () => signOut(auth);
     onAuthStateChanged(auth, u => {
@@ -175,7 +185,7 @@
         document.getElementById('app').style.display = u ? 'block' : 'none';
     });
 
-    // --- STAFF LOGIC ---
+    // --- LOGICA STAFF (CON EDICIÓN) ---
     window.guardarStaff = async () => {
         const id = document.getElementById('s-id').value;
         const data = {
@@ -186,16 +196,40 @@
             monto: document.getElementById('s-monto').value,
             timestamp: serverTimestamp()
         };
-        if(id) await updateDoc(doc(db, "staff", id), data);
-        else await addDoc(collection(db, "staff"), data);
+        if(!data.nombre) return alert("Falta nombre");
+
+        if(id) {
+            await updateDoc(doc(db, "staff", id), data);
+            alert("Trabajador actualizado");
+        } else {
+            await addDoc(collection(db, "staff"), data);
+            alert("Trabajador registrado");
+        }
         resetStaff();
     };
 
-    function resetStaff() {
+    window.resetStaff = () => {
         document.getElementById('s-id').value = "";
         document.getElementById('s-nombre').value = "";
+        document.getElementById('s-movil').value = "";
         document.getElementById('s-pago').value = "";
-    }
+        document.getElementById('s-fecha').value = "";
+        document.getElementById('s-monto').value = "";
+        document.getElementById('staff-form-title').innerText = "👷 Registrar Personal";
+        document.getElementById('btn-staff-cancel').style.display = "none";
+    };
+
+    window.editarStaff = (id, nom, mov, met, fec, mon) => {
+        document.getElementById('s-id').value = id;
+        document.getElementById('s-nombre').value = nom;
+        document.getElementById('s-movil').value = mov;
+        document.getElementById('s-pago').value = met;
+        document.getElementById('s-fecha').value = fec;
+        document.getElementById('s-monto').value = mon;
+        document.getElementById('staff-form-title').innerText = "✏️ Editando: " + nom;
+        document.getElementById('btn-staff-cancel').style.display = "block";
+        window.scrollTo(0,0);
+    };
 
     onSnapshot(query(collection(db, "staff"), orderBy("timestamp", "desc")), s => {
         const list = document.getElementById('lista-staff');
@@ -206,10 +240,12 @@
                 <div class="list-item">
                     <div>
                         <b>${st.nombre}</b> <span class="badge bg-money">$${st.monto}</span><br>
-                        <small>Pago: ${st.fechaPago}</small>
+                        <small>📅 Pago: ${st.fechaPago}</small><br>
+                        <small style="color:var(--gold)">💰 ${st.metodosPago.substring(0,30)}...</small>
                     </div>
                     <div>
-                        <button onclick="pagarTrabajador('${st.movil}', '${st.monto}', '${st.nombre}')" style="background:var(--success); border:none; color:white; padding:5px; border-radius:5px; cursor:pointer;">💸 Pagar</button>
+                        <button onclick="editarStaff('${d.id}','${st.nombre}','${st.movil}','${st.metodosPago}','${st.fechaPago}','${st.monto}')" class="btn-edit">✏️</button>
+                        <button onclick="pagarTrabajador('${st.movil}', '${st.monto}', '${st.nombre}')" class="btn-edit" style="background:var(--success); color:white;">💸</button>
                         <button onclick="eliminarStaff('${d.id}')" class="btn-delete">🗑️</button>
                     </div>
                 </div>`;
@@ -217,14 +253,45 @@
     });
 
     window.pagarTrabajador = (tel, monto, nom) => {
-        const msg = `*CONFIRMACIÓN DE PAGO - ANDY VIP*%0AHola *${nom}*, se ha emitido tu pago por $${monto}.%0A¡Buen trabajo!`;
+        const msg = `*CONFIRMACIÓN DE PAGO - ANDY VIP*%0AHola *${nom}*, se ha emitido tu pago por *$${monto}*. ✅`;
         window.open(`https://wa.me/${tel}?text=${msg}`, '_blank');
         addDoc(collection(db, "historial_vip"), { detalle: `PAGO STAFF: ${nom} recibió $${monto}`, timestamp: serverTimestamp() });
     };
 
     window.eliminarStaff = async (id) => { if(confirm("¿Eliminar trabajador?")) await deleteDoc(doc(db, "staff", id)); };
 
-    // --- DEUDORES LOGIC ---
+    // --- LOGICA CLIENTES ---
+    window.guardarCliente = async () => {
+        const data = {
+            nombre: document.getElementById('c-nombre').value,
+            movil: document.getElementById('c-movil').value,
+            fechaRenovacion: document.getElementById('c-fecha').value,
+            plan: document.getElementById('c-plan').value,
+            timestamp: serverTimestamp()
+        };
+        await addDoc(collection(db, "clientes_vip"), data);
+        alert("Cliente guardado");
+    };
+
+    onSnapshot(query(collection(db, "clientes_vip"), orderBy("timestamp", "desc")), s => {
+        const list = document.getElementById('lista-clientes-full');
+        list.innerHTML = "";
+        s.forEach(d => {
+            const cl = d.data();
+            list.innerHTML += `
+                <div class="list-item">
+                    <div><b>${cl.nombre}</b><br><small>Plan: ${cl.plan}</small><br><small>Renueva: ${cl.fechaRenovacion}</small></div>
+                    <button onclick="cobrarCliente('${cl.movil}', '${cl.nombre}', '${cl.plan}')" class="btn-edit" style="background:var(--accent); color:white;">📲 Cobrar</button>
+                </div>`;
+        });
+    });
+
+    window.cobrarCliente = (tel, nom, plan) => {
+        const msg = `*RECORDATORIO DE PAGO - ANDY VIP*%0AHola *${nom}*, te recordamos que tu plan *${plan}* está próximo a vencer. ¿Deseas renovar? 💎`;
+        window.open(`https://wa.me/${tel}?text=${msg}`, '_blank');
+    };
+
+    // --- LOGICA DEUDORES ---
     window.guardarDeudores = async () => {
         const d = {
             nombre: document.getElementById('d-nombre').value,
@@ -246,22 +313,21 @@
                 list.innerHTML += `
                 <div class="list-item" style="border-left: 4px solid var(--danger);">
                     <div><b>${de.nombre}</b> - <span style="color:var(--danger);">$${de.monto}</span><br><small>${de.concepto}</small></div>
-                    <button onclick="liquidarDeuda('${docSnap.id}', '${de.nombre}', '${de.movil}', '${de.monto}', '${de.concepto}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">DAR DE BAJA ✅</button>
+                    <button onclick="liquidarDeuda('${docSnap.id}', '${de.nombre}', '${de.movil}', '${de.monto}', '${de.concepto}')" style="background:var(--success); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">BAJA ✅</button>
                 </div>`;
             }
         });
     });
 
     window.liquidarDeuda = async (id, nom, tel, monto, conc) => {
-        if(!confirm("¿Confirmar que el cliente pagó?")) return;
-        
+        if(!confirm("¿Confirmar pago y generar factura?")) return;
         await updateDoc(doc(db, "deudores", id), { status: "pagado" });
         
-        // Generar Factura
         document.getElementById('p-nom').innerText = nom;
         document.getElementById('p-total').innerText = monto;
         document.getElementById('p-concepto').innerText = conc;
         document.getElementById('p-fecha').innerText = new Date().toLocaleDateString();
+        document.getElementById('p-folio').innerText = Math.floor(Math.random()*9000);
 
         const canvas = await html2canvas(document.getElementById('factura-render'), { scale: 2 });
         const img = canvas.toDataURL('image/png');
@@ -270,13 +336,13 @@
         pdf.addImage(img, 'PNG', 0, 0, 80, 0);
         pdf.save(`Recibo_${nom}.pdf`);
 
-        const msg = `*RECIBO DE PAGO - ANDY VIP*%0A%0AHola *${nom}*, tu pago por *${conc}* de *$${monto}* ha sido procesado exitosamente. ✅`;
+        const msg = `*PAGO CONFIRMADO - ANDY VIP*%0AHola *${nom}*, gracias por tu pago de *$${monto}* por *${conc}*. ✅ (PDF adjunto enviado)`;
         window.open(`https://wa.me/${tel}?text=${msg}`, '_blank');
         
-        await addDoc(collection(db, "historial_vip"), { detalle: `CLIENTE PAGÓ: ${nom} liquidó deuda de $${monto}`, timestamp: serverTimestamp() });
+        await addDoc(collection(db, "historial_vip"), { detalle: `LIQUIDADO: ${nom} pagó deuda de $${monto}`, timestamp: serverTimestamp() });
     };
 
-    // --- UTILS ---
+    // --- NAVEGACIÓN ---
     window.showTab = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
