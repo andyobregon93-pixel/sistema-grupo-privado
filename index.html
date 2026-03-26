@@ -2,147 +2,161 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANDY VIP | Admin Master Panel</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ANDY VIP | Business Suite</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --bg: #070b14; --card: #111827; --accent: #3b82f6; 
-            --danger: #ef4444; --success: #10b981; --text: #f1f5f9; 
-            --border: #1f2937; --gold: #f59e0b; --purple: #a855f7;
+            --bg: #030712; --card: #111827; --accent: #3b82f6; 
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --danger: #f43f5e; --success: #10b981; --text: #f9fafb; 
+            --border: #374151; --gold: #fbbf24;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
         
-        .nav-bar { 
-            display: flex; background: var(--card); padding: 10px; 
-            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent);
-            justify-content: space-around; flex-wrap: wrap; gap: 5px;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        
+        /* HEADER EMPRESARIAL */
+        .header { 
+            background: linear-gradient(180deg, var(--card) 0%, var(--bg) 100%);
+            padding: 20px; border-bottom: 1px solid var(--border); text-align: center;
         }
-        .nav-btn { 
-            padding: 8px 12px; border: none; background: transparent; 
-            color: #94a3b8; font-weight: 600; cursor: pointer; transition: 0.3s;
-            border-radius: 8px; font-size: 0.7rem;
-        }
-        .nav-btn.active { color: white; background: var(--accent); }
+        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; color: var(--accent); }
+        .header p { margin: 5px 0 0; font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; }
 
-        .container { padding: 20px; max-width: 1000px; margin: auto; padding-bottom: 100px; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
+        /* NAVEGACIÓN INFERIOR (ESTILO APP) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid var(--border); z-index: 1000;
+        }
+        .nav-item { border: none; background: none; color: #6b7280; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 1.2rem; }
+
+        /* DASHBOARD CARDS */
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); }
+        .stat-card h4 { margin: 0; font-size: 0.7rem; color: #9ca3af; }
+        .stat-card p { margin: 5px 0 0; font-size: 1.2rem; font-weight: 800; color: var(--success); }
+
+        /* SECCIONES */
+        .section { display: none; animation: slideUp 0.4s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
+        .glass-card { 
+            background: var(--card); padding: 20px; border-radius: 20px; 
+            border: 1px solid var(--border); margin-bottom: 15px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* BUSCADOR Y FILTROS */
+        .search-area { position: sticky; top: 0; background: var(--bg); padding: 10px 0; z-index: 100; }
         input, select, textarea { 
-            width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; 
-            border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; 
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
+            border: 1px solid var(--border); background: #1f2937; color: white; font-size: 0.9rem;
         }
-        
-        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 5px; }
-        .btn-save { background: var(--success); color: white; }
-        .btn-edit { background: var(--gold); color: black; padding: 5px 8px; border-radius: 5px; border:none; font-size: 0.7rem; cursor:pointer;}
-        .btn-delete { background: var(--danger); color: white; padding: 5px 8px; border-radius: 5px; border:none; cursor:pointer;}
-        
-        /* ESTILOS CARICATURAS */
-        .art-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .art-item { 
-            background: #1e293b; border-radius: 10px; padding: 10px; text-align: center;
-            border: 2px solid transparent; cursor: pointer;
-        }
-        .art-item.selected { border-color: var(--success); background: #064e3b; }
-        .art-item img { width: 100%; height: 100px; object-fit: contain; background: white; border-radius: 5px; }
+        input:focus { outline: 2px solid var(--accent); border-color: transparent; }
 
-        #factura-render { 
-            width: 350px; background: white; color: #000; padding: 30px; 
-            position: absolute; left: -9999px; font-family: 'Courier New', monospace;
+        /* GRID DE LÁMINAS PROFESIONAL */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .item-card { 
+            background: var(--card); border-radius: 16px; overflow: hidden;
+            border: 1px solid var(--border); transition: 0.2s; position: relative;
         }
+        .item-card.selected { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .item-card img { width: 100%; height: 130px; object-fit: cover; background: white; }
+        .item-info { padding: 10px; text-align: center; }
+        .item-info b { font-size: 0.75rem; display: block; margin-bottom: 4px; }
+        
+        .badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: white; padding: 3px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; }
 
-        .cart-bar {
-            position: fixed; bottom: 0; left:0; right:0; background: var(--card);
-            padding: 15px; border-top: 2px solid var(--success); display: none;
-            justify-content: space-between; align-items: center; z-index: 2000;
+        /* BOTONES */
+        .btn-premium { 
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            color: white; border: none; padding: 16px; border-radius: 14px;
+            width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
         }
     </style>
 </head>
 <body>
 
-<div id="login-box" style="display: flex; height: 100vh; align-items: center; justify-content: center;">
-    <div class="card" style="width:320px; text-align:center; border: 2px solid var(--accent);">
-        <h1 style="color:var(--accent); margin:0;">ANDY VIP</h1>
-        <p style="font-size:0.8rem; color:#64748b;">MASTER ADMIN PANEL</p>
-        <input type="email" id="email" placeholder="Usuario">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()" class="btn-main btn-save">INGRESAR</button>
+<div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 20px;">
+    <div class="glass-card" style="width: 100%; max-width: 350px; text-align: center;">
+        <h1 style="color: var(--accent); font-size: 2rem; margin-bottom: 5px;">ANDY VIP</h1>
+        <p style="font-size: 0.7rem; color: #9ca3af; margin-bottom: 30px;">BUSINESS ADMINISTRATION</p>
+        <input type="email" id="email" placeholder="Usuario Corporativo">
+        <input type="password" id="pass" placeholder="Contraseña Segura">
+        <button onclick="login()" class="btn-premium" style="margin-top: 15px;">ACCEDER AL PANEL</button>
     </div>
 </div>
 
-<div id="app" style="display:none;">
-    <div class="nav-bar">
-        <button class="nav-btn active" onclick="showTab('tab-staff', this)">👷 STAFF</button>
-        <button class="nav-btn" onclick="showTab('tab-art', this)">🎨 ART</button>
-        <button class="nav-btn" onclick="showTab('tab-clientes', this)">👥 CLIENTES</button>
-        <button class="nav-btn" onclick="showTab('tab-deudores', this)">💸 DEUDORES</button>
-        <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">SALIR</button>
+<div id="app" style="display: none;">
+    <div class="header">
+        <h1>ANDY BUSINESS</h1>
+        <p id="user-display">Panel de Control Activo</p>
     </div>
 
     <div class="container">
-        
-        <div id="tab-art" class="section">
-            <div class="card">
-                <h3>🎨 Generador de Pack Imprimible</h3>
-                <input type="text" id="art-cliente" placeholder="Nombre del Cliente">
-                <input type="text" id="art-wa" placeholder="WhatsApp (593...)">
-                <p style="font-size: 0.8rem; color: var(--gold);">Selecciona las caricaturas para el PDF:</p>
-                <div id="galeria-art" class="art-grid">
-                    </div>
+        <div id="sec-dash" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card"><h4>VENTAS HOY</h4><p>$0.00</p></div>
+                <div class="stat-card"><h4>LÁMINAS</h4><p id="total-count">0</p></div>
             </div>
-        </div>
-
-        <div id="tab-staff" class="section active">
-            <div class="card">
-                <h3 id="staff-form-title">👷 Registrar Personal</h3>
-                <input type="hidden" id="s-id">
-                <input type="text" id="s-nombre" placeholder="Nombre completo">
-                <input type="text" id="s-movil" placeholder="WhatsApp (Ej: 521...)">
-                <textarea id="s-pago" placeholder="Métodos de pago..."></textarea>
-                <div class="grid-inputs">
-                    <div><small>Próximo Pago</small><input type="date" id="s-fecha"></div>
-                    <div><small>Sueldo/Corte</small><input type="number" id="s-monto" placeholder="$0.00"></div>
+            
+            <div class="glass-card">
+                <h3>📦 Generar Nuevo Pedido</h3>
+                <input type="text" id="cli-nom" placeholder="Nombre del Cliente">
+                <input type="text" id="cli-wa" placeholder="WhatsApp (Ej: 593...)">
+                <div class="search-area">
+                    <input type="text" id="search" placeholder="🔍 Buscar entre miles de láminas..." onkeyup="filter()">
                 </div>
-                <button onclick="guardarStaff()" id="btn-staff-save" class="btn-main btn-save">GUARDAR TRABAJADOR</button>
+                <div id="grid-items" class="grid"></div>
             </div>
-            <div id="lista-staff"></div>
         </div>
 
-        <div id="tab-clientes" class="section">
-            <div class="card"><h3>👥 Clientes VIP</h3></div>
-            <div id="lista-clientes-full"></div>
+        <div id="sec-inv" class="section">
+            <div class="glass-card">
+                <h3>📤 Registro de Material</h3>
+                <input type="text" id="in-title" placeholder="Título de la Lámina">
+                <input type="text" id="in-url" placeholder="URL de Imagen (Directa)">
+                <select id="in-cat">
+                    <option value="Escolar">Escolar</option>
+                    <option value="Anime">Anime</option>
+                    <option value="Dibujos">Dibujos Animados</option>
+                    <option value="Arte">Arte y Cultura</option>
+                </select>
+                <textarea id="in-info" placeholder="Resumen informativo de la lámina..." rows="4"></textarea>
+                <button onclick="upload()" class="btn-premium">SUBIR A LA NUBE</button>
+            </div>
         </div>
-
-        <div id="tab-deudores" class="section">
-            <div class="card"><h3>💸 Deudores</h3></div>
-            <div id="lista-deudores"></div>
-        </div>
-
     </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showSec('sec-dash', this)"><span>🏠</span>DASHBOARD</button>
+        <button class="nav-item" onclick="showSec('sec-inv', this)"><span>📂</span>INVENTARIO</button>
+        <button class="nav-item" onclick="logout()"><span>🚪</span>SALIR</button>
+    </nav>
 </div>
 
-<div id="cart-bar" class="cart-bar">
-    <div><b id="art-count">0</b> Dibujos seleccionados</div>
-    <button onclick="descargarPackPDF()" class="btn-main btn-save" style="width:auto; padding: 10px 20px;">PDF ✅</button>
+<div id="action-bar" style="position: fixed; bottom: 85px; left: 15px; right: 15px; display: none;">
+    <button onclick="makePDF()" class="btn-premium" style="background: var(--success); box-shadow: 0 4px 14px var(--success);">
+        GENERAR PDF DE <span id="sel-num">0</span> LÁMINAS ✅
+    </button>
 </div>
-
-<div id="factura-render"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // TU CONFIGURACIÓN ORIGINAL (NO SE TOCA)
+    // TU CONFIGURACIÓN ORIGINAL
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
         authDomain: "sistema-ventas-64a4c.firebaseapp.com",
@@ -156,81 +170,99 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- LÓGICA DE CARICATURAS (NUEVA) ---
-    const catalogo = [
-        { id: 101, nombre: "Goku", url: "https://i.pinimg.com/originals/1b/4f/f5/1b4ff5f0f353a25f829f27d5885c4f21.jpg" },
-        { id: 102, nombre: "Mickey", url: "https://dbdzm869oupei.cloudfront.net/img/sticker/preview/13012.png" },
-        { id: 103, nombre: "Spider-man", url: "https://www.supercolorear.com/wp-content/uploads/2023/04/spiderman-colorear.jpg" }
-    ];
-    let seleccionados = [];
+    let laminas = [];
+    let selected = [];
 
-    window.renderArt = () => {
-        const galery = document.getElementById('galeria-art');
-        galery.innerHTML = "";
-        catalogo.forEach(item => {
-            const isSel = seleccionados.includes(item.id);
-            galery.innerHTML += `
-                <div class="art-item ${isSel?'selected':''}" onclick="toggleArt(${item.id})">
-                    <img src="${item.url}">
-                    <p style="font-size:0.7rem; margin-top:5px;">${item.nombre}</p>
-                </div>`;
-        });
-    };
-
-    window.toggleArt = (id) => {
-        const idx = seleccionados.indexOf(id);
-        if(idx > -1) seleccionados.splice(idx, 1);
-        else seleccionados.push(id);
-        
-        document.getElementById('art-count').innerText = seleccionados.length;
-        document.getElementById('cart-bar').style.display = seleccionados.length > 0 ? 'flex' : 'none';
-        renderArt();
-    };
-
-    window.descargarPackPDF = async () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        const cliente = document.getElementById('art-cliente').value || "Cliente";
-        
-        pdf.text("ANDY ART - PACK PARA COLOREAR", 10, 10);
-        pdf.text(`Cliente: ${cliente}`, 10, 20);
-
-        for (let id of seleccionados) {
-            const item = catalogo.find(x => x.id === id);
-            pdf.addPage();
-            try { pdf.addImage(item.url, 'JPEG', 10, 10, 190, 260); } catch(e) {}
-        }
-        pdf.save(`Pack_${cliente}.pdf`);
-        
-        const wa = document.getElementById('art-wa').value;
-        if(wa) {
-            window.open(`https://wa.me/${wa}?text=*ANDY ART*%0AHe generado tu pack de ${seleccionados.length} dibujos. ✅`, '_blank');
-        }
-    };
-
-    // --- NAVEGACIÓN Y LOGIN (ORIGINAL) ---
-    window.login = async () => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Credenciales incorrectas"); }
-    };
-    window.logout = () => signOut(auth);
-    
-    onAuthStateChanged(auth, u => {
-        document.getElementById('login-box').style.display = u ? 'none' : 'flex';
-        document.getElementById('app').style.display = u ? 'block' : 'none';
-        if(u) renderArt();
+    // --- CARGAR DATOS ---
+    onSnapshot(query(collection(db, "laminas_andy"), orderBy("titulo", "asc")), snap => {
+        laminas = [];
+        snap.forEach(d => laminas.push({ id: d.id, ...d.data() }));
+        document.getElementById('total-count').innerText = laminas.length;
+        render(laminas);
     });
 
-    window.showTab = (id, btn) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(btn) btn.classList.add('active');
-        document.getElementById('cart-bar').style.display = (id === 'tab-art' && seleccionados.length > 0) ? 'flex' : 'none';
+    window.render = (data) => {
+        const container = document.getElementById('grid-items');
+        container.innerHTML = data.map(l => `
+            <div class="item-card ${selected.includes(l.id)?'selected':''}" onclick="toggle('${l.id}')">
+                <span class="badge">${l.cat || 'General'}</span>
+                <img src="${l.url}" loading="lazy">
+                <div class="item-info"><b>${l.titulo}</b></div>
+            </div>
+        `).join('');
     };
 
-    // (El resto de funciones como guardarStaff se mantienen igual que en tu código anterior...)
+    window.filter = () => {
+        const t = document.getElementById('search').value.toLowerCase();
+        render(laminas.filter(l => l.titulo.toLowerCase().includes(t)));
+    };
+
+    window.toggle = (id) => {
+        const idx = selected.indexOf(id);
+        if(idx > -1) selected.splice(idx, 1); else selected.push(id);
+        document.getElementById('sel-num').innerText = selected.length;
+        document.getElementById('action-bar').style.display = selected.length > 0 ? 'block' : 'none';
+        render(laminas);
+    };
+
+    // --- ACCIONES ---
+    window.upload = async () => {
+        const d = {
+            titulo: document.getElementById('in-title').value,
+            url: document.getElementById('in-url').value,
+            cat: document.getElementById('in-cat').value,
+            info: document.getElementById('in-info').value
+        };
+        if(!d.titulo || !d.url) return alert("Completa los campos");
+        await addDoc(collection(db, "laminas_andy"), d);
+        alert("Lámina añadida correctamente");
+        showSec('sec-dash');
+    };
+
+    window.makePDF = () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        const cli = document.getElementById('cli-nom').value || "Cliente";
+
+        selected.forEach((id, i) => {
+            const data = laminas.find(x => x.id === id);
+            if(i > 0) pdf.addPage();
+            
+            // Estilo de Hoja Profesional
+            pdf.setDrawColor(59, 130, 246); pdf.setLineWidth(1.5);
+            pdf.rect(5, 5, 200, 287);
+            
+            pdf.setFontSize(16); pdf.text(data.titulo.toUpperCase(), 105, 25, {align:"center"});
+            try { pdf.addImage(data.url, 'JPEG', 15, 35, 180, 160); } catch(e){}
+            
+            pdf.setFontSize(12); pdf.text("INFORMACIÓN RELEVANTE:", 20, 210);
+            const lines = pdf.splitTextToSize(data.info || "Sin información adicional.", 170);
+            pdf.text(lines, 20, 220);
+            
+            pdf.setFontSize(8); pdf.text(`Generado por ANDY BUSINESS - Para: ${cli}`, 105, 280, {align:"center"});
+        });
+
+        pdf.save(`Pedido_${cli}.pdf`);
+        const wa = document.getElementById('cli-wa').value;
+        if(wa) window.open(`https://wa.me/${wa}?text=Tu pack de láminas está listo 💎`, '_blank');
+    };
+
+    // --- NAVEGACIÓN ---
+    window.login = async () => {
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value); } 
+        catch(e) { alert("Acceso Denegado"); }
+    };
+    window.logout = () => signOut(auth);
+    onAuthStateChanged(auth, u => {
+        document.getElementById('login-screen').style.display = u ? 'none' : 'flex';
+        document.getElementById('app').style.display = u ? 'block' : 'none';
+    });
+    window.showSec = (id, btn) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(btn) btn.classList.add('active');
+    };
 </script>
 </body>
 </html>
