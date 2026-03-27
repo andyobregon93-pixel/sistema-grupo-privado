@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY - SISTEMA MAESTRO IPTV</title>
+    <title>ANDY - SISTEMA MAESTRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0a0c10; --card: #161b22; --accent: #6366f1; --success: #22c55e; --danger: #ef4444; --text: #f8fafc; --border: #30363d; --gold: #f59e0b; }
@@ -25,14 +25,11 @@
         .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 25%; }
         .nav-btn.active { color: var(--accent); }
         .nav-btn span { font-size: 1.4rem; }
-        
-        /* DETALLE DE STOCK MEJORADO */
-        .list-item { background: #0d1117; padding: 15px; border-radius: 18px; border: 1px solid var(--border); margin-bottom: 12px; position: relative; }
-        .stk-title { color: var(--gold); font-weight: 800; font-size: 1rem; display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .list-item { background: #0d1117; padding: 15px; border-radius: 18px; border: 1px solid var(--border); margin-bottom: 12px; }
+        .stk-title { color: var(--gold); font-weight: 800; display: flex; justify-content: space-between; margin-bottom: 8px; }
         .stk-creds-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; font-size: 0.75rem; color: #ccc; margin-bottom: 10px; white-space: pre-wrap; font-family: monospace; border: 1px dashed #333; }
         .actions-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-action { padding: 8px; border-radius: 8px; border: none; font-size: 0.65rem; font-weight: 800; color: white; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-        
         #rules-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .rules-content { background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--accent); width: 100%; max-width: 400px; text-align: center; }
         .admin-only { display: none; }
@@ -63,7 +60,6 @@
 
 <div id="app" style="display: none;">
     <div class="header"><h1>SISTEMA ANDY</h1><small id="role-tag" style="color: var(--accent); font-weight: 800;"></small></div>
-    
     <div class="container">
         <div id="sec-pedir" class="section active">
             <div class="glass-card">
@@ -80,40 +76,37 @@
 
         <div id="sec-stock" class="section">
             <div class="glass-card">
-                <h3>📦 Agregar a Inventario</h3>
-                <input type="text" id="stk-name" placeholder="Nombre Servicio (Ej: MAGIS)">
-                <textarea id="stk-creds" rows="3" placeholder="Pega aquí los datos de la cuenta..."></textarea>
-                <input type="number" id="stk-cupos" placeholder="Cantidad de Cupos">
+                <h3>📦 Inventario Detallado</h3>
+                <input type="text" id="stk-name" placeholder="Nombre Servicio">
+                <textarea id="stk-creds" rows="3" placeholder="Pega los datos aquí..."></textarea>
+                <input type="number" id="stk-cupos" placeholder="Cupos">
                 <button onclick="addStock(this)" class="btn-main" style="background:var(--gold); color:black;">GUARDAR STOCK <div class="loader"></div></button>
             </div>
-            <h4 style="margin: 20px 0 10px 5px; color: var(--gold);">INVENTARIO ACTUAL:</h4>
             <div id="iptv-list"></div>
         </div>
 
         <div id="sec-equipo" class="section">
             <div class="glass-card">
-                <h3>👥 Gestionar Miembros</h3>
+                <h3>👥 Gestión de Miembros</h3>
                 <input type="text" id="tm-name" placeholder="Nombre">
                 <input type="email" id="tm-email" placeholder="Correo">
-                <input type="password" id="tm-pass" placeholder="Clave de Acceso">
+                <input type="text" id="tm-pass" placeholder="Clave de Acceso">
                 <select id="tm-role"><option value="Seller">Vendedor</option><option value="Admin">Admin</option></select>
-                <button onclick="addTeam(this)" class="btn-main">CREAR ACCESO <div class="loader"></div></button>
+                <button onclick="addTeam(this)" class="btn-main">REGISTRAR MIEMBRO <div class="loader"></div></button>
             </div>
             <div id="team-list"></div>
         </div>
 
         <div id="sec-ajustes" class="section">
             <div class="glass-card">
-                <h3>⚙️ Configuración</h3>
-                <textarea id="rules-input" rows="3" placeholder="Reglas del sistema..."></textarea>
+                <h3>⚙️ Ajustes</h3>
+                <textarea id="rules-input" rows="3"></textarea>
                 <button onclick="saveRules(this)" class="btn-main">GUARDAR REGLAS <div class="loader"></div></button>
-                <button onclick="handleLogout()" class="btn-main" style="background:#333; margin-top:10px;">CERRAR SESIÓN 🚪</button>
-                <button onclick="clearLogs(this)" class="btn-main" style="background:var(--danger); margin-top:20px;">LIMPIAR HISTORIAL <div class="loader"></div></button>
+                <button onclick="handleLogout()" class="btn-main" style="background:#333; margin-top:10px;">SALIR 🚪</button>
             </div>
             <div id="log-container" class="glass-card"></div>
         </div>
     </div>
-
     <nav class="bottom-nav">
         <button class="nav-btn active" onclick="nav('sec-pedir', this)"><span>📱</span>PEDIR</button>
         <button class="nav-btn admin-only" onclick="nav('sec-stock', this)"><span>📦</span>STOCK</button>
@@ -125,7 +118,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp, getDocs, where, limit, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp, getDocs, where, limit, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM", authDomain: "sistema-ventas-64a4c.firebaseapp.com", projectId: "sistema-ventas-64a4c", storageBucket: "sistema-ventas-64a4c.firebasestorage.app", messagingSenderId: "291577824119", appId: "1:291577824119:web:894fe9842b427c9ac3d772" };
     const app = initializeApp(firebaseConfig);
@@ -141,78 +134,83 @@
         try { await action(); } catch(e) { alert("Error: " + e.message); } finally { if(l) l.style.display = 'none'; btn.disabled = false; }
     }
 
+    // LOGIN CORREGIDO PARA USAR FIRESTORE DIRECTO
     window.handleLogin = (btn) => work(btn, async () => {
         const email = document.getElementById('log-email').value;
         const pass = document.getElementById('log-pass').value;
-        const q = await getDocs(query(collection(db, "equipo_andy"), where("email", "==", email)));
-        if(!q.empty && q.docs[0].data().estado === "Inactivo") return alert("Cuenta Suspendida.");
-        await signInWithEmailAndPassword(auth, email, pass);
+        
+        if(email === MASTER) { await signInWithEmailAndPassword(auth, email, pass); return; }
+
+        const q = await getDocs(query(collection(db, "equipo_andy"), where("email", "==", email), where("clave", "==", pass)));
+        if(q.empty) throw new Error("Credenciales inválidas o usuario no existe.");
+        if(q.docs[0].data().estado === "Inactivo") throw new Error("Cuenta desactivada.");
+        
+        // Simular login para la sesión actual
+        myRole = q.docs[0].data().rol;
+        sessionStorage.setItem("user_andy", JSON.stringify({email, rol: myRole}));
+        document.getElementById('login-scr').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('role-tag').innerText = `MODO: ${myRole}`;
+        if(myRole === "Admin") document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
+        start();
     });
 
     onAuthStateChanged(auth, async u => {
-        if(u) {
-            if(u.email === MASTER) myRole = "Admin";
-            else {
-                const s = await getDocs(query(collection(db, "equipo_andy"), where("email", "==", u.email)));
-                if(!s.empty) myRole = s.docs[0].data().rol;
-            }
-            if(myRole === "Admin") document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
+        if(u && u.email === MASTER) {
+            myRole = "Admin";
+            document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
             document.getElementById('login-scr').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            document.getElementById('role-tag').innerText = `MODO: ${myRole}`;
+            document.getElementById('role-tag').innerText = `MODO: ADMIN MASTER`;
             start();
+        } else {
+            const saved = sessionStorage.getItem("user_andy");
+            if(saved) {
+                const data = JSON.parse(saved);
+                myRole = data.rol;
+                document.getElementById('login-scr').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                document.getElementById('role-tag').innerText = `MODO: ${myRole}`;
+                if(myRole === "Admin") document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
+                start();
+            }
         }
     });
 
     function start() {
         onSnapshot(doc(db, "ajustes", "reglas"), d => { if(d.exists()) { document.getElementById('rules-text-display').innerText = d.data().texto; document.getElementById('rules-input').value = d.data().texto; } });
-        
-        // STOCK DETALLADO EN TIEMPO REAL
         onSnapshot(collection(db, "iptv_stock"), snap => {
             const sel = document.getElementById('user-platforms-select');
             const list = document.getElementById('iptv-list');
-            sel.innerHTML = '<option value="">Seleccionar cuenta...</option>'; list.innerHTML = ""; currentStock = {};
-            
+            sel.innerHTML = '<option value="">Seleccionar...</option>'; list.innerHTML = ""; currentStock = {};
             snap.forEach(d => {
                 const i = d.data();
                 if(i.cupos > 0) { 
-                    if(!currentStock[i.nombre]) { 
-                        currentStock[i.nombre] = []; 
-                        sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`; 
-                    } 
+                    if(!currentStock[i.nombre]) { currentStock[i.nombre] = []; sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`; } 
                     currentStock[i.nombre].push({ id: d.id, ...i }); 
                 }
-                
-                list.innerHTML += `
-                <div class="list-item">
-                    <div class="stk-title">
-                        <span>${i.nombre}</span>
-                        <span style="color:var(--success)">${i.cupos} / ${i.inicial || i.cupos} CP</span>
-                    </div>
-                    <div class="stk-creds-box">${i.creds}</div>
-                    <div class="actions-row">
-                        <button onclick="editStock('${d.id}', ${i.cupos})" class="btn-action" style="background:var(--accent)">EDITAR</button>
-                        <button onclick="resetStock('${d.id}', ${i.inicial})" class="btn-action" style="background:var(--success)">RESET</button>
-                        <button onclick="borrarDoc(this, '${d.id}', 'iptv_stock')" class="btn-action" style="background:var(--danger)">BORRAR <div class="loader"></div></button>
-                    </div>
-                </div>`;
+                list.innerHTML += `<div class="list-item"><div class="stk-title"><span>${i.nombre}</span><span style="color:var(--success)">${i.cupos}/${i.inicial} CP</span></div><div class="stk-creds-box">${i.creds}</div><div class="actions-row"><button onclick="editStock('${d.id}', ${i.cupos})" class="btn-action" style="background:var(--accent)">EDIT</button><button onclick="resetStock('${d.id}', ${i.inicial})" class="btn-action" style="background:var(--success)">RESET</button><button onclick="borrarDoc(this, '${d.id}', 'iptv_stock')" class="btn-action" style="background:var(--danger)">X <div class="loader"></div></button></div></div>`;
             });
         });
-
         if(myRole === "Admin") {
             onSnapshot(collection(db, "equipo_andy"), snap => {
                 document.getElementById('team-list').innerHTML = snap.docs.map(d => {
                     const u = d.data();
-                    return `<div class="list-item"><b>${u.nombre}</b> <span class="badge ${u.estado === 'Activo' ? 'bg-active' : 'bg-inactive'}">${u.estado}</span><br><small>${u.email}</small>
-                    <div class="actions-row">
-                        <button onclick="updateDoc(doc(db,'equipo_andy','${d.id}'),{estado:'${u.estado==='Activo'?'Inactivo':'Activo'}'})" class="btn-action" style="background:#444">${u.estado==='Activo'?'DESACTIVAR':'ACTIVAR'}</button>
-                        <button onclick="borrarDoc(this, '${d.id}', 'equipo_andy')" class="btn-action" style="background:var(--danger)">ELIMINAR <div class="loader"></div></button>
-                    </div></div>`;
+                    return `<div class="list-item"><b>${u.nombre}</b> <span class="badge ${u.estado === 'Activo' ? 'bg-active' : 'bg-inactive'}">${u.estado}</span><br><small>${u.email}</small><div class="actions-row"><button onclick="updateDoc(doc(db,'equipo_andy','${d.id}'),{estado:'${u.estado==='Activo'?'Inactivo':'Activo'}'})" class="btn-action" style="background:#444">ESTADO</button><button onclick="borrarDoc(this, '${d.id}', 'equipo_andy')" class="btn-action" style="background:var(--danger)">BORRAR <div class="loader"></div></button></div></div>`;
                 }).join('');
             });
-            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => { document.getElementById('log-container').innerHTML = "<h4>REGISTRO</h4>" + snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;">${d.data().admin.split('@')[0]} -> ${d.data().cuenta}</div>`).join(''); });
+            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => { document.getElementById('log-container').innerHTML = "<h4>HISTORIAL</h4>" + snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;">${d.data().admin.split('@')[0]} -> ${d.data().cuenta}</div>`).join(''); });
         }
     }
+
+    window.addTeam = (btn) => work(btn, async () => {
+        const n = document.getElementById('tm-name').value;
+        const e = document.getElementById('tm-email').value;
+        const p = document.getElementById('tm-pass').value;
+        const r = document.getElementById('tm-role').value;
+        if(n && e && p) await addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r, clave: p, estado: "Activo" });
+        alert("Miembro registrado exitosamente.");
+    });
 
     window.addStock = (btn) => work(btn, async () => {
         const n = document.getElementById('stk-name').value.toUpperCase();
@@ -221,15 +219,7 @@
         if(n && c && cp) await addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
     });
 
-    window.addTeam = (btn) => work(btn, async () => {
-        const n = document.getElementById('tm-name').value;
-        const e = document.getElementById('tm-email').value;
-        const p = document.getElementById('tm-pass').value;
-        const r = document.getElementById('tm-role').value;
-        if(n && e && p) await addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r, clave: p, estado: "Activo" });
-    });
-
-    window.borrarDoc = (btn, id, col) => work(btn, async () => { if(confirm("¿Eliminar permanentemente?")) await deleteDoc(doc(db, col, id)); });
+    window.borrarDoc = (btn, id, col) => work(btn, async () => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, col, id)); });
     window.editStock = (id, act) => { const n = prompt("Nuevo cupo:", act); if(n) updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(n) }); };
     window.resetStock = (id, ini) => updateDoc(doc(db, "iptv_stock", id), { cupos: ini });
     window.saveRules = (btn) => work(btn, async () => { await setDoc(doc(db, "ajustes", "reglas"), { texto: document.getElementById('rules-input').value }); alert("Reglas Guardadas"); });
@@ -242,11 +232,11 @@
         document.getElementById('account-data').innerText = item.creds;
         document.getElementById('result-box').style.display = 'block';
         await updateDoc(doc(db, "iptv_stock", item.id), { cupos: item.cupos - 1 });
-        await addDoc(collection(db, "historial"), { admin: auth.currentUser.email, cliente: document.getElementById('cust-name').value, cuenta: p, fecha: serverTimestamp() });
+        await addDoc(collection(db, "historial"), { admin: auth.currentUser ? auth.currentUser.email : JSON.parse(sessionStorage.getItem("user_andy")).email, cliente: document.getElementById('cust-name').value, cuenta: p, fecha: serverTimestamp() });
         cerrarModal();
     });
 
-    window.handleLogout = () => signOut(auth).then(() => location.reload());
+    window.handleLogout = () => { signOut(auth); sessionStorage.clear(); location.reload(); };
     window.copyToClipboard = (btn) => { navigator.clipboard.writeText(document.getElementById('account-data').innerText); alert("Copiado"); };
     window.nav = (id, b) => { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(nb => nb.classList.remove('active')); document.getElementById(id).classList.add('active'); b.classList.add('active'); };
 </script>
