@@ -3,160 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY VIP | Business Suite</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>ANDY GLOBAL | IPTV Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --bg: #030712; --card: #111827; --accent: #3b82f6; 
-            --accent-glow: rgba(59, 130, 246, 0.5);
-            --danger: #f43f5e; --success: #10b981; --text: #f9fafb; 
-            --border: #374151; --gold: #fbbf24;
+            --bg: #0a0c10; --card: #161b22; --accent: #6366f1; 
+            --success: #22c55e; --danger: #ef4444; --text: #f8fafc;
+            --border: #30363d; --gold: #f59e0b;
         }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
-        
-        /* HEADER EMPRESARIAL */
-        .header { 
-            background: linear-gradient(180deg, var(--card) 0%, var(--bg) 100%);
-            padding: 20px; border-bottom: 1px solid var(--border); text-align: center;
-        }
-        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; color: var(--accent); }
-        .header p { margin: 5px 0 0; font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* NAVEGACIÓN INFERIOR (ESTILO APP) */
+        /* HEADER */
+        .header { 
+            padding: 25px 20px; text-align: left; border-bottom: 1px solid var(--border);
+            background: linear-gradient(to bottom, #111827, var(--bg));
+        }
+        .header h1 { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+        .badge-role { font-size: 0.6rem; background: var(--accent); padding: 2px 8px; border-radius: 10px; margin-left: 5px; vertical-align: middle; }
+
+        /* NAVIGATION */
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
-            background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px);
+            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(15px);
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid var(--border); z-index: 1000;
         }
-        .nav-item { border: none; background: none; color: #6b7280; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 1.2rem; }
+        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
+        .nav-btn.active { color: var(--accent); transform: translateY(-5px); }
+        .nav-btn i { font-size: 1.4rem; }
 
-        /* DASHBOARD CARDS */
-        .container { padding: 15px; max-width: 600px; margin: auto; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); }
-        .stat-card h4 { margin: 0; font-size: 0.7rem; color: #9ca3af; }
-        .stat-card p { margin: 5px 0 0; font-size: 1.2rem; font-weight: 800; color: var(--success); }
-
-        /* SECCIONES */
-        .section { display: none; animation: slideUp 0.4s ease; }
+        /* CONTAINERS */
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card { 
-            background: var(--card); padding: 20px; border-radius: 20px; 
-            border: 1px solid var(--border); margin-bottom: 15px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        }
-
-        /* BUSCADOR Y FILTROS */
-        .search-area { position: sticky; top: 0; background: var(--bg); padding: 10px 0; z-index: 100; }
-        input, select, textarea { 
-            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
-            border: 1px solid var(--border); background: #1f2937; color: white; font-size: 0.9rem;
-        }
-        input:focus { outline: 2px solid var(--accent); border-color: transparent; }
-
-        /* GRID DE LÁMINAS PROFESIONAL */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .item-card { 
-            background: var(--card); border-radius: 16px; overflow: hidden;
-            border: 1px solid var(--border); transition: 0.2s; position: relative;
-        }
-        .item-card.selected { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .item-card img { width: 100%; height: 130px; object-fit: cover; background: white; }
-        .item-info { padding: 10px; text-align: center; }
-        .item-info b { font-size: 0.75rem; display: block; margin-bottom: 4px; }
+        /* CARDS & FORMS */
+        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        h3 { font-size: 1rem; margin-top: 0; display: flex; align-items: center; gap: 10px; color: #e6edf3; }
         
-        .badge { position: absolute; top: 8px; right: 8px; background: var(--accent); color: white; padding: 3px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; }
-
-        /* BOTONES */
-        .btn-premium { 
-            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-            color: white; border: none; padding: 16px; border-radius: 14px;
-            width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer;
-            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        input, select, textarea { 
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; 
+            border: 1px solid var(--border); background: #0d1117; color: white; font-size: 0.95rem;
         }
+
+        .btn-main { 
+            background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px;
+            width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* LISTAS (IPTV / ADMINS) */
+        .list-item { 
+            background: #0d1117; padding: 15px; border-radius: 14px; 
+            border: 1px solid var(--border); margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .item-info b { display: block; font-size: 0.9rem; }
+        .item-info small { color: #8b949e; font-size: 0.75rem; }
+        
+        .actions { display: flex; gap: 8px; }
+        .action-btn { padding: 8px; border-radius: 8px; border: none; color: white; font-size: 0.9rem; cursor: pointer; }
+        .btn-edit { background: var(--gold); }
+        .btn-del { background: var(--danger); }
+
+        /* HISTORIAL */
+        .log-item { font-size: 0.75rem; border-left: 2px solid var(--accent); padding-left: 10px; margin-bottom: 12px; }
+        .log-date { color: #8b949e; font-size: 0.65rem; }
+
+        /* USER INTERFACE */
+        .user-mode { text-align: center; padding-top: 50px; }
+        .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .plat-card { background: var(--card); padding: 20px; border-radius: 15px; border: 2px solid var(--border); }
+        .plat-card.active { border-color: var(--success); }
     </style>
 </head>
 <body>
 
-<div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 20px;">
-    <div class="glass-card" style="width: 100%; max-width: 350px; text-align: center;">
-        <h1 style="color: var(--accent); font-size: 2rem; margin-bottom: 5px;">ANDY VIP</h1>
-        <p style="font-size: 0.7rem; color: #9ca3af; margin-bottom: 30px;">BUSINESS ADMINISTRATION</p>
-        <input type="email" id="email" placeholder="Usuario Corporativo">
-        <input type="password" id="pass" placeholder="Contraseña Segura">
-        <button onclick="login()" class="btn-premium" style="margin-top: 15px;">ACCEDER AL PANEL</button>
+<div id="login-scr" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 30px;">
+    <div class="glass-card" style="width: 100%; text-align: center;">
+        <h1 style="color: var(--accent); font-size: 2.2rem;">ANDY GLOBAL</h1>
+        <p style="color: #8b949e; margin-bottom: 30px;">Access Management System</p>
+        <input type="email" id="log-email" placeholder="Usuario">
+        <input type="password" id="log-pass" placeholder="Contraseña">
+        <button onclick="handleLogin()" class="btn-main">ENTRAR AL SISTEMA</button>
     </div>
 </div>
 
 <div id="app" style="display: none;">
     <div class="header">
-        <h1>ANDY BUSINESS</h1>
-        <p id="user-display">Panel de Control Activo</p>
+        <h1 id="user-name">Hola, Andy <span class="badge-role" id="role-tag">ADMIN</span></h1>
+        <p style="font-size: 0.7rem; color: #8b949e; margin: 5px 0 0;">Guayaquil, Ecuador | Gestión Activa</p>
     </div>
 
     <div class="container">
-        <div id="sec-dash" class="section active">
-            <div class="stats-grid">
-                <div class="stat-card"><h4>VENTAS HOY</h4><p>$0.00</p></div>
-                <div class="stat-card"><h4>LÁMINAS</h4><p id="total-count">0</p></div>
-            </div>
-            
-            <div class="glass-card">
-                <h3>📦 Generar Nuevo Pedido</h3>
-                <input type="text" id="cli-nom" placeholder="Nombre del Cliente">
-                <input type="text" id="cli-wa" placeholder="WhatsApp (Ej: 593...)">
-                <div class="search-area">
-                    <input type="text" id="search" placeholder="🔍 Buscar entre miles de láminas..." onkeyup="filter()">
-                </div>
-                <div id="grid-items" class="grid"></div>
+        
+        <div id="sec-user" class="section">
+            <div class="glass-card user-mode">
+                <h2>✨ Obtén tu Cuenta</h2>
+                <input type="text" id="cust-name" placeholder="Tu nombre de WhatsApp">
+                <p>Selecciona tu servicio:</p>
+                <div class="platform-grid" id="user-platforms">
+                    </div>
+                <button onclick="requestAccount()" class="btn-main" style="margin-top: 20px; background: var(--success);">ACTIVAR AHORA ✅</button>
             </div>
         </div>
 
-        <div id="sec-inv" class="section">
+        <div id="sec-iptv" class="section">
             <div class="glass-card">
-                <h3>📤 Registro de Material</h3>
-                <input type="text" id="in-title" placeholder="Título de la Lámina">
-                <input type="text" id="in-url" placeholder="URL de Imagen (Directa)">
-                <select id="in-cat">
-                    <option value="Escolar">Escolar</option>
-                    <option value="Anime">Anime</option>
-                    <option value="Dibujos">Dibujos Animados</option>
-                    <option value="Arte">Arte y Cultura</option>
+                <h3>➕ Agregar IPTV / Plataforma</h3>
+                <input type="text" id="iptv-name" placeholder="Nombre (Ej: IPTV Premium)">
+                <input type="text" id="iptv-creds" placeholder="Credenciales (User:Pass)">
+                <select id="iptv-type">
+                    <option value="IPTV">IPTV</option>
+                    <option value="Streaming">Streaming (Netflix/Disney)</option>
                 </select>
-                <textarea id="in-info" placeholder="Resumen informativo de la lámina..." rows="4"></textarea>
-                <button onclick="upload()" class="btn-premium">SUBIR A LA NUBE</button>
+                <button onclick="addIPTV()" class="btn-main">GUARDAR EN STOCK</button>
+            </div>
+            <div id="iptv-list"></div>
+        </div>
+
+        <div id="sec-admins" class="section">
+            <div class="glass-card">
+                <h3>👥 Nuevo Colaborador</h3>
+                <input type="text" id="adm-name" placeholder="Nombre completo">
+                <input type="number" id="adm-cupos" placeholder="Cupos de venta">
+                <select id="adm-role">
+                    <option value="Seller">Vendedor (Seller)</option>
+                    <option value="Admin">Administrador (Admin)</option>
+                </select>
+                <button onclick="addAdmin()" class="btn-main">CREAR ACCESO</button>
+            </div>
+            <div id="admin-list"></div>
+        </div>
+
+        <div id="sec-logs" class="section">
+            <div class="glass-card">
+                <h3>📜 Historial de Activaciones</h3>
+                <div id="log-container"></div>
             </div>
         </div>
+
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="showSec('sec-dash', this)"><span>🏠</span>DASHBOARD</button>
-        <button class="nav-item" onclick="showSec('sec-inv', this)"><span>📂</span>INVENTARIO</button>
-        <button class="nav-item" onclick="logout()"><span>🚪</span>SALIR</button>
+        <button class="nav-btn" onclick="nav('sec-user', this)"><span>📱</span>CLIENTE</button>
+        <button class="nav-btn" onclick="nav('sec-iptv', this)"><span>📺</span>IPTV</button>
+        <button class="nav-btn" onclick="nav('sec-admins', this)"><span>🛠️</span>EQUIPO</button>
+        <button class="nav-btn" onclick="nav('sec-logs', this)"><span>📊</span>LOGS</button>
     </nav>
-</div>
-
-<div id="action-bar" style="position: fixed; bottom: 85px; left: 15px; right: 15px; display: none;">
-    <button onclick="makePDF()" class="btn-premium" style="background: var(--success); box-shadow: 0 4px 14px var(--success);">
-        GENERAR PDF DE <span id="sel-num">0</span> LÁMINAS ✅
-    </button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // TU CONFIGURACIÓN ORIGINAL
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
         authDomain: "sistema-ventas-64a4c.firebaseapp.com",
@@ -170,99 +175,146 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let laminas = [];
-    let selected = [];
+    let currentUser = null;
+    let selectedIPTV = null;
 
-    // --- CARGAR DATOS ---
-    onSnapshot(query(collection(db, "laminas_andy"), orderBy("titulo", "asc")), snap => {
-        laminas = [];
-        snap.forEach(d => laminas.push({ id: d.id, ...d.data() }));
-        document.getElementById('total-count').innerText = laminas.length;
-        render(laminas);
+    // --- MANEJO DE SESIÓN ---
+    window.handleLogin = async () => {
+        const e = document.getElementById('log-email').value;
+        const p = document.getElementById('log-pass').value;
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error: Verifica tus datos"); }
+    };
+
+    onAuthStateChanged(auth, user => {
+        if(user) {
+            currentUser = user;
+            document.getElementById('login-scr').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            loadData();
+        } else {
+            document.getElementById('login-scr').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+        }
     });
-
-    window.render = (data) => {
-        const container = document.getElementById('grid-items');
-        container.innerHTML = data.map(l => `
-            <div class="item-card ${selected.includes(l.id)?'selected':''}" onclick="toggle('${l.id}')">
-                <span class="badge">${l.cat || 'General'}</span>
-                <img src="${l.url}" loading="lazy">
-                <div class="item-info"><b>${l.titulo}</b></div>
-            </div>
-        `).join('');
-    };
-
-    window.filter = () => {
-        const t = document.getElementById('search').value.toLowerCase();
-        render(laminas.filter(l => l.titulo.toLowerCase().includes(t)));
-    };
-
-    window.toggle = (id) => {
-        const idx = selected.indexOf(id);
-        if(idx > -1) selected.splice(idx, 1); else selected.push(id);
-        document.getElementById('sel-num').innerText = selected.length;
-        document.getElementById('action-bar').style.display = selected.length > 0 ? 'block' : 'none';
-        render(laminas);
-    };
-
-    // --- ACCIONES ---
-    window.upload = async () => {
-        const d = {
-            titulo: document.getElementById('in-title').value,
-            url: document.getElementById('in-url').value,
-            cat: document.getElementById('in-cat').value,
-            info: document.getElementById('in-info').value
-        };
-        if(!d.titulo || !d.url) return alert("Completa los campos");
-        await addDoc(collection(db, "laminas_andy"), d);
-        alert("Lámina añadida correctamente");
-        showSec('sec-dash');
-    };
-
-    window.makePDF = () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        const cli = document.getElementById('cli-nom').value || "Cliente";
-
-        selected.forEach((id, i) => {
-            const data = laminas.find(x => x.id === id);
-            if(i > 0) pdf.addPage();
-            
-            // Estilo de Hoja Profesional
-            pdf.setDrawColor(59, 130, 246); pdf.setLineWidth(1.5);
-            pdf.rect(5, 5, 200, 287);
-            
-            pdf.setFontSize(16); pdf.text(data.titulo.toUpperCase(), 105, 25, {align:"center"});
-            try { pdf.addImage(data.url, 'JPEG', 15, 35, 180, 160); } catch(e){}
-            
-            pdf.setFontSize(12); pdf.text("INFORMACIÓN RELEVANTE:", 20, 210);
-            const lines = pdf.splitTextToSize(data.info || "Sin información adicional.", 170);
-            pdf.text(lines, 20, 220);
-            
-            pdf.setFontSize(8); pdf.text(`Generado por ANDY BUSINESS - Para: ${cli}`, 105, 280, {align:"center"});
-        });
-
-        pdf.save(`Pedido_${cli}.pdf`);
-        const wa = document.getElementById('cli-wa').value;
-        if(wa) window.open(`https://wa.me/${wa}?text=Tu pack de láminas está listo 💎`, '_blank');
-    };
 
     // --- NAVEGACIÓN ---
-    window.login = async () => {
-        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value); } 
-        catch(e) { alert("Acceso Denegado"); }
-    };
-    window.logout = () => signOut(auth);
-    onAuthStateChanged(auth, u => {
-        document.getElementById('login-screen').style.display = u ? 'none' : 'flex';
-        document.getElementById('app').style.display = u ? 'block' : 'none';
-    });
-    window.showSec = (id, btn) => {
+    window.nav = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(btn) btn.classList.add('active');
+        btn.classList.add('active');
     };
+
+    // --- LÓGICA DE DATOS ---
+    function loadData() {
+        // Escuchar IPTV
+        onSnapshot(collection(db, "iptv_stock"), snap => {
+            const list = document.getElementById('iptv-list');
+            const grid = document.getElementById('user-platforms');
+            list.innerHTML = ""; grid.innerHTML = "";
+            snap.forEach(d => {
+                const item = d.data();
+                list.innerHTML += `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <b>${item.nombre}</b>
+                            <small>${item.tipo} | ${item.creds}</small>
+                        </div>
+                        <div class="actions">
+                            <button onclick="deleteItem('iptv_stock', '${d.id}')" class="action-btn btn-del">🗑️</button>
+                        </div>
+                    </div>`;
+                grid.innerHTML += `
+                    <div class="plat-card" onclick="selectAcc('${d.id}', this)">
+                        <b>${item.nombre}</b><br><small>Disponible</small>
+                    </div>`;
+            });
+        });
+
+        // Escuchar Historial
+        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
+            const container = document.getElementById('log-container');
+            container.innerHTML = "";
+            snap.forEach(d => {
+                const log = d.data();
+                const fecha = log.fecha?.toDate().toLocaleString() || 'Reciente';
+                container.innerHTML += `
+                    <div class="log-item">
+                        <b>${log.vendedor}</b> activó <b>${log.cuenta}</b><br>
+                        Para: ${log.cliente} <span class="log-date">${fecha}</span>
+                    </div>`;
+            });
+        });
+
+        // Escuchar Admins/Sellers
+        onSnapshot(collection(db, "usuarios_sistema"), snap => {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const u = d.data();
+                list.innerHTML += `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <b>${u.nombre} (${u.rol})</b>
+                            <small>Cupos: ${u.cupos}</small>
+                        </div>
+                        <div class="actions">
+                            <button onclick="editCupos('${d.id}', ${u.cupos})" class="action-btn btn-edit">🔄</button>
+                            <button onclick="deleteItem('usuarios_sistema', '${d.id}')" class="action-btn btn-del">🗑️</button>
+                        </div>
+                    </div>`;
+            });
+        });
+    }
+
+    // --- ACCIONES DE CREACIÓN ---
+    window.addIPTV = async () => {
+        const nombre = document.getElementById('iptv-name').value;
+        const creds = document.getElementById('iptv-creds').value;
+        const tipo = document.getElementById('iptv-type').value;
+        if(!nombre || !creds) return alert("Llena los datos");
+        await addDoc(collection(db, "iptv_stock"), { nombre, creds, tipo });
+        alert("Cuenta agregada!");
+    };
+
+    window.addAdmin = async () => {
+        const nombre = document.getElementById('adm-name').value;
+        const cupos = document.getElementById('adm-cupos').value;
+        const rol = document.getElementById('adm-role').value;
+        await addDoc(collection(db, "usuarios_sistema"), { nombre, cupos, rol });
+        alert("Usuario creado con éxito");
+    };
+
+    window.selectAcc = (id, el) => {
+        document.querySelectorAll('.plat-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        selectedIPTV = id;
+    };
+
+    window.requestAccount = async () => {
+        const cliente = document.getElementById('cust-name').value;
+        if(!cliente || !selectedIPTV) return alert("Pon tu nombre y elige cuenta");
+
+        // Simulación de activación y registro en historial
+        await addDoc(collection(db, "historial"), {
+            vendedor: "Andy (Admin)",
+            cliente: cliente,
+            cuenta: "IPTV Premium",
+            fecha: serverTimestamp()
+        });
+
+        alert(`¡Felicidades ${cliente}! Tu cuenta ha sido activada.`);
+    };
+
+    window.deleteItem = async (col, id) => {
+        if(confirm("¿Eliminar este registro?")) await deleteDoc(doc(db, col, id));
+    };
+
+    window.editCupos = async (id, actual) => {
+        const nuevo = prompt("Nuevo límite de cupos:", actual);
+        if(nuevo) await updateDoc(doc(db, "usuarios_sistema", id), { cupos: parseInt(nuevo) });
+    };
+
 </script>
 </body>
 </html>
