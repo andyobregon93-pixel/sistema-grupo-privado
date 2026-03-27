@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY GLOBAL | Sistema Pro Ultra-Rápido</title>
+    <title>ANDY GLOBAL | Entrega Detallada</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -35,7 +35,6 @@
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid var(--border); background: #0d1117; color: white; font-size: 16px; }
         
         .btn-main { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; }
-        .btn-main:active { transform: scale(0.98); opacity: 0.9; }
 
         /* MODAL DE REGLAS */
         #rules-modal { 
@@ -45,8 +44,15 @@
         }
         .rules-content { background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--accent); width: 100%; max-width: 400px; }
         
-        #result-box { display: none; background: #065f46; padding: 20px; border-radius: 15px; text-align: center; margin-top: 15px; border: 2px solid var(--success); }
-        .copy-text { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; font-family: monospace; margin: 10px 0; display: block; font-size: 1.1rem; }
+        /* CAJA DE RESULTADO DETALLADA */
+        #result-box { display: none; background: #0d1117; padding: 15px; border-radius: 15px; margin-top: 15px; border: 2px solid var(--success); }
+        .copy-text { 
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; 
+            font-family: 'Courier New', Courier, monospace; margin: 10px 0; 
+            display: block; font-size: 0.85rem; white-space: pre-wrap; 
+            line-height: 1.4; color: #fff; text-align: left;
+            border: 1px dashed var(--success);
+        }
 
         .list-item { background: #0d1117; padding: 15px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 10px; }
         .actions-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 10px; }
@@ -62,7 +68,7 @@
         <label style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; margin-bottom: 20px; color: var(--success); font-weight: 600;">
             <input type="checkbox" id="accept-check" style="width: 20px; height: 20px;"> HE LEÍDO Y ACEPTO TODO
         </label>
-        <button onclick="confirmRules()" class="btn-main" style="background: var(--success);">OBTENER CUENTA YA ✅</button>
+        <button onclick="confirmRules()" class="btn-main" style="background: var(--success);">RECIBIR CUENTA DETALLADA ✅</button>
     </div>
 </div>
 
@@ -89,8 +95,9 @@
                 <button onclick="showRules()" class="btn-main">CONTINUAR ➔</button>
 
                 <div id="result-box">
-                    <b class="copy-text" id="account-data">...</b>
-                    <button onclick="copyToClipboard()" class="btn-main" style="padding: 10px; background: white; color: black;">COPIAR DATOS 📋</button>
+                    <p style="color:var(--success); font-weight:800; text-align:center; margin:0;">¡CUENTA LISTA! ✨</p>
+                    <div class="copy-text" id="account-data">...</div>
+                    <button onclick="copyToClipboard()" class="btn-main" style="padding: 10px; background: white; color: black;">COPIAR TODO 📋</button>
                 </div>
             </div>
         </div>
@@ -98,10 +105,10 @@
         <div id="sec-stock" class="section">
             <div class="glass-card">
                 <h3>📦 Gestión de Stock</h3>
-                <input type="text" id="stk-name" placeholder="Servicio">
-                <input type="text" id="stk-creds" placeholder="u:p">
-                <input type="number" id="stk-cupos" placeholder="Cupos">
-                <button onclick="addStock()" class="btn-main">GUARDAR STOCK</button>
+                <input type="text" id="stk-name" placeholder="Nombre Plataforma">
+                <textarea id="stk-creds" rows="4" placeholder="Pega aquí el formato detallado de la cuenta..."></textarea>
+                <input type="number" id="stk-cupos" placeholder="Cupos (Ej: 3)">
+                <button onclick="addStock()" class="btn-main">GUARDAR EN SISTEMA</button>
             </div>
             <div id="iptv-list"></div>
         </div>
@@ -124,8 +131,8 @@
                 <button onclick="saveRules()" class="btn-main" style="background: var(--gold); color: black;">GUARDAR REGLAS</button>
             </div>
             <div class="glass-card">
-                <h3>📜 Historial Completo</h3>
-                <button onclick="clearLogs()" class="btn-main" style="background: var(--danger); margin-bottom: 15px;">BORRAR TODO EL HISTORIAL</button>
+                <h3>📜 Historial</h3>
+                <button onclick="clearLogs()" class="btn-main" style="background: var(--danger); margin-bottom: 15px;">BORRAR TODO</button>
                 <div id="log-container"></div>
             </div>
         </div>
@@ -136,7 +143,6 @@
         <button class="nav-btn" onclick="nav('sec-stock', this)"><span>📦</span>STOCK</button>
         <button class="nav-btn" onclick="nav('sec-team', this)"><span>🛠️</span>EQUIPO</button>
         <button class="nav-btn" onclick="nav('sec-config', this)"><span>⚙️</span>AJUSTES</button>
-        <button class="nav-btn" onclick="handleLogout()"><span>🚪</span>SALIR</button>
     </nav>
 </div>
 
@@ -163,7 +169,7 @@
 
     window.handleLogin = async () => {
         try { await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value); } 
-        catch(e) { alert("Error"); }
+        catch(e) { alert("Error de ingreso"); }
     };
     window.handleLogout = () => signOut(auth);
 
@@ -177,7 +183,6 @@
     });
 
     function initData() {
-        // Reglas
         onSnapshot(doc(db, "ajustes", "reglas"), d => {
             if(d.exists()) {
                 cachedRules = d.data().texto;
@@ -186,7 +191,6 @@
             }
         });
 
-        // Stock (Memoria local para velocidad)
         onSnapshot(collection(db, "iptv_stock"), snap => {
             const select = document.getElementById('user-platforms-select');
             const list = document.getElementById('iptv-list');
@@ -203,7 +207,7 @@
                     }
                     cachedStock[i.nombre].push({ id: d.id, ...i });
                 }
-                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">CP: ${i.cupos}</span><br><small>${i.creds}</small>
+                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">CP: ${i.cupos}</span><br><small style="white-space:pre-wrap;">${i.creds.substring(0, 50)}...</small>
                 <div class="actions-row">
                     <button onclick="editVal('${d.id}', ${i.cupos}, 'iptv_stock')" class="btn-action" style="background:var(--accent)">EDITAR</button>
                     <button onclick="resetVal('${d.id}', ${i.inicial || i.cupos})" class="btn-action" style="background:var(--success)">RESET</button>
@@ -212,46 +216,40 @@
             });
         });
 
-        // Equipo
         onSnapshot(collection(db, "equipo_andy"), snap => {
             const list = document.getElementById('team-list');
             list.innerHTML = "";
             snap.forEach(d => {
                 const m = d.data();
                 list.innerHTML += `<div class="list-item"><b>${m.nombre}</b> (${m.rol})<br><small>${m.email}</small>
-                <div class="actions-row">
-                    <button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" class="btn-action" style="background:var(--danger)">ELIMINAR</button>
-                </div></div>`;
+                <div class="actions-row"><button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" class="btn-action" style="background:var(--danger)">X</button></div></div>`;
             });
         });
 
-        // Historial
-        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(15)), snap => {
+        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
             const cont = document.getElementById('log-container');
-            cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;"><b>${d.data().admin}</b> -> ${d.data().cliente} (<b>${d.data().cuenta}</b>)</div>`).join('');
+            cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;"><b>${d.data().admin}</b> -> ${d.data().cliente}</div>`).join('');
         });
     }
 
-    // ACCIONES RÁPIDAS
     window.showRules = () => {
         const cli = document.getElementById('cust-name').value;
         const plat = document.getElementById('user-platforms-select').value;
-        if(!cli || !plat) return alert("Faltan datos");
+        if(!cli || !plat) return alert("Completa los datos");
         document.getElementById('rules-modal').style.display = 'flex';
     };
 
     window.confirmRules = () => {
-        if(!document.getElementById('accept-check').checked) return alert("Debes aceptar las reglas");
+        if(!document.getElementById('accept-check').checked) return alert("Acepta las reglas");
         
         const plat = document.getElementById('user-platforms-select').value;
         const item = cachedStock[plat][0];
 
-        // ENTREGA INSTANTÁNEA
+        // ENTREGA CON FORMATO ORIGINAL (RESPETA EMOJIS Y SALTOS DE LÍNEA)
         document.getElementById('account-data').innerText = item.creds;
         document.getElementById('result-box').style.display = 'block';
         document.getElementById('rules-modal').style.display = 'none';
 
-        // ACTUALIZA FONDO
         updateDoc(doc(db, "iptv_stock", item.id), { cupos: item.cupos - 1 });
         addDoc(collection(db, "historial"), { admin: auth.currentUser.email.split('@')[0], cliente: document.getElementById('cust-name').value, cuenta: plat, fecha: serverTimestamp() });
         document.getElementById('accept-check').checked = false;
@@ -272,13 +270,12 @@
     };
 
     window.editVal = async (id, actual, col) => {
-        const n = prompt("Nuevo Valor:", actual);
+        const n = prompt("Nuevos Cupos:", actual);
         if(n !== null) await updateDoc(doc(db, col, id), { cupos: parseInt(n) });
     };
 
     window.resetVal = async (id, inicial) => {
         await updateDoc(doc(db, "iptv_stock", id), { cupos: inicial });
-        alert("Cupos reseteados");
     };
 
     window.clearLogs = async () => {
@@ -292,7 +289,7 @@
 
     window.copyToClipboard = () => {
         navigator.clipboard.writeText(document.getElementById('account-data').innerText);
-        alert("Copiado!");
+        alert("¡Copiado con éxito!");
     };
 
     window.nav = (id, btn) => {
@@ -300,6 +297,11 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
+    };
+
+    window.saveRules = async () => {
+        await setDoc(doc(db, "ajustes", "reglas"), { texto: document.getElementById('rules-input').value });
+        alert("Reglas guardadas");
     };
 </script>
 </body>
