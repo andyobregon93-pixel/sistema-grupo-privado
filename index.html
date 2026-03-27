@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOS LOCOS DEL IPTV | Admin Panel</title>
+    <title>LOS LOCOS DEL IPTV | Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -14,144 +14,135 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
 
-        .header { padding: 25px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(to bottom, #111827, var(--bg)); text-align: center; }
-        .header h1 { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--gold); }
+        /* HEADER FIJO */
+        .header { 
+            position: sticky; top: 0; z-index: 100;
+            padding: 15px 20px; border-bottom: 1px solid var(--border); 
+            background: rgba(10, 12, 16, 0.9); backdrop-filter: blur(10px);
+            text-align: center; 
+        }
+        .header h1 { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--gold); }
 
+        /* NAVEGACIÓN INFERIOR PROFESIONAL */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(15px);
+            background: rgba(22, 27, 34, 0.98); backdrop-filter: blur(15px);
             display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 1000;
         }
-        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.2s; width: 20%; }
         .nav-btn.active { color: var(--accent); }
+        .nav-btn span { font-size: 1.4rem; }
 
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* CONTENEDOR DE SECCIONES */
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .section { display: none; } /* ESTO OCULTA TODO POR DEFECTO */
+        .section.active { display: block; animation: slideUp 0.25s ease-out; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .glass-card { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 18px; margin-bottom: 15px; }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid var(--border); background: #0d1117; color: white; font-size: 16px; }
         
         .btn-main { 
-            background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; 
-            width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s;
+            background: var(--accent); color: white; border: none; padding: 14px; border-radius: 12px; 
+            width: 100%; font-weight: 700; cursor: pointer; transition: 0.1s;
             box-shadow: 0 4px 0px #4338ca;
         }
-        .btn-main:active { transform: translateY(3px); box-shadow: 0 1px 0px #4338ca; }
-        .btn-logout { background: #30363d; color: var(--danger); font-size: 0.8rem; padding: 8px 15px; border-radius: 8px; border: 1px solid var(--danger); margin-top: 10px; cursor: pointer; }
-
-        #rules-modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.96); z-index: 2000; display: none;
-            align-items: center; justify-content: center; padding: 20px;
-        }
-        .rules-content { background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--accent); width: 100%; max-width: 400px; }
+        .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0px #4338ca; }
         
+        /* RESULTADO DE ENTREGA */
         #result-box { display: none; background: #0d1117; padding: 15px; border-radius: 15px; margin-top: 15px; border: 2px solid var(--success); }
         .copy-text { 
-            background: #111827; padding: 15px; border-radius: 10px; 
-            font-family: 'Courier New', monospace; margin: 10px 0; 
-            display: block; font-size: 0.85rem; white-space: pre-wrap; 
-            color: #fff; border: 1px dashed var(--success); text-align: left;
+            background: #111827; padding: 12px; border-radius: 10px; 
+            font-family: monospace; margin: 10px 0; display: block; font-size: 0.85rem; 
+            white-space: pre-wrap; color: #fff; border: 1px dashed var(--success);
         }
 
-        .list-item { background: #0d1117; padding: 15px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 10px; }
-        .actions-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 10px; }
-        .btn-action { padding: 8px; border-radius: 8px; border: none; font-size: 0.6rem; font-weight: 800; color: white; cursor: pointer; }
+        .list-item { background: #0d1117; padding: 12px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .actions-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .btn-action { padding: 8px; border-radius: 8px; border: none; font-size: 0.6rem; font-weight: 800; color: white; }
         
-        .admin-only { display: none; }
+        .admin-only { display: none; } /* Seguridad visual */
     </style>
 </head>
 <body>
 
-<div id="rules-modal">
-    <div class="rules-content">
-        <h2 style="color: var(--gold); margin: 0 0 15px 0;">⚠️ REGLAS DEL EQUIPO</h2>
-        <div id="rules-text-display" style="font-size: 0.85rem; color: #ccc; margin-bottom: 20px; white-space: pre-wrap; max-height: 250px; overflow-y: auto; background: #0d1117; padding: 10px; border-radius: 10px;">Cargando...</div>
-        <label style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; margin-bottom: 20px; color: var(--success); font-weight: 600;">
-            <input type="checkbox" id="accept-check" style="width: 22px; height: 22px;"> ACEPTO LAS REGLAS
-        </label>
-        <button onclick="confirmRules()" class="btn-main" style="background: var(--success); box-shadow: 0 4px 0 #166534;">ENTREGAR CUENTA ✅</button>
-    </div>
-</div>
-
 <div id="login-scr" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 30px;">
     <div class="glass-card" style="width: 100%; text-align: center; border: 2px solid var(--gold);">
-        <h1 style="color: var(--gold); font-size: 1.8rem; margin-bottom: 5px;">LOS LOCOS DEL IPTV</h1>
-        <p style="font-size: 0.8rem; color: #8b949e; margin-bottom: 20px;">Acceso para el Equipo</p>
+        <h1 style="color: var(--gold); margin-bottom: 20px;">LOS LOCOS DEL IPTV</h1>
         <input type="email" id="log-email" placeholder="Correo">
         <input type="password" id="log-pass" placeholder="Contraseña">
-        <button onclick="handleLogin()" class="btn-main">ENTRAR AHORA</button>
+        <button onclick="handleLogin()" class="btn-main">ENTRAR AL PANEL</button>
     </div>
 </div>
 
 <div id="app" style="display: none;">
     <div class="header">
         <h1>LOS LOCOS DEL IPTV</h1>
-        <small id="user-display" style="color: var(--accent); font-weight: 600;"></small><br>
-        <button onclick="handleLogout()" class="btn-logout">CERRAR SESIÓN 🚪</button>
+        <small id="role-display" style="color: var(--accent); font-weight: 800;"></small>
     </div>
 
     <div class="container">
-        <div id="sec-user" class="section active">
+        <div id="sec-pedir" class="section active">
             <div class="glass-card">
-                <h3 style="margin-top:0;">🚀 Generar Activación</h3>
+                <h3 style="margin-top:0;">📱 Generar Venta</h3>
                 <input type="text" id="cust-name" placeholder="Nombre del Cliente">
-                <select id="user-platforms-select"><option value="">Cargando...</option></select>
-                <button onclick="showRules()" class="btn-main">CONTINUAR ➔</button>
+                <select id="user-platforms-select"><option value="">Cargando servicios...</option></select>
+                <button onclick="preConfirm()" class="btn-main">CONTINUAR</button>
 
                 <div id="result-box">
-                    <p style="color:var(--success); font-weight:800; text-align:center; margin:0;">¡CUENTA LISTA! ✨</p>
-                    <div class="copy-text" id="account-data">...</div>
-                    <button onclick="copyToClipboard()" class="btn-main" style="background: white; color: black; box-shadow: 0 4px 0 #ccc;">COPIAR TODO 📋</button>
+                    <div class="copy-text" id="account-data"></div>
+                    <button onclick="copyToClipboard()" class="btn-main" style="background: white; color: black; box-shadow: 0 4px 0 #ccc;">COPIAR DATOS 📋</button>
                 </div>
             </div>
         </div>
 
-        <div id="sec-stock" class="section admin-only">
+        <div id="sec-stock" class="section">
             <div class="glass-card">
-                <h3>📦 Cargar Stock</h3>
-                <input type="text" id="stk-name" placeholder="Servicio (Ej: MAGIS TV)">
-                <textarea id="stk-creds" rows="5" placeholder="Pega el formato detallado aquí..."></textarea>
-                <input type="number" id="stk-cupos" placeholder="Cupos">
-                <button onclick="addStock()" class="btn-main" style="background: var(--gold); color: black; box-shadow: 0 4px 0 #b45309;">GUARDAR</button>
+                <h3>📦 Cargar Inventario</h3>
+                <input type="text" id="stk-name" placeholder="Servicio (Ej: MAGIS)">
+                <textarea id="stk-creds" rows="4" placeholder="Pega el formato ordenado aquí..."></textarea>
+                <input type="number" id="stk-cupos" placeholder="Número de Cupos">
+                <button onclick="addStock()" class="btn-main" style="background: var(--gold); color: black; box-shadow: 0 4px 0 #b45309;">GUARDAR EN STOCK</button>
             </div>
             <div id="iptv-list"></div>
         </div>
 
-        <div id="sec-team" class="section admin-only">
+        <div id="sec-equipo" class="section">
             <div class="glass-card">
-                <h3>👥 Gestión del Equipo</h3>
+                <h3>👥 Control de Miembros</h3>
                 <input type="text" id="tm-name" placeholder="Nombre">
                 <input type="email" id="tm-email" placeholder="Correo">
                 <select id="tm-role"><option value="Seller">Vendedor</option><option value="Admin">Admin</option></select>
-                <button onclick="addTeam()" class="btn-main">CREAR ACCESO</button>
+                <button onclick="addTeam()" class="btn-main">AGREGAR AL EQUIPO</button>
             </div>
             <div id="team-list"></div>
         </div>
 
-        <div id="sec-config" class="section admin-only">
+        <div id="sec-ajustes" class="section">
             <div class="glass-card">
-                <h3>📝 Reglas y Ajustes</h3>
-                <textarea id="rules-input" rows="4"></textarea>
-                <button onclick="saveRules()" class="btn-main">GUARDAR REGLAS</button>
+                <h3>⚙️ Configuración Global</h3>
+                <label>Mensaje de Reglas:</label>
+                <textarea id="rules-input" rows="3"></textarea>
+                <button onclick="saveRules()" class="btn-main" style="margin-bottom: 20px;">GUARDAR REGLAS</button>
+                
+                <button onclick="clearLogs()" class="btn-main" style="background: var(--danger); box-shadow: 0 4px 0 #991b1b;">LIMPIAR HISTORIAL</button>
+                <button onclick="handleLogout()" class="btn-main" style="background: #333; box-shadow: 0 4px 0 #000; margin-top: 15px;">CERRAR SESIÓN</button>
             </div>
             <div class="glass-card">
-                <h3>📜 Historial Global</h3>
-                <button onclick="clearLogs()" class="btn-main" style="background: var(--danger); box-shadow: 0 4px 0 #991b1b;">BORRAR TODO</button>
-                <div id="log-container" style="margin-top: 15px;"></div>
+                <h3>📜 Registro de Ventas</h3>
+                <div id="log-container"></div>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="nav('sec-user', this)"><span>📱</span>PEDIR</button>
+        <button class="nav-btn active" onclick="nav('sec-pedir', this)"><span>📱</span>PEDIR</button>
         <button class="nav-btn admin-only" onclick="nav('sec-stock', this)"><span>📦</span>STOCK</button>
-        <button class="nav-btn admin-only" onclick="nav('sec-team', this)"><span>🛠️</span>EQUIPO</button>
-        <button class="nav-btn admin-only" onclick="nav('sec-config', this)"><span>⚙️</span>AJUSTES</button>
+        <button class="nav-btn admin-only" onclick="nav('sec-equipo', this)"><span>🛠️</span>EQUIPO</button>
+        <button class="nav-btn admin-only" onclick="nav('sec-ajustes', this)"><span>⚙️</span>AJUSTES</button>
     </nav>
 </div>
 
@@ -173,56 +164,42 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const ADMIN_EMAIL = "andyobregon799@gmail.com"; // TU CORREO ADMIN
-    let cachedStock = {};
+    const ADMIN_PRINCIPAL = "andyobregon799@gmail.com"; 
     let currentUserRole = "Seller";
+    let cachedStock = {};
 
     window.handleLogin = async () => {
         const e = document.getElementById('log-email').value;
         const p = document.getElementById('log-pass').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } 
-        catch(err) { alert("Error: Verifica tu correo y clave."); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error al entrar."); }
     };
 
     window.handleLogout = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, async u => {
         if(u) {
-            // REGLA DE ORO: SI ES TU CORREO, SIEMPRE ES ADMIN
-            if(u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            if(u.email.toLowerCase() === ADMIN_PRINCIPAL.toLowerCase()) {
                 currentUserRole = "Admin";
             } else {
-                const q = query(collection(db, "equipo_andy"), where("email", "==", u.email));
-                const snap = await getDocs(q);
+                const snap = await getDocs(query(collection(db, "equipo_andy"), where("email", "==", u.email)));
                 if(!snap.empty) currentUserRole = snap.docs[0].data().rol;
             }
             
-            if(currentUserRole === "Admin") {
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-            }
+            if(currentUserRole === "Admin") document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
             
             document.getElementById('login-scr').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            document.getElementById('user-display').innerText = `MODO: ${currentUserRole.toUpperCase()}`;
-            initSystem();
-        } else {
-            document.getElementById('login-scr').style.display = 'flex';
-            document.getElementById('app').style.display = 'none';
+            document.getElementById('role-display').innerText = `MODO: ${currentUserRole.toUpperCase()}`;
+            initApp();
         }
     });
 
-    function initSystem() {
-        onSnapshot(doc(db, "ajustes", "reglas"), d => {
-            if(d.exists()) {
-                document.getElementById('rules-text-display').innerText = d.data().texto;
-                document.getElementById('rules-input').value = d.data().texto;
-            }
-        });
-
+    function initApp() {
+        // STOCK DINÁMICO
         onSnapshot(collection(db, "iptv_stock"), snap => {
-            const select = document.getElementById('user-platforms-select');
+            const sel = document.getElementById('user-platforms-select');
             const list = document.getElementById('iptv-list');
-            select.innerHTML = '<option value="">Selecciona...</option>';
+            sel.innerHTML = '<option value="">Elige servicio...</option>';
             list.innerHTML = "";
             cachedStock = {};
 
@@ -231,19 +208,23 @@
                 if(i.cupos > 0) {
                     if(!cachedStock[i.nombre]) {
                         cachedStock[i.nombre] = [];
-                        select.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+                        sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
                     }
                     cachedStock[i.nombre].push({ id: d.id, ...i });
                 }
-                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">CP: ${i.cupos}</span><br><small style="white-space:pre-wrap; font-size:9px;">${i.creds.substring(0, 40)}...</small>
+                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">CP: ${i.cupos}</span>
                 <div class="actions-row">
                     <button onclick="editVal('${d.id}', ${i.cupos})" class="btn-action" style="background:var(--accent)">EDIT</button>
-                    <button onclick="resetVal('${d.id}', ${i.inicial || i.cupos})" class="btn-action" style="background:var(--success)">RESET</button>
-                    <button onclick="deleteDoc(doc(db,'iptv_stock','${d.id}'))" class="btn-action" style="background:var(--danger)">X</button>
+                    <button onclick="resetVal('${d.id}', ${i.inicial})" class="btn-action" style="background:var(--success)">RESET</button>
+                    <button onclick="deleteDoc(doc(db,'iptv_stock','${d.id}'))" class="btn-action" style="background:var(--danger)">BORRAR</button>
                 </div></div>`;
             });
         });
 
+        // REGLAS
+        onSnapshot(doc(db, "ajustes", "reglas"), d => { if(d.exists()) document.getElementById('rules-input').value = d.data().texto; });
+
+        // EQUIPO E HISTORIAL (SOLO ADMIN)
         if(currentUserRole === "Admin") {
             onSnapshot(collection(db, "equipo_andy"), snap => {
                 const list = document.getElementById('team-list');
@@ -251,32 +232,39 @@
                 snap.forEach(d => {
                     const m = d.data();
                     list.innerHTML += `<div class="list-item"><b>${m.nombre}</b> (${m.rol})<br><small>${m.email}</small>
-                    <div class="actions-row"><button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" class="btn-action" style="background:var(--danger)">REMOVER</button></div></div>`;
+                    <button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" style="background:var(--danger); border:none; color:white; padding:5px; border-radius:5px; margin-top:5px; width:100%;">ELIMINAR</button></div>`;
                 });
             });
 
-            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(15)), snap => {
+            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
                 const cont = document.getElementById('log-container');
-                cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.75rem; border-bottom:1px solid #333; padding:8px 0;"><b>${d.data().admin.split('@')[0]}</b> -> ${d.data().cuenta}</div>`).join('');
+                cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;"><b>${d.data().admin.split('@')[0]}</b> entregó <b>${d.data().cuenta}</b></div>`).join('');
             });
         }
     }
 
-    window.showRules = () => {
-        if(!document.getElementById('cust-name').value || !document.getElementById('user-platforms-select').value) return alert("Faltan datos");
-        document.getElementById('rules-modal').style.display = 'flex';
+    // NAVEGACIÓN ENTRE VENTANAS
+    window.nav = (targetId, btn) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(targetId).classList.add('active');
+        btn.classList.add('active');
+        // Resetear caja de resultado si se cambia de ventana
+        document.getElementById('result-box').style.display = 'none';
     };
 
-    window.confirmRules = () => {
-        if(!document.getElementById('accept-check').checked) return alert("Acepta las reglas");
+    // ACCIONES
+    window.preConfirm = () => {
         const plat = document.getElementById('user-platforms-select').value;
+        const cli = document.getElementById('cust-name').value;
+        if(!plat || !cli) return alert("Completa los datos.");
+        
         const item = cachedStock[plat][0];
         document.getElementById('account-data').innerText = item.creds;
         document.getElementById('result-box').style.display = 'block';
-        document.getElementById('rules-modal').style.display = 'none';
+
         updateDoc(doc(db, "iptv_stock", item.id), { cupos: item.cupos - 1 });
-        addDoc(collection(db, "historial"), { admin: auth.currentUser.email, cliente: document.getElementById('cust-name').value, cuenta: plat, fecha: serverTimestamp() });
-        document.getElementById('accept-check').checked = false;
+        addDoc(collection(db, "historial"), { admin: auth.currentUser.email, cliente: cli, cuenta: plat, fecha: serverTimestamp() });
     };
 
     window.addStock = () => {
@@ -293,12 +281,13 @@
         if(n && e) addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r });
     };
 
-    window.editVal = async (id, actual) => {
+    window.editVal = (id, actual) => {
         const n = prompt("Nuevos cupos:", actual);
-        if(n) await updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(n) });
+        if(n) updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(n) });
     };
 
     window.resetVal = (id, inicial) => updateDoc(doc(db, "iptv_stock", id), { cupos: inicial });
+
     window.clearLogs = async () => {
         if(confirm("¿Borrar historial?")) {
             const snap = await getDocs(collection(db, "historial"));
@@ -309,13 +298,7 @@
     };
 
     window.saveRules = () => setDoc(doc(db, "ajustes", "reglas"), { texto: document.getElementById('rules-input').value });
-    window.copyToClipboard = () => { navigator.clipboard.writeText(document.getElementById('account-data').innerText); alert("Copiado!"); };
-    window.nav = (id, btn) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
-    };
+    window.copyToClipboard = () => { navigator.clipboard.writeText(document.getElementById('account-data').innerText); alert("¡Copiado!"); };
 </script>
 </body>
 </html>
