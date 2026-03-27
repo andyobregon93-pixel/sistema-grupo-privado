@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOS LOCOS DEL IPTV | Panel Oficial</title>
+    <title>ANDY - SISTEMA IPTV</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -13,24 +13,24 @@
             --border: #30363d; --gold: #f59e0b;
         }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
 
         .header { position: sticky; top: 0; z-index: 100; padding: 15px; border-bottom: 1px solid var(--border); background: rgba(10, 12, 16, 0.9); backdrop-filter: blur(10px); text-align: center; }
-        .header h1 { margin: 0; font-size: 1.1rem; color: var(--gold); text-transform: uppercase; }
+        .header h1 { margin: 0; font-size: 1.2rem; color: var(--gold); font-weight: 800; }
 
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .section { display: none; animation: fadeIn 0.2s ease-in-out; }
+        .section { display: none; animation: fadeIn 0.2s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; }
+        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid var(--border); background: #0d1117; color: white; font-size: 16px; }
 
         .btn-main { 
             background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; 
             width: 100%; font-weight: 800; cursor: pointer; position: relative;
-            transition: all 0.2s ease; box-shadow: 0 4px 0 #4338ca;
+            transition: 0.2s; box-shadow: 0 4px 0 #4338ca; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #4338ca; }
         .btn-main:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -43,17 +43,24 @@
         }
         .rules-content { background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--accent); width: 100%; max-width: 400px; text-align: center; }
 
-        .loader { display: none; width: 18px; height: 18px; border: 3px solid #fff; border-bottom-color: transparent; border-radius: 50%; animation: rotation 1s linear infinite; margin-left: 10px; vertical-align: middle; }
+        .loader { display: none; width: 18px; height: 18px; border: 3px solid #fff; border-bottom-color: transparent; border-radius: 50%; animation: rotation 1s linear infinite; }
         @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: #161b22; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.6rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 25%; }
+        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 25%; }
         .nav-btn.active { color: var(--accent); }
+        .nav-btn span { font-size: 1.4rem; }
 
         #result-box { display: none; background: #0d1117; padding: 15px; border-radius: 15px; margin-top: 15px; border: 2px solid var(--success); }
-        .copy-text { background: #111827; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; border: 1px dashed var(--success); color: #fff; }
+        .copy-text { background: #111827; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; border: 1px dashed var(--success); color: #fff; text-align: left; }
 
-        .list-item { background: #0d1117; padding: 12px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 10px; }
+        /* DETALLE DE STOCK MEJORADO */
+        .list-item { background: #0d1117; padding: 15px; border-radius: 18px; border: 1px solid var(--border); margin-bottom: 12px; }
+        .stk-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .stk-creds-preview { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; font-size: 0.75rem; color: #8b949e; margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .actions-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .btn-action { padding: 10px; border-radius: 10px; border: none; font-size: 0.7rem; font-weight: 800; color: white; cursor: pointer; }
+        
         .admin-only { display: none; }
     </style>
 </head>
@@ -61,79 +68,87 @@
 
 <div id="rules-modal">
     <div class="rules-content">
-        <h2 style="color: var(--gold); margin-top: 0;">⚠️ REGLAS IPTV</h2>
-        <div id="rules-text-display" style="font-size: 0.85rem; color: #ccc; margin-bottom: 20px; white-space: pre-wrap; max-height: 200px; overflow-y: auto; background: #0d1117; padding: 10px; border-radius: 10px;"></div>
-        <label style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem; margin-bottom: 20px; color: var(--success); font-weight: 800;">
-            <input type="checkbox" id="accept-check" style="width: 20px; height: 20px;"> ACEPTO LAS REGLAS
+        <h2 style="color: var(--gold); margin-top: 0;">REGLAS DE ENTREGA</h2>
+        <div id="rules-text-display" style="font-size: 0.85rem; color: #ccc; margin-bottom: 20px; white-space: pre-wrap; max-height: 200px; overflow-y: auto; background: #0d1117; padding: 10px; border-radius: 10px; text-align: left;"></div>
+        <label style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem; margin-bottom: 20px; color: var(--success); font-weight: 800;">
+            <input type="checkbox" id="accept-check" style="width: 22px; height: 22px;"> ACEPTO LAS REGLAS
         </label>
-        <button id="btn-confirmar" onclick="confirmarEntrega(this)" class="btn-main" style="background: var(--success); box-shadow: 0 4px 0 #166534;">ENTREGAR AHORA <div class="loader"></div></button>
-        <button onclick="cerrarModal()" style="background:none; border:none; color:var(--danger); margin-top:15px; font-weight:800;">CANCELAR</button>
+        <button id="btn-confirmar" onclick="confirmarEntrega(this)" class="btn-main" style="background: var(--success); box-shadow: 0 4px 0 #166534;">GENERAR CUENTA <div class="loader"></div></button>
+        <button onclick="cerrarModal()" style="background:none; border:none; color:var(--danger); margin-top:15px; font-weight:800; width: 100%;">CANCELAR</button>
     </div>
 </div>
 
 <div id="login-scr" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 25px;">
     <div class="glass-card" style="width: 100%; text-align: center; border: 2px solid var(--gold);">
         <h1 style="color: var(--gold); margin-bottom: 25px;">LOS LOCOS DEL IPTV</h1>
-        <input type="email" id="log-email" placeholder="Usuario">
-        <input type="password" id="log-pass" placeholder="Clave">
-        <button onclick="handleLogin(this)" class="btn-main">ENTRAR <div class="loader"></div></button>
+        <input type="email" id="log-email" placeholder="Correo Electrónico">
+        <input type="password" id="log-pass" placeholder="Contraseña">
+        <button onclick="handleLogin(this)" class="btn-main">ENTRAR AL SISTEMA <div class="loader"></div></button>
     </div>
 </div>
 
 <div id="app" style="display: none;">
     <div class="header">
-        <h1>LOS LOCOS DEL IPTV</h1>
+        <h1 id="brand-name">SISTEMA ANDY</h1>
         <small id="role-tag" style="color: var(--accent); font-weight: 800;"></small>
     </div>
 
     <div class="container">
         <div id="sec-pedir" class="section active">
             <div class="glass-card">
-                <h3>📱 Nueva Venta</h3>
-                <input type="text" id="cust-name" placeholder="Cliente">
-                <select id="user-platforms-select"><option value="">Cargando...</option></select>
-                <button onclick="abrirModalReglas()" class="btn-main">OBTENER CUENTA</button>
+                <h3>📱 Venta de Cuentas</h3>
+                <input type="text" id="cust-name" placeholder="Nombre del Cliente">
+                <select id="user-platforms-select"><option value="">Cargando Stock...</option></select>
+                <button onclick="abrirModalReglas()" class="btn-main">OBTENER DATOS</button>
 
                 <div id="result-box">
+                    <p style="color: var(--success); font-weight: 800; text-align: center; margin: 0 0 10px 0;">¡CUENTA GENERADA!</p>
                     <div class="copy-text" id="account-data"></div>
-                    <button onclick="copyToClipboard(this)" class="btn-main" style="background: white; color: black; box-shadow: 0 4px 0 #ccc; margin-top:10px;">COPIAR TODO 📋</button>
+                    <button onclick="copyToClipboard(this)" class="btn-main" style="background: white; color: black; box-shadow: 0 4px 0 #ccc; margin-top:12px;">COPIAR DATOS 📋</button>
                 </div>
             </div>
         </div>
 
         <div id="sec-stock" class="section">
             <div class="glass-card">
-                <h3>📦 Cargar Stock</h3>
-                <input type="text" id="stk-name" placeholder="Servicio (Ej: MAGIS)">
-                <textarea id="stk-creds" rows="4" placeholder="Formato de la cuenta..."></textarea>
-                <input type="number" id="stk-cupos" placeholder="Cupos">
-                <button onclick="addStock(this)" class="btn-main" style="background: var(--gold); color: black; box-shadow: 0 4px 0 #b45309;">GUARDAR <div class="loader"></div></button>
+                <h3>📦 Cargar Nuevo Inventario</h3>
+                <input type="text" id="stk-name" placeholder="Nombre del Servicio">
+                <textarea id="stk-creds" rows="4" placeholder="Pega aquí el contenido de la cuenta..."></textarea>
+                <input type="number" id="stk-cupos" placeholder="Cantidad de Cupos">
+                <button onclick="addStock(this)" class="btn-main" style="background: var(--gold); color: black; box-shadow: 0 4px 0 #b45309;">GUARDAR EN FIREBASE <div class="loader"></div></button>
             </div>
+            <h4 style="margin-left: 5px; color: var(--gold);">CUENTAS EN STOCK:</h4>
             <div id="iptv-list"></div>
         </div>
 
         <div id="sec-equipo" class="section">
             <div class="glass-card">
-                <h3>👥 Miembros</h3>
-                <input type="text" id="tm-name" placeholder="Nombre">
-                <input type="email" id="tm-email" placeholder="Correo">
-                <select id="tm-role"><option value="Seller">Vendedor</option><option value="Admin">Admin</option></select>
-                <button onclick="addTeam(this)" class="btn-main">REGISTRAR <div class="loader"></div></button>
+                <h3>👥 Gestión de Miembros</h3>
+                <input type="text" id="tm-name" placeholder="Nombre completo">
+                <input type="email" id="tm-email" placeholder="Correo de acceso">
+                <select id="tm-role">
+                    <option value="Seller">Vendedor (Acceso limitado)</option>
+                    <option value="Admin">Admin (Acceso total)</option>
+                </select>
+                <button onclick="addTeam(this)" class="btn-main">CREAR ACCESO <div class="loader"></div></button>
             </div>
             <div id="team-list"></div>
         </div>
 
         <div id="sec-ajustes" class="section">
             <div class="glass-card">
-                <h3>⚙️ Configuración</h3>
-                <textarea id="rules-input" rows="3" placeholder="Escribe las reglas aquí..."></textarea>
-                <button onclick="saveRules(this)" class="btn-main" style="margin-bottom:20px;">GUARDAR REGLAS <div class="loader"></div></button>
-                <button onclick="handleLogout()" class="btn-main" style="background: #333; box-shadow: 0 4px 0 #000;">SALIR DEL PANEL 🚪</button>
-                <hr style="border: 0.5px solid #333; margin: 20px 0;">
-                <button onclick="clearLogs(this)" class="btn-main" style="background: var(--danger); box-shadow: 0 4px 0 #991b1b;">LIMPIAR HISTORIAL <div class="loader"></div></button>
+                <h3>⚙️ Configuración y Reglas</h3>
+                <textarea id="rules-input" rows="4" placeholder="Escribe las reglas que deben aceptar..."></textarea>
+                <button onclick="saveRules(this)" class="btn-main" style="margin-bottom:20px;">ACTUALIZAR REGLAS <div class="loader"></div></button>
+                
+                <button onclick="handleLogout()" class="btn-main" style="background: #333; box-shadow: 0 4px 0 #000;">CERRAR SESIÓN 🚪</button>
+                <hr style="border: 0.5px solid #333; margin: 25px 0;">
+                
+                <h3 style="color: var(--danger);">Zona de Riesgo</h3>
+                <button onclick="clearLogs(this)" class="btn-main" style="background: var(--danger); box-shadow: 0 4px 0 #991b1b;">BORRAR TODO EL HISTORIAL <div class="loader"></div></button>
             </div>
             <div class="glass-card">
-                <h3>📜 Historial</h3>
+                <h3>📜 Registro de Movimientos</h3>
                 <div id="log-container"></div>
             </div>
         </div>
@@ -165,15 +180,16 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const ADMIN_ROOT = "andyobregon799@gmail.com";
-    let userRole = "Seller";
-    let stockData = {};
+    const MASTER_ADMIN = "andyobregon799@gmail.com";
+    let currentUserRole = "Seller";
+    let globalStock = {};
 
     async function work(btn, action) {
         const loader = btn.querySelector('.loader');
         btn.disabled = true;
         if(loader) loader.style.display = 'inline-block';
-        try { await action(); } finally { if(loader) loader.style.display = 'none'; btn.disabled = false; }
+        try { await action(); } catch(e) { alert("Error: " + e.message); } 
+        finally { if(loader) loader.style.display = 'none'; btn.disabled = false; }
     }
 
     window.handleLogin = (btn) => work(btn, async () => {
@@ -184,20 +200,20 @@
 
     onAuthStateChanged(auth, async u => {
         if(u) {
-            if(u.email === ADMIN_ROOT) userRole = "Admin";
+            if(u.email === MASTER_ADMIN) currentUserRole = "Admin";
             else {
                 const s = await getDocs(query(collection(db, "equipo_andy"), where("email", "==", u.email)));
-                if(!s.empty) userRole = s.docs[0].data().rol;
+                if(!s.empty) currentUserRole = s.docs[0].data().rol;
             }
-            if(userRole === "Admin") document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
+            if(currentUserRole === "Admin") document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
             document.getElementById('login-scr').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            document.getElementById('role-tag').innerText = `MODO: ${userRole}`;
-            startData();
+            document.getElementById('role-tag').innerText = `MODO: ${currentUserRole.toUpperCase()}`;
+            loadData();
         }
     });
 
-    function startData() {
+    function loadData() {
         onSnapshot(doc(db, "ajustes", "reglas"), d => {
             if(d.exists()) {
                 document.getElementById('rules-text-display').innerText = d.data().texto;
@@ -208,45 +224,61 @@
         onSnapshot(collection(db, "iptv_stock"), snap => {
             const sel = document.getElementById('user-platforms-select');
             const list = document.getElementById('iptv-list');
-            sel.innerHTML = '<option value="">Elegir...</option>';
+            sel.innerHTML = '<option value="">Seleccionar cuenta...</option>';
             list.innerHTML = "";
-            stockData = {};
+            globalStock = {};
+            
             snap.forEach(d => {
                 const i = d.data();
                 if(i.cupos > 0) {
-                    if(!stockData[i.nombre]) { stockData[i.nombre] = []; sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`; }
-                    stockData[i.nombre].push({ id: d.id, ...i });
+                    if(!globalStock[i.nombre]) { globalStock[i.nombre] = []; sel.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`; }
+                    globalStock[i.nombre].push({ id: d.id, ...i });
                 }
-                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> (CP: ${i.cupos})
-                <div class="actions-row">
-                    <button onclick="editVal('${d.id}', ${i.cupos})" class="btn-action" style="background:var(--accent)">EDIT</button>
-                    <button onclick="resetVal('${d.id}', ${i.inicial})" class="btn-action" style="background:var(--success)">RESET</button>
-                    <button onclick="deleteDoc(doc(db,'iptv_stock','${d.id}'))" class="btn-action" style="background:var(--danger)">X</button>
-                </div></div>`;
+                list.innerHTML += `
+                <div class="list-item">
+                    <div class="stk-info">
+                        <b style="color:var(--gold)">${i.nombre}</b>
+                        <span style="color:var(--success)">${i.cupos} / ${i.inicial || i.cupos}</span>
+                    </div>
+                    <div class="stk-creds-preview">${i.creds}</div>
+                    <div class="actions-row">
+                        <button onclick="editStock('${d.id}', ${i.cupos})" class="btn-action" style="background:var(--accent)">EDITAR</button>
+                        <button onclick="resetStock('${d.id}', ${i.inicial})" class="btn-action" style="background:var(--success)">RESET</button>
+                        <button onclick="deleteDoc(doc(db,'iptv_stock','${d.id}'))" class="btn-action" style="background:var(--danger)">BORRAR</button>
+                    </div>
+                </div>`;
             });
         });
 
-        if(userRole === "Admin") {
+        if(currentUserRole === "Admin") {
             onSnapshot(collection(db, "equipo_andy"), snap => {
-                document.getElementById('team-list').innerHTML = snap.docs.map(d => `<div class="list-item"><b>${d.data().nombre}</b> (${d.data().rol})</div>`).join('');
+                document.getElementById('team-list').innerHTML = snap.docs.map(d => `
+                <div class="list-item">
+                    <b>${d.data().nombre}</b> <small>(${d.data().rol})</small><br>
+                    <small>${d.data().email}</small>
+                    <button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" style="background:none; border:none; color:var(--danger); font-size:0.7rem; font-weight:800; float:right;">REMOVER</button>
+                </div>`).join('');
             });
-            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
-                document.getElementById('log-container').innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;">${d.data().admin.split('@')[0]} -> ${d.data().cuenta}</div>`).join('');
+            onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(15)), snap => {
+                document.getElementById('log-container').innerHTML = snap.docs.map(d => `
+                <div style="font-size:0.75rem; border-bottom:1px solid #333; padding:8px 0;">
+                    <span style="color:var(--accent)">${d.data().admin.split('@')[0]}</span> entregó <b>${d.data().cuenta}</b> a ${d.data().cliente}
+                </div>`).join('');
             });
         }
     }
 
     window.abrirModalReglas = () => {
-        if(!document.getElementById('cust-name').value || !document.getElementById('user-platforms-select').value) return alert("Faltan datos");
+        if(!document.getElementById('cust-name').value || !document.getElementById('user-platforms-select').value) return alert("Completa Cliente y Servicio");
         document.getElementById('rules-modal').style.display = 'flex';
     };
 
     window.cerrarModal = () => document.getElementById('rules-modal').style.display = 'none';
 
     window.confirmarEntrega = (btn) => work(btn, async () => {
-        if(!document.getElementById('accept-check').checked) return alert("Acepta las reglas.");
+        if(!document.getElementById('accept-check').checked) return alert("Debes aceptar las reglas.");
         const plat = document.getElementById('user-platforms-select').value;
-        const item = stockData[plat][0];
+        const item = globalStock[plat][0];
         document.getElementById('account-data').innerText = item.creds;
         document.getElementById('result-box').style.display = 'block';
         await updateDoc(doc(db, "iptv_stock", item.id), { cupos: item.cupos - 1 });
@@ -259,25 +291,25 @@
         const n = document.getElementById('stk-name').value.toUpperCase();
         const c = document.getElementById('stk-creds').value;
         const cp = parseInt(document.getElementById('stk-cupos').value);
-        if(n && c) await addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
+        if(n && c && cp) await addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
     });
 
     window.addTeam = (btn) => work(btn, async () => {
         const n = document.getElementById('tm-name').value;
         const e = document.getElementById('tm-email').value;
         const r = document.getElementById('tm-role').value;
-        await addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r });
+        if(n && e) await addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r });
     });
 
     window.saveRules = (btn) => work(btn, async () => {
         await setDoc(doc(db, "ajustes", "reglas"), { texto: document.getElementById('rules-input').value });
-        alert("Reglas guardadas.");
+        alert("Reglas actualizadas correctamente.");
     });
 
-    window.editVal = (id, act) => { const n = prompt("Nuevos cupos:", act); if(n) updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(n) }); };
-    window.resetVal = (id, ini) => updateDoc(doc(db, "iptv_stock", id), { cupos: ini });
+    window.editStock = (id, actual) => { const n = prompt("Nuevos cupos:", actual); if(n) updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(n) }); };
+    window.resetStock = (id, ini) => updateDoc(doc(db, "iptv_stock", id), { cupos: ini });
     window.clearLogs = (btn) => work(btn, async () => {
-        if(confirm("¿Borrar todo?")) {
+        if(confirm("¿Seguro que quieres borrar todo el historial?")) {
             const s = await getDocs(collection(db, "historial"));
             const b = writeBatch(db);
             s.forEach(d => b.delete(d.ref));
@@ -286,7 +318,7 @@
     });
 
     window.handleLogout = () => signOut(auth).then(() => location.reload());
-    window.copyToClipboard = (btn) => { navigator.clipboard.writeText(document.getElementById('account-data').innerText); alert("Copiado!"); };
+    window.copyToClipboard = (btn) => { navigator.clipboard.writeText(document.getElementById('account-data').innerText); alert("¡Copiado al portapapeles!"); };
     window.nav = (id, b) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(nb => nb.classList.remove('active'));
