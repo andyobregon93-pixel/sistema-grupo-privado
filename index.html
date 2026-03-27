@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY GLOBAL | IPTV Panel</title>
+    <title>ANDY GLOBAL | Business Suite</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -14,153 +14,130 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
 
         /* HEADER */
         .header { 
-            padding: 25px 20px; text-align: left; border-bottom: 1px solid var(--border);
+            padding: 25px 20px; border-bottom: 1px solid var(--border);
             background: linear-gradient(to bottom, #111827, var(--bg));
         }
         .header h1 { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--accent); }
         .badge-role { font-size: 0.6rem; background: var(--accent); padding: 2px 8px; border-radius: 10px; margin-left: 5px; vertical-align: middle; }
 
-        /* NAVIGATION */
+        /* NAVEGACIÓN */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
             background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(15px);
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid var(--border); z-index: 1000;
         }
-        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
-        .nav-btn.active { color: var(--accent); transform: translateY(-5px); }
-        .nav-btn i { font-size: 1.4rem; }
+        .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .nav-btn.active { color: var(--accent); }
 
-        /* CONTAINERS */
+        /* CONTENEDORES */
         .container { padding: 20px; max-width: 500px; margin: auto; }
-        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS & FORMS */
-        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        h3 { font-size: 1rem; margin-top: 0; display: flex; align-items: center; gap: 10px; color: #e6edf3; }
+        .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; }
         
-        input, select, textarea { 
-            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; 
-            border: 1px solid var(--border); background: #0d1117; color: white; font-size: 0.95rem;
+        input, select { 
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
+            border: 1px solid var(--border); background: #0d1117; color: white;
         }
 
         .btn-main { 
             background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px;
-            width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s;
+            width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
-        .btn-main:active { transform: scale(0.98); }
 
-        /* LISTAS (IPTV / ADMINS) */
+        /* LISTA DE STOCK CON BOTONES DE EDICIÓN */
         .list-item { 
             background: #0d1117; padding: 15px; border-radius: 14px; 
             border: 1px solid var(--border); margin-bottom: 10px;
-            display: flex; justify-content: space-between; align-items: center;
         }
-        .item-info b { display: block; font-size: 0.9rem; }
-        .item-info small { color: #8b949e; font-size: 0.75rem; }
+        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .cupo-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; }
         
-        .actions { display: flex; gap: 8px; }
-        .action-btn { padding: 8px; border-radius: 8px; border: none; color: white; font-size: 0.9rem; cursor: pointer; }
-        .btn-edit { background: var(--gold); }
+        .actions-row { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-action { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 0.7rem; font-weight: 700; color: white; cursor: pointer; }
+        .btn-edit { background: var(--accent); }
+        .btn-reset { background: var(--success); }
         .btn-del { background: var(--danger); }
 
-        /* HISTORIAL */
-        .log-item { font-size: 0.75rem; border-left: 2px solid var(--accent); padding-left: 10px; margin-bottom: 12px; }
-        .log-date { color: #8b949e; font-size: 0.65rem; }
-
-        /* USER INTERFACE */
-        .user-mode { text-align: center; padding-top: 50px; }
-        .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .plat-card { background: var(--card); padding: 20px; border-radius: 15px; border: 2px solid var(--border); }
-        .plat-card.active { border-color: var(--success); }
+        /* VISTA ENTREGA CUENTA */
+        #result-box { 
+            display: none; background: #065f46; padding: 20px; border-radius: 15px; 
+            text-align: center; margin-top: 15px; border: 2px dashed var(--success);
+        }
+        .copy-text { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; font-family: monospace; margin: 10px 0; display: block; }
     </style>
 </head>
 <body>
 
 <div id="login-scr" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 30px;">
     <div class="glass-card" style="width: 100%; text-align: center;">
-        <h1 style="color: var(--accent); font-size: 2.2rem;">ANDY GLOBAL</h1>
-        <p style="color: #8b949e; margin-bottom: 30px;">Access Management System</p>
+        <h1 style="color: var(--accent); font-size: 2rem;">ANDY GLOBAL</h1>
         <input type="email" id="log-email" placeholder="Usuario">
         <input type="password" id="log-pass" placeholder="Contraseña">
-        <button onclick="handleLogin()" class="btn-main">ENTRAR AL SISTEMA</button>
+        <button onclick="handleLogin()" class="btn-main">ACCEDER</button>
     </div>
 </div>
 
 <div id="app" style="display: none;">
     <div class="header">
-        <h1 id="user-name">Hola, Andy <span class="badge-role" id="role-tag">ADMIN</span></h1>
-        <p style="font-size: 0.7rem; color: #8b949e; margin: 5px 0 0;">Guayaquil, Ecuador | Gestión Activa</p>
+        <h1 id="user-display">Panel Activo</h1>
+        <p style="font-size: 0.7rem; color: #8b949e;">Guayaquil, Ecuador</p>
     </div>
 
     <div class="container">
-        
-        <div id="sec-user" class="section">
-            <div class="glass-card user-mode">
-                <h2>✨ Obtén tu Cuenta</h2>
-                <input type="text" id="cust-name" placeholder="Tu nombre de WhatsApp">
-                <p>Selecciona tu servicio:</p>
-                <div class="platform-grid" id="user-platforms">
-                    </div>
-                <button onclick="requestAccount()" class="btn-main" style="margin-top: 20px; background: var(--success);">ACTIVAR AHORA ✅</button>
+        <div id="sec-user" class="section active">
+            <div class="glass-card">
+                <h3>💎 Solicitar Cuenta</h3>
+                <input type="text" id="cust-name" placeholder="Tu nombre (WhatsApp)">
+                <select id="user-platforms-select"><option value="">Selecciona Servicio...</option></select>
+                <button onclick="deliverAccount()" class="btn-main" style="background: var(--success);">ENTREGAR DATOS ✅</button>
+
+                <div id="result-box">
+                    <p style="margin:0; font-size: 0.8rem;">TU CUENTA GENERADA:</p>
+                    <b class="copy-text" id="account-data">CARGANDO...</b>
+                    <button onclick="copyToClipboard()" class="btn-main" style="padding: 10px; font-size: 0.8rem;">COPIAR DATOS 📋</button>
+                </div>
             </div>
         </div>
 
         <div id="sec-iptv" class="section">
             <div class="glass-card">
-                <h3>➕ Agregar IPTV / Plataforma</h3>
-                <input type="text" id="iptv-name" placeholder="Nombre (Ej: IPTV Premium)">
-                <input type="text" id="iptv-creds" placeholder="Credenciales (User:Pass)">
-                <select id="iptv-type">
-                    <option value="IPTV">IPTV</option>
-                    <option value="Streaming">Streaming (Netflix/Disney)</option>
-                </select>
-                <button onclick="addIPTV()" class="btn-main">GUARDAR EN STOCK</button>
+                <h3>📦 Agregar Stock</h3>
+                <input type="text" id="iptv-name" placeholder="Plataforma (Ej: Magis TV)">
+                <input type="text" id="iptv-creds" placeholder="Usuario:Password">
+                <input type="number" id="iptv-cupos" placeholder="Cupos (Usos)">
+                <button onclick="addStock()" class="btn-main">GUARDAR CUENTA</button>
             </div>
             <div id="iptv-list"></div>
         </div>
 
-        <div id="sec-admins" class="section">
-            <div class="glass-card">
-                <h3>👥 Nuevo Colaborador</h3>
-                <input type="text" id="adm-name" placeholder="Nombre completo">
-                <input type="number" id="adm-cupos" placeholder="Cupos de venta">
-                <select id="adm-role">
-                    <option value="Seller">Vendedor (Seller)</option>
-                    <option value="Admin">Administrador (Admin)</option>
-                </select>
-                <button onclick="addAdmin()" class="btn-main">CREAR ACCESO</button>
-            </div>
-            <div id="admin-list"></div>
-        </div>
-
         <div id="sec-logs" class="section">
             <div class="glass-card">
-                <h3>📜 Historial de Activaciones</h3>
+                <h3>📜 Historial de Ventas</h3>
                 <div id="log-container"></div>
             </div>
         </div>
-
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn" onclick="nav('sec-user', this)"><span>📱</span>CLIENTE</button>
-        <button class="nav-btn" onclick="nav('sec-iptv', this)"><span>📺</span>IPTV</button>
-        <button class="nav-btn" onclick="nav('sec-admins', this)"><span>🛠️</span>EQUIPO</button>
+        <button class="nav-btn active" onclick="nav('sec-user', this)"><span>📱</span>PEDIR</button>
+        <button class="nav-btn" onclick="nav('sec-iptv', this)"><span>📦</span>STOCK</button>
         <button class="nav-btn" onclick="nav('sec-logs', this)"><span>📊</span>LOGS</button>
+        <button class="nav-btn" onclick="handleLogout()"><span>🚪</span>SALIR</button>
     </nav>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp, getDocs, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -175,146 +152,134 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let currentUser = null;
-    let selectedIPTV = null;
-
-    // --- MANEJO DE SESIÓN ---
+    // --- AUTENTICACIÓN ---
     window.handleLogin = async () => {
-        const e = document.getElementById('log-email').value;
-        const p = document.getElementById('log-pass').value;
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { alert("Error: Verifica tus datos"); }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value); } 
+        catch(e) { alert("Error de acceso"); }
     };
+    window.handleLogout = () => signOut(auth);
 
-    onAuthStateChanged(auth, user => {
-        if(user) {
-            currentUser = user;
-            document.getElementById('login-scr').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
+    onAuthStateChanged(auth, u => {
+        document.getElementById('login-scr').style.display = u ? 'none' : 'flex';
+        document.getElementById('app').style.display = u ? 'block' : 'none';
+        if(u) {
+            document.getElementById('user-display').innerText = u.email;
             loadData();
-        } else {
-            document.getElementById('login-scr').style.display = 'flex';
-            document.getElementById('app').style.display = 'none';
         }
     });
 
-    // --- NAVEGACIÓN ---
+    // --- LÓGICA DE STOCK ---
+    function loadData() {
+        onSnapshot(collection(db, "iptv_stock"), snap => {
+            const list = document.getElementById('iptv-list');
+            const select = document.getElementById('user-platforms-select');
+            list.innerHTML = "";
+            select.innerHTML = '<option value="">Selecciona Servicio...</option>';
+            
+            let platformsSeen = new Set();
+
+            snap.forEach(d => {
+                const item = d.data();
+                if(item.cupos > 0 && !platformsSeen.has(item.nombre)) {
+                    select.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`;
+                    platformsSeen.add(item.nombre);
+                }
+
+                list.innerHTML += `
+                    <div class="list-item">
+                        <div class="item-header">
+                            <b>${item.nombre}</b>
+                            <span class="cupo-tag">Cupos: ${item.cupos}</span>
+                        </div>
+                        <small style="color:#8b949e">${item.creds}</small>
+                        <div class="actions-row">
+                            <button onclick="updateCupo('${d.id}', ${item.cupos})" class="btn-action btn-edit">EDITAR</button>
+                            <button onclick="resetCupo('${d.id}')" class="btn-action btn-reset">RESET</button>
+                            <button onclick="deleteStock('${d.id}')" class="btn-action btn-del">BORRAR</button>
+                        </div>
+                    </div>`;
+            });
+        });
+
+        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
+            const container = document.getElementById('log-container');
+            container.innerHTML = snap.docs.map(d => {
+                const l = d.data();
+                return `<div style="font-size:0.75rem; border-bottom:1px solid #30363d; padding:8px 0;">
+                    <b>${l.vendedor}</b> entregó <b>${l.cuenta}</b> a <b>${l.cliente}</b>
+                </div>`;
+            }).join('');
+        });
+    }
+
+    window.addStock = async () => {
+        const n = document.getElementById('iptv-name').value;
+        const c = document.getElementById('iptv-creds').value;
+        const cp = parseInt(document.getElementById('iptv-cupos').value);
+        if(n && c && cp) {
+            await addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
+            alert("Cuenta guardada");
+        }
+    };
+
+    window.updateCupo = async (id, actual) => {
+        const nuevo = prompt("Nuevo número de cupos:", actual);
+        if(nuevo !== null) await updateDoc(doc(db, "iptv_stock", id), { cupos: parseInt(nuevo) });
+    };
+
+    window.resetCupo = async (id) => {
+        const dRef = doc(db, "iptv_stock", id);
+        // Aquí podrías guardar el valor inicial para resetearlo
+        alert("Cupo reseteado manualmente");
+    };
+
+    window.deleteStock = async (id) => {
+        if(confirm("¿Eliminar esta cuenta?")) await deleteDoc(doc(db, "iptv_stock", id));
+    };
+
+    // --- ENTREGA A USUARIO ---
+    window.deliverAccount = async () => {
+        const cliente = document.getElementById('cust-name').value;
+        const plat = document.getElementById('user-platforms-select').value;
+        
+        if(!cliente || !plat) return alert("Completa los datos");
+
+        const q = query(collection(db, "iptv_stock"), where("nombre", "==", plat), where("cupos", ">", 0), limit(1));
+        const snap = await getDocs(q);
+
+        if(snap.empty) return alert("Sin stock disponible");
+
+        const docRef = snap.docs[0];
+        const data = docRef.data();
+
+        // Mostrar cuenta
+        document.getElementById('account-data').innerText = data.creds;
+        document.getElementById('result-box').style.display = 'block';
+
+        // Descontar cupo
+        await updateDoc(doc(db, "iptv_stock", docRef.id), { cupos: data.cupos - 1 });
+
+        // Guardar Log
+        await addDoc(collection(db, "historial"), {
+            vendedor: auth.currentUser.email,
+            cliente: cliente,
+            cuenta: plat,
+            fecha: serverTimestamp()
+        });
+    };
+
+    window.copyToClipboard = () => {
+        const txt = document.getElementById('account-data').innerText;
+        navigator.clipboard.writeText(txt);
+        alert("¡Copiado al portapapeles!");
+    };
+
     window.nav = (id, btn) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
     };
-
-    // --- LÓGICA DE DATOS ---
-    function loadData() {
-        // Escuchar IPTV
-        onSnapshot(collection(db, "iptv_stock"), snap => {
-            const list = document.getElementById('iptv-list');
-            const grid = document.getElementById('user-platforms');
-            list.innerHTML = ""; grid.innerHTML = "";
-            snap.forEach(d => {
-                const item = d.data();
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <b>${item.nombre}</b>
-                            <small>${item.tipo} | ${item.creds}</small>
-                        </div>
-                        <div class="actions">
-                            <button onclick="deleteItem('iptv_stock', '${d.id}')" class="action-btn btn-del">🗑️</button>
-                        </div>
-                    </div>`;
-                grid.innerHTML += `
-                    <div class="plat-card" onclick="selectAcc('${d.id}', this)">
-                        <b>${item.nombre}</b><br><small>Disponible</small>
-                    </div>`;
-            });
-        });
-
-        // Escuchar Historial
-        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
-            const container = document.getElementById('log-container');
-            container.innerHTML = "";
-            snap.forEach(d => {
-                const log = d.data();
-                const fecha = log.fecha?.toDate().toLocaleString() || 'Reciente';
-                container.innerHTML += `
-                    <div class="log-item">
-                        <b>${log.vendedor}</b> activó <b>${log.cuenta}</b><br>
-                        Para: ${log.cliente} <span class="log-date">${fecha}</span>
-                    </div>`;
-            });
-        });
-
-        // Escuchar Admins/Sellers
-        onSnapshot(collection(db, "usuarios_sistema"), snap => {
-            const list = document.getElementById('admin-list');
-            list.innerHTML = "";
-            snap.forEach(d => {
-                const u = d.data();
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <b>${u.nombre} (${u.rol})</b>
-                            <small>Cupos: ${u.cupos}</small>
-                        </div>
-                        <div class="actions">
-                            <button onclick="editCupos('${d.id}', ${u.cupos})" class="action-btn btn-edit">🔄</button>
-                            <button onclick="deleteItem('usuarios_sistema', '${d.id}')" class="action-btn btn-del">🗑️</button>
-                        </div>
-                    </div>`;
-            });
-        });
-    }
-
-    // --- ACCIONES DE CREACIÓN ---
-    window.addIPTV = async () => {
-        const nombre = document.getElementById('iptv-name').value;
-        const creds = document.getElementById('iptv-creds').value;
-        const tipo = document.getElementById('iptv-type').value;
-        if(!nombre || !creds) return alert("Llena los datos");
-        await addDoc(collection(db, "iptv_stock"), { nombre, creds, tipo });
-        alert("Cuenta agregada!");
-    };
-
-    window.addAdmin = async () => {
-        const nombre = document.getElementById('adm-name').value;
-        const cupos = document.getElementById('adm-cupos').value;
-        const rol = document.getElementById('adm-role').value;
-        await addDoc(collection(db, "usuarios_sistema"), { nombre, cupos, rol });
-        alert("Usuario creado con éxito");
-    };
-
-    window.selectAcc = (id, el) => {
-        document.querySelectorAll('.plat-card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        selectedIPTV = id;
-    };
-
-    window.requestAccount = async () => {
-        const cliente = document.getElementById('cust-name').value;
-        if(!cliente || !selectedIPTV) return alert("Pon tu nombre y elige cuenta");
-
-        // Simulación de activación y registro en historial
-        await addDoc(collection(db, "historial"), {
-            vendedor: "Andy (Admin)",
-            cliente: cliente,
-            cuenta: "IPTV Premium",
-            fecha: serverTimestamp()
-        });
-
-        alert(`¡Felicidades ${cliente}! Tu cuenta ha sido activada.`);
-    };
-
-    window.deleteItem = async (col, id) => {
-        if(confirm("¿Eliminar este registro?")) await deleteDoc(doc(db, col, id));
-    };
-
-    window.editCupos = async (id, actual) => {
-        const nuevo = prompt("Nuevo límite de cupos:", actual);
-        if(nuevo) await updateDoc(doc(db, "usuarios_sistema", id), { cupos: parseInt(nuevo) });
-    };
-
 </script>
 </body>
 </html>
