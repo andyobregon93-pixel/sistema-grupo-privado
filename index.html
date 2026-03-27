@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY GLOBAL | Sistema Pro</title>
+    <title>ANDY GLOBAL | Ultra Responsive</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -27,21 +27,38 @@
             display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 1000;
         }
         .nav-btn { background: none; border: none; color: #8b949e; font-size: 0.6rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .nav-btn.active { color: var(--accent); }
+        .nav-btn.active { color: var(--accent); transform: scale(1.1); }
 
         .container { padding: 20px; max-width: 500px; margin: auto; }
         .section { display: none; }
-        .section.active { display: block; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .glass-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 15px; }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid var(--border); background: #0d1117; color: white; font-size: 16px; }
         
-        .btn-main { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; }
-        
-        /* MODAL DE REGLAS */
+        /* BOTONES CON ESTADO DE CARGA */
+        .btn-main { 
+            background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; 
+            width: 100%; font-weight: 700; cursor: pointer; position: relative;
+            transition: all 0.2s active;
+        }
+        .btn-main:active { transform: scale(0.96); opacity: 0.8; }
+        .btn-main:disabled { background: #30363d !important; color: #8b949e; cursor: not-allowed; }
+
+        /* EFECTO CARGANDO */
+        .loading::after {
+            content: ""; position: absolute; width: 16px; height: 16px; top: 0; left: 0; right: 0; bottom: 0;
+            margin: auto; border: 3px solid transparent; border-top-color: #ffffff;
+            border-radius: 50%; animation: button-loading-spinner 1s ease infinite;
+        }
+        .loading-text { visibility: hidden; opacity: 0; }
+        @keyframes button-loading-spinner { from { transform: rotate(0turn); } to { transform: rotate(1turn); } }
+
+        /* MODAL REGLAS */
         #rules-modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
+            background: rgba(0,0,0,0.92); z-index: 2000; display: none;
             align-items: center; justify-content: center; padding: 20px;
         }
         .rules-content { background: var(--card); padding: 25px; border-radius: 25px; border: 1px solid var(--accent); width: 100%; max-width: 400px; }
@@ -51,19 +68,21 @@
         .btn-action { padding: 8px; border-radius: 8px; border: none; font-size: 0.6rem; font-weight: 800; color: white; cursor: pointer; }
 
         #result-box { display: none; background: #065f46; padding: 20px; border-radius: 15px; text-align: center; margin-top: 15px; }
-        .copy-text { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; font-family: monospace; margin: 10px 0; display: block; font-size: 1.1rem; }
+        .copy-text { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; font-family: monospace; margin: 10px 0; display: block; font-size: 1.1rem; border: 1px solid var(--success); }
     </style>
 </head>
 <body>
 
 <div id="rules-modal">
     <div class="rules-content">
-        <h2 style="color: var(--gold); margin-top: 0;">⚠️ Reglas del Sistema</h2>
-        <div id="rules-text-display" style="font-size: 0.85rem; color: #ccc; margin-bottom: 20px; white-space: pre-wrap;">Cargando reglas...</div>
-        <label style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; margin-bottom: 20px;">
-            <input type="checkbox" id="accept-check"> He leído y acepto los términos.
+        <h2 style="color: var(--gold); margin-top: 0;">⚠️ Reglas del Servicio</h2>
+        <div id="rules-text-display" style="font-size: 0.85rem; color: #ccc; margin-bottom: 20px; white-space: pre-wrap; max-height: 200px; overflow-y: auto;">Cargando reglas...</div>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; margin-bottom: 20px; color: var(--text);">
+            <input type="checkbox" id="accept-check"> Confirmo que acepto las reglas.
         </label>
-        <button onclick="confirmRules()" class="btn-main" style="background: var(--success);">ACEPTAR Y RECIBIR CUENTA ✅</button>
+        <button id="btn-confirm" onclick="confirmRules()" class="btn-main" style="background: var(--success);">
+            <span class="txt">ACEPTAR Y RECIBIR CUENTA</span>
+        </button>
     </div>
 </div>
 
@@ -71,64 +90,63 @@
     <div class="glass-card" style="width: 100%; text-align: center;">
         <h1 style="color: var(--accent); font-size: 2.2rem;">ANDY GLOBAL</h1>
         <input type="email" id="log-email" placeholder="Usuario">
-        <input type="password" id="log-pass" placeholder="Password">
-        <button onclick="handleLogin()" class="btn-main">ENTRAR AL SISTEMA</button>
+        <input type="password" id="log-pass" placeholder="Contraseña">
+        <button id="btn-login" onclick="handleLogin()" class="btn-main">ENTRAR AL SISTEMA</button>
     </div>
 </div>
 
 <div id="app" style="display: none;">
     <div class="header">
-        <h1 id="user-display">Bienvenido</h1>
+        <h1 id="user-display">Panel Activo</h1>
     </div>
 
     <div class="container">
         <div id="sec-user" class="section active">
             <div class="glass-card">
-                <h3>🚀 Obtener Mi Cuenta</h3>
-                <input type="text" id="cust-name" placeholder="Tu Nombre de WhatsApp">
-                <select id="user-platforms-select"><option value="">Selecciona Plataforma...</option></select>
-                <button onclick="showRules()" class="btn-main">CONTINUAR ACTIVACIÓN ➔</button>
+                <h3>🚀 Generar Activación</h3>
+                <input type="text" id="cust-name" placeholder="Nombre del Cliente">
+                <select id="user-platforms-select"><option value="">Cargando plataformas...</option></select>
+                <button id="btn-continue" onclick="showRules()" class="btn-main">CONTINUAR ➔</button>
 
                 <div id="result-box">
-                    <p style="margin:0; font-size: 0.8rem; color: #fff;">DATOS DE TU CUENTA:</p>
+                    <p style="margin:0; font-size: 0.8rem; color: #fff;">TU CUENTA ESTÁ LISTA:</p>
                     <b class="copy-text" id="account-data">...</b>
-                    <button onclick="copyToClipboard()" class="btn-main" style="padding: 10px; background: white; color: black;">COPIAR DATOS 📋</button>
+                    <button id="btn-copy" onclick="copyToClipboard()" class="btn-main" style="padding: 10px; background: white; color: black;">COPIAR DATOS 📋</button>
                 </div>
             </div>
         </div>
 
         <div id="sec-stock" class="section">
             <div class="glass-card">
-                <h3>📦 Cargar Stock Detallado</h3>
-                <input type="text" id="stk-name" placeholder="Plataforma (Ej: Magis TV)">
-                <input type="text" id="stk-creds" placeholder="Credenciales (user:pass)">
-                <input type="number" id="stk-cupos" placeholder="Cupos Disponibles">
-                <button onclick="addStock()" class="btn-main">GUARDAR STOCK</button>
+                <h3>📦 Cargar Inventario</h3>
+                <input type="text" id="stk-name" placeholder="Servicio (Ej: Magis TV)">
+                <input type="text" id="stk-creds" placeholder="u:p">
+                <input type="number" id="stk-cupos" placeholder="Cupos">
+                <button id="btn-save-stock" onclick="addStock()" class="btn-main">GUARDAR STOCK</button>
             </div>
             <div id="iptv-list"></div>
         </div>
 
         <div id="sec-team" class="section">
             <div class="glass-card">
-                <h3>👥 Gestión de Usuarios / Admins</h3>
-                <input type="text" id="tm-name" placeholder="Nombre completo">
-                <input type="email" id="tm-email" placeholder="Correo de acceso">
-                <select id="tm-role"><option value="Seller">Vendedor (Seller)</option><option value="Admin">Administrador (Admin)</option></select>
-                <button onclick="addTeam()" class="btn-main">CREAR USUARIO</button>
+                <h3>👥 Mi Equipo</h3>
+                <input type="text" id="tm-name" placeholder="Nombre">
+                <input type="email" id="tm-email" placeholder="Correo">
+                <select id="tm-role"><option value="Seller">Seller</option><option value="Admin">Admin</option></select>
+                <button id="btn-add-team" onclick="addTeam()" class="btn-main">AÑADIR MIEMBRO</button>
             </div>
             <div id="team-list"></div>
         </div>
 
         <div id="sec-config" class="section">
             <div class="glass-card">
-                <h3>📝 Configurar Reglas del Sistema</h3>
-                <textarea id="rules-input" rows="6" placeholder="Escribe aquí las reglas que el usuario debe aceptar..."></textarea>
-                <button onclick="saveRules()" class="btn-main" style="background: var(--gold); color: black;">ACTUALIZAR REGLAS</button>
+                <h3>📝 Configurar Reglas</h3>
+                <textarea id="rules-input" rows="5"></textarea>
+                <button id="btn-save-rules" onclick="saveRules()" class="btn-main" style="background: var(--gold); color: black;">GUARDAR REGLAS</button>
             </div>
             <div class="glass-card">
-                <h3>📜 Historial y Limpieza</h3>
-                <button onclick="clearLogs()" class="btn-main" style="background: var(--danger); margin-bottom: 10px;">BORRAR TODO EL HISTORIAL</button>
-                <div id="log-container" style="max-height: 200px; overflow-y: auto;"></div>
+                <button id="btn-clear-logs" onclick="clearLogs()" class="btn-main" style="background: var(--danger);">BORRAR TODO EL HISTORIAL</button>
+                <div id="log-container" style="margin-top: 15px;"></div>
             </div>
         </div>
     </div>
@@ -138,14 +156,13 @@
         <button class="nav-btn" onclick="nav('sec-stock', this)"><span>📦</span>STOCK</button>
         <button class="nav-btn" onclick="nav('sec-team', this)"><span>🛠️</span>EQUIPO</button>
         <button class="nav-btn" onclick="nav('sec-config', this)"><span>⚙️</span>AJUSTES</button>
-        <button class="nav-btn" onclick="handleLogout()"><span>🚪</span>SALIR</button>
     </nav>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp, getDocs, where, limit, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp, getDocs, where, limit, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -162,46 +179,53 @@
 
     let tempAccount = null;
 
+    // --- FUNCIÓN PARA MOSTRAR CARGA EN BOTONES ---
+    function setBtnLoading(btnId, isLoading, text = "") {
+        const btn = document.getElementById(btnId);
+        if (isLoading) {
+            btn.disabled = true;
+            btn.dataset.original = btn.innerHTML;
+            btn.innerHTML = `<span class="loading"></span><span class="loading-text">Cargando...</span>`;
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = btn.dataset.original || text;
+        }
+    }
+
     // --- SESIÓN ---
     window.handleLogin = async () => {
+        setBtnLoading('btn-login', true);
         try { await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value); } 
-        catch(e) { alert("Usuario o clave incorrecta"); }
+        catch(e) { alert("Error de acceso"); setBtnLoading('btn-login', false); }
     };
-    window.handleLogout = () => signOut(auth);
 
     onAuthStateChanged(auth, u => {
         document.getElementById('login-scr').style.display = u ? 'none' : 'flex';
         document.getElementById('app').style.display = u ? 'block' : 'none';
         if(u) {
-            document.getElementById('user-display').innerText = `HOLA, ${u.email.toUpperCase()}`;
+            document.getElementById('user-display').innerText = `HOLA, ${u.email.split('@')[0].toUpperCase()}`;
             loadData();
         }
     });
 
-    // --- CARGA DE DATOS ---
+    // --- CARGAR DATOS ---
     function loadData() {
-        // Reglas
         onSnapshot(doc(db, "ajustes", "reglas"), d => {
             if(d.exists()) {
-                const r = d.data().texto;
-                document.getElementById('rules-text-display').innerText = r;
-                document.getElementById('rules-input').value = r;
+                document.getElementById('rules-text-display').innerText = d.data().texto;
+                document.getElementById('rules-input').value = d.data().texto;
             }
         });
 
-        // Stock
         onSnapshot(collection(db, "iptv_stock"), snap => {
             const list = document.getElementById('iptv-list');
             const select = document.getElementById('user-platforms-select');
-            list.innerHTML = ""; select.innerHTML = '<option value="">Selecciona Plataforma...</option>';
+            list.innerHTML = ""; select.innerHTML = '<option value="">Elige Servicio...</option>';
             let platforms = new Set();
             snap.forEach(d => {
                 const i = d.data();
-                if(i.cupos > 0 && !platforms.has(i.nombre)) {
-                    select.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                    platforms.add(i.nombre);
-                }
-                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">Cupos: ${i.cupos}</span><br><small>${i.creds}</small>
+                if(i.cupos > 0 && !platforms.has(i.nombre)) { select.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`; platforms.add(i.nombre); }
+                list.innerHTML += `<div class="list-item"><b>${i.nombre}</b> <span style="float:right; color:var(--gold)">CP: ${i.cupos}</span><br><small>${i.creds}</small>
                 <div class="actions-row">
                     <button onclick="editVal('${d.id}', ${i.cupos}, 'iptv_stock')" class="btn-action" style="background:var(--accent)">EDITAR</button>
                     <button onclick="resetVal('${d.id}', ${i.inicial || i.cupos})" class="btn-action" style="background:var(--success)">RESET</button>
@@ -210,89 +234,74 @@
             });
         });
 
-        // Equipo
-        onSnapshot(collection(db, "equipo_andy"), snap => {
-            const list = document.getElementById('team-list');
-            list.innerHTML = "";
-            snap.forEach(d => {
-                const m = d.data();
-                list.innerHTML += `<div class="list-item"><b>${m.nombre}</b> (${m.rol})<br><small>${m.email}</small>
-                <div class="actions-row">
-                    <button onclick="deleteDoc(doc(db,'equipo_andy','${d.id}'))" class="btn-action" style="background:var(--danger)">ELIMINAR</button>
-                </div></div>`;
-            });
-        });
-
-        // Logs
-        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
+        onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
             const cont = document.getElementById('log-container');
-            cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;"><b>${d.data().admin}</b> -> ${d.data().cliente} (${d.data().cuenta})</div>`).join('');
+            cont.innerHTML = snap.docs.map(d => `<div style="font-size:0.7rem; border-bottom:1px solid #333; padding:5px 0;"><b>${d.data().admin}</b> -> ${d.data().cliente}</div>`).join('');
         });
     }
 
-    // --- REGLAS Y ENTREGA RÁPIDA ---
+    // --- REGLAS Y ENTREGA INSTANTÁNEA ---
     window.showRules = async () => {
         const cli = document.getElementById('cust-name').value;
         const plat = document.getElementById('user-platforms-select').value;
-        if(!cli || !plat) return alert("Llena tu nombre y elige plataforma");
+        if(!cli || !plat) return alert("Completa los datos primero");
 
-        // PRECARGA LA CUENTA (VELOCIDAD)
+        setBtnLoading('btn-continue', true);
+        
         const q = query(collection(db, "iptv_stock"), where("nombre", "==", plat), where("cupos", ">", 0), limit(1));
         const snap = await getDocs(q);
-        if(snap.empty) return alert("Lo sentimos, no hay stock de " + plat);
+        
+        if(snap.empty) {
+            alert("Sin stock de " + plat);
+            setBtnLoading('btn-continue', false);
+            return;
+        }
 
         tempAccount = { id: snap.docs[0].id, data: snap.docs[0].data() };
         document.getElementById('rules-modal').style.display = 'flex';
+        setBtnLoading('btn-continue', false);
     };
 
     window.confirmRules = async () => {
-        if(!document.getElementById('accept-check').checked) return alert("Debes aceptar las reglas");
+        if(!document.getElementById('accept-check').checked) return alert("Acepta las reglas primero");
         
-        // ENTREGA AL INSTANTE (SIN ESPERAS)
+        setBtnLoading('btn-confirm', true);
+        
+        // MOSTRAR YA
         document.getElementById('account-data').innerText = tempAccount.data.creds;
         document.getElementById('result-box').style.display = 'block';
         document.getElementById('rules-modal').style.display = 'none';
 
-        // Actualiza base de datos en segundo plano
-        const cli = document.getElementById('cust-name').value;
+        // PROCESAR SILENCIOSAMENTE
         updateDoc(doc(db, "iptv_stock", tempAccount.id), { cupos: tempAccount.data.cupos - 1 });
-        addDoc(collection(db, "historial"), { admin: auth.currentUser.email.split('@')[0], cliente: cli, cuenta: tempAccount.data.nombre, fecha: serverTimestamp() });
+        addDoc(collection(db, "historial"), { admin: auth.currentUser.email.split('@')[0], cliente: document.getElementById('cust-name').value, cuenta: tempAccount.data.nombre, fecha: serverTimestamp() });
+        
+        setBtnLoading('btn-confirm', false);
     };
 
-    // --- FUNCIONES ADMIN ---
+    // --- ADMIN ---
     window.saveRules = async () => {
-        const txt = document.getElementById('rules-input').value;
-        await setDoc(doc(db, "ajustes", "reglas"), { texto: txt });
-        alert("Reglas actualizadas!");
+        setBtnLoading('btn-save-rules', true);
+        await setDoc(doc(db, "ajustes", "reglas"), { texto: document.getElementById('rules-input').value });
+        alert("Guardado");
+        setBtnLoading('btn-save-rules', false);
     };
 
-    window.addStock = () => {
+    window.addStock = async () => {
         const n = document.getElementById('stk-name').value.toUpperCase();
         const c = document.getElementById('stk-creds').value;
         const cp = parseInt(document.getElementById('stk-cupos').value);
-        if(n && c) addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
-    };
-
-    window.addTeam = () => {
-        const n = document.getElementById('tm-name').value;
-        const e = document.getElementById('tm-email').value;
-        const r = document.getElementById('tm-role').value;
-        if(n && e) addDoc(collection(db, "equipo_andy"), { nombre: n, email: e, rol: r });
-    };
-
-    window.editVal = async (id, actual, col) => {
-        const n = prompt("Nuevo Valor:", actual);
-        if(n !== null) await updateDoc(doc(db, col, id), { cupos: parseInt(n) });
-    };
-
-    window.resetVal = async (id, inicial) => {
-        await updateDoc(doc(db, "iptv_stock", id), { cupos: inicial });
-        alert("Cupos reseteados");
+        if(n && c) {
+            setBtnLoading('btn-save-stock', true);
+            await addDoc(collection(db, "iptv_stock"), { nombre: n, creds: c, cupos: cp, inicial: cp });
+            setBtnLoading('btn-save-stock', false);
+            alert("Stock añadido");
+        }
     };
 
     window.copyToClipboard = () => {
         navigator.clipboard.writeText(document.getElementById('account-data').innerText);
-        alert("¡Copiado al portapapeles!");
+        alert("¡Copiado!");
     };
 
     window.nav = (id, btn) => {
