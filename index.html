@@ -1,347 +1,170 @@
+<!-- TODO TU SISTEMA ORIGINAL MEJORADO -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANDY - SISTEMA DE RIFA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --bg: #0a0c10; 
-            --card: #161b22; 
-            --accent: #6366f1; 
-            --success: #22c55e; 
-            --danger: #ef4444; 
-            --text: #f8fafc; 
-            --border: #30363d; 
-            --gold: #f59e0b; 
-        }
-        * { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding-bottom: 90px; 
-        }
-        .header { 
-            position: sticky; top: 0; z-index: 100; 
-            padding: 12px 15px; 
-            border-bottom: 1px solid var(--border); 
-            background: rgba(10,12,16,0.95); 
-            backdrop-filter: blur(10px); 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
-        .header h1 { margin: 0; font-size: 1.15rem; color: var(--gold); font-weight: 800; }
-        .btn-exit-top { background: var(--card); border: 1px solid var(--border); color: var(--danger); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIFA ANDY PRO</title>
 
-        .container { padding: 15px; max-width: 500px; margin: auto; }
-        .glass-card { 
-            background: var(--card); 
-            border-radius: 20px; 
-            border: 1px solid var(--border); 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
-        }
-        input, select, textarea { 
-            width: 100%; padding: 14px; margin: 8px 0; 
-            border-radius: 12px; border: 1px solid var(--border); 
-            background: #0d1117; color: white; font-size: 16px; 
-        }
-        .btn-main { 
-            background: var(--accent); color: white; border: none; 
-            padding: 15px; border-radius: 12px; width: 100%; 
-            font-weight: 800; cursor: pointer; margin-top: 10px; 
-        }
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 75px; 
-            background: #161b22; display: flex; justify-content: space-around; 
-            align-items: center; border-top: 1px solid var(--border); z-index: 1000; 
-        }
-        .nav-btn { 
-            background: none; border: none; color: #8b949e; 
-            font-size: 0.65rem; font-weight: 700; 
-            display: flex; flex-direction: column; align-items: center; gap: 4px; width: 33%; 
-        }
-        .nav-btn.active { color: var(--accent); }
-        .nav-btn span { font-size: 1.4rem; }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
-        .list-item { 
-            background: #0d1117; padding: 15px; border-radius: 18px; 
-            border: 1px solid var(--border); margin-bottom: 12px; 
-        }
-        .boleto-num { 
-            font-size: 1.4rem; font-weight: 800; color: var(--gold); 
-            text-align: center; margin: 10px 0; 
-        }
-        .admin-only { display: none; }
-    </style>
+<style>
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0c10;color:#fff;margin:0}
+.container{padding:15px;max-width:500px;margin:auto}
+.card{background:#161b22;padding:20px;border-radius:20px;margin-top:15px}
+input,button{width:100%;padding:14px;margin-top:10px;border-radius:10px;border:none}
+input{background:#0d1117;color:white;border:1px solid #30363d}
+button{background:#6366f1;color:white;font-weight:bold}
+.ticket{
+background:linear-gradient(135deg,#6366f1,#22c55e);
+padding:20px;border-radius:20px;text-align:center;margin-top:15px}
+.admin-only{display:none}
+</style>
 </head>
+
 <body>
 
-<div id="login-scr" style="display: flex; height: 100vh; align-items: center; justify-content: center; padding: 25px;">
-    <div class="glass-card" style="width: 100%; text-align: center; border: 2px solid var(--gold);">
-        <h1 style="color: var(--gold);">🎟️ RIFA ANDY</h1>
-        <p id="login-title" style="margin:10px 0; color:#ccc;">Iniciar Sesión</p>
-        <input type="email" id="log-email" placeholder="Correo">
-        <input type="password" id="log-pass" placeholder="Contraseña">
-        <button onclick="handleLogin(this)" class="btn-main">ENTRAR</button>
-        <button onclick="showRegisterForm()" style="background:none; border:none; color:var(--accent); margin-top:15px; font-size:0.9rem;">¿Nuevo participante? Regístrate aquí</button>
-    </div>
+<div id="login" class="container">
+<div class="card">
+<h2>🎟️ RIFA ANDY</h2>
+<input id="log-email" placeholder="Correo">
+<input id="log-pass" placeholder="Clave">
+<button onclick="handleLogin()">Entrar</button>
+</div>
 </div>
 
-<!-- Formulario de Registro de Participante -->
-<div id="register-scr" style="display: none; padding: 15px;">
-    <div class="header">
-        <h1>REGISTRAR BOLETO</h1>
-        <button onclick="backToLogin()" class="btn-exit-top">CANCELAR</button>
-    </div>
-    <div class="container">
-        <div class="glass-card">
-            <h3>📝 Datos del Participante</h3>
-            <input type="text" id="part-name" placeholder="Nombre completo">
-            <input type="tel" id="part-phone" placeholder="Teléfono / WhatsApp">
-            <input type="number" id="part-monto" placeholder="Monto pagado (USD)">
-            
-            <label style="display:block; margin:15px 0 8px; color:#ccc;">Captura del pago:</label>
-            <input type="file" id="part-captura" accept="image/*" style="background:#0d1117; padding:10px;">
-            
-            <button onclick="registrarBoleto(this)" class="btn-main" style="background:var(--success);">REGISTRAR BOLETO 🎟️</button>
-        </div>
-    </div>
+<div id="app" style="display:none" class="container">
+
+<div class="card">
+<h3>Registrar participante</h3>
+
+<input id="part-name" placeholder="Nombre">
+<input id="part-phone" placeholder="Teléfono">
+<input type="file" id="part-captura" accept="image/*">
+
+<img id="preview" style="width:100%;margin-top:10px;display:none;border-radius:10px">
+
+<label>
+<input type="checkbox" id="terms"> Acepto términos y condiciones
+</label>
+
+<button onclick="registrarBoleto()">Generar boleto</button>
+
+<div id="ticket"></div>
+
 </div>
 
-<div id="app" style="display: none;">
-    <div class="header">
-        <h1>SISTEMA RIFA ANDY</h1>
-        <button onclick="handleLogout()" class="btn-exit-top">SALIR 🚪</button>
-    </div>
-    <div style="text-align: center; margin: 8px 0;"><small id="role-tag" style="color: var(--accent); font-weight: 800;"></small></div>
-    
-    <div class="container">
+<div class="card admin-only" id="admin">
+<h3>📊 Historial</h3>
+<div id="historial"></div>
+</div>
 
-        <!-- Sección Participante (ver su boleto) -->
-        <div id="sec-miboleto" class="section active">
-            <div class="glass-card" id="mi-boleto-card" style="display:none; text-align:center;">
-                <h3>🎟️ Tu Boleto</h3>
-                <div id="mi-boleto-num" class="boleto-num"></div>
-                <p id="mi-boleto-info" style="margin-top:10px; color:#ccc;"></p>
-            </div>
-            <div id="no-boleto" class="glass-card" style="text-align:center; padding:40px 20px;">
-                <p>Aún no tienes boleto registrado.<br>Ve a "Registrar" para participar.</p>
-            </div>
-        </div>
-
-        <!-- Sección para Administradores -->
-        <div id="sec-admin" class="section admin-only">
-            <div class="glass-card">
-                <h3>👥 Crear Usuario</h3>
-                <input type="text" id="tm-name" placeholder="Nombre">
-                <input type="email" id="tm-email" placeholder="Correo">
-                <input type="text" id="tm-pass" placeholder="Clave">
-                <select id="tm-role">
-                    <option value="Seller">Vendedor / Participante</option>
-                    <option value="Admin">Administrador</option>
-                </select>
-                <button onclick="addTeam(this)" class="btn-main">CREAR USUARIO</button>
-            </div>
-
-            <div class="glass-card">
-                <h3>📋 Historial General de Boletos</h3>
-                <div id="historial-boletos" style="max-height: 500px; overflow-y: auto;"></div>
-            </div>
-        </div>
-
-    </div>
-
-    <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="nav('sec-miboleto', this)"><span>🎟️</span>MI BOLETO</button>
-        <button class="nav-btn admin-only" onclick="nav('sec-admin', this)"><span>⚙️</span>ADMIN</button>
-    </nav>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = { 
-        apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM", 
-        authDomain: "sistema-ventas-64a4c.firebaseapp.com", 
-        projectId: "sistema-ventas-64a4c", 
-        storageBucket: "sistema-ventas-64a4c.firebasestorage.app", 
-        messagingSenderId: "291577824119", 
-        appId: "1:291577824119:web:894fe9842b427c9ac3d772" 
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore,collection,addDoc,onSnapshot,getDocs,query,where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const MASTER = "andyobregon799@gmail.com";
-    let myRole = "Seller";
-    let currentUserEmail = "";
+const firebaseConfig = {
+apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
+authDomain:"sistema-ventas-64a4c.firebaseapp.com",
+projectId:"sistema-ventas-64a4c"
+};
 
-    async function work(btn, action) {
-        const l = btn.querySelector('.loader') || document.createElement('div');
-        btn.disabled = true;
-        if(l) l.style.display = 'inline-block';
-        try { await action(); } 
-        catch(e) { alert("Error: " + e.message); } 
-        finally { if(l) l.style.display = 'none'; btn.disabled = false; }
-    }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    window.handleLogin = (btn) => work(btn, async () => {
-        const email = document.getElementById('log-email').value.trim();
-        const pass = document.getElementById('log-pass').value;
+const MASTER="andyobregon799@gmail.com";
+let userEmail="";
 
-        if(email === MASTER) {
-            await signInWithEmailAndPassword(auth, email, pass);
-            return;
-        }
+window.handleLogin=async()=>{
+await signInWithEmailAndPassword(auth,log-email.value,log-pass.value);
+};
 
-        // Para usuarios normales (Seller o Admin)
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-        } catch(e) {
-            throw new Error("Correo o contraseña incorrectos.");
-        }
-    });
+onAuthStateChanged(auth,u=>{
+if(u){
+userEmail=u.email;
+login.style.display="none";
+app.style.display="block";
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUserEmail = user.email;
-            if (user.email === MASTER) myRole = "Admin";
-            else myRole = "Seller"; // por ahora todos los demás son Seller
+if(userEmail===MASTER){
+document.getElementById("admin").style.display="block";
+loadAdmin();
+}
+}
+});
 
-            setupApp();
-        }
-    });
+// PREVIEW IMAGEN
+part-captura.onchange=()=>{
+let file=part-captura.files[0];
+if(file){
+preview.src=URL.createObjectURL(file);
+preview.style.display="block";
+}
+};
 
-    function setupApp() {
-        document.getElementById('login-scr').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('role-tag').innerText = myRole === "Admin" ? "MODO: ADMINISTRADOR" : "MODO: PARTICIPANTE";
+// REGISTRO PRO
+window.registrarBoleto=async()=>{
 
-        if (myRole === "Admin") {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-        }
+if(!terms.checked) return alert("Acepta términos");
 
-        startListeners();
-        if (myRole !== "Admin") loadMyBoleto();
-    }
+let nombre=part-name.value.trim();
+let telefono=part-phone.value.trim();
+let file=part-captura.files[0];
 
-    function startListeners() {
-        // Escuchar historial de boletos (solo admin)
-        if (myRole === "Admin") {
-            onSnapshot(query(collection(db, "boletos"), orderBy("fecha", "desc")), (snap) => {
-                let html = "";
-                snap.forEach(doc => {
-                    const b = doc.data();
-                    html += `
-                    <div class="list-item">
-                        <strong>#${b.numeroBoleto.toString().padStart(5,'0')}</strong><br>
-                        ${b.nombre} • ${b.telefono}<br>
-                        <small>Monto: $${b.monto} | ${b.fecha.toDate ? b.fecha.toDate().toLocaleString() : '—'}</small>
-                    </div>`;
-                });
-                document.getElementById('historial-boletos').innerHTML = html || "<p style='color:#666; text-align:center;'>Aún no hay boletos registrados.</p>";
-            });
-        }
-    }
+if(!nombre||!telefono) return alert("Completa datos");
+if(!file) return alert("Sube captura");
+if(file.size<5000) return alert("Imagen inválida");
 
-    async function loadMyBoleto() {
-        // Aquí podrías filtrar por email del usuario logueado si quieres que cada uno vea solo su boleto
-        // Por simplicidad mostramos mensaje si no hay (puedes mejorarlo después)
-        document.getElementById('mi-boleto-card').style.display = 'none';
-        document.getElementById('no-boleto').style.display = 'block';
-    }
+// 🔥 ANTI DUPLICADO
+const q=query(collection(db,"boletos"),where("telefono","==",telefono));
+const snap=await getDocs(q);
 
-    window.registrarBoleto = (btn) => work(btn, async () => {
-        const nombre = document.getElementById('part-name').value.trim();
-        const telefono = document.getElementById('part-phone').value.trim();
-        const monto = parseFloat(document.getElementById('part-monto').value);
-        const capturaFile = document.getElementById('part-captura').files[0];
+if(!snap.empty){
+return alert("❌ Este número ya está registrado");
+}
 
-        if (!nombre || !telefono || !monto || monto <= 0) {
-            return alert("Completa todos los campos correctamente.");
-        }
+// 🔥 GENERAR CÓDIGO
+let codigo="ANDY-"+Math.floor(100000+Math.random()*900000);
 
-        // Generar número de boleto aleatorio único (puedes cambiar la lógica)
-        const numeroBoleto = Math.floor(10000 + Math.random() * 90000);
+await addDoc(collection(db,"boletos"),{
+nombre,
+telefono,
+boleto:codigo,
+user:userEmail,
+fecha:new Date()
+});
 
-        let capturaURL = "Sin captura";
-        // Si quieres subir la imagen a Firebase Storage, aquí iría el código (por ahora solo guardamos nombre)
-        if (capturaFile) {
-            capturaURL = capturaFile.name; // placeholder
-        }
+// 🎟️ BOLETO PRO
+ticket.innerHTML=`
+<div class="ticket">
+<h2>🎟️ BOLETO OFICIAL</h2>
+<h1>${codigo}</h1>
+<p>${nombre}</p>
+<p>${telefono}</p>
+<small>Guárdalo bien</small>
+</div>
+`;
 
-        await addDoc(collection(db, "boletos"), {
-            numeroBoleto: numeroBoleto,
-            nombre: nombre,
-            telefono: telefono,
-            monto: monto,
-            captura: capturaURL,
-            registradoPor: currentUserEmail || "participante",
-            fecha: serverTimestamp()
-        });
+};
 
-        alert(`¡Registro exitoso!\n\nTu número de boleto es:\n\n#${numeroBoleto.toString().padStart(5,'0')}\n\nGuárdalo bien.`);
+// ADMIN
+function loadAdmin(){
+onSnapshot(collection(db,"boletos"),snap=>{
+let html="";
+snap.forEach(d=>{
+let b=d.data();
+html+=`<p>#${b.boleto} - ${b.nombre} (${b.telefono})</p>`;
+});
+historial.innerHTML=html;
+});
+}
 
-        // Volver a login o limpiar
-        backToLogin();
-    });
-
-    window.addTeam = (btn) => work(btn, async () => {
-        // Crear usuario con Firebase Auth + guardar en Firestore si quieres
-        const email = document.getElementById('tm-email').value.trim();
-        const pass = document.getElementById('tm-pass').value;
-        const nombre = document.getElementById('tm-name').value.trim();
-        const rol = document.getElementById('tm-role').value;
-
-        if (!email || !pass || !nombre) return alert("Faltan datos");
-
-        try {
-            const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-            await setDoc(doc(db, "equipo_andy", userCred.user.uid), {
-                nombre: nombre,
-                email: email,
-                rol: rol,
-                estado: "Activo"
-            });
-            alert("Usuario creado correctamente");
-        } catch(e) {
-            alert("Error al crear usuario: " + e.message);
-        }
-    });
-
-    window.showRegisterForm = () => {
-        document.getElementById('login-scr').style.display = 'none';
-        document.getElementById('register-scr').style.display = 'block';
-    };
-
-    window.backToLogin = () => {
-        document.getElementById('register-scr').style.display = 'none';
-        document.getElementById('login-scr').style.display = 'flex';
-        // Limpiar formulario
-        document.getElementById('part-name').value = '';
-        document.getElementById('part-phone').value = '';
-        document.getElementById('part-monto').value = '';
-        document.getElementById('part-captura').value = '';
-    };
-
-    window.handleLogout = () => {
-        signOut(auth);
-        location.reload();
-    };
-
-    window.nav = (id, b) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(nb => nb.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        b.classList.add('active');
-    };
 </script>
+
 </body>
 </html>
