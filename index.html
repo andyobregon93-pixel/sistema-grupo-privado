@@ -86,20 +86,24 @@ const db = getFirestore(app);
 const MASTER="andyobregon799@gmail.com";
 let userEmail="";
 
-// 🔥 LOGIN MEJORADO
+// ✅ LOGIN FIXED
 window.handleLogin = async () => {
 
     const btn = document.querySelector("button[onclick='handleLogin()']");
     
+    const email = document.getElementById("log-email").value;
+    const pass = document.getElementById("log-pass").value;
+
+    if(!email || !pass){
+        alert("Completa los campos");
+        return;
+    }
+
     btn.innerText = "Entrando...";
     btn.disabled = true;
 
     try {
-        await signInWithEmailAndPassword(
-            auth,
-            document.getElementById('log-email').value,
-            document.getElementById('log-pass').value
-        );
+        await signInWithEmailAndPassword(auth, email, pass);
     } catch (e) {
         alert("❌ Error: " + e.message);
     }
@@ -111,8 +115,8 @@ window.handleLogin = async () => {
 onAuthStateChanged(auth,u=>{
 if(u){
 userEmail=u.email;
-login.style.display="none";
-app.style.display="block";
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
 
 if(userEmail===MASTER){
 document.getElementById("admin").style.display="block";
@@ -122,22 +126,22 @@ loadAdmin();
 });
 
 // PREVIEW IMAGEN
-part-captura.onchange=()=>{
-let file=part-captura.files[0];
+document.getElementById("part-captura").onchange=()=>{
+let file=document.getElementById("part-captura").files[0];
 if(file){
-preview.src=URL.createObjectURL(file);
-preview.style.display="block";
+document.getElementById("preview").src=URL.createObjectURL(file);
+document.getElementById("preview").style.display="block";
 }
 };
 
-// REGISTRO PRO
+// REGISTRO
 window.registrarBoleto=async()=>{
 
-if(!terms.checked) return alert("Acepta términos");
+if(!document.getElementById("terms").checked) return alert("Acepta términos");
 
-let nombre=part-name.value.trim();
-let telefono=part-phone.value.trim();
-let file=part-captura.files[0];
+let nombre=document.getElementById("part-name").value.trim();
+let telefono=document.getElementById("part-phone").value.trim();
+let file=document.getElementById("part-captura").files[0];
 
 if(!nombre||!telefono) return alert("Completa datos");
 if(!file) return alert("Sube captura");
@@ -151,7 +155,7 @@ if(!snap.empty){
 return alert("❌ Este número ya está registrado");
 }
 
-// 🔥 GENERAR CÓDIGO
+// 🎟️ GENERAR CÓDIGO
 let codigo="ANDY-"+Math.floor(100000+Math.random()*900000);
 
 await addDoc(collection(db,"boletos"),{
@@ -162,8 +166,8 @@ user:userEmail,
 fecha:new Date()
 });
 
-// 🎟️ BOLETO PRO
-ticket.innerHTML=`
+// 🎟️ MOSTRAR BOLETO
+document.getElementById("ticket").innerHTML=`
 <div class="ticket">
 <h2>🎟️ BOLETO OFICIAL</h2>
 <h1>${codigo}</h1>
@@ -183,7 +187,7 @@ snap.forEach(d=>{
 let b=d.data();
 html+=`<p>#${b.boleto} - ${b.nombre} (${b.telefono})</p>`;
 });
-historial.innerHTML=html;
+document.getElementById("historial").innerHTML=html;
 });
 }
 
