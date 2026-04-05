@@ -1,5 +1,3 @@
-<!-- TODO TU SISTEMA ORIGINAL MEJORADO -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,9 +14,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0c10;color:#fff;ma
 input,button{width:100%;padding:14px;margin-top:10px;border-radius:10px;border:none}
 input{background:#0d1117;color:white;border:1px solid #30363d}
 button{background:#6366f1;color:white;font-weight:bold}
+
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
 .ticket{
 background:linear-gradient(135deg,#6366f1,#22c55e);
 padding:20px;border-radius:20px;text-align:center;margin-top:15px}
+
 .admin-only{display:none}
 </style>
 </head>
@@ -81,8 +86,26 @@ const db = getFirestore(app);
 const MASTER="andyobregon799@gmail.com";
 let userEmail="";
 
-window.handleLogin=async()=>{
-await signInWithEmailAndPassword(auth,log-email.value,log-pass.value);
+// 🔥 LOGIN MEJORADO
+window.handleLogin = async () => {
+
+    const btn = document.querySelector("button[onclick='handleLogin()']");
+    
+    btn.innerText = "Entrando...";
+    btn.disabled = true;
+
+    try {
+        await signInWithEmailAndPassword(
+            auth,
+            document.getElementById('log-email').value,
+            document.getElementById('log-pass').value
+        );
+    } catch (e) {
+        alert("❌ Error: " + e.message);
+    }
+
+    btn.innerText = "Entrar";
+    btn.disabled = false;
 };
 
 onAuthStateChanged(auth,u=>{
