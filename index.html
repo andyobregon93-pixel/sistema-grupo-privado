@@ -17,6 +17,8 @@ button{background:#6366f1;color:white;font-weight:bold}
 button:disabled{opacity:0.6}
 .ticket{background:linear-gradient(135deg,#6366f1,#22c55e);padding:20px;border-radius:20px;text-align:center;margin-top:15px}
 .admin-only{display:none}
+.card-item{background:#0d1117;padding:15px;border-radius:15px;margin-bottom:15px;border:1px solid #30363d}
+.card-item img{width:100%;border-radius:10px;margin-top:10px}
 </style>
 </head>
 
@@ -38,6 +40,7 @@ button:disabled{opacity:0.6}
 
 <input id="part-name" placeholder="Nombre">
 <input id="part-phone" placeholder="Teléfono">
+<input id="part-monto" placeholder="Monto pagado">
 <input type="file" id="part-captura" accept="image/*">
 
 <img id="preview" style="width:100%;margin-top:10px;display:none;border-radius:10px">
@@ -49,9 +52,13 @@ button:disabled{opacity:0.6}
 <button onclick="registrarBoleto()">Generar boleto</button>
 
 <div id="ticket"></div>
+
+<div id="btn-wsp" style="display:none;">
+<button onclick="enviarWhatsApp()">Enviar por WhatsApp 📲</button>
 </div>
 
-<!-- 🔥 PANEL ADMIN -->
+</div>
+
 <div class="card admin-only" id="admin">
 
 <h3>👤 Crear Usuario</h3>
@@ -68,7 +75,7 @@ button:disabled{opacity:0.6}
 
 <hr>
 
-<h3>📊 HISTORIAL</h3>
+<h3>📊 HISTORIAL COMPLETO</h3>
 <div id="historial"></div>
 
 </div>
@@ -93,19 +100,15 @@ const db = getFirestore(app);
 
 const MASTER="andyobregon799@gmail.com";
 let userEmail="";
+let ultimoBoleto={};
 
 // LOGIN
 window.handleLogin = async () => {
-
 const btn = document.querySelector("button[onclick='handleLogin()']");
-
 const email = document.getElementById("log-email").value;
 const pass = document.getElementById("log-pass").value;
 
-if(!email || !pass){
-alert("Completa los campos");
-return;
-}
+if(!email || !pass) return alert("Completa los campos");
 
 btn.innerText="Entrando...";
 btn.disabled=true;
@@ -120,11 +123,10 @@ btn.innerText="Entrar";
 btn.disabled=false;
 };
 
-// CONTROL ADMIN
+// ADMIN
 onAuthStateChanged(auth,(u)=>{
 if(u){
 userEmail=u.email;
-
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 
@@ -144,18 +146,23 @@ document.getElementById("preview").style.display="block";
 }
 };
 
-// REGISTRO BOLETO
+// REGISTRO
 window.registrarBoleto=async()=>{
 
 if(!document.getElementById("terms").checked) return alert("Acepta términos");
 
 let nombre=document.getElementById("part-name").value.trim();
 let telefono=document.getElementById("part-phone").value.trim();
+let monto=document.getElementById("part-monto").value.trim();
 let file=document.getElementById("part-captura").files[0];
 
-if(!nombre||!telefono) return alert("Completa datos");
+if(!nombre||!telefono||!monto) return alert("Completa datos");
 if(!file) return alert("Sube captura");
 if(file.size<5000) return alert("Imagen inválida");
+
+let reader=new FileReader();
+
+reader.onload=async function(){
 
 const q=query(collection(db,"boletos"),where("telefono","==",telefono));
 const snap=await getDocs(q);
@@ -169,10 +176,14 @@ let codigo="ANDY-"+Math.floor(100000+Math.random()*900000);
 await addDoc(collection(db,"boletos"),{
 nombre,
 telefono,
+monto,
+captura:reader.result,
 boleto:codigo,
 user:userEmail,
 fecha:new Date()
 });
+
+ultimoBoleto={nombre,telefono,monto,codigo};
 
 document.getElementById("ticket").innerHTML=`
 <div class="ticket">
@@ -180,14 +191,26 @@ document.getElementById("ticket").innerHTML=`
 <h1>${codigo}</h1>
 <p>${nombre}</p>
 <p>${telefono}</p>
+<p>$${monto}</p>
 </div>
 `;
 
+document.getElementById("btn-wsp").style.display="block";
+
 };
 
-// 🔥 CREAR USUARIO DESDE ADMIN
-window.crearUsuario=async()=>{
+reader.readAsDataURL(file);
+};
 
+// WHATSAPP
+window.enviarWhatsApp=()=>{
+let msg=`🎟️ BOLETO RIFA ANDY\n\nCódigo: ${ultimoBoleto.codigo}\nNombre: ${ultimoBoleto.nombre}\nTeléfono: ${ultimoBoleto.telefono}\nMonto: $${ultimoBoleto.monto}`;
+let url=`https://wa.me/?text=${encodeURIComponent(msg)}`;
+window.open(url,"_blank");
+};
+
+// CREAR USUARIO
+window.crearUsuario=async()=>{
 const email=document.getElementById("new-email").value;
 const pass=document.getElementById("new-pass").value;
 
@@ -199,16 +222,22 @@ alert("✅ Usuario creado");
 }catch(e){
 alert("❌ "+e.message);
 }
-
 };
 
-// ADMIN HISTORIAL
+// HISTORIAL
 function loadAdmin(){
 onSnapshot(collection(db,"boletos"),snap=>{
 let html="";
 snap.forEach(d=>{
 let b=d.data();
-html+=`<p>#${b.boleto} - ${b.nombre}</p>`;
+html+=`
+<div class="card-item">
+<h3>🎟️ ${b.boleto}</h3>
+<p>👤 ${b.nombre}</p>
+<p>📱 ${b.telefono}</p>
+<p>💰 $${b.monto}</p>
+${b.captura ? `<img src="${b.captura}">` : ""}
+</div>`;
 });
 document.getElementById("historial").innerHTML=html;
 });
