@@ -19,6 +19,7 @@ button:disabled{opacity:0.6}
 .admin-only{display:none}
 .card-item{background:#0d1117;padding:15px;border-radius:15px;margin-bottom:15px;border:1px solid #30363d}
 .card-item img{width:100%;border-radius:10px;margin-top:10px}
+.logout{background:#ef4444;margin-top:15px}
 </style>
 </head>
 
@@ -34,6 +35,9 @@ button:disabled{opacity:0.6}
 </div>
 
 <div id="app" style="display:none" class="container">
+
+<!-- 🔥 BOTÓN SALIR -->
+<button class="logout" onclick="logout()">Salir 🚪</button>
 
 <div class="card">
 <h3>Registrar participante</h3>
@@ -85,7 +89,7 @@ button:disabled{opacity:0.6}
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword,onAuthStateChanged,createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword,onAuthStateChanged,createUserWithEmailAndPassword,signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore,collection,addDoc,onSnapshot,getDocs,query,where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -121,6 +125,12 @@ alert("❌ "+e.message);
 
 btn.innerText="Entrar";
 btn.disabled=false;
+};
+
+// 🔥 LOGOUT
+window.logout = async () => {
+await signOut(auth);
+location.reload();
 };
 
 // ADMIN
