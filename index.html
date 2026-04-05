@@ -11,19 +11,11 @@
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0c10;color:#fff;margin:0}
 .container{padding:15px;max-width:500px;margin:auto}
 .card{background:#161b22;padding:20px;border-radius:20px;margin-top:15px}
-input,button{width:100%;padding:14px;margin-top:10px;border-radius:10px;border:none}
+input,button,select{width:100%;padding:14px;margin-top:10px;border-radius:10px;border:none}
 input{background:#0d1117;color:white;border:1px solid #30363d}
 button{background:#6366f1;color:white;font-weight:bold}
-
-button:disabled{
-opacity:0.6;
-cursor:not-allowed;
-}
-
-.ticket{
-background:linear-gradient(135deg,#6366f1,#22c55e);
-padding:20px;border-radius:20px;text-align:center;margin-top:15px}
-
+button:disabled{opacity:0.6}
+.ticket{background:linear-gradient(135deg,#6366f1,#22c55e);padding:20px;border-radius:20px;text-align:center;margin-top:15px}
 .admin-only{display:none}
 </style>
 </head>
@@ -57,12 +49,28 @@ padding:20px;border-radius:20px;text-align:center;margin-top:15px}
 <button onclick="registrarBoleto()">Generar boleto</button>
 
 <div id="ticket"></div>
-
 </div>
 
+<!-- 🔥 PANEL ADMIN -->
 <div class="card admin-only" id="admin">
-<h3>📊 Historial</h3>
+
+<h3>👤 Crear Usuario</h3>
+
+<input id="new-email" placeholder="Correo">
+<input id="new-pass" placeholder="Clave">
+
+<select id="new-role">
+<option value="user">Usuario</option>
+<option value="admin">Administrador</option>
+</select>
+
+<button onclick="crearUsuario()">Crear usuario</button>
+
+<hr>
+
+<h3>📊 HISTORIAL</h3>
 <div id="historial"></div>
+
 </div>
 
 </div>
@@ -70,7 +78,7 @@ padding:20px;border-radius:20px;text-align:center;margin-top:15px}
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword,onAuthStateChanged,createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore,collection,addDoc,onSnapshot,getDocs,query,where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -86,35 +94,37 @@ const db = getFirestore(app);
 const MASTER="andyobregon799@gmail.com";
 let userEmail="";
 
-// ✅ LOGIN FIXED
+// LOGIN
 window.handleLogin = async () => {
 
-    const btn = document.querySelector("button[onclick='handleLogin()']");
-    
-    const email = document.getElementById("log-email").value;
-    const pass = document.getElementById("log-pass").value;
+const btn = document.querySelector("button[onclick='handleLogin()']");
 
-    if(!email || !pass){
-        alert("Completa los campos");
-        return;
-    }
+const email = document.getElementById("log-email").value;
+const pass = document.getElementById("log-pass").value;
 
-    btn.innerText = "Entrando...";
-    btn.disabled = true;
+if(!email || !pass){
+alert("Completa los campos");
+return;
+}
 
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-    } catch (e) {
-        alert("❌ Error: " + e.message);
-    }
+btn.innerText="Entrando...";
+btn.disabled=true;
 
-    btn.innerText = "Entrar";
-    btn.disabled = false;
+try{
+await signInWithEmailAndPassword(auth,email,pass);
+}catch(e){
+alert("❌ "+e.message);
+}
+
+btn.innerText="Entrar";
+btn.disabled=false;
 };
 
-onAuthStateChanged(auth,u=>{
+// CONTROL ADMIN
+onAuthStateChanged(auth,(u)=>{
 if(u){
 userEmail=u.email;
+
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 
@@ -125,7 +135,7 @@ loadAdmin();
 }
 });
 
-// PREVIEW IMAGEN
+// PREVIEW
 document.getElementById("part-captura").onchange=()=>{
 let file=document.getElementById("part-captura").files[0];
 if(file){
@@ -134,7 +144,7 @@ document.getElementById("preview").style.display="block";
 }
 };
 
-// REGISTRO
+// REGISTRO BOLETO
 window.registrarBoleto=async()=>{
 
 if(!document.getElementById("terms").checked) return alert("Acepta términos");
@@ -147,15 +157,13 @@ if(!nombre||!telefono) return alert("Completa datos");
 if(!file) return alert("Sube captura");
 if(file.size<5000) return alert("Imagen inválida");
 
-// 🔥 ANTI DUPLICADO
 const q=query(collection(db,"boletos"),where("telefono","==",telefono));
 const snap=await getDocs(q);
 
 if(!snap.empty){
-return alert("❌ Este número ya está registrado");
+return alert("❌ Ya registrado");
 }
 
-// 🎟️ GENERAR CÓDIGO
 let codigo="ANDY-"+Math.floor(100000+Math.random()*900000);
 
 await addDoc(collection(db,"boletos"),{
@@ -166,26 +174,41 @@ user:userEmail,
 fecha:new Date()
 });
 
-// 🎟️ MOSTRAR BOLETO
 document.getElementById("ticket").innerHTML=`
 <div class="ticket">
-<h2>🎟️ BOLETO OFICIAL</h2>
+<h2>🎟️ BOLETO</h2>
 <h1>${codigo}</h1>
 <p>${nombre}</p>
 <p>${telefono}</p>
-<small>Guárdalo bien</small>
 </div>
 `;
 
 };
 
-// ADMIN
+// 🔥 CREAR USUARIO DESDE ADMIN
+window.crearUsuario=async()=>{
+
+const email=document.getElementById("new-email").value;
+const pass=document.getElementById("new-pass").value;
+
+if(!email||!pass) return alert("Completa datos");
+
+try{
+await createUserWithEmailAndPassword(auth,email,pass);
+alert("✅ Usuario creado");
+}catch(e){
+alert("❌ "+e.message);
+}
+
+};
+
+// ADMIN HISTORIAL
 function loadAdmin(){
 onSnapshot(collection(db,"boletos"),snap=>{
 let html="";
 snap.forEach(d=>{
 let b=d.data();
-html+=`<p>#${b.boleto} - ${b.nombre} (${b.telefono})</p>`;
+html+=`<p>#${b.boleto} - ${b.nombre}</p>`;
 });
 document.getElementById("historial").innerHTML=html;
 });
