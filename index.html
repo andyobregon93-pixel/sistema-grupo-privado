@@ -20,6 +20,9 @@ button:disabled{opacity:0.6}
 .card-item{background:#0d1117;padding:15px;border-radius:15px;margin-bottom:15px;border:1px solid #30363d}
 .card-item img{width:100%;border-radius:10px;margin-top:10px}
 .logout{background:#ef4444;margin-top:15px}
+.acciones button{margin-top:8px}
+.eliminar{background:#dc2626}
+.editar{background:#f59e0b}
 </style>
 </head>
 
@@ -36,7 +39,6 @@ button:disabled{opacity:0.6}
 
 <div id="app" style="display:none" class="container">
 
-<!-- 🔥 BOTÓN SALIR -->
 <button class="logout" onclick="logout()">Salir 🚪</button>
 
 <div class="card">
@@ -90,7 +92,7 @@ button:disabled{opacity:0.6}
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword,onAuthStateChanged,createUserWithEmailAndPassword,signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore,collection,addDoc,onSnapshot,getDocs,query,where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore,collection,addDoc,onSnapshot,getDocs,query,where,deleteDoc,doc,updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -106,7 +108,6 @@ const MASTER="andyobregon799@gmail.com";
 let userEmail="";
 let ultimoBoleto={};
 
-// LOGIN
 window.handleLogin = async () => {
 const btn = document.querySelector("button[onclick='handleLogin()']");
 const email = document.getElementById("log-email").value;
@@ -127,13 +128,11 @@ btn.innerText="Entrar";
 btn.disabled=false;
 };
 
-// 🔥 LOGOUT
 window.logout = async () => {
 await signOut(auth);
 location.reload();
 };
 
-// ADMIN
 onAuthStateChanged(auth,(u)=>{
 if(u){
 userEmail=u.email;
@@ -147,7 +146,6 @@ loadAdmin();
 }
 });
 
-// PREVIEW
 document.getElementById("part-captura").onchange=()=>{
 let file=document.getElementById("part-captura").files[0];
 if(file){
@@ -156,7 +154,6 @@ document.getElementById("preview").style.display="block";
 }
 };
 
-// REGISTRO
 window.registrarBoleto=async()=>{
 
 if(!document.getElementById("terms").checked) return alert("Acepta términos");
@@ -212,14 +209,12 @@ document.getElementById("btn-wsp").style.display="block";
 reader.readAsDataURL(file);
 };
 
-// WHATSAPP
 window.enviarWhatsApp=()=>{
 let msg=`🎟️ BOLETO RIFA ANDY\n\nCódigo: ${ultimoBoleto.codigo}\nNombre: ${ultimoBoleto.nombre}\nTeléfono: ${ultimoBoleto.telefono}\nMonto: $${ultimoBoleto.monto}`;
 let url=`https://wa.me/?text=${encodeURIComponent(msg)}`;
 window.open(url,"_blank");
 };
 
-// CREAR USUARIO
 window.crearUsuario=async()=>{
 const email=document.getElementById("new-email").value;
 const pass=document.getElementById("new-pass").value;
@@ -232,6 +227,29 @@ alert("✅ Usuario creado");
 }catch(e){
 alert("❌ "+e.message);
 }
+};
+
+// 🔥 NUEVO: ELIMINAR
+window.eliminarBoleto = async (id) => {
+if(confirm("¿Eliminar este registro?")){
+await deleteDoc(doc(db,"boletos",id));
+}
+};
+
+// 🔥 NUEVO: EDITAR
+window.editarBoleto = async (id,nombre,telefono,monto) => {
+
+let nuevoNombre = prompt("Nuevo nombre:", nombre);
+let nuevoTelefono = prompt("Nuevo teléfono:", telefono);
+let nuevoMonto = prompt("Nuevo monto:", monto);
+
+if(!nuevoNombre || !nuevoTelefono || !nuevoMonto) return;
+
+await updateDoc(doc(db,"boletos",id),{
+nombre:nuevoNombre,
+telefono:nuevoTelefono,
+monto:nuevoMonto
+});
 };
 
 // HISTORIAL
@@ -247,6 +265,12 @@ html+=`
 <p>📱 ${b.telefono}</p>
 <p>💰 $${b.monto}</p>
 ${b.captura ? `<img src="${b.captura}">` : ""}
+
+<div class="acciones">
+<button class="editar" onclick="editarBoleto('${d.id}','${b.nombre}','${b.telefono}','${b.monto}')">Editar</button>
+<button class="eliminar" onclick="eliminarBoleto('${d.id}')">Eliminar</button>
+</div>
+
 </div>`;
 });
 document.getElementById("historial").innerHTML=html;
