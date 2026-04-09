@@ -25,8 +25,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 /* --- COMPONENTES --- */
 .card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d;}
-input,button,select{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
-input, select{background:#0d1117;color:white;border:1px solid #30363d}
+input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
+input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
+textarea{resize: vertical; min-height: 100px; line-height: 1.5;} /* Mejora para IPTV/Formatos largos */
 button{background:var(--primary);color:white;font-weight:800; cursor: pointer;}
 
 /* --- TABLAS Y DETALLES --- */
@@ -35,7 +36,7 @@ table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500p
 th { background: #1f2937; color: var(--primary); padding: 12px; text-align: left; }
 td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 
-.datos-detalle { display: block; background: #0a0c10; color: var(--accent); padding: 8px; border-radius: 8px; font-family: monospace; font-size: 11px; margin-top: 5px; border: 1px dashed #30363d; }
+.datos-detalle { display: block; background: #0a0c10; color: var(--accent); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; margin-top: 5px; border: 1px dashed #30363d; white-space: pre-wrap; text-align: left; }
 .btn-small { width: auto; padding: 6px 10px; font-size: 10px; margin: 2px; }
 .badge { padding: 3px 8px; border-radius: 6px; font-weight: bold; }
 
@@ -82,7 +83,7 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
             <div class="card">
                 <h3>Agregar Plataforma</h3>
                 <input id="c-app" placeholder="Nombre App">
-                <input id="c-datos" placeholder="Correo:Clave / Datos detallados">
+                <textarea id="c-datos" placeholder="Pega aquí los datos (puedes usar varias líneas, emojis, etc.)"></textarea>
                 <input id="c-cupo" type="number" placeholder="Stock">
                 <button onclick="addCuenta()" style="background:var(--accent)">Subir al sistema</button>
             </div>
@@ -227,7 +228,7 @@ window.pedirCuenta = async () => {
         document.getElementById("resultado-entrega").innerHTML = `
         <div class="card" style="border-color:var(--accent); text-align:center;">
             <p>✅ CUENTA ENTREGADA:</p>
-            <code id="copy-text" style="display:block; background:#000; padding:10px; margin-bottom:10px; color:var(--accent);">${cData.datos}</code>
+            <code id="copy-text" style="display:block; background:#000; padding:15px; margin-bottom:10px; color:var(--accent); white-space: pre-wrap; text-align: left; font-family: monospace;">${cData.datos}</code>
             <button onclick="navigator.clipboard.writeText(document.getElementById('copy-text').innerText); alert('Copiado');">COPIAR DATOS 📋</button>
         </div>`;
     }
@@ -245,7 +246,7 @@ function loadAdminData() {
                 </td>
                 <td><span class="badge" style="background:#334155">${c.cupo}</span></td>
                 <td>
-                    <button class="btn-small" style="background:var(--warning)" onclick="editarCuenta('${d.id}','${c.app}','${c.datos}')">✎</button>
+                    <button class="btn-small" style="background:var(--warning)" onclick="editarCuenta('${d.id}','${c.app}',\`\${c.datos}\`)">✎</button>
                     <button class="btn-small" style="background:#3b82f6" onclick="resetCupo('${d.id}')">Cupo</button>
                     <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
                 </td>
@@ -276,12 +277,12 @@ function loadAdminData() {
 }
 
 window.limpiarHistorial = async () => {
-    if(confirm("¿Estás seguro de eliminar TODO el historial de pedidos? Esta acción no se puede deshacer.")){
+    if(confirm("¿Estás seguro de eliminar TODO el historial de pedidos?")){
         const q = await getDocs(collection(db, "historial"));
         const batch = writeBatch(db);
-        q.forEach((document) => { batch.delete(document.ref); });
+        q.forEach((doc) => { batch.delete(doc.ref); });
         await batch.commit();
-        alert("Historial vaciado correctamente.");
+        alert("Historial vaciado.");
     }
 };
 
@@ -289,7 +290,12 @@ window.addCuenta = async () => {
     const app = document.getElementById("c-app").value;
     const datos = document.getElementById("c-datos").value;
     const cupo = parseInt(document.getElementById("c-cupo").value);
-    if(app && datos && !isNaN(cupo)) await addDoc(collection(db, "cuentas"), { app, datos, cupo });
+    if(app && datos && !isNaN(cupo)) {
+        await addDoc(collection(db, "cuentas"), { app, datos, cupo });
+        document.getElementById("c-app").value = "";
+        document.getElementById("c-datos").value = "";
+        document.getElementById("c-cupo").value = "";
+    }
 };
 
 window.addMiembro = async () => {
@@ -300,7 +306,7 @@ window.addMiembro = async () => {
 
 window.editarCuenta = async (id, app, datos) => {
     const nA = prompt("App:", app);
-    const nD = prompt("Datos:", datos);
+    const nD = prompt("Datos (usa \\n para saltos de línea):", datos);
     if(nA && nD) await updateDoc(doc(db, "cuentas", id), { app: nA, datos: nD });
 };
 
