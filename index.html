@@ -3,29 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SISTEMA CUENTAS ANDY</title>
+<title>SISTEMA PREMIUM - ANDY</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; }
+:root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);margin:0; padding-bottom: 50px;}
-.container{padding:15px;max-width:500px;margin:auto}
-.card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d}
-h2, h3 { margin-top: 0; color: var(--primary); }
-input,button,select{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box;}
+.container{padding:15px;max-width:600px;margin:auto}
+.card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);}
+h2, h3 { margin-top: 0; color: var(--primary); font-weight: 800; }
+
+input,button,select{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select{background:#0d1117;color:white;border:1px solid #30363d}
-button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.3s;}
-button:active{transform: scale(0.98);}
-.ticket-entrega{background:linear-gradient(135deg,#1e293b,#0f172a);padding:20px;border-radius:20px;border: 2px solid var(--primary); margin-top:15px;}
+button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.2s;}
+button:active{transform: scale(0.96);}
+
+/* Estilo de la Tabla de Historial */
+.table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; background: #0d1117; border: 1px solid #30363d; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+th { background: #1f2937; color: var(--primary); padding: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+td { padding: 12px; border-bottom: 1px solid #30363d; }
+.badge-app { background: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; }
+.text-phone { color: #9ca3af; font-family: monospace; }
+
+.ticket-entrega{background:linear-gradient(135deg,#1e293b,#0f172a);padding:20px;border-radius:20px;border: 2px solid var(--primary); margin-top:15px; text-align: center;}
 .admin-section{display:none; border-top: 2px solid #30363d; margin-top: 30px; padding-top: 20px;}
-.badge { background: #22c55e; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
-.logout{background:#ef4444; margin-bottom: 10px;}
-.historial-item { background: #0d1117; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary);}
-.btn-copy { background: #22c55e; margin-top: 15px; }
-.btn-danger { background: #dc2626; margin-top: 5px; font-size: 12px; padding: 8px;}
-.btn-edit { background: #f59e0b; margin-top: 5px; font-size: 12px; padding: 8px;}
-hr { border: 0; border-top: 1px solid #30363d; margin: 20px 0; }
+.logout{background:#ef4444; margin-bottom: 10px; font-size: 12px;}
+.btn-copy { background: var(--accent); margin-top: 15px; }
+.btn-danger { background: #dc2626; font-size: 11px; padding: 5px 10px; width: auto; margin: 0;}
 </style>
 </head>
 
@@ -33,69 +39,73 @@ hr { border: 0; border-top: 1px solid #30363d; margin: 20px 0; }
 
 <div id="login" class="container">
     <div class="card" style="text-align: center;">
-        <h1>⚡ ANDY PRO</h1>
-        <p>Ingresa para solicitar tu cuenta</p>
-        <input id="log-email" placeholder="Correo de acceso">
+        <h1>⚡ ANDY GLOBAL</h1>
+        <input id="log-email" placeholder="Email">
         <input id="log-pass" type="password" placeholder="Contraseña">
-        <button onclick="handleLogin()">ENTRAR AL SISTEMA</button>
+        <button onclick="handleLogin()">INGRESAR</button>
     </div>
 </div>
 
 <div id="app" style="display:none" class="container">
     
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span id="user-display" style="font-size: 12px; opacity: 0.7;"></span>
-        <button class="logout" onclick="logout()" style="width: auto; padding: 8px 15px;">Salir 🚪</button>
+        <button class="logout" onclick="logout()">Cerrar Sesión 🚪</button>
     </div>
 
     <div class="card">
-        <h3>🎁 Solicitar Cuenta Gratis</h3>
-        
-        <label>Selecciona tu Nombre:</label>
-        <select id="select-miembro">
-            <option value="">Cargando miembros...</option>
-        </select>
-
-        <label style="display: block; margin-top: 15px;">Selecciona Plataforma:</label>
-        <select id="select-plataforma">
-            <option value="">Cargando plataformas...</option>
-        </select>
-
-        <button id="btn-pedir" onclick="pedirCuenta()">OBTENER CUENTA AHORA</button>
-
+        <h3>🎁 Pedir Mi Cuenta</h3>
+        <select id="select-miembro"><option value="">Cargando miembros...</option></select>
+        <select id="select-plataforma"><option value="">Cargando plataformas...</option></select>
+        <button id="btn-pedir" onclick="pedirCuenta()">RECIBIR CUENTA</button>
         <div id="resultado-entrega"></div>
     </div>
 
     <div id="admin-panel" class="admin-section">
-        <h2 style="text-align: center;">⚙️ PANEL CONTROL</h2>
+        <h2 style="text-align: center;">🛡️ PANEL DE CONTROL</h2>
+
+        <div class="card">
+            <h3>📊 Historial Reciente</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Miembro</th>
+                            <th>App</th>
+                            <th>Celular</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historial-tabla-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
 
         <div class="card">
             <h3>👥 Gestionar Miembros</h3>
-            <input id="m-nombre" placeholder="Nombre del Miembro">
-            <input id="m-phone" placeholder="Número de Celular">
-            <button onclick="addMiembro()">+ Agregar Miembro</button>
-            <div id="lista-miembros-admin" style="margin-top:10px; max-height: 150px; overflow-y: auto;"></div>
+            <input id="m-nombre" placeholder="Nombre completo">
+            <input id="m-phone" placeholder="Ej: +593xxxxxxx">
+            <button onclick="addMiembro()">Agregar Miembro</button>
+            <div id="lista-miembros-admin" style="margin-top:15px; max-height: 200px; overflow-y: auto;"></div>
         </div>
 
         <div class="card">
             <h3>📺 Subir Cuentas</h3>
-            <input id="c-app" placeholder="Nombre App (Ej: Netflix)">
-            <input id="c-datos" placeholder="Correo:Clave o Perfil">
-            <input id="c-cupo" type="number" placeholder="Límite de usos (Stock)">
-            <button onclick="addCuenta()" style="background: #22c55e;">+ Subir a Sistema</button>
-            <div id="lista-cuentas-admin" style="margin-top:10px;"></div>
+            <input id="c-app" placeholder="Nombre App">
+            <input id="c-datos" placeholder="Correo:Clave">
+            <input id="c-cupo" type="number" placeholder="Stock disponible">
+            <button onclick="addCuenta()" style="background: var(--accent);">Cargar al Sistema</button>
         </div>
 
         <div class="card">
-            <h3>📊 Historial de Pedidos (Real-time)</h3>
-            <div id="historial-total"></div>
-        </div>
-
-        <div class="card">
-            <h3>🔑 Crear Nuevo Admin/Seller</h3>
+            <h3>🔑 Crear Acceso Personal</h3>
             <input id="new-email" placeholder="Email">
             <input id="new-pass" placeholder="Clave">
-            <button onclick="crearUsuario()">Crear Acceso</button>
+            <select id="new-role">
+                <option value="seller">Rango: SELLER (Vendedor)</option>
+                <option value="admin">Rango: ADMINISTRADOR</option>
+            </select>
+            <button onclick="crearUsuario()">Crear Usuario</button>
         </div>
     </div>
 </div>
@@ -103,9 +113,8 @@ hr { border: 0; border-top: 1px solid #30363d; margin: 20px 0; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// TU CONFIGURACIÓN ORIGINAL (NO TOCAR)
 const firebaseConfig = {
     apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
     authDomain:"sistema-ventas-64a4c.firebaseapp.com",
@@ -117,15 +126,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const MASTER = "andyobregon799@gmail.com";
-let isAdmin = false;
 
-// --- AUTENTICACIÓN ---
 window.handleLogin = async () => {
-    const email = document.getElementById("log-email").value;
-    const pass = document.getElementById("log-pass").value;
     try {
-        await signInWithEmailAndPassword(auth, email, pass);
-    } catch(e) { alert("Error: " + e.message); }
+        await signInWithEmailAndPassword(auth, document.getElementById("log-email").value, document.getElementById("log-pass").value);
+    } catch(e) { alert("Acceso denegado"); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -134,10 +139,7 @@ onAuthStateChanged(auth, (user) => {
     if(user) {
         document.getElementById("login").style.display = "none";
         document.getElementById("app").style.display = "block";
-        document.getElementById("user-display").innerText = "Conectado: " + user.email;
-        
         if(user.email === MASTER) {
-            isAdmin = true;
             document.getElementById("admin-panel").style.display = "block";
             loadAdminData();
         }
@@ -145,166 +147,101 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- FUNCIONES DE USUARIO (MIEMBRO) ---
 function loadUserData() {
-    // Cargar Miembros al Select
     onSnapshot(collection(db, "miembros"), (snap) => {
         let options = '<option value="">-- Selecciona tu nombre --</option>';
-        snap.forEach(d => {
-            const m = d.data();
-            options += `<option value="${d.id}" data-phone="${m.telefono}">${m.nombre}</option>`;
-        });
+        snap.forEach(d => { options += `<option value="${d.id}" data-phone="${d.data().telefono}">${d.data().nombre}</option>`; });
         document.getElementById("select-miembro").innerHTML = options;
     });
 
-    // Cargar Cuentas Disponibles al Select
     onSnapshot(collection(db, "cuentas"), (snap) => {
-        let options = '<option value="">-- ¿Qué app quieres? --</option>';
-        snap.forEach(d => {
-            const c = d.data();
-            if(c.cupo > 0) options += `<option value="${d.id}">${c.app} (Disponibles: ${c.cupo})</option>`;
-        });
+        let options = '<option value="">-- Elige la App --</option>';
+        snap.forEach(d => { if(d.data().cupo > 0) options += `<option value="${d.id}">${d.data().app} (${d.data().cupo})</option>`; });
         document.getElementById("select-plataforma").innerHTML = options;
     });
 }
 
 window.pedirCuenta = async () => {
     const mSelect = document.getElementById("select-miembro");
-    const cSelect = document.getElementById("select-plataforma");
-    
-    if(!mSelect.value || !cSelect.value) return alert("Selecciona tu nombre y la app");
+    const cId = document.getElementById("select-plataforma").value;
+    if(!mSelect.value || !cId) return alert("Completa los campos");
 
     const mNombre = mSelect.options[mSelect.selectedIndex].text;
     const mPhone = mSelect.options[mSelect.selectedIndex].getAttribute("data-phone");
-    const cId = cSelect.value;
 
-    const btn = document.getElementById("btn-pedir");
-    btn.disabled = true;
-    btn.innerText = "Procesando...";
+    const cSnap = await getDocs(query(collection(db, "cuentas")));
+    let cuentaData = null;
+    cSnap.forEach(doc => { if(doc.id === cId) cuentaData = {id: doc.id, ...doc.data()}; });
 
-    try {
-        const cSnap = await getDocs(query(collection(db, "cuentas")));
-        let cuentaData = null;
-        cSnap.forEach(doc => { if(doc.id === cId) cuentaData = {id: doc.id, ...doc.data()}; });
+    if(cuentaData && cuentaData.cupo > 0) {
+        await addDoc(collection(db, "historial"), { miembro: mNombre, telefono: mPhone, app: cuentaData.app, fecha: serverTimestamp() });
+        await updateDoc(doc(db, "cuentas", cId), { cupo: cuentaData.cupo - 1 });
 
-        if(cuentaData && cuentaData.cupo > 0) {
-            // Guardar Historial
-            await addDoc(collection(db, "historial"), {
-                miembro: mNombre,
-                telefono: mPhone,
-                app: cuentaData.app,
-                detalles: cuentaData.datos,
-                fecha: serverTimestamp()
-            });
-
-            // Restar Cupo
-            await updateDoc(doc(db, "cuentas", cId), { cupo: cuentaData.cupo - 1 });
-
-            // Mostrar al usuario
-            document.getElementById("resultado-entrega").innerHTML = `
-                <div class="ticket-entrega">
-                    <p style="color: #22c55e; font-weight: bold;">✅ ¡CUENTA ENTREGADA!</p>
-                    <div style="background: #000; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px dashed #6366f1;">
-                        <code id="datos-txt">${cuentaData.datos}</code>
-                    </div>
-                    <button class="btn-copy" onclick="copyText()">Copiar Datos 📋</button>
-                </div>
-            `;
-        } else {
-            alert("¡Se agotaron los cupos de esta cuenta!");
-        }
-    } catch(e) { console.error(e); }
-    
-    btn.disabled = false;
-    btn.innerText = "OBTENER CUENTA AHORA";
+        document.getElementById("resultado-entrega").innerHTML = `
+            <div class="ticket-entrega">
+                <p>✅ CUENTA LISTA</p>
+                <code id="datos-txt" style="display:block; background:#000; padding:10px; margin:10px 0;">${cuentaData.datos}</code>
+                <button class="btn-copy" onclick="copyText()">Copiar Datos 📋</button>
+            </div>`;
+    }
 };
 
 window.copyText = () => {
-    const txt = document.getElementById("datos-txt").innerText;
-    navigator.clipboard.writeText(txt);
-    alert("¡Copiado al portapapeles!");
+    navigator.clipboard.writeText(document.getElementById("datos-txt").innerText);
+    alert("Copiado");
 };
 
-// --- FUNCIONES DE ADMINISTRADOR ---
 function loadAdminData() {
-    // Listar Miembros en Admin
-    onSnapshot(collection(db, "miembros"), snap => {
-        let html = "";
-        snap.forEach(d => {
-            const m = d.data();
-            html += `<div style="font-size:13px; margin-bottom:5px;">👤 ${m.nombre} (${m.telefono}) 
-            <button class="btn-danger" style="width:auto; padding:2px 5px;" onclick="eliminarDoc('miembros','${d.id}')">X</button></div>`;
-        });
-        document.getElementById("lista-miembros-admin").innerHTML = html;
-    });
-
-    // Listar Cuentas en Admin
-    onSnapshot(collection(db, "cuentas"), snap => {
-        let html = "";
-        snap.forEach(d => {
-            const c = d.data();
-            html += `
-                <div class="historial-item">
-                    <b>${c.app}</b> | Cupos: ${c.cupo}
-                    <br><small>${c.datos}</small>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-edit" onclick="resetCupo('${d.id}')">Reset Cupo</button>
-                        <button class="btn-danger" onclick="eliminarDoc('cuentas','${d.id}')">Eliminar</button>
-                    </div>
-                </div>`;
-        });
-        document.getElementById("lista-cuentas-admin").innerHTML = html;
-    });
-
-    // Historial Total (Real-time)
-    onSnapshot(query(collection(db, "historial")), snap => {
+    // HISTORIAL EN TABLA ELEGANTE
+    onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
         let html = "";
         snap.forEach(d => {
             const h = d.data();
-            html += `
-                <div class="historial-item" style="border-left-color: #22c55e;">
-                    <b>${h.miembro}</b> pidió <b>${h.app}</b>
-                    <br>📱 Cel: ${h.telefono}
-                    <br><small>🕒 ${h.fecha?.toDate().toLocaleString() || 'Recién'}</small>
-                </div>`;
+            const fecha = h.fecha?.toDate().toLocaleTimeString() || "Ahora";
+            html += `<tr>
+                <td><b>${h.miembro}</b></td>
+                <td><span class="badge-app">${h.app}</span></td>
+                <td class="text-phone">${h.telefono}</td>
+                <td>${fecha}</td>
+            </tr>`;
         });
-        document.getElementById("historial-total").innerHTML = html;
+        document.getElementById("historial-tabla-body").innerHTML = html;
+    });
+
+    onSnapshot(collection(db, "miembros"), snap => {
+        let html = "";
+        snap.forEach(d => {
+            html += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:12px;">
+            <span>👤 ${d.data().nombre}</span>
+            <button class="btn-danger" onclick="eliminarDoc('miembros','${d.id}')">Eliminar</button>
+            </div>`;
+        });
+        document.getElementById("lista-miembros-admin").innerHTML = html;
     });
 }
 
 window.addMiembro = async () => {
     const nombre = document.getElementById("m-nombre").value;
     const telefono = document.getElementById("m-phone").value;
-    if(!nombre || !telefono) return alert("Faltan datos");
-    await addDoc(collection(db, "miembros"), { nombre, telefono });
-    document.getElementById("m-nombre").value = "";
-    document.getElementById("m-phone").value = "";
+    if(nombre && telefono) await addDoc(collection(db, "miembros"), { nombre, telefono });
 };
 
 window.addCuenta = async () => {
     const app = document.getElementById("c-app").value;
     const datos = document.getElementById("c-datos").value;
     const cupo = parseInt(document.getElementById("c-cupo").value);
-    if(!app || !datos || isNaN(cupo)) return alert("Faltan datos");
-    await addDoc(collection(db, "cuentas"), { app, datos, cupo });
-    alert("Cuenta subida");
+    if(app && datos && cupo) await addDoc(collection(db, "cuentas"), { app, datos, cupo });
 };
 
-window.resetCupo = async (id) => {
-    const nuevo = prompt("Nuevo límite de cupos:");
-    if(nuevo) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(nuevo) });
-};
-
-window.eliminarDoc = async (ruta, id) => {
-    if(confirm("¿Eliminar?")) await deleteDoc(doc(db, ruta, id));
-};
+window.eliminarDoc = async (path, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, path, id)); };
 
 window.crearUsuario = async () => {
     const email = document.getElementById("new-email").value;
     const pass = document.getElementById("new-pass").value;
+    const role = document.getElementById("new-role").value; // Captura el rango seleccionado
     try {
         await createUserWithEmailAndPassword(auth, email, pass);
-        alert("✅ Acceso creado para " + email);
+        alert(`✅ ${role.toUpperCase()} creado con éxito`);
     } catch(e) { alert(e.message); }
 };
 </script>
