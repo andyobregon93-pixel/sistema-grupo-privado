@@ -3,117 +3,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SISTEMA PREMIUM - ANDY</title>
+<title>ANDY GLOBAL - ADMIN PRO</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; }
+:root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; --danger: #ef4444; --warning: #f59e0b; }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);margin:0; padding-bottom: 50px;}
-.container{padding:15px;max-width:600px;margin:auto}
-.card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);}
-h2, h3 { margin-top: 0; color: var(--primary); font-weight: 800; }
+.container{padding:15px;max-width:650px;margin:auto}
+
+/* Apartados Organizados */
+.section-box { background: var(--card); border-radius: 15px; border: 1px solid #30363d; margin-top: 15px; overflow: hidden; }
+.section-header { background: #1f2937; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 800; color: var(--primary); }
+.section-content { padding: 15px; display: block; } /* Cambiar a display:none si quieres que inicien cerrados */
 
 input,button,select{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select{background:#0d1117;color:white;border:1px solid #30363d}
 button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.2s;}
 button:active{transform: scale(0.96);}
 
-/* Estilo de la Tabla de Historial */
-.table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; background: #0d1117; border: 1px solid #30363d; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-th { background: #1f2937; color: var(--primary); padding: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-td { padding: 12px; border-bottom: 1px solid #30363d; }
-.badge-app { background: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; }
-.text-phone { color: #9ca3af; font-family: monospace; }
+/* Tabla Pro */
+.table-container { width: 100%; overflow-x: auto; border-radius: 10px; background: #0d1117; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #2d333b; color: #8b949e; padding: 10px; text-align: left; }
+td { padding: 10px; border-bottom: 1px solid #30363d; }
 
-.ticket-entrega{background:linear-gradient(135deg,#1e293b,#0f172a);padding:20px;border-radius:20px;border: 2px solid var(--primary); margin-top:15px; text-align: center;}
-.admin-section{display:none; border-top: 2px solid #30363d; margin-top: 30px; padding-top: 20px;}
-.logout{background:#ef4444; margin-bottom: 10px; font-size: 12px;}
-.btn-copy { background: var(--accent); margin-top: 15px; }
-.btn-danger { background: #dc2626; font-size: 11px; padding: 5px 10px; width: auto; margin: 0;}
+/* Botones de acción pequeños */
+.btn-small { width: auto; padding: 6px 12px; font-size: 11px; margin: 2px; }
+.btn-edit { background: var(--warning); }
+.btn-del { background: var(--danger); }
+.btn-reset { background: #3b82f6; }
+
+.badge { padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+.badge-count { background: var(--primary); color: white; }
+
+.logout{background:var(--danger); margin-bottom: 10px; width: auto; padding: 8px 20px;}
 </style>
 </head>
 
 <body>
 
 <div id="login" class="container">
-    <div class="card" style="text-align: center;">
-        <h1>⚡ ANDY GLOBAL</h1>
-        <input id="log-email" placeholder="Email">
+    <div class="card" style="background:var(--card); padding:30px; border-radius:20px; text-align:center; border:1px solid #30363d; margin-top:50px;">
+        <h1>⚡ ANDY PRO</h1>
+        <input id="log-email" placeholder="Correo">
         <input id="log-pass" type="password" placeholder="Contraseña">
-        <button onclick="handleLogin()">INGRESAR</button>
+        <button onclick="handleLogin()">ENTRAR AL SISTEMA</button>
     </div>
 </div>
 
 <div id="app" style="display:none" class="container">
     
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <button class="logout" onclick="logout()">Cerrar Sesión 🚪</button>
+    <button class="logout" onclick="logout()">Salir 🚪</button>
+
+    <div class="section-box">
+        <div class="section-header">🎁 PEDIR CUENTA GRATIS</div>
+        <div class="section-content">
+            <select id="select-miembro"><option value="">Cargando...</option></select>
+            <select id="select-plataforma"><option value="">Selecciona App...</option></select>
+            <button onclick="pedirCuenta()">OBTENER CUENTA</button>
+            <div id="resultado-entrega"></div>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>🎁 Pedir Mi Cuenta</h3>
-        <select id="select-miembro"><option value="">Cargando miembros...</option></select>
-        <select id="select-plataforma"><option value="">Cargando plataformas...</option></select>
-        <button id="btn-pedir" onclick="pedirCuenta()">RECIBIR CUENTA</button>
-        <div id="resultado-entrega"></div>
-    </div>
-
-    <div id="admin-panel" class="admin-section">
-        <h2 style="text-align: center;">🛡️ PANEL DE CONTROL</h2>
-
-        <div class="card">
-            <h3>📊 Historial Reciente</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Miembro</th>
-                            <th>App</th>
-                            <th>Celular</th>
-                            <th>Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historial-tabla-body">
-                        </tbody>
-                </table>
+    <div id="admin-panel" style="display:none;">
+        
+        <div class="section-box">
+            <div class="section-header">📺 GESTIÓN DE PLATAFORMAS <span>+</span></div>
+            <div class="section-content">
+                <input id="c-app" placeholder="Nombre de la App (Ej: Netflix)">
+                <input id="c-datos" placeholder="Correo:Contraseña">
+                <input id="c-cupo" type="number" placeholder="Stock / Límite">
+                <button onclick="addCuenta()" style="background:var(--accent);">Subir Nueva Cuenta</button>
+                <hr style="border:0; border-top:1px solid #30363d; margin:15px 0;">
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>App</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-cuentas-admin"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3>👥 Gestionar Miembros</h3>
-            <input id="m-nombre" placeholder="Nombre completo">
-            <input id="m-phone" placeholder="Ej: +593xxxxxxx">
-            <button onclick="addMiembro()">Agregar Miembro</button>
-            <div id="lista-miembros-admin" style="margin-top:15px; max-height: 200px; overflow-y: auto;"></div>
+        <div class="section-box">
+            <div class="section-header">📊 HISTORIAL DE PEDIDOS <span>▼</span></div>
+            <div class="section-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Miembro</th>
+                                <th>App</th>
+                                <th>Celular</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historial-tabla-body"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>📺 Subir Cuentas</h3>
-            <input id="c-app" placeholder="Nombre App">
-            <input id="c-datos" placeholder="Correo:Clave">
-            <input id="c-cupo" type="number" placeholder="Stock disponible">
-            <button onclick="addCuenta()" style="background: var(--accent);">Cargar al Sistema</button>
+        <div class="section-box">
+            <div class="section-header">👥 GESTIÓN DE MIEMBROS <span>▼</span></div>
+            <div class="section-content">
+                <input id="m-nombre" placeholder="Nombre Miembro">
+                <input id="m-phone" placeholder="Celular">
+                <button onclick="addMiembro()">Registrar Miembro</button>
+                <div id="lista-miembros-admin" style="margin-top:15px;"></div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>🔑 Crear Acceso Personal</h3>
-            <input id="new-email" placeholder="Email">
-            <input id="new-pass" placeholder="Clave">
-            <select id="new-role">
-                <option value="seller">Rango: SELLER (Vendedor)</option>
-                <option value="admin">Rango: ADMINISTRADOR</option>
-            </select>
-            <button onclick="crearUsuario()">Crear Usuario</button>
+        <div class="section-box">
+            <div class="section-header">🔑 CREAR RANGOS (ADMIN/SELLER)</div>
+            <div class="section-content">
+                <input id="new-email" placeholder="Correo">
+                <input id="new-pass" placeholder="Clave">
+                <select id="new-role">
+                    <option value="seller">RANGO: SELLER</option>
+                    <option value="admin">RANGO: ADMINISTRADOR</option>
+                </select>
+                <button onclick="crearUsuario()">Crear Acceso</button>
+            </div>
         </div>
+
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -130,7 +157,7 @@ const MASTER = "andyobregon799@gmail.com";
 window.handleLogin = async () => {
     try {
         await signInWithEmailAndPassword(auth, document.getElementById("log-email").value, document.getElementById("log-pass").value);
-    } catch(e) { alert("Acceso denegado"); }
+    } catch(e) { alert("Error al entrar"); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -149,82 +176,80 @@ onAuthStateChanged(auth, (user) => {
 
 function loadUserData() {
     onSnapshot(collection(db, "miembros"), (snap) => {
-        let options = '<option value="">-- Selecciona tu nombre --</option>';
+        let options = '<option value="">-- Quién eres? --</option>';
         snap.forEach(d => { options += `<option value="${d.id}" data-phone="${d.data().telefono}">${d.data().nombre}</option>`; });
         document.getElementById("select-miembro").innerHTML = options;
     });
-
     onSnapshot(collection(db, "cuentas"), (snap) => {
-        let options = '<option value="">-- Elige la App --</option>';
+        let options = '<option value="">-- Qué app quieres? --</option>';
         snap.forEach(d => { if(d.data().cupo > 0) options += `<option value="${d.id}">${d.data().app} (${d.data().cupo})</option>`; });
         document.getElementById("select-plataforma").innerHTML = options;
     });
 }
 
 window.pedirCuenta = async () => {
-    const mSelect = document.getElementById("select-miembro");
+    const mSel = document.getElementById("select-miembro");
     const cId = document.getElementById("select-plataforma").value;
-    if(!mSelect.value || !cId) return alert("Completa los campos");
+    if(!mSel.value || !cId) return alert("Faltan datos");
 
-    const mNombre = mSelect.options[mSelect.selectedIndex].text;
-    const mPhone = mSelect.options[mSelect.selectedIndex].getAttribute("data-phone");
+    const mNom = mSel.options[mSel.selectedIndex].text;
+    const mPho = mSel.options[mSel.selectedIndex].getAttribute("data-phone");
 
-    const cSnap = await getDocs(query(collection(db, "cuentas")));
-    let cuentaData = null;
-    cSnap.forEach(doc => { if(doc.id === cId) cuentaData = {id: doc.id, ...doc.data()}; });
+    const snap = await getDocs(collection(db, "cuentas"));
+    let cData = null;
+    snap.forEach(d => { if(d.id === cId) cData = {id:d.id, ...d.data()}; });
 
-    if(cuentaData && cuentaData.cupo > 0) {
-        await addDoc(collection(db, "historial"), { miembro: mNombre, telefono: mPhone, app: cuentaData.app, fecha: serverTimestamp() });
-        await updateDoc(doc(db, "cuentas", cId), { cupo: cuentaData.cupo - 1 });
-
-        document.getElementById("resultado-entrega").innerHTML = `
-            <div class="ticket-entrega">
-                <p>✅ CUENTA LISTA</p>
-                <code id="datos-txt" style="display:block; background:#000; padding:10px; margin:10px 0;">${cuentaData.datos}</code>
-                <button class="btn-copy" onclick="copyText()">Copiar Datos 📋</button>
-            </div>`;
+    if(cData && cData.cupo > 0) {
+        await addDoc(collection(db, "historial"), { miembro: mNom, telefono: mPho, app: cData.app, fecha: serverTimestamp() });
+        await updateDoc(doc(db, "cuentas", cId), { cupo: cData.cupo - 1 });
+        document.getElementById("resultado-entrega").innerHTML = `<div style="padding:15px; border:1px solid var(--accent); margin-top:10px; border-radius:10px;">
+            <p>✅ CUENTA ENTREGADA:</p>
+            <code id="copiar">${cData.datos}</code><br>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('copiar').innerText); alert('Copiado');" style="background:var(--accent); margin-top:10px;">Copiar Datos</button>
+        </div>`;
     }
 };
 
-window.copyText = () => {
-    navigator.clipboard.writeText(document.getElementById("datos-txt").innerText);
-    alert("Copiado");
-};
-
 function loadAdminData() {
-    // HISTORIAL EN TABLA ELEGANTE
-    onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc"), limit(10)), snap => {
+    // Historial Ordenado
+    onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
         let html = "";
         snap.forEach(d => {
             const h = d.data();
-            const fecha = h.fecha?.toDate().toLocaleTimeString() || "Ahora";
-            html += `<tr>
-                <td><b>${h.miembro}</b></td>
-                <td><span class="badge-app">${h.app}</span></td>
-                <td class="text-phone">${h.telefono}</td>
-                <td>${fecha}</td>
-            </tr>`;
+            html += `<tr><td>${h.miembro}</td><td><span class="badge badge-count">${h.app}</span></td><td>${h.telefono}</td><td>${h.fecha?.toDate().toLocaleTimeString() || '...'}</td></tr>`;
         });
         document.getElementById("historial-tabla-body").innerHTML = html;
+    });
+
+    // Gestión de Cuentas Avanzada
+    onSnapshot(collection(db, "cuentas"), snap => {
+        let html = "";
+        snap.forEach(d => {
+            const c = d.data();
+            html += `<tr>
+                <td><b>${c.app}</b></td>
+                <td>${c.cupo}</td>
+                <td>
+                    <button class="btn-small btn-edit" onclick="editarCuenta('${d.id}','${c.app}','${c.datos}')">✎</button>
+                    <button class="btn-small btn-reset" onclick="resetCupo('${d.id}')">Reset</button>
+                    <button class="btn-small btn-del" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
+                </td>
+            </tr>`;
+        });
+        document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
 
     onSnapshot(collection(db, "miembros"), snap => {
         let html = "";
         snap.forEach(d => {
-            html += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:12px;">
-            <span>👤 ${d.data().nombre}</span>
-            <button class="btn-danger" onclick="eliminarDoc('miembros','${d.id}')">Eliminar</button>
+            html += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #222;">
+                <span>${d.data().nombre}</span>
+                <button class="btn-small btn-del" onclick="eliminarDoc('miembros','${d.id}')">Eliminar</button>
             </div>`;
         });
         document.getElementById("lista-miembros-admin").innerHTML = html;
     });
 }
-
-window.addMiembro = async () => {
-    const nombre = document.getElementById("m-nombre").value;
-    const telefono = document.getElementById("m-phone").value;
-    if(nombre && telefono) await addDoc(collection(db, "miembros"), { nombre, telefono });
-};
 
 window.addCuenta = async () => {
     const app = document.getElementById("c-app").value;
@@ -233,15 +258,31 @@ window.addCuenta = async () => {
     if(app && datos && cupo) await addDoc(collection(db, "cuentas"), { app, datos, cupo });
 };
 
-window.eliminarDoc = async (path, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, path, id)); };
+window.addMiembro = async () => {
+    const nombre = document.getElementById("m-nombre").value;
+    const telefono = document.getElementById("m-phone").value;
+    if(nombre && telefono) await addDoc(collection(db, "miembros"), { nombre, telefono });
+};
+
+window.editarCuenta = async (id, app, datos) => {
+    const nApp = prompt("Nuevo nombre app:", app);
+    const nDat = prompt("Nuevos datos:", datos);
+    if(nApp && nDat) await updateDoc(doc(db, "cuentas", id), { app: nApp, datos: nDat });
+};
+
+window.resetCupo = async (id) => {
+    const nCupo = prompt("Nuevo límite de cupos:");
+    if(nCupo) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(nCupo) });
+};
+
+window.eliminarDoc = async (p, id) => { if(confirm("Eliminar?")) await deleteDoc(doc(db, p, id)); };
 
 window.crearUsuario = async () => {
     const email = document.getElementById("new-email").value;
     const pass = document.getElementById("new-pass").value;
-    const role = document.getElementById("new-role").value; // Captura el rango seleccionado
     try {
         await createUserWithEmailAndPassword(auth, email, pass);
-        alert(`✅ ${role.toUpperCase()} creado con éxito`);
+        alert("Usuario creado");
     } catch(e) { alert(e.message); }
 };
 </script>
