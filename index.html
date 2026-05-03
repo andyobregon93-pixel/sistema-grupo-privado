@@ -11,7 +11,7 @@
 :root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; --danger: #ef4444; --warning: #f59e0b; }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);margin:0; overflow-x: hidden;}
 
-/* --- NAVEGACIÓN TIPO MENÚ --- */
+/* --- NAVEGACIÓN --- */
 .sidebar { width: 100%; background: #111418; padding: 10px; display: flex; overflow-x: auto; gap: 10px; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 100; scrollbar-width: none;}
 .sidebar::-webkit-scrollbar { display: none; }
 .nav-btn { background: #1f2937; color: #9ca3af; padding: 10px 15px; border-radius: 10px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid transparent; cursor: pointer; transition: 0.3s; }
@@ -27,7 +27,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d;}
 input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
-textarea{resize: vertical; min-height: 100px; line-height: 1.5;} /* Mejora para IPTV/Formatos largos */
+textarea{resize: vertical; min-height: 100px; line-height: 1.5;}
 button{background:var(--primary);color:white;font-weight:800; cursor: pointer;}
 
 /* --- TABLAS Y DETALLES --- */
@@ -42,6 +42,14 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 
 .logout{background:var(--danger); width: auto; padding: 8px 15px; font-size: 12px; margin-left: auto;}
 .btn-clear { background: var(--danger); font-size: 12px; margin-top: 15px; width: auto; padding: 10px 20px; }
+
+/* Switch Estilo Apple */
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(20px); }
 </style>
 </head>
 
@@ -50,7 +58,7 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 <div id="login" class="container">
     <div class="card" style="text-align: center; margin-top: 50px;">
         <h1>⚡ ANDY VIP</h1>
-        <input id="log-email" placeholder="Usuario">
+        <input id="log-email" placeholder="Correo de acceso">
         <input id="log-pass" type="password" placeholder="Clave">
         <button onclick="handleLogin()">INGRESAR AL SISTEMA</button>
     </div>
@@ -60,10 +68,10 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
     
     <div class="sidebar">
         <button class="nav-btn active" onclick="showPage('p-solicitar', this)">🎁 Pedir Cuenta</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Cuentas/Stock</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial Pedidos</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Cuentas</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial</button>
         <button class="nav-btn admin-only" onclick="showPage('p-miembros', this)">👥 Miembros</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos/Bot</button>
         <button class="logout" onclick="logout()">Salir</button>
     </div>
 
@@ -72,8 +80,9 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
         <div id="p-solicitar" class="page active">
             <div class="card">
                 <h3>Obtener nueva cuenta</h3>
-                <select id="select-miembro"><option>Cargando...</option></select>
-                <select id="select-plataforma"><option>Cargando...</option></select>
+                <p style="font-size: 12px; color: #9ca3af;">Selecciona tu nombre y la plataforma deseada.</p>
+                <select id="select-miembro"><option>Cargando miembros...</option></select>
+                <select id="select-plataforma"><option>Cargando stock...</option></select>
                 <button onclick="pedirCuenta()">OBTENER AHORA</button>
                 <div id="resultado-entrega"></div>
             </div>
@@ -83,8 +92,8 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
             <div class="card">
                 <h3>Agregar Plataforma</h3>
                 <input id="c-app" placeholder="Nombre App">
-                <textarea id="c-datos" placeholder="Pega aquí los datos (puedes usar varias líneas, emojis, etc.)"></textarea>
-                <input id="c-cupo" type="number" placeholder="Stock">
+                <textarea id="c-datos" placeholder="Pega aquí los datos..."></textarea>
+                <input id="c-cupo" type="number" placeholder="Stock Inicial">
                 <button onclick="addCuenta()" style="background:var(--accent)">Subir al sistema</button>
             </div>
             <div class="card">
@@ -93,7 +102,7 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
                     <table>
                         <thead>
                             <tr>
-                                <th>Información de Cuenta</th>
+                                <th>Información</th>
                                 <th>Stock</th>
                                 <th>Acciones</th>
                             </tr>
@@ -113,22 +122,22 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
                             <tr>
                                 <th>Miembro</th>
                                 <th>Plataforma</th>
-                                <th>Teléfono</th>
+                                <th>WhatsApp</th>
                                 <th>Hora</th>
                             </tr>
                         </thead>
                         <tbody id="historial-tabla-body"></tbody>
                     </table>
                 </div>
-                <button class="btn-clear" onclick="limpiarHistorial()">🗑️ Vaciar Historial Completo</button>
+                <button class="btn-clear" onclick="limpiarHistorial()">🗑️ Vaciar Historial</button>
             </div>
         </div>
 
         <div id="p-miembros" class="page">
             <div class="card">
                 <h3>Registrar Nuevo Miembro</h3>
-                <input id="m-nombre" placeholder="Nombre">
-                <input id="m-phone" placeholder="Celular">
+                <input id="m-nombre" placeholder="Nombre del Cliente">
+                <input id="m-phone" placeholder="WhatsApp (Ej: 593987654321)">
                 <button onclick="addMiembro()">Guardar Miembro</button>
                 <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
                 <div id="lista-miembros-admin"></div>
@@ -136,8 +145,15 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
         </div>
 
         <div id="p-admin" class="page">
+            <div class="card" style="border-left: 5px solid var(--accent);">
+                <h3>Configurar Mensaje de WhatsApp</h3>
+                <p style="font-size: 12px; color: #9ca3af;">Este mensaje se abrirá automáticamente cuando el cliente reciba su cuenta.</p>
+                <textarea id="ws-msg" placeholder="Hola Andy, ya recibí mi cuenta de {plataforma}. ¡Muchas gracias!"></textarea>
+                <button onclick="saveConfig()" style="background:var(--accent)">Guardar Configuración</button>
+            </div>
+
             <div class="card">
-                <h3>Crear Admin o Seller</h3>
+                <h3>Crear Nuevo Acceso (Admin/Seller)</h3>
                 <input id="new-email" placeholder="Correo">
                 <input id="new-pass" placeholder="Clave">
                 <select id="new-role">
@@ -145,6 +161,11 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
                     <option value="admin">ADMINISTRADOR</option>
                 </select>
                 <button onclick="crearUsuario()">Crear Acceso</button>
+            </div>
+
+            <div class="card">
+                <h3>Control de Usuarios</h3>
+                <div id="lista-usuarios-admin"></div>
             </div>
         </div>
 
@@ -154,7 +175,7 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, getDocs, query, where, deleteDoc, doc, updateDoc, serverTimestamp, orderBy, writeBatch, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey:"AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -167,6 +188,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const MASTER = "andyobregon799@gmail.com";
+let configGlobal = { mensaje: "Hola, ya recibí mi cuenta de {plataforma}. Gracias!" };
 
 window.showPage = (id, btn) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -175,18 +197,38 @@ window.showPage = (id, btn) => {
     btn.classList.add('active');
 };
 
+// LOGIN CON VERIFICACIÓN DE ESTADO (ENCENDIDO/APAGADO)
 window.handleLogin = async () => {
+    const email = document.getElementById("log-email").value;
+    const pass = document.getElementById("log-pass").value;
+
     try {
-        await signInWithEmailAndPassword(auth, document.getElementById("log-email").value, document.getElementById("log-pass").value);
-    } catch(e) { alert("Acceso denegado"); }
+        if(email !== MASTER) {
+            const userRef = doc(db, "usuarios_permisos", email);
+            const userSnap = await getDoc(userRef);
+            if(userSnap.exists() && userSnap.data().estado === false) {
+                alert("Tu acceso ha sido desactivado por el Administrador.");
+                return;
+            }
+        }
+        await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) { alert("Credenciales incorrectas o usuario no registrado"); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if(user) {
         document.getElementById("login").style.display = "none";
         document.getElementById("app").style.display = "block";
+        
+        // Cargar Configuración de Mensaje
+        const confSnap = await getDoc(doc(db, "config", "ws"));
+        if(confSnap.exists()){
+            configGlobal = confSnap.data();
+            if(document.getElementById("ws-msg")) document.getElementById("ws-msg").value = configGlobal.mensaje;
+        }
+
         if(user.email === MASTER) {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
             loadAdminData();
@@ -210,10 +252,11 @@ function loadUserData() {
     });
 }
 
+// PEDIR CUENTA + ENVÍO DE WHATSAPP
 window.pedirCuenta = async () => {
     const mSel = document.getElementById("select-miembro");
     const cId = document.getElementById("select-plataforma").value;
-    if(!mSel.value || !cId) return alert("Faltan datos");
+    if(!mSel.value || !cId) return alert("Por favor selecciona tu nombre y la plataforma");
 
     const mNom = mSel.options[mSel.selectedIndex].text;
     const mPho = mSel.options[mSel.selectedIndex].getAttribute("data-phone");
@@ -225,32 +268,39 @@ window.pedirCuenta = async () => {
     if(cData && cData.cupo > 0) {
         await addDoc(collection(db, "historial"), { miembro: mNom, telefono: mPho, app: cData.app, fecha: serverTimestamp() });
         await updateDoc(doc(db, "cuentas", cId), { cupo: cData.cupo - 1 });
+        
+        // Preparar mensaje de WhatsApp
+        let customMsg = configGlobal.mensaje.replace("{plataforma}", cData.app).replace("{nombre}", mNom);
+        let wsUrl = `https://wa.me/593963479025?text=${encodeURIComponent(customMsg)}`; // Puedes cambiar el numero aqui
+
         document.getElementById("resultado-entrega").innerHTML = `
-        <div class="card" style="border-color:var(--accent); text-align:center;">
-            <p>✅ CUENTA ENTREGADA:</p>
-            <code id="copy-text" style="display:block; background:#000; padding:15px; margin-bottom:10px; color:var(--accent); white-space: pre-wrap; text-align: left; font-family: monospace;">${cData.datos}</code>
-            <button onclick="navigator.clipboard.writeText(document.getElementById('copy-text').innerText); alert('Copiado');">COPIAR DATOS 📋</button>
+        <div class="card" style="border-color:var(--accent); text-align:center; animation: fadeIn 0.5s;">
+            <p style="color:var(--accent); font-weight:bold;">✅ ¡CUENTA ENTREGADA!</p>
+            <code id="copy-text" style="display:block; background:#000; padding:15px; margin-bottom:10px; color:var(--accent); white-space: pre-wrap; text-align: left; font-family: monospace; border-radius:10px; border:1px solid #333;">${cData.datos}</code>
+            <button onclick="copyAndNotify('${wsUrl}')" style="background:var(--accent)">COPIAR Y AGRADECER (WS) 📋</button>
         </div>`;
     }
 };
 
+window.copyAndNotify = (url) => {
+    navigator.clipboard.writeText(document.getElementById('copy-text').innerText);
+    alert("Datos copiados. Ahora se abrirá WhatsApp para agradecer.");
+    window.open(url, '_blank');
+};
+
+// FUNCIONES ADMIN
 function loadAdminData() {
     onSnapshot(collection(db, "cuentas"), snap => {
         let html = "";
         snap.forEach(d => {
             const c = d.data();
-            html += `<tr>
-                <td>
-                    <b>${c.app}</b>
-                    <span class="datos-detalle">${c.datos}</span>
-                </td>
+            html += `<tr><td><b>${c.app}</b><span class="datos-detalle">${c.datos}</span></td>
                 <td><span class="badge" style="background:#334155">${c.cupo}</span></td>
                 <td>
                     <button class="btn-small" style="background:var(--warning)" onclick="editarCuenta('${d.id}','${c.app}',\`\${c.datos}\`)">✎</button>
                     <button class="btn-small" style="background:#3b82f6" onclick="resetCupo('${d.id}')">Cupo</button>
                     <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
-                </td>
-            </tr>`;
+                </td></tr>`;
         });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
@@ -267,22 +317,71 @@ function loadAdminData() {
     onSnapshot(collection(db, "miembros"), snap => {
         let html = "";
         snap.forEach(d => {
-            html += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #1f2937;">
-                <span>👤 ${d.data().nombre} (${d.data().telefono})</span>
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #1f2937;">
+                <span>👤 ${d.data().nombre} <small style="color:#9ca3af">(${d.data().telefono})</small></span>
                 <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('miembros','${d.id}')">Borrar</button>
             </div>`;
         });
         document.getElementById("lista-miembros-admin").innerHTML = html;
     });
+
+    // Cargar Lista de Usuarios/Sellers
+    onSnapshot(collection(db, "usuarios_permisos"), snap => {
+        let html = "";
+        snap.forEach(d => {
+            const u = d.data();
+            if(d.id === MASTER) return;
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#0d1117; margin-bottom:5px; border-radius:10px;">
+                <div>
+                    <div style="font-size:12px; font-weight:bold;">${d.id}</div>
+                    <div style="font-size:10px; color:var(--primary)">ROL: ${u.rol.toUpperCase()}</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <label class="switch">
+                        <input type="checkbox" ${u.estado ? 'checked' : ''} onchange="toggleUser('${d.id}', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                    <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('usuarios_permisos','${d.id}')">Eliminar</button>
+                </div>
+            </div>`;
+        });
+        document.getElementById("lista-usuarios-admin").innerHTML = html || "<p style='font-size:11px;'>No hay sub-usuarios creados.</p>";
+    });
 }
 
+// GESTIÓN DE USUARIOS
+window.crearUsuario = async () => {
+    const e = document.getElementById("new-email").value;
+    const p = document.getElementById("new-pass").value;
+    const r = document.getElementById("new-role").value;
+    if(!e || !p) return alert("Llena todos los campos");
+
+    try { 
+        await createUserWithEmailAndPassword(auth, e, p); 
+        await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true });
+        alert("Usuario Creado y Activado"); 
+    } catch(err) { alert("Error: " + err.message); }
+};
+
+window.toggleUser = async (email, estado) => {
+    await updateDoc(doc(db, "usuarios_permisos", email), { estado: estado });
+};
+
+// GESTIÓN DE CONFIGURACIÓN
+window.saveConfig = async () => {
+    const msg = document.getElementById("ws-msg").value;
+    await setDoc(doc(db, "config", "ws"), { mensaje: msg });
+    alert("Mensaje de WhatsApp actualizado");
+};
+
+// OTRAS FUNCIONES ORIGINALES
 window.limpiarHistorial = async () => {
-    if(confirm("¿Estás seguro de eliminar TODO el historial de pedidos?")){
+    if(confirm("¿Eliminar todo el historial?")){
         const q = await getDocs(collection(db, "historial"));
         const batch = writeBatch(db);
         q.forEach((doc) => { batch.delete(doc.ref); });
         await batch.commit();
-        alert("Historial vaciado.");
+        alert("Vaciado");
     }
 };
 
@@ -292,37 +391,25 @@ window.addCuenta = async () => {
     const cupo = parseInt(document.getElementById("c-cupo").value);
     if(app && datos && !isNaN(cupo)) {
         await addDoc(collection(db, "cuentas"), { app, datos, cupo });
-        document.getElementById("c-app").value = "";
-        document.getElementById("c-datos").value = "";
-        document.getElementById("c-cupo").value = "";
+        document.getElementById("c-app").value = ""; document.getElementById("c-datos").value = ""; document.getElementById("c-cupo").value = "";
     }
 };
 
 window.addMiembro = async () => {
     const n = document.getElementById("m-nombre").value;
     const t = document.getElementById("m-phone").value;
-    if(n && t) await addDoc(collection(db, "miembros"), { nombre:n, telefono:t });
+    if(n && t) {
+        await addDoc(collection(db, "miembros"), { nombre:n, telefono:t });
+        document.getElementById("m-nombre").value = ""; document.getElementById("m-phone").value = "";
+    }
 };
 
 window.editarCuenta = async (id, app, datos) => {
     const nA = prompt("App:", app);
-    const nD = prompt("Datos (usa \\n para saltos de línea):", datos);
+    const nD = prompt("Datos:", datos);
     if(nA && nD) await updateDoc(doc(db, "cuentas", id), { app: nA, datos: nD });
 };
 
 window.resetCupo = async (id) => {
     const nC = prompt("Nuevo Stock:");
-    if(nC) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(nC) });
-};
-
-window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
-
-window.crearUsuario = async () => {
-    const e = document.getElementById("new-email").value;
-    const p = document.getElementById("new-pass").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); alert("Usuario Creado"); } catch(err) { alert(err.message); }
-};
-</script>
-
-</body>
-</html>
+    if(nC) await updateDoc(doc(db, "cuentas", id), { cupo: pars
