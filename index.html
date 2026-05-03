@@ -23,7 +23,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* FORMULARIOS */
+/* COMPONENTES */
 .card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d;}
 input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
@@ -43,7 +43,7 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 .logout{background:var(--danger); width: auto; padding: 8px 15px; font-size: 12px; margin-left: auto;}
 .btn-clear { background: var(--danger); font-size: 12px; margin-top: 15px; width: auto; padding: 10px 20px; }
 
-/* SWITCH ESTILO IPHONE */
+/* SWITCH */
 .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
@@ -58,8 +58,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 <div id="login" class="container">
     <div class="card" style="text-align: center; margin-top: 50px;">
         <h1>⚡ ANDY VIP</h1>
-        <input id="log-email" placeholder="Correo / Usuario">
-        <input id="log-pass" type="password" placeholder="Clave de acceso">
+        <input id="log-email" placeholder="Usuario">
+        <input id="log-pass" type="password" placeholder="Clave">
         <button onclick="handleLogin()">INGRESAR AL PANEL</button>
     </div>
 </div>
@@ -69,10 +69,10 @@ input:checked + .slider:before { transform: translateX(20px); }
     <div class="sidebar">
         <button class="nav-btn active" onclick="showPage('p-solicitar', this)">🎁 Pedir Cuenta</button>
         <button class="nav-btn" onclick="showPage('p-buzon', this)">📩 Buzón de Quejas</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Stock/Cuentas</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial General</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Stock</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial</button>
         <button class="nav-btn admin-only" onclick="showPage('p-miembros', this)">👥 Miembros</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos/Seguridad</button>
+        <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos</button>
         <button class="logout" onclick="logout()">Salir</button>
     </div>
 
@@ -81,27 +81,24 @@ input:checked + .slider:before { transform: translateX(20px); }
         <div id="p-solicitar" class="page active">
             <div class="card">
                 <h3>Obtener nueva cuenta</h3>
-                <p style="font-size: 11px; color: var(--warning); border: 1px solid var(--warning); padding: 5px; border-radius: 5px;">
-                    ⚠️ Límite: Solo puedes pedir 1 cuenta cada 12 horas.
-                </p>
-                <input id="c-cliente-nombre" placeholder="Escribe tu Nombre">
-                <input id="c-cliente-phone" placeholder="Tu WhatsApp (Ej: 593987654321)">
+                <p style="font-size: 11px; color: var(--warning);">⚠️ Límite: 1 cuenta cada 12 horas.</p>
+                <input id="c-cliente-nombre" placeholder="Nombre Completo">
+                <input id="c-cliente-phone" placeholder="WhatsApp (Ej: 593987654321)">
                 <select id="select-plataforma"><option>Cargando Stock...</option></select>
-                <button onclick="pedirCuenta()">SOLICITAR MI CUENTA AHORA</button>
+                <button onclick="pedirCuenta()">RECLAMAR MI CUENTA</button>
                 <div id="resultado-entrega"></div>
             </div>
         </div>
 
         <div id="p-buzon" class="page">
             <div class="card">
-                <h3>Buzón de Quejas y Reportes</h3>
-                <p style="font-size: 12px; color: #9ca3af;">Si tienes un problema, descríbelo abajo. El administrador lo revisará.</p>
+                <h3>Buzón de Reportes</h3>
                 <input id="q-nombre" placeholder="Tu Nombre">
-                <textarea id="q-mensaje" placeholder="Escribe tu queja o reporte aquí..."></textarea>
-                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte al Admin</button>
+                <textarea id="q-mensaje" placeholder="Describe tu problema aquí..."></textarea>
+                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte</button>
             </div>
             <div class="admin-only" style="margin-top: 20px;">
-                <h3>Quejas Recibidas (Admin)</h3>
+                <h3>Quejas Recibidas</h3>
                 <div id="lista-quejas-admin"></div>
             </div>
         </div>
@@ -109,13 +106,12 @@ input:checked + .slider:before { transform: translateX(20px); }
         <div id="p-cuentas" class="page">
             <div class="card">
                 <h3>Agregar Plataforma</h3>
-                <input id="c-app" placeholder="Nombre App (Netflix, Disney, etc)">
-                <textarea id="c-datos" placeholder="Pega los datos de la cuenta aquí..."></textarea>
-                <input id="c-cupo" type="number" placeholder="Stock Inicial">
+                <input id="c-app" placeholder="Nombre App">
+                <textarea id="c-datos" placeholder="Datos de la cuenta"></textarea>
+                <input id="c-cupo" type="number" placeholder="Stock">
                 <button onclick="addCuenta()" style="background:var(--accent)">Subir Cuenta</button>
             </div>
             <div class="card">
-                <h3>Cuentas en Stock</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -133,7 +129,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
         <div id="p-pedidos" class="page">
             <div class="card">
-                <h3>Historial General de Pedidos</h3>
+                <h3>Historial General</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -141,39 +137,36 @@ input:checked + .slider:before { transform: translateX(20px); }
                                 <th>Cliente</th>
                                 <th>App</th>
                                 <th>WhatsApp</th>
-                                <th>Advertencia</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="historial-tabla-body"></tbody>
                     </table>
                 </div>
-                <button class="btn-clear" onclick="limpiarHistorial()">🗑️ Vaciar Historial</button>
+                <button class="btn-clear" onclick="limpiarHistorial()">Vaciar Historial</button>
             </div>
         </div>
 
         <div id="p-miembros" class="page">
             <div class="card">
-                <h3>Registrar Nuevo Miembro Manual</h3>
+                <h3>Registrar Miembro</h3>
                 <input id="m-nombre" placeholder="Nombre">
                 <input id="m-phone" placeholder="Celular">
-                <button onclick="addMiembro()">Guardar Miembro</button>
-                <div id="lista-miembros-admin" style="margin-top: 15px;"></div>
+                <button onclick="addMiembro()">Guardar</button>
+                <div id="lista-miembros-admin"></div>
             </div>
         </div>
 
         <div id="p-admin" class="page">
             <div class="card">
-                <h3>Crear Acceso (Admin/Seller)</h3>
+                <h3>Crear Admin o Seller</h3>
                 <input id="new-email" placeholder="Correo">
                 <input id="new-pass" placeholder="Clave">
-                <select id="new-role">
-                    <option value="seller">SELLER (Vendedor)</option>
-                    <option value="admin">ADMINISTRADOR</option>
-                </select>
-                <button onclick="crearUsuario()">Crear Acceso</button>
+                <select id="new-role"><option value="seller">SELLER</option><option value="admin">ADMIN</option></select>
+                <button onclick="crearUsuario()">Crear</button>
             </div>
             <div class="card">
-                <h3>Control de Usuarios Activos</h3>
+                <h3>Gestión de Usuarios</h3>
                 <div id="lista-usuarios-admin"></div>
             </div>
         </div>
@@ -212,10 +205,10 @@ window.handleLogin = async () => {
         if(email !== MASTER) {
             const userRef = doc(db, "usuarios_permisos", email);
             const userSnap = await getDoc(userRef);
-            if(userSnap.exists() && userSnap.data().estado === false) { alert("Tu acceso ha sido desactivado."); return; }
+            if(userSnap.exists() && userSnap.data().estado === false) { alert("Acceso desactivado."); return; }
         }
         await signInWithEmailAndPassword(auth, email, pass);
-    } catch(e) { alert("Acceso Incorrecto."); }
+    } catch(e) { alert("Error de acceso."); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -235,83 +228,56 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 function loadUserData() {
-    onSnapshot(collection(db, "cuentas"), (snap) => {
-        let html = '<option value="">-- Selecciona Plataforma --</option>';
-        snap.forEach(d => { if(d.data().cupo > 0) html += `<option value="${d.id}">${d.data().app} (Stock: ${d.data().cupo})</option>`; });
-        document.getElementById("select-plataforma").innerHTML = html;
+    onSnapshot(collection(db, "cuentas"), snap => {
+        let h = '<option value="">-- Selecciona Plataforma --</option>';
+        snap.forEach(d => { if(d.data().cupo > 0) h += `<option value="${d.id}">${d.data().app}</option>`; });
+        document.getElementById("select-plataforma").innerHTML = h;
     });
 }
 
-// LOGICA DE PEDIR CUENTA + RESTRICCIÓN 12H
 window.pedirCuenta = async () => {
-    const nombreClie = document.getElementById("c-cliente-nombre").value.trim().toLowerCase();
-    const phoneClie = document.getElementById("c-cliente-phone").value.trim();
+    const n = document.getElementById("c-cliente-nombre").value.trim().toLowerCase();
+    const t = document.getElementById("c-cliente-phone").value.trim();
     const cId = document.getElementById("select-plataforma").value;
 
-    if(!nombreClie || !phoneClie || !cId) return alert("Por favor completa todos los campos");
+    if(!n || !t || !cId) return alert("Completa todos los campos");
 
-    // Verificar últimas 12 horas
-    const tiempoLimite = new Date(Date.now() - 12 * 60 * 60 * 1000);
-    const qNombre = query(collection(db, "historial"), where("miembro_id", "==", nombreClie), where("fecha", ">", tiempoLimite));
-    const qTel = query(collection(db, "historial"), where("telefono", "==", phoneClie), where("fecha", ">", tiempoLimite));
+    const limite = new Date(Date.now() - 12 * 60 * 60 * 1000);
+    const qN = query(collection(db, "historial"), where("miembro_id", "==", n), where("fecha", ">", limite));
+    const qT = query(collection(db, "historial"), where("telefono", "==", t), where("fecha", ">", limite));
 
-    const [snapN, snapT] = await Promise.all([getDocs(qNombre), getDocs(qTel)]);
+    const [snN, snT] = await Promise.all([getDocs(qN), getDocs(qT)]);
+    if(!snN.empty || !snT.empty) return alert("⛔ Límite alcanzado. Espera 12 horas.");
 
-    if(!snapN.empty || !snapT.empty) {
-        return alert("⛔ ¡ACCESO DENEGADO! Ya pediste una cuenta recientemente. Intenta de nuevo en 12 horas.");
-    }
-
-    const docRef = doc(db, "cuentas", cId);
-    const docSnap = await getDoc(docRef);
-
-    if(docSnap.exists() && docSnap.data().cupo > 0) {
-        // Registrar historial con ID para bloqueo
-        await addDoc(collection(db, "historial"), { 
-            miembro: nombreClie, 
-            miembro_id: nombreClie, 
-            telefono: phoneClie, 
-            app: docSnap.data().app, 
-            fecha: serverTimestamp() 
-        });
-        
-        // Restar stock
-        await updateDoc(docRef, { cupo: docSnap.data().cupo - 1 });
-        
-        document.getElementById("resultado-entrega").innerHTML = `
-        <div class="card" style="border-color:var(--accent); text-align:center;">
-            <p style="color:var(--accent); font-weight:800;">✅ CUENTA GENERADA CON ÉXITO</p>
-            <code id="copy-text" style="display:block; background:#000; padding:15px; margin-bottom:10px; color:var(--accent); white-space: pre-wrap; text-align: left; font-size:12px; border-radius:10px;">${docSnap.data().datos}</code>
-            <button onclick="copyData()">COPIAR DATOS 📋</button>
+    const dRef = doc(db, "cuentas", cId);
+    const dSn = await getDoc(dRef);
+    if(dSn.exists() && dSn.data().cupo > 0) {
+        await addDoc(collection(db, "historial"), { miembro: n, miembro_id: n, telefono: t, app: dSn.data().app, fecha: serverTimestamp() });
+        await updateDoc(dRef, { cupo: dSn.data().cupo - 1 });
+        document.getElementById("resultado-entrega").innerHTML = `<div class="card" style="border-color:var(--accent);">
+            <p style="color:var(--accent);">✅ CUENTA LISTA:</p>
+            <code id="ctext" style="display:block; background:#000; padding:10px; color:var(--accent);">${dSn.data().datos}</code>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('ctext').innerText); alert('Copiado');">COPIAR</button>
         </div>`;
     }
 };
 
-window.copyData = () => {
-    const text = document.getElementById('copy-text').innerText;
-    navigator.clipboard.writeText(text);
-    alert("Datos copiados al portapapeles.");
-};
-
-// QUEJAS
 window.enviarQueja = async () => {
     const n = document.getElementById("q-nombre").value;
     const m = document.getElementById("q-mensaje").value;
-    if(!n || !m) return alert("Escribe tu nombre y el problema");
-    await addDoc(collection(db, "quejas"), { nombre: n, mensaje: m, fecha: serverTimestamp() });
-    alert("Tu queja ha sido enviada con éxito.");
-    document.getElementById("q-nombre").value = ""; document.getElementById("q-mensaje").value = "";
-};
-
-// ADVERTENCIA WHATSAPP (BOTÓN ADVERTIR)
-window.mandarAdvertencia = (num) => {
-    const msg = prompt("¿Qué advertencia quieres mandarle?");
-    if(msg) {
-        window.open(`https://wa.me/${num}?text=${encodeURIComponent("⚠️ AVISO IMPORTANTE: " + msg)}`, '_blank');
+    if(n && m) {
+        await addDoc(collection(db, "quejas"), { nombre: n, mensaje: m, fecha: serverTimestamp() });
+        alert("Enviado.");
+        document.getElementById("q-nombre").value = ""; document.getElementById("q-mensaje").value = "";
     }
 };
 
+window.mandarAdvertencia = (num) => {
+    const m = prompt("Mensaje de advertencia:");
+    if(m) window.open(`https://wa.me/${num}?text=${encodeURIComponent("⚠️ AVISO: " + m)}`, '_blank');
+};
+
 function loadAdminData() {
-    // Stock
     onSnapshot(collection(db, "cuentas"), snap => {
         let html = "";
         snap.forEach(d => {
@@ -319,14 +285,13 @@ function loadAdminData() {
             html += `<tr><td><b>${c.app}</b><span class="datos-detalle">${c.datos}</span></td>
                 <td><span class="badge" style="background:#334155">${c.cupo}</span></td>
                 <td>
-                    <button class="btn-small" style="background:var(--warning)" onclick="resetCupo('${d.id}')">Stock</button>
+                    <button class="btn-small" style="background:var(--warning)" onclick="resetCupo('${d.id}')">Cupo</button>
                     <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
                 </td></tr>`;
         });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
 
-    // Historial + Botón Advertencia
     onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
         let html = "";
         snap.forEach(d => {
@@ -337,52 +302,34 @@ function loadAdminData() {
         document.getElementById("historial-tabla-body").innerHTML = html;
     });
 
-    // Quejas
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha", "desc")), snap => {
         let html = "";
         snap.forEach(d => {
-            const q = d.data();
             html += `<div class="card" style="font-size:12px; border-left:4px solid var(--warning);">
-                <b>De: ${q.nombre}</b><p>${q.mensaje}</p>
-                <button class="btn-small" onclick="eliminarDoc('quejas','${d.id}')">Borrar Queja</button>
+                <b>De: ${d.data().nombre}</b><p>${d.data().mensaje}</p>
+                <button class="btn-small" onclick="eliminarDoc('quejas','${d.id}')">Borrar</button>
             </div>`;
         });
         document.getElementById("lista-quejas-admin").innerHTML = html;
     });
 
-    // Miembros
-    onSnapshot(collection(db, "miembros"), snap => {
-        let html = "";
-        snap.forEach(d => {
-            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #1f2937;">
-                <span>👤 ${d.data().nombre} (${d.data().telefono})</span>
-                <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('miembros','${d.id}')">Borrar</button>
-            </div>`;
-        });
-        document.getElementById("lista-miembros-admin").innerHTML = html;
-    });
-
-    // Usuarios Switch
     onSnapshot(collection(db, "usuarios_permisos"), snap => {
         let html = "";
         snap.forEach(d => {
             if(d.id === MASTER) return;
-            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#0d1117; margin-bottom:5px; border-radius:10px;">
-                <div><b>${d.id}</b><div style="font-size:10px; color:var(--primary)">ROL: ${d.data().rol}</div></div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <label class="switch"><input type="checkbox" ${d.data().estado ? 'checked' : ''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label>
-                    <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('usuarios_permisos','${d.id}')">Eliminar</button>
-                </div>
+            html += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
+                <span>${d.id}</span>
+                <label class="switch"><input type="checkbox" ${d.data().estado ? 'checked' : ''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label>
             </div>`;
         });
         document.getElementById("lista-usuarios-admin").innerHTML = html;
     });
 }
 
-window.toggleUser = async (email, estado) => { await updateDoc(doc(db, "usuarios_permisos", email), { estado: estado }); };
+window.toggleUser = async (e, s) => { await updateDoc(doc(db, "usuarios_permisos", e), { estado: s }); };
 window.addCuenta = async () => {
-    const app = document.getElementById("c-app").value; const datos = document.getElementById("c-datos").value; const cupo = parseInt(document.getElementById("c-cupo").value);
-    if(app && datos && !isNaN(cupo)) await addDoc(collection(db, "cuentas"), { app, datos, cupo });
+    const a = document.getElementById("c-app").value; const d = document.getElementById("c-datos").value; const c = parseInt(document.getElementById("c-cupo").value);
+    if(a && d) await addDoc(collection(db, "cuentas"), { app: a, datos: d, cupo: c });
 };
 window.addMiembro = async () => {
     const n = document.getElementById("m-nombre").value; const t = document.getElementById("m-phone").value;
@@ -390,14 +337,14 @@ window.addMiembro = async () => {
 };
 window.crearUsuario = async () => {
     const e = document.getElementById("new-email").value; const p = document.getElementById("new-pass").value; const r = document.getElementById("new-role").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Acceso Creado"); } catch(err) { alert(err.message); }
+    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); } catch { alert("Error"); }
 };
-window.resetCupo = async (id) => { const nC = prompt("Nuevo Stock:"); if(nC) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(nC) }); };
-window.eliminarDoc = async (p, id) => { if(confirm("¿Seguro de borrar esto?")) await deleteDoc(doc(db, p, id)); };
+window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
+window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
 window.limpiarHistorial = async () => {
-    if(confirm("¿Vaciar todo el historial?")){
+    if(confirm("¿Vaciar?")){
         const q = await getDocs(collection(db, "historial"));
-        const batch = writeBatch(db); q.forEach((doc) => batch.delete(doc.ref)); await batch.commit();
+        const b = writeBatch(db); q.forEach(d => b.delete(d.ref)); await b.commit();
     }
 };
 </script>
