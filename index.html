@@ -11,6 +11,7 @@
 :root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; --danger: #ef4444; --warning: #f59e0b; }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);margin:0; overflow-x: hidden;}
 
+/* NAVEGACIÓN */
 .sidebar { width: 100%; background: #111418; padding: 10px; display: flex; overflow-x: auto; gap: 10px; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 100; scrollbar-width: none;}
 .sidebar::-webkit-scrollbar { display: none; }
 .nav-btn { background: #1f2937; color: #9ca3af; padding: 10px 15px; border-radius: 10px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid transparent; cursor: pointer; transition: 0.3s; }
@@ -22,24 +23,28 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* COMPONENTES */
 .card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d;}
 input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
 textarea{resize: vertical; min-height: 100px;} 
-button{background:var(--primary);color:white;font-weight:800; cursor: pointer;}
+button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.2s;}
+button:active { transform: scale(0.95); }
 
+/* TABLAS */
 .table-container { width: 100%; overflow-x: auto; border-radius: 12px; background: #0d1117; margin-top: 10px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
 th { background: #1f2937; color: var(--primary); padding: 12px; text-align: left; }
 td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 
 .datos-detalle { display: block; background: #0a0c10; color: var(--accent); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 11px; margin-top: 5px; border: 1px dashed #30363d; white-space: pre-wrap; }
-.btn-small { width: auto; padding: 6px 10px; font-size: 10px; margin: 2px; }
+.btn-small { width: auto; padding: 6px 10px; font-size: 10px; margin: 2px; border-radius: 8px;}
 .badge { padding: 3px 8px; border-radius: 6px; font-weight: bold; background: #334155; }
 
 .logout{background:var(--danger); width: auto; padding: 8px 15px; font-size: 12px; margin-left: auto;}
 .btn-clear { background: var(--danger); font-size: 12px; margin-top: 15px; width: auto; padding: 10px 20px; }
 
+/* SWITCH */
 .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
@@ -78,8 +83,8 @@ input:checked + .slider:before { transform: translateX(20px); }
                 <p style="font-size: 11px; color: var(--warning);">⚠️ Límite: 1 cuenta cada 12 horas.</p>
                 <input id="c-cliente-nombre" placeholder="Nombre Completo">
                 <input id="c-cliente-phone" placeholder="WhatsApp (Ej: 593987654321)">
-                <select id="select-plataforma"><option value="">Cargando Stock...</option></select>
-                <button onclick="pedirCuenta()">RECLAMAR MI CUENTA</button>
+                <select id="select-plataforma"><option value="">Cargando plataformas...</option></select>
+                <button onclick="pedirCuenta()">RECLAMAR MI CUENTA AHORA</button>
                 <div id="resultado-entrega"></div>
             </div>
         </div>
@@ -89,10 +94,10 @@ input:checked + .slider:before { transform: translateX(20px); }
                 <h3>Buzón de Reportes</h3>
                 <input id="q-nombre" placeholder="Tu Nombre">
                 <textarea id="q-mensaje" placeholder="Describe tu problema aquí..."></textarea>
-                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte</button>
+                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte al Admin</button>
             </div>
             <div class="admin-only" style="margin-top: 20px;">
-                <h3>Quejas Recibidas (Admin)</h3>
+                <h3>Quejas Recibidas</h3>
                 <div id="lista-quejas-admin"></div>
             </div>
         </div>
@@ -102,8 +107,8 @@ input:checked + .slider:before { transform: translateX(20px); }
                 <h3>Agregar Plataforma</h3>
                 <input id="c-app" placeholder="Nombre App">
                 <textarea id="c-datos" placeholder="Datos de la cuenta"></textarea>
-                <input id="c-cupo" type="number" placeholder="Stock">
-                <button onclick="addCuenta()" style="background:var(--accent)">Subir Cuenta</button>
+                <input id="c-cupo" type="number" placeholder="Stock Inicial">
+                <button onclick="addCuenta()" style="background:var(--accent)">Subir a la Nube</button>
             </div>
             <div class="card">
                 <div class="table-container">
@@ -130,24 +135,24 @@ input:checked + .slider:before { transform: translateX(20px); }
 
         <div id="p-miembros" class="page">
             <div class="card">
-                <h3>Registrar Miembro</h3>
+                <h3>Registrar Miembro Manual</h3>
                 <input id="m-nombre" placeholder="Nombre">
                 <input id="m-phone" placeholder="Celular">
-                <button onclick="addMiembro()">Guardar</button>
+                <button onclick="addMiembro()">Guardar Miembro</button>
                 <div id="lista-miembros-admin"></div>
             </div>
         </div>
 
         <div id="p-admin" class="page">
             <div class="card">
-                <h3>Crear Admin o Seller</h3>
+                <h3>Crear Acceso Nuevo</h3>
                 <input id="new-email" placeholder="Correo">
                 <input id="new-pass" placeholder="Clave">
                 <select id="new-role"><option value="seller">SELLER</option><option value="admin">ADMIN</option></select>
-                <button onclick="crearUsuario()">Crear</button>
+                <button onclick="crearUsuario()">Crear Acceso</button>
             </div>
             <div class="card">
-                <h3>Gestión de Usuarios</h3>
+                <h3>Control de Usuarios</h3>
                 <div id="lista-usuarios-admin"></div>
             </div>
         </div>
@@ -182,7 +187,7 @@ window.handleLogin = async () => {
             if(userSnap.exists() && userSnap.data().estado === false) { alert("Acceso desactivado."); return; }
         }
         await signInWithEmailAndPassword(auth, email, pass);
-    } catch { alert("Error de acceso."); }
+    } catch { alert("Datos incorrectos."); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -204,56 +209,56 @@ onAuthStateChanged(auth, async (user) => {
 function loadUserData() {
     onSnapshot(collection(db, "cuentas"), snap => {
         let h = '<option value="">-- Selecciona Plataforma --</option>';
-        snap.forEach(d => { if(d.data().cupo > 0) h += `<option value="${d.id}">${d.data().app}</option>`; });
+        snap.forEach(d => { if(d.data().cupo > 0) h += `<option value="${d.id}">${d.data().app} (Stock: ${d.data().cupo})</option>`; });
         document.getElementById("select-plataforma").innerHTML = h;
     });
 }
 
-// FUNCIÓN REPARADA: ENTREGA INMEDIATA
+// CORRECCIÓN DEFINITIVA DE ENTREGA
 window.pedirCuenta = async () => {
-    const n = document.getElementById("c-cliente-nombre").value.trim().toLowerCase();
-    const t = document.getElementById("c-cliente-phone").value.trim();
-    const cId = document.getElementById("select-plataforma").value;
+    const nombreVal = document.getElementById("c-cliente-nombre").value.trim().toLowerCase();
+    const telVal = document.getElementById("c-cliente-phone").value.trim();
+    const platformId = document.getElementById("select-plataforma").value;
 
-    if(!n || !t || !cId) return alert("Completa todos los campos");
+    if(!nombreVal || !telVal || !platformId) return alert("Faltan datos");
 
-    // 1. Verificar bloqueo de 12 horas
+    // Límite 12 horas
     const limite = new Date(Date.now() - 12 * 60 * 60 * 1000);
-    const qN = query(collection(db, "historial"), where("miembro_id", "==", n), where("fecha", ">", limite));
-    const qT = query(collection(db, "historial"), where("telefono", "==", t), where("fecha", ">", limite));
+    const q1 = query(collection(db, "historial"), where("miembro_id", "==", nombreVal), where("fecha", ">", limite));
+    const q2 = query(collection(db, "historial"), where("telefono", "==", telVal), where("fecha", ">", limite));
 
-    const [snN, snT] = await Promise.all([getDocs(qN), getDocs(qT)]);
-    if(!snN.empty || !snT.empty) return alert("⛔ Espera 12 horas para pedir otra cuenta.");
+    const [sn1, sn2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+    if(!sn1.empty || !sn2.empty) return alert("⛔ Espera 12 horas.");
 
-    // 2. Obtener datos primero para asegurar la entrega
-    const dRef = doc(db, "cuentas", cId);
-    const dSn = await getDoc(dRef);
-    
-    if(dSn.exists() && dSn.data().cupo > 0) {
-        const datosCerrados = dSn.data().datos; // Guardamos los datos en una variable
-        const appNombre = dSn.data().app;
-        const stockActual = dSn.data().cupo;
+    // Entrega Segura
+    const refDoc = doc(db, "cuentas", platformId);
+    const snapDoc = await getDoc(refDoc);
 
-        // 3. MOSTRAR AL CLIENTE (INSTANTÁNEO)
+    if(snapDoc.exists() && snapDoc.data().cupo > 0) {
+        const infoCuenta = snapDoc.data().datos;
+        const nombreApp = snapDoc.data().app;
+        const stockActual = snapDoc.data().cupo;
+
+        // Mostrar primero
         document.getElementById("resultado-entrega").innerHTML = `
-        <div class="card" style="border: 2px solid var(--accent); text-align:center;">
-            <p style="color:var(--accent); font-weight:800;">✅ CUENTA OBTENIDA:</p>
-            <div id="ctext" style="background:#000; padding:15px; color:var(--accent); border-radius:10px; margin-bottom:10px; white-space:pre-wrap; text-align:left; font-family:monospace; border:1px solid #333;">${datosCerrados}</div>
+        <div class="card" style="border: 2px solid var(--accent); animation: fadeIn 0.5s;">
+            <p style="color:var(--accent); font-weight:800; text-align:center;">✅ CUENTA GENERADA:</p>
+            <div id="ctext" style="background:#000; padding:15px; color:var(--accent); border-radius:10px; margin:10px 0; white-space:pre-wrap; border:1px solid #333; font-family:monospace;">${infoCuenta}</div>
             <button onclick="copyAcc()">COPIAR DATOS 📋</button>
         </div>`;
 
-        // 4. Actualizar base de datos en segundo plano
-        addDoc(collection(db, "historial"), { miembro: n, miembro_id: n, telefono: t, app: appNombre, fecha: serverTimestamp() });
-        updateDoc(dRef, { cupo: stockActual - 1 });
+        // Guardar y restar después
+        await addDoc(collection(db, "historial"), { miembro: nombreVal, miembro_id: nombreVal, telefono: telVal, app: nombreApp, fecha: serverTimestamp() });
+        await updateDoc(refDoc, { cupo: stockActual - 1 });
     } else {
-        alert("Sin stock disponible.");
+        alert("Ya no hay stock disponible.");
     }
 };
 
 window.copyAcc = () => {
     const text = document.getElementById('ctext').innerText;
     navigator.clipboard.writeText(text);
-    alert("¡Copiado con éxito!");
+    alert("¡Datos Copiados!");
 };
 
 window.enviarQueja = async () => {
@@ -261,17 +266,13 @@ window.enviarQueja = async () => {
     const m = document.getElementById("q-mensaje").value;
     if(n && m) {
         await addDoc(collection(db, "quejas"), { nombre: n, mensaje: m, fecha: serverTimestamp() });
-        alert("Enviado.");
+        alert("Enviado al administrador.");
         document.getElementById("q-nombre").value = ""; document.getElementById("q-mensaje").value = "";
     }
 };
 
-window.mandarAdvertencia = (num) => {
-    const m = prompt("Escribe la advertencia:");
-    if(m) window.open(`https://wa.me/${num}?text=${encodeURIComponent("⚠️ AVISO VIP: " + m)}`, '_blank');
-};
-
 function loadAdminData() {
+    // STOCK CON BOTÓN DE RESETEO FUNCIONANDO
     onSnapshot(collection(db, "cuentas"), snap => {
         let html = "";
         snap.forEach(d => {
@@ -280,12 +281,13 @@ function loadAdminData() {
                 <td><span class="badge">${c.cupo}</span></td>
                 <td>
                     <button class="btn-small" style="background:var(--warning)" onclick="resetCupo('${d.id}')">Stock</button>
-                    <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
+                    <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">Eliminar</button>
                 </td></tr>`;
         });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
 
+    // HISTORIAL CON BOTÓN DE ADVERTENCIA FUNCIONANDO
     onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
         let html = "";
         snap.forEach(d => {
@@ -296,6 +298,7 @@ function loadAdminData() {
         document.getElementById("historial-tabla-body").innerHTML = html;
     });
 
+    // QUEJAS FUNCIONANDO
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha", "desc")), snap => {
         let html = "";
         snap.forEach(d => {
@@ -307,11 +310,12 @@ function loadAdminData() {
         document.getElementById("lista-quejas-admin").innerHTML = html;
     });
 
+    // USUARIOS CON SWITCH FUNCIONANDO
     onSnapshot(collection(db, "usuarios_permisos"), snap => {
         let html = "";
         snap.forEach(d => {
             if(d.id === MASTER) return;
-            html += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333; align-items:center;">
+            html += `<div style="display:flex; justify-content:space-between; padding:12px; background:#0d1117; margin-bottom:5px; border-radius:10px; align-items:center;">
                 <span>${d.id}</span>
                 <label class="switch"><input type="checkbox" ${d.data().estado ? 'checked' : ''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label>
             </div>`;
@@ -320,23 +324,24 @@ function loadAdminData() {
     });
 }
 
+// FUNCIONES DE BOTONES
+window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
 window.toggleUser = async (e, s) => { await updateDoc(doc(db, "usuarios_permisos", e), { estado: s }); };
+window.mandarAdvertencia = (num) => {
+    const m = prompt("Mensaje de advertencia:");
+    if(m) window.open(`https://wa.me/${num}?text=${encodeURIComponent("⚠️ AVISO ANDY VIP: " + m)}`, '_blank');
+};
 window.addCuenta = async () => {
     const a = document.getElementById("c-app").value; const d = document.getElementById("c-datos").value; const c = parseInt(document.getElementById("c-cupo").value);
-    if(a && d) await addDoc(collection(db, "cuentas"), { app: a, datos: d, cupo: c });
-};
-window.addMiembro = async () => {
-    const n = document.getElementById("m-nombre").value; const t = document.getElementById("m-phone").value;
-    if(n && t) await addDoc(collection(db, "miembros"), { nombre:n, telefono:t });
+    if(a && d) { await addDoc(collection(db, "cuentas"), { app: a, datos: d, cupo: c }); alert("Agregado"); }
 };
 window.crearUsuario = async () => {
     const e = document.getElementById("new-email").value; const p = document.getElementById("new-pass").value; const r = document.getElementById("new-role").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Creado."); } catch { alert("Error."); }
+    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Creado."); } catch { alert("Error al crear."); }
 };
-window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
-window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
+window.eliminarDoc = async (p, id) => { if(confirm("¿Seguro de eliminar?")) await deleteDoc(doc(db, p, id)); };
 window.limpiarHistorial = async () => {
-    if(confirm("¿Vaciar historial?")){
+    if(confirm("¿Vaciar todo?")){
         const q = await getDocs(collection(db, "historial"));
         const b = writeBatch(db); q.forEach(d => b.delete(d.ref)); await b.commit();
     }
