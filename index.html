@@ -9,7 +9,19 @@
 
 <style>
 :root { --primary: #6366f1; --bg: #0a0c10; --card: #161b22; --text: #fff; --accent: #22c55e; --danger: #ef4444; --warning: #f59e0b; }
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);margin:0; overflow-x: hidden;}
+body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background: var(--bg);
+    /* Imagen de fondo del Barcelona SC con opacidad baja para no estorbar el texto */
+    background-image: linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.85)), url('https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Barcelona_S.C._logo.svg/1200px-Barcelona_S.C._logo.svg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 300px; /* Tamaño del escudo */
+    color:var(--text);
+    margin:0; 
+    overflow-x: hidden;
+}
 
 .sidebar { width: 100%; background: #111418; padding: 10px; display: flex; overflow-x: auto; gap: 10px; border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 100; scrollbar-width: none;}
 .sidebar::-webkit-scrollbar { display: none; }
@@ -22,7 +34,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.card{background:var(--card);padding:20px;border-radius:20px;margin-top:15px; border: 1px solid #30363d;}
+.card{background:rgba(22, 27, 34, 0.9); padding:20px; border-radius:20px; margin-top:15px; border: 1px solid #30363d; backdrop-filter: blur(5px);}
 input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
 textarea{resize: vertical; min-height: 100px; line-height: 1.5;} 
@@ -76,19 +88,20 @@ input:checked + .slider:before { transform: translateX(20px); }
         
         <div id="p-solicitar" class="page active">
             <div class="card">
-                <h3>Obtener nueva cuenta</h3>
-                <input id="c-cliente-nombre" placeholder="Escribe tu nombre">
+                <h3>Reclamar nueva cuenta</h3>
+                <input id="c-cliente-nombre" placeholder="Nombre completo">
+                <input id="c-cliente-phone" placeholder="Celular (Ej: +593987654321)">
                 <select id="select-plataforma"><option>Cargando plataformas...</option></select>
-                <button onclick="pedirCuenta()">RECLAMAR CUENTA AHORA</button>
+                <button onclick="pedirCuenta()">OBTENER ACCESO VIP</button>
                 <div id="resultado-entrega"></div>
             </div>
         </div>
 
         <div id="p-quejas" class="page">
             <div class="card">
-                <h3>Buzón de Quejas / Reportes</h3>
+                <h3>Buzón de Reportes</h3>
                 <input id="q-nombre" placeholder="Tu Nombre">
-                <textarea id="q-texto" placeholder="Describe el problema aquí..."></textarea>
+                <textarea id="q-texto" placeholder="¿Qué problema tienes con la cuenta?"></textarea>
                 <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte</button>
             </div>
             <div class="admin-only">
@@ -119,10 +132,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 
         <div id="p-pedidos" class="page">
             <div class="card">
-                <h3>Historial General de Entregas</h3>
+                <h3>Historial General</h3>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Miembro</th><th>App</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>Miembro</th><th>App</th><th>WhatsApp</th><th>Acciones</th></tr></thead>
                         <tbody id="historial-tabla-body"></tbody>
                     </table>
                 </div>
@@ -207,25 +220,25 @@ function loadUserData() {
     });
 }
 
-// PEDIR CUENTA - SIN BLOQUEO DE 12 HORAS Y SIN CELULAR
+// PEDIR CUENTA - SIN RESTRICCIÓN DE TIEMPO
 window.pedirCuenta = async () => {
     const n = document.getElementById("c-cliente-nombre").value.trim();
+    const t = document.getElementById("c-cliente-phone").value.trim();
     const cId = document.getElementById("select-plataforma").value;
 
-    if(!n || !cId) return alert("Por favor, ingresa tu nombre y elige una plataforma.");
+    if(!n || !t || !cId) return alert("Faltan datos por llenar.");
 
     const cSnap = await getDoc(doc(db, "cuentas", cId));
     
     if(cSnap.exists() && cSnap.data().cupo > 0) {
-        // Se registra en historial sin restricción de tiempo
         await addDoc(collection(db, "historial"), { 
             miembro: n, 
             miembro_id: n.toLowerCase(), 
+            telefono: t,
             app: cSnap.data().app, 
             fecha: serverTimestamp() 
         });
         
-        // Se resta el cupo
         await updateDoc(doc(db, "cuentas", cId), { cupo: cSnap.data().cupo - 1 });
         
         document.getElementById("resultado-entrega").innerHTML = `
@@ -235,14 +248,14 @@ window.pedirCuenta = async () => {
             <button onclick="copyToClipboard()">COPIAR DATOS 📋</button>
         </div>`;
     } else {
-        alert("Lo siento, ya no queda stock de esta plataforma.");
+        alert("Sin stock.");
     }
 };
 
 window.copyToClipboard = () => {
     const text = document.getElementById('copy-text').innerText;
     navigator.clipboard.writeText(text);
-    alert('¡Copiado con éxito!');
+    alert('Copiado');
 };
 
 window.enviarQueja = async () => {
@@ -253,6 +266,12 @@ window.enviarQueja = async () => {
         alert("Reporte enviado.");
         document.getElementById("q-nombre").value = ""; document.getElementById("q-texto").value = "";
     }
+};
+
+// BOTÓN ADVERTENCIA WHATSAPP
+window.mandarAdvertencia = (num) => {
+    const msg = prompt("Escribe el mensaje para el cliente:");
+    if(msg) window.open(`https://wa.me/${num.replace(/\s+/g, '')}?text=${encodeURIComponent("⚠️ AVISO ANDY VIP: " + msg)}`, '_blank');
 };
 
 function loadAdminData() {
@@ -272,9 +291,9 @@ function loadAdminData() {
         let h = "";
         snap.forEach(d => {
             const data = d.data();
-            const f = data.fecha ? new Date(data.fecha.seconds * 1000).toLocaleString() : '...';
-            h += `<tr><td>${data.miembro}</td><td>${data.app}</td><td>${f}</td>
-            <td><button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('historial','${d.id}')">Borrar</button></td></tr>`;
+            h += `<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono || 'N/A'}</td>
+            <td><button class="btn-small" style="background:var(--accent)" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button>
+            <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('historial','${d.id}')">X</button></td></tr>`;
         });
         document.getElementById("historial-tabla-body").innerHTML = h;
     });
@@ -309,12 +328,12 @@ window.addCuenta = async () => {
 };
 window.crearUsuario = async () => {
     const e = document.getElementById("new-email").value; const p = document.getElementById("new-pass").value; const r = document.getElementById("new-role").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Acceso Creado."); } catch { alert("Error al crear."); }
+    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Acceso Creado."); } catch { alert("Error"); }
 };
 window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
-window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar registro?")) await deleteDoc(doc(db, p, id)); };
+window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
 window.limpiarHistorial = async () => {
-    if(confirm("¿Seguro que quieres borrar todo el historial?")){
+    if(confirm("¿Vaciar Historial?")){
         const q = await getDocs(collection(db, "historial"));
         const b = writeBatch(db); q.forEach(d => b.delete(d.ref)); await b.commit();
     }
