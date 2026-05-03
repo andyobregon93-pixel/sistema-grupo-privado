@@ -235,6 +235,7 @@ function loadUserData() {
     });
 }
 
+// CORREGIDO: FUNCIÓN DE PEDIR CUENTA MOSTRANDO DATOS CORRECTAMENTE
 window.pedirCuenta = async () => {
     const n = document.getElementById("c-cliente-nombre").value.trim().toLowerCase();
     const t = document.getElementById("c-cliente-phone").value.trim();
@@ -242,24 +243,46 @@ window.pedirCuenta = async () => {
 
     if(!n || !t || !cId) return alert("Completa todos los campos");
 
+    // Bloqueo de 12 horas
     const limite = new Date(Date.now() - 12 * 60 * 60 * 1000);
     const qN = query(collection(db, "historial"), where("miembro_id", "==", n), where("fecha", ">", limite));
     const qT = query(collection(db, "historial"), where("telefono", "==", t), where("fecha", ">", limite));
 
     const [snN, snT] = await Promise.all([getDocs(qN), getDocs(qT)]);
-    if(!snN.empty || !snT.empty) return alert("⛔ Límite alcanzado. Espera 12 horas.");
+    if(!snN.empty || !snT.empty) return alert("⛔ Ya pediste una cuenta. Espera 12 horas.");
 
+    // Obtener datos de la cuenta ANTES de restar stock
     const dRef = doc(db, "cuentas", cId);
     const dSn = await getDoc(dRef);
-    if(dSn.exists() && dSn.data().cupo > 0) {
-        await addDoc(collection(db, "historial"), { miembro: n, miembro_id: n, telefono: t, app: dSn.data().app, fecha: serverTimestamp() });
-        await updateDoc(dRef, { cupo: dSn.data().cupo - 1 });
-        document.getElementById("resultado-entrega").innerHTML = `<div class="card" style="border-color:var(--accent);">
-            <p style="color:var(--accent);">✅ CUENTA LISTA:</p>
-            <code id="ctext" style="display:block; background:#000; padding:10px; color:var(--accent);">${dSn.data().datos}</code>
-            <button onclick="navigator.clipboard.writeText(document.getElementById('ctext').innerText); alert('Copiado');">COPIAR</button>
-        </div>`;
+    
+    if(dSn.exists()) {
+        const stockActual = dSn.data().cupo;
+        const datosCuenta = dSn.data().datos;
+        const nombreApp = dSn.data().app;
+
+        if(stockActual > 0) {
+            // Guardar en historial
+            await addDoc(collection(db, "historial"), { miembro: n, miembro_id: n, telefono: t, app: nombreApp, fecha: serverTimestamp() });
+            // Restar Stock
+            await updateDoc(dRef, { cupo: stockActual - 1 });
+            
+            // MOSTRAR DATOS AL CLIENTE
+            document.getElementById("resultado-entrega").innerHTML = `
+            <div class="card" style="border-color:var(--accent); text-align:center;">
+                <p style="color:var(--accent); font-weight:800;">✅ AQUÍ TIENES TU CUENTA:</p>
+                <div id="ctext" style="background:#000; padding:15px; color:var(--accent); border-radius:10px; margin-bottom:10px; white-space:pre-wrap; text-align:left; font-family:monospace; font-size:12px; border:1px solid #333;">${datosCuenta}</div>
+                <button onclick="copyAcc()">COPIAR DATOS 📋</button>
+            </div>`;
+        } else {
+            alert("Sin stock de esa plataforma.");
+        }
     }
+};
+
+window.copyAcc = () => {
+    const text = document.getElementById('ctext').innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copiado!");
 };
 
 window.enviarQueja = async () => {
@@ -267,7 +290,7 @@ window.enviarQueja = async () => {
     const m = document.getElementById("q-mensaje").value;
     if(n && m) {
         await addDoc(collection(db, "quejas"), { nombre: n, mensaje: m, fecha: serverTimestamp() });
-        alert("Enviado.");
+        alert("Reporte enviado.");
         document.getElementById("q-nombre").value = ""; document.getElementById("q-mensaje").value = "";
     }
 };
@@ -285,7 +308,7 @@ function loadAdminData() {
             html += `<tr><td><b>${c.app}</b><span class="datos-detalle">${c.datos}</span></td>
                 <td><span class="badge" style="background:#334155">${c.cupo}</span></td>
                 <td>
-                    <button class="btn-small" style="background:var(--warning)" onclick="resetCupo('${d.id}')">Cupo</button>
+                    <button class="btn-small" style="background:var(--warning)" onclick="resetCupo('${d.id}')">Stock</button>
                     <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('cuentas','${d.id}')">X</button>
                 </td></tr>`;
         });
@@ -317,7 +340,7 @@ function loadAdminData() {
         let html = "";
         snap.forEach(d => {
             if(d.id === MASTER) return;
-            html += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
+            html += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333; align-items:center;">
                 <span>${d.id}</span>
                 <label class="switch"><input type="checkbox" ${d.data().estado ? 'checked' : ''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label>
             </div>`;
@@ -337,12 +360,12 @@ window.addMiembro = async () => {
 };
 window.crearUsuario = async () => {
     const e = document.getElementById("new-email").value; const p = document.getElementById("new-pass").value; const r = document.getElementById("new-role").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); } catch { alert("Error"); }
+    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Acceso creado."); } catch { alert("Error."); }
 };
 window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
 window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
 window.limpiarHistorial = async () => {
-    if(confirm("¿Vaciar?")){
+    if(confirm("¿Vaciar historial?")){
         const q = await getDocs(collection(db, "historial"));
         const b = writeBatch(db); q.forEach(d => b.delete(d.ref)); await b.commit();
     }
