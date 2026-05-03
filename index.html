@@ -412,4 +412,12 @@ window.editarCuenta = async (id, app, datos) => {
 
 window.resetCupo = async (id) => {
     const nC = prompt("Nuevo Stock:");
-    if(nC) await updateDoc(doc(db, "cuentas", id), { cupo: pars
+    if(nC) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(nC) });
+};
+
+window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar registro?")) await deleteDoc(doc(db, p, id)); };
+
+</script>
+
+</body>
+</html>
