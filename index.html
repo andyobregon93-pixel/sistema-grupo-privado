@@ -12,12 +12,11 @@
 body{
     font-family:'Plus Jakarta Sans',sans-serif;
     background: var(--bg);
-    /* Imagen de fondo del Barcelona SC con opacidad baja para no estorbar el texto */
     background-image: linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.85)), url('https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Barcelona_S.C._logo.svg/1200px-Barcelona_S.C._logo.svg.png');
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: 300px; /* Tamaño del escudo */
+    background-size: 300px;
     color:var(--text);
     margin:0; 
     overflow-x: hidden;
@@ -37,7 +36,7 @@ body{
 .card{background:rgba(22, 27, 34, 0.9); padding:20px; border-radius:20px; margin-top:15px; border: 1px solid #30363d; backdrop-filter: blur(5px);}
 input,button,select,textarea{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:none; box-sizing: border-box; font-family: inherit;}
 input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
-textarea{resize: vertical; min-height: 100px; line-height: 1.5;} 
+textarea{resize: vertical; min-height: 80px; line-height: 1.5;} 
 button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.2s;}
 button:active { transform: scale(0.96); }
 
@@ -59,6 +58,8 @@ td { padding: 12px; border-bottom: 1px solid #1f2937; vertical-align: middle; }
 .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--accent); }
 input:checked + .slider:before { transform: translateX(20px); }
+
+.chat-admin-reply { background: #1f2937; border: 1px solid #30363d; border-radius: 10px; padding: 10px; margin-top: 10px; }
 </style>
 </head>
 
@@ -77,7 +78,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     
     <div class="sidebar">
         <button class="nav-btn active" onclick="showPage('p-solicitar', this)">🎁 Pedir Cuenta</button>
-        <button class="nav-btn" onclick="showPage('p-quejas', this)">📩 Quejas</button>
+        <button class="nav-btn" onclick="showPage('p-quejas', this)">📩 Chat Soporte</button>
         <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Stock</button>
         <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial</button>
         <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos</button>
@@ -99,14 +100,16 @@ input:checked + .slider:before { transform: translateX(20px); }
 
         <div id="p-quejas" class="page">
             <div class="card">
-                <h3>Buzón de Reportes</h3>
+                <h3>Buzón de Soporte Activo</h3>
+                <p style="font-size: 11px;">Escribe tu duda y Andy te responderá por WhatsApp.</p>
                 <input id="q-nombre" placeholder="Tu Nombre">
-                <textarea id="q-texto" placeholder="¿Qué problema tienes con la cuenta?"></textarea>
-                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar Reporte</button>
+                <input id="q-phone" placeholder="Tu número de celular">
+                <textarea id="q-texto" placeholder="¿En qué podemos ayudarte hoy?"></textarea>
+                <button onclick="enviarQueja()" style="background:var(--warning)">Enviar mensaje a Andy</button>
             </div>
             <div class="admin-only">
                 <div class="card">
-                    <h3>Quejas Recibidas (Admin)</h3>
+                    <h3>Mensajes de Clientes (Responder)</h3>
                     <div id="lista-quejas"></div>
                 </div>
             </div>
@@ -193,7 +196,7 @@ window.handleLogin = async () => {
             if(uSnap.exists() && !uSnap.data().estado) return alert("Cuenta desactivada");
         }
         await signInWithEmailAndPassword(auth, e, p);
-    } catch { alert("Error de acceso"); }
+    } catch { alert("Error"); }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -220,13 +223,13 @@ function loadUserData() {
     });
 }
 
-// PEDIR CUENTA - SIN RESTRICCIÓN DE TIEMPO
+// PEDIR CUENTA
 window.pedirCuenta = async () => {
     const n = document.getElementById("c-cliente-nombre").value.trim();
     const t = document.getElementById("c-cliente-phone").value.trim();
     const cId = document.getElementById("select-plataforma").value;
 
-    if(!n || !t || !cId) return alert("Faltan datos por llenar.");
+    if(!n || !t || !cId) return alert("Faltan datos.");
 
     const cSnap = await getDoc(doc(db, "cuentas", cId));
     
@@ -247,8 +250,6 @@ window.pedirCuenta = async () => {
             <code id="copy-text" style="display:block; background:#000; padding:15px; color:var(--accent); white-space: pre-wrap; font-size:12px; border-radius:10px; margin:10px 0; text-align:left; font-family:monospace;">${cSnap.data().datos}</code>
             <button onclick="copyToClipboard()">COPIAR DATOS 📋</button>
         </div>`;
-    } else {
-        alert("Sin stock.");
     }
 };
 
@@ -258,20 +259,27 @@ window.copyToClipboard = () => {
     alert('Copiado');
 };
 
+// ENVIAR QUEJA / CHAT
 window.enviarQueja = async () => {
     const n = document.getElementById("q-nombre").value;
+    const p = document.getElementById("q-phone").value;
     const m = document.getElementById("q-texto").value;
-    if(n && m) {
-        await addDoc(collection(db, "quejas"), { nombre: n, mensaje: m, fecha: serverTimestamp() });
-        alert("Reporte enviado.");
-        document.getElementById("q-nombre").value = ""; document.getElementById("q-texto").value = "";
+    if(n && p && m) {
+        await addDoc(collection(db, "quejas"), { nombre: n, telefono: p, mensaje: m, fecha: serverTimestamp() });
+        alert("Mensaje enviado. Andy te responderá pronto.");
+        document.getElementById("q-nombre").value = ""; 
+        document.getElementById("q-phone").value = ""; 
+        document.getElementById("q-texto").value = "";
+    } else {
+        alert("Llena todos los campos para el chat.");
     }
 };
 
-// BOTÓN ADVERTENCIA WHATSAPP
-window.mandarAdvertencia = (num) => {
-    const msg = prompt("Escribe el mensaje para el cliente:");
-    if(msg) window.open(`https://wa.me/${num.replace(/\s+/g, '')}?text=${encodeURIComponent("⚠️ AVISO ANDY VIP: " + msg)}`, '_blank');
+// RESPONDER CHAT
+window.responderWhatsApp = (tel, nombre) => {
+    const resp = document.getElementById(`reply-${tel}`).value;
+    if(!resp) return alert("Escribe una respuesta.");
+    window.open(`https://wa.me/${tel.replace(/\s+/g, '')}?text=${encodeURIComponent("Hola " + nombre + ", soy Andy. " + resp)}`, '_blank');
 };
 
 function loadAdminData() {
@@ -292,18 +300,25 @@ function loadAdminData() {
         snap.forEach(d => {
             const data = d.data();
             h += `<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono || 'N/A'}</td>
-            <td><button class="btn-small" style="background:var(--accent)" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button>
-            <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('historial','${d.id}')">X</button></td></tr>`;
+            <td><button class="btn-small" style="background:var(--accent)" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button></td></tr>`;
         });
         document.getElementById("historial-tabla-body").innerHTML = h;
     });
 
+    // LISTA DE CHATS PARA RESPONDER
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha", "desc")), snap => {
         let h = "";
         snap.forEach(d => {
+            const q = d.data();
             h += `<div class="card" style="font-size:12px; border-left:4px solid var(--warning);">
-            <b>${d.data().nombre}:</b><p>${d.data().mensaje}</p>
-            <button class="btn-small" onclick="eliminarDoc('quejas','${d.id}')">Borrar</button></div>`;
+                <b>Cliente: ${q.nombre} (${q.telefono})</b>
+                <p>Mensaje: ${q.mensaje}</p>
+                <div class="chat-admin-reply">
+                    <input id="reply-${q.telefono}" placeholder="Escribe tu respuesta aquí...">
+                    <button class="btn-small" onclick="responderWhatsApp('${q.telefono}', '${q.nombre}')">Responder por WhatsApp 📲</button>
+                    <button class="btn-small" style="background:var(--danger)" onclick="eliminarDoc('quejas','${d.id}')">Borrar Chat</button>
+                </div>
+            </div>`;
         });
         document.getElementById("lista-quejas").innerHTML = h;
     });
@@ -321,6 +336,10 @@ function loadAdminData() {
     });
 }
 
+window.mandarAdvertencia = (num) => {
+    const msg = prompt("Escribe la advertencia:");
+    if(msg) window.open(`https://wa.me/${num.replace(/\s+/g, '')}?text=${encodeURIComponent("⚠️ AVISO ANDY VIP: " + msg)}`, '_blank');
+};
 window.toggleUser = async (e, s) => { await updateDoc(doc(db, "usuarios_permisos", e), { estado: s }); };
 window.addCuenta = async () => {
     const a = document.getElementById("c-app").value; const d = document.getElementById("c-datos").value; const c = parseInt(document.getElementById("c-cupo").value);
