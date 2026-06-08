@@ -3,41 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEMBRESÍA VIP 🍄‍🟫 - DASHBOARD</title>
+<title>MEMBRESÍA VIP 🍄‍🟫 - NEON EDITION</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-/* === TEMAS (claro/oscuro) === */
+/* === TEMAS NEÓN: Rosa fosforescente + Celeste eléctrico === */
 :root {
-    --bg: #0a0c12;
-    --card-bg: #11161f;
-    --text: #eef2ff;
-    --primary: #38bdf8;
-    --primary-dark: #0284c7;
-    --accent: #facc15;
-    --danger: #f87171;
-    --warning: #fb923c;
-    --success: #4ade80;
-    --border: #1e293b;
-    --input-bg: #0f172a;
-    --sidebar-bg: #0f172ae6;
-    --table-header: #1e293b;
-    --progress-bg: #1e293b;
+    --bg: #0a0a14;
+    --card-bg: #11111f;
+    --text: #f0f0ff;
+    --primary: #ff2a6d;      /* rosa fosforescente */
+    --primary-dark: #c7004d;
+    --primary-light: #ff9ebe;
+    --accent: #00f0ff;        /* celeste eléctrico */
+    --danger: #ff4444;
+    --warning: #ff884d;
+    --success: #00ff9d;
+    --border: #2a2a40;
+    --input-bg: #1a1a2e;
+    --sidebar-bg: #0e0e1acc;
+    --table-header: #1a1a2e;
+    --progress-bg: #2a2a40;
 }
 
 [data-theme="light"] {
-    --bg: #f1f5f9;
+    --bg: #f5f0ff;
     --card-bg: #ffffff;
-    --text: #0f172a;
-    --primary: #0ea5e9;
-    --primary-dark: #0369a1;
-    --accent: #eab308;
-    --border: #cbd5e1;
-    --input-bg: #f8fafc;
-    --sidebar-bg: #ffffffcc;
-    --table-header: #e2e8f0;
-    --progress-bg: #e2e8f0;
+    --text: #1a0b2e;
+    --primary: #ff2a6d;
+    --accent: #00b4d8;
+    --border: #ffc0e0;
+    --input-bg: #ffeef4;
+    --sidebar-bg: #f5f0ffcc;
+    --table-header: #ffe0f0;
+    --progress-bg: #ffd6e8;
 }
 
 * { box-sizing: border-box; transition: background 0.2s, color 0.2s, border 0.2s; }
@@ -52,12 +52,12 @@ body{
 }
 
 body::before {
-    content: "🍄‍🟫";
-    font-size: 280px;
+    content: "🍄‍🟫⚡";
+    font-size: 300px;
     position: fixed;
-    bottom: -80px;
-    right: -80px;
-    opacity: 0.04;
+    bottom: -100px;
+    right: -100px;
+    opacity: 0.03;
     pointer-events: none;
     z-index: 0;
 }
@@ -70,7 +70,7 @@ body::before {
     display: flex; 
     overflow-x: auto; 
     gap: 12px; 
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--primary);
     position: sticky; 
     top: 0; 
     z-index: 100; 
@@ -88,10 +88,10 @@ body::before {
     border-radius: 60px;
     font-weight: 800;
     font-size: 1.2rem;
-    box-shadow: 0 0 12px rgba(56,189,248,0.4);
+    box-shadow: 0 0 15px rgba(255,42,109,0.6);
     margin-right: 16px;
     white-space: nowrap;
-    color: #0f172a;
+    color: #0a0a14;
 }
 
 .nav-btn { 
@@ -110,9 +110,9 @@ body::before {
     gap: 8px;
 }
 .nav-btn.active { 
-    background: var(--primary); 
-    color: #0f172a; 
-    box-shadow: 0 4px 14px rgba(56,189,248,0.5);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #0a0a14; 
+    box-shadow: 0 0 12px rgba(0,240,255,0.7);
     border-color: var(--accent);
 }
 .nav-btn:hover:not(.active) { transform: translateY(-2px); background: var(--primary-dark); color: white; }
@@ -130,7 +130,7 @@ body::before {
     border-radius: 32px;
     margin-top: 20px;
     border: 1px solid var(--border);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 input,button,select,textarea{
     width:100%;
@@ -146,7 +146,7 @@ input,button,select,textarea{
 }
 button{
     background: linear-gradient(95deg, var(--primary), var(--accent));
-    color: #0f172a;
+    color: #0a0a14;
     font-weight: 800;
     cursor: pointer;
     border: none;
@@ -200,12 +200,12 @@ td {
 
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 34px; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #2a2a40; transition: .3s; border-radius: 34px; }
 .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--success); }
 input:checked + .slider:before { transform: translateX(20px); }
 
-/* Barra de progreso para clientes */
+/* Barra de progreso */
 .progress-bar-container {
     background: var(--progress-bg);
     border-radius: 20px;
@@ -230,8 +230,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 <div id="login" class="container">
     <div class="card" style="text-align: center;">
-        <div style="font-size: 64px;">🍄‍🟫</div>
-        <h1 style="background: linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;">MEMBRESÍA VIP</h1>
+        <div style="font-size: 64px;">🍄‍🟫💖</div>
+        <h1 style="background: linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;">MEMBRESÍA VIP NEON</h1>
         <input id="log-email" placeholder="Usuario">
         <input id="log-pass" type="password" placeholder="Clave">
         <button onclick="handleLogin()">⚡ INGRESAR</button>
@@ -242,15 +242,15 @@ input:checked + .slider:before { transform: translateX(20px); }
     
     <div class="sidebar">
         <div class="logo-area">
-            <span>🍄‍🟫</span> <strong>VIP</strong>
+            <span>🍄‍🟫💖</span> <strong>VIP NEON</strong>
         </div>
-        <button class="nav-btn seller-only" onclick="showPage('p-solicitar', this)">🎁 Pedir Cuenta</button>
-        <button class="nav-btn" onclick="showPage('p-quejas', this)">📩 Chat Soporte</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-cuentas', this)">📺 Stock Público</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-notas', this)">📓 Block Notas</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-pedidos', this)">📊 Historial</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-clientes', this)">📋 Clientes</button>
-        <button class="nav-btn admin-only" onclick="showPage('p-admin', this)">🔑 Accesos</button>
+        <button class="nav-btn seller-only" data-page="p-solicitar">🎁 Pedir Cuenta</button>
+        <button class="nav-btn" data-page="p-quejas">📩 Chat Soporte</button>
+        <button class="nav-btn admin-only" data-page="p-cuentas">📺 Stock Público</button>
+        <button class="nav-btn admin-only" data-page="p-notas">📓 Block Notas</button>
+        <button class="nav-btn admin-only" data-page="p-pedidos">📊 Historial</button>
+        <button class="nav-btn admin-only" data-page="p-clientes">📋 Clientes</button>
+        <button class="nav-btn admin-only" data-page="p-admin">🔑 Accesos</button>
         <button class="theme-toggle" onclick="toggleTheme()">🌓 Modo</button>
         <button class="logout" onclick="logout()">Salir</button>
     </div>
@@ -350,13 +350,27 @@ window.toggleTheme = () => {
     else document.documentElement.setAttribute('data-theme', 'light');
 };
 
-// Utilidades
-window.showPage = (id, btn) => {
+// ========== SHOW PAGE CON CARGA AUTOMÁTICA ==========
+window.showPage = (pageId, btnElement) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
+    if (btnElement) btnElement.classList.add('active');
 };
+
+// Función para activar la primera página según rol
+function setDefaultPage(isAdmin) {
+    let defaultPageId = isAdmin ? 'p-cuentas' : 'p-solicitar';
+    let defaultButton = document.querySelector(`.nav-btn[data-page="${defaultPageId}"]`);
+    if (defaultButton) {
+        showPage(defaultPageId, defaultButton);
+    } else {
+        // Fallback
+        showPage(defaultPageId, null);
+    }
+}
+
+// Login
 window.handleLogin = async () => {
     const e = document.getElementById("log-email").value.trim();
     const p = document.getElementById("log-pass").value.trim();
@@ -371,34 +385,25 @@ window.logout = () => signOut(auth).then(() => location.reload());
 // ========== CLIENTES con barra y orden ==========
 function calcularDiasRestantes(fechaCorteStr) {
     if (!fechaCorteStr) return null;
-    const hoy = new Date();
-    hoy.setHours(0,0,0,0);
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
     const corte = new Date(fechaCorteStr);
     if (isNaN(corte)) return null;
-    const diff = Math.ceil((corte - hoy) / (1000*60*60*24));
-    return diff;
+    return Math.ceil((corte - hoy) / (1000*60*60*24));
 }
 function getColorPorDias(dias) {
     if (dias === null) return "#6b7280";
-    if (dias < 0) return "#ef4444"; // rojo vencido
-    if (dias <= 2) return "#f97316"; // naranja urgente
-    if (dias <= 7) return "#eab308"; // amarillo
-    return "#22c55e"; // verde
+    if (dias < 0) return "#ff2a6d";
+    if (dias <= 2) return "#ff884d";
+    if (dias <= 7) return "#00f0ff";
+    return "#00ff9d";
 }
 function renderClientes(clientesData) {
-    // Ordenar por fecha de corte (más próximo primero)
-    const sorted = [...clientesData].sort((a,b) => {
-        const da = a.fechaCorte ? new Date(a.fechaCorte) : new Date(8640000000000000);
-        const db = b.fechaCorte ? new Date(b.fechaCorte) : new Date(8640000000000000);
-        return da - db;
-    });
+    const sorted = [...clientesData].sort((a,b) => new Date(a.fechaCorte||'9999') - new Date(b.fechaCorte||'9999'));
     let html = "";
     for (const c of sorted) {
         const dias = calcularDiasRestantes(c.fechaCorte);
-        let progressPercent = 0;
-        let statusText = "";
+        let progressPercent = 0, statusText = "";
         if (dias !== null) {
-            // calcular porcentaje: asumimos máximo 30 días para barra llena
             let maxDias = 30;
             if (dias <= 0) progressPercent = 100;
             else if (dias >= maxDias) progressPercent = 0;
@@ -413,8 +418,8 @@ function renderClientes(clientesData) {
             ⏰ Corte: ${c.fechaCorte || '—'} — ${statusText}
             <div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%; background-color: ${colorFill};"></div></div>
             <div class="flex-btns">
-                <button class="btn-small btn-edit" onclick="editarCliente('${c.id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.fechaPago}','${c.fechaCorte}')">✏️ Editar</button>
-                <button class="btn-small btn-delete" onclick="eliminarCliente('${c.id}')">🗑️ Eliminar</button>
+                <button class="btn-small" style="background:var(--primary);color:white;" onclick="editarCliente('${c.id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.fechaPago}','${c.fechaCorte}')">✏️ Editar</button>
+                <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarCliente('${c.id}')">🗑️ Eliminar</button>
             </div>
         </div>`;
     }
@@ -515,14 +520,20 @@ window.responderWhatsApp = (tel, nombre) => {
 // ========== ADMIN DATA ==========
 function loadAdminData() {
     onSnapshot(collection(db, "cuentas"), snap => {
-        let html = ""; snap.forEach(d => { const c = d.data(); html += `<tr><td><b>${c.app}</b><div class="datos-detalle">${c.datos}</div></td><td>${c.cupo}</td><td><button class="btn-small btn-edit" onclick="editarCuentaCompleta('${d.id}','${c.app.replace(/'/g, "\\'")}','${c.datos.replace(/'/g, "\\'")}',${c.cupo})">✏️</button> <button class="btn-small btn-reset" onclick="resetCupo('${d.id}')">🔄</button> <button class="btn-small btn-delete" onclick="eliminarDoc('cuentas','${d.id}')">🗑️</button></td></tr>`; });
+        let html = ""; snap.forEach(d => { const c = d.data(); html += `<tr>
+            <td><b>${c.app}</b><div class="datos-detalle">${c.datos}</div></td>
+            <td><span class="badge">${c.cupo}</span></td>
+            <td><button class="btn-small" style="background:var(--primary);color:white;" onclick="editarCuentaCompleta('${d.id}','${c.app.replace(/'/g, "\\'")}','${c.datos.replace(/'/g, "\\'")}',${c.cupo})">✏️</button>
+            <button class="btn-small" style="background:var(--warning);color:white;" onclick="resetCupo('${d.id}')">🔄</button>
+            <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarDoc('cuentas','${d.id}')">🗑️</button></td>
+        </tr>`; });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
-    onSnapshot(query(collection(db, "historial"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const data=d.data(); h+=`<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono||'N/A'}</td><td><button class="btn-small" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button></td></tr>`; }); document.getElementById("historial-tabla-body").innerHTML=h; });
-    onSnapshot(query(collection(db, "quejas"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const q=d.data(); h+=`<div class="card"><b>🧑 ${q.nombre} (${q.telefono})</b><p>📝 ${q.mensaje}</p><div class="chat-admin-reply"><input id="reply-${q.telefono}" placeholder="Respuesta..."><button class="btn-small" onclick="responderWhatsApp('${q.telefono}','${q.nombre}')">📲 Responder</button> <button class="btn-small btn-delete" onclick="eliminarDoc('quejas','${d.id}')">🗑️</button></div></div>`; }); document.getElementById("lista-quejas").innerHTML=h; });
+    onSnapshot(query(collection(db, "historial"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const data=d.data(); h+=`<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono||'N/A'}</td><td><button class="btn-small" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button></td>`; }); document.getElementById("historial-tabla-body").innerHTML=h; });
+    onSnapshot(query(collection(db, "quejas"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const q=d.data(); h+=`<div class="card"><b>🧑 ${q.nombre} (${q.telefono})</b><p>📝 ${q.mensaje}</p><div class="chat-admin-reply"><input id="reply-${q.telefono}" placeholder="Respuesta..."><button class="btn-small" onclick="responderWhatsApp('${q.telefono}','${q.nombre}')">📲 Responder</button> <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarDoc('quejas','${d.id}')">🗑️</button></div></div>`; }); document.getElementById("lista-quejas").innerHTML=h; });
     onSnapshot(collection(db, "usuarios_permisos"), snap => { let h=""; snap.forEach(d=>{ if(d.id!==MASTER) h+=`<div style="display:flex; justify-content:space-between; padding:12px;"><span>📧 ${d.id}</span><label class="switch"><input type="checkbox" ${d.data().estado?'checked':''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label></div>`; }); document.getElementById("lista-usuarios-admin").innerHTML=h; });
     onSnapshot(collection(db, "clientes"), snap => { let clientesArray = []; snap.forEach(d => { clientesArray.push({ id: d.id, ...d.data() }); }); renderClientes(clientesArray); });
-    onSnapshot(query(collection(db, "notas_admin"), orderBy("fecha","desc")), snap => { let html=""; snap.forEach(d=>{ const nota=d.data(); html+=`<div class="nota-card"><strong>📌 ${nota.titulo}</strong><pre style="background:var(--input-bg); padding:10px; border-radius:14px; margin:10px 0;">${nota.contenido}</pre><div class="flex-btns"><button class="btn-small btn-edit" onclick="editarNota('${d.id}','${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">✏️ Editar</button><button class="btn-small btn-upload" onclick="subirNotaAlStock('${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">📤 Subir al Stock</button><button class="btn-small btn-delete" onclick="eliminarNota('${d.id}')">🗑️ Eliminar</button></div></div>`; }); document.getElementById("lista-notas-container").innerHTML=html||"<p>Sin notas</p>"; });
+    onSnapshot(query(collection(db, "notas_admin"), orderBy("fecha","desc")), snap => { let html=""; snap.forEach(d=>{ const nota=d.data(); html+=`<div class="nota-card"><strong>📌 ${nota.titulo}</strong><pre style="background:var(--input-bg); padding:10px; border-radius:14px; margin:10px 0;">${nota.contenido}</pre><div class="flex-btns"><button class="btn-small" style="background:var(--primary);color:white;" onclick="editarNota('${d.id}','${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">✏️ Editar</button><button class="btn-small" style="background:var(--success);color:white;" onclick="subirNotaAlStock('${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">📤 Subir al Stock</button><button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarNota('${d.id}')">🗑️ Eliminar</button></div></div>`; }); document.getElementById("lista-notas-container").innerHTML=html||"<p>Sin notas</p>"; });
 }
 window.mandarAdvertencia = (num) => { if(num) { const msg=prompt("Mensaje:"); if(msg) window.open(`https://wa.me/${num.replace(/\s+/g,'')}?text=${encodeURIComponent("⚠️ AVISO: "+msg)}`,'_blank'); } };
 window.toggleUser = async (e,s) => { await updateDoc(doc(db,"usuarios_permisos",e),{ estado:s }); };
@@ -532,14 +543,38 @@ window.limpiarHistorial = async () => { if(confirm("Vaciar historial?")){ const 
 function loadUserData() {
     onSnapshot(collection(db,"cuentas"), snap => { cuentasMap.clear(); let opts='<option value="">-- Selecciona --</option>'; snap.forEach(d=>{ const data=d.data(); cuentasMap.set(d.id,{app:data.app,cupo:data.cupo}); if(data.cupo>0) opts+=`<option value="${d.id}">${data.app} (${data.cupo})</option>`; else opts+=`<option value="${d.id}" disabled>${data.app} (AGOTADO)</option>`; }); document.getElementById("select-plataforma").innerHTML=opts; const sel=document.getElementById("select-plataforma"); sel.onchange=e=>{ const v=e.target.value; if(v && cuentasMap.has(v)) updateStockDisplay(v); else document.getElementById("stock-info").innerHTML=`📦 Stock: --`; }; if(sel.value && cuentasMap.has(sel.value)) updateStockDisplay(sel.value); else document.getElementById("btn-pedir").disabled=true; });
 }
+
+// ========== AUTH Y CARGA INICIAL CON PÁGINA POR DEFECTO ==========
 onAuthStateChanged(auth, async (user) => {
     if(user) {
-        document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block";
+        document.getElementById("login").style.display="none"; 
+        document.getElementById("app").style.display="block";
         const isAdmin = user.email === MASTER;
-        if(isAdmin) { document.querySelectorAll('.admin-only').forEach(el=>el.style.display='block'); document.querySelectorAll('.seller-only').forEach(el=>el.style.display='none'); loadAdminData(); }
-        else { document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none'); document.querySelectorAll('.seller-only').forEach(el=>el.style.display='block'); }
+        if(isAdmin) { 
+            document.querySelectorAll('.admin-only').forEach(el=>el.style.display='block'); 
+            document.querySelectorAll('.seller-only').forEach(el=>el.style.display='none'); 
+            loadAdminData(); 
+        } else { 
+            document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none'); 
+            document.querySelectorAll('.seller-only').forEach(el=>el.style.display='block'); 
+        }
         loadUserData();
-    } else { document.getElementById("login").style.display="block"; document.getElementById("app").style.display="none"; }
+        // Mostrar la página por defecto según rol
+        setDefaultPage(isAdmin);
+    } else { 
+        document.getElementById("login").style.display="block"; 
+        document.getElementById("app").style.display="none"; 
+    }
+});
+
+// Asignar eventos a los botones de navegación después de cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        const pageId = btn.getAttribute('data-page');
+        if (pageId) {
+            btn.addEventListener('click', () => showPage(pageId, btn));
+        }
+    });
 });
 </script>
 </body>
