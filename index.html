@@ -39,6 +39,7 @@ input, select, textarea{background:#0d1117;color:white;border:1px solid #30363d}
 textarea{resize: vertical; min-height: 80px; line-height: 1.5;} 
 button{background:var(--primary);color:white;font-weight:800; cursor: pointer; transition: 0.2s;}
 button:active { transform: scale(0.96); }
+button:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
 
 .table-container { width: 100%; overflow-x: auto; border-radius: 12px; background: #0d1117; margin-top: 10px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
@@ -60,6 +61,9 @@ input:checked + .slider { background-color: var(--accent); }
 input:checked + .slider:before { transform: translateX(20px); }
 
 .chat-admin-reply { background: #1f2937; border: 1px solid #30363d; border-radius: 10px; padding: 10px; margin-top: 10px; }
+
+.stock-indicator { font-size: 12px; margin-top: -5px; margin-bottom: 10px; color: #9ca3af; display: flex; justify-content: space-between; align-items: center; }
+.stock-value { color: var(--accent); font-weight: bold; }
 </style>
 </head>
 
@@ -93,7 +97,8 @@ input:checked + .slider:before { transform: translateX(20px); }
                 <input id="c-cliente-nombre" placeholder="Nombre completo">
                 <input id="c-cliente-phone" placeholder="Celular (Ej: +593987654321)">
                 <select id="select-plataforma"><option>Cargando plataformas...</option></select>
-                <button onclick="pedirCuenta()">OBTENER ACCESO VIP</button>
+                <div id="stock-info" class="stock-indicator">📦 Stock disponible: <span class="stock-value">--</span></div>
+                <button id="btn-pedir" onclick="pedirCuenta()">OBTENER ACCESO VIP</button>
                 <div id="resultado-entrega"></div>
             </div>
         </div>
@@ -180,6 +185,9 @@ const db = getFirestore(app);
 
 const MASTER = "andyobregon799@gmail.com";
 
+// Variables globales para stock
+let cuentasMap = new Map(); // id -> { app, cupo }
+
 window.showPage = (id, btn) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -188,15 +196,21 @@ window.showPage = (id, btn) => {
 };
 
 window.handleLogin = async () => {
-    const e = document.getElementById("log-email").value;
-    const p = document.getElementById("log-pass").value;
+    const e = document.getElementById("log-email").value.trim();
+    const p = document.getElementById("log-pass").value.trim();
+    if (!e || !p) return alert("Completa ambos campos.");
     try {
+        // Verificar si es master o usuario permitido
         if(e !== MASTER) {
-            const uSnap = await getDoc(doc(db, "usuarios_permisos", e));
-            if(uSnap.exists() && !uSnap.data().estado) return alert("Cuenta desactivada");
+            const userDoc = await getDoc(doc(db, "usuarios_permisos", e));
+            if (!userDoc.exists()) return alert("Usuario no autorizado.");
+            if (!userDoc.data().estado) return alert("Cuenta desactivada.");
         }
         await signInWithEmailAndPassword(auth, e, p);
-    } catch { alert("Error"); }
+    } catch (err) {
+        console.error(err);
+        alert("Credenciales incorrectas o error de conexión.");
+    }
 };
 
 window.logout = () => signOut(auth).then(() => location.reload());
@@ -212,58 +226,129 @@ onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         }
         loadUserData();
+    } else {
+        document.getElementById("login").style.display = "block";
+        document.getElementById("app").style.display = "none";
     }
 });
 
 function loadUserData() {
-    onSnapshot(collection(db, "cuentas"), snap => {
-        let h = '<option value="">-- Selecciona Plataforma --</option>';
-        snap.forEach(d => { if(d.data().cupo > 0) h += `<option value="${d.id}">${d.data().app}</option>`; });
-        document.getElementById("select-plataforma").innerHTML = h;
+    // Escuchar cambios en cuentas para actualizar selector y stock
+    onSnapshot(collection(db, "cuentas"), (snap) => {
+        cuentasMap.clear();
+        let options = '<option value="">-- Selecciona Plataforma --</option>';
+        snap.forEach(doc => {
+            const data = doc.data();
+            cuentasMap.set(doc.id, { app: data.app, cupo: data.cupo });
+            if (data.cupo > 0) {
+                options += `<option value="${doc.id}">${data.app} (Stock: ${data.cupo})</option>`;
+            } else {
+                options += `<option value="${doc.id}" disabled>${data.app} (AGOTADO)</option>`;
+            }
+        });
+        document.getElementById("select-plataforma").innerHTML = options;
+        
+        // Si ya hay una selección, actualizar el stock mostrado
+        const selectedId = document.getElementById("select-plataforma").value;
+        if (selectedId && cuentasMap.has(selectedId)) {
+            updateStockDisplay(selectedId);
+        } else {
+            document.getElementById("stock-info").innerHTML = `📦 Stock disponible: <span class="stock-value">--</span>`;
+            document.getElementById("btn-pedir").disabled = true;
+        }
+        
+        // Agregar evento al select para mostrar stock al cambiar
+        const selectEl = document.getElementById("select-plataforma");
+        const originalOnChange = selectEl.onchange;
+        selectEl.onchange = (e) => {
+            const val = e.target.value;
+            if (val && cuentasMap.has(val)) {
+                updateStockDisplay(val);
+            } else {
+                document.getElementById("stock-info").innerHTML = `📦 Stock disponible: <span class="stock-value">--</span>`;
+                document.getElementById("btn-pedir").disabled = true;
+            }
+        };
     });
 }
 
-// PEDIR CUENTA
+function updateStockDisplay(cuentaId) {
+    const cuenta = cuentasMap.get(cuentaId);
+    if (cuenta && cuenta.cupo > 0) {
+        document.getElementById("stock-info").innerHTML = `📦 Stock disponible: <span class="stock-value">${cuenta.cupo}</span>`;
+        document.getElementById("btn-pedir").disabled = false;
+    } else {
+        document.getElementById("stock-info").innerHTML = `📦 Stock disponible: <span class="stock-value" style="color:var(--danger)">AGOTADO</span>`;
+        document.getElementById("btn-pedir").disabled = true;
+    }
+}
+
+// PEDIR CUENTA (mejorado)
 window.pedirCuenta = async () => {
     const n = document.getElementById("c-cliente-nombre").value.trim();
     const t = document.getElementById("c-cliente-phone").value.trim();
     const cId = document.getElementById("select-plataforma").value;
 
-    if(!n || !t || !cId) return alert("Faltan datos.");
-
-    const cSnap = await getDoc(doc(db, "cuentas", cId));
+    if(!n || !t) return alert("Faltan nombre o teléfono.");
+    if(!cId) return alert("Selecciona una plataforma.");
     
-    if(cSnap.exists() && cSnap.data().cupo > 0) {
+    const btn = document.getElementById("btn-pedir");
+    btn.disabled = true;
+    btn.textContent = "PROCESANDO...";
+
+    try {
+        const cSnap = await getDoc(doc(db, "cuentas", cId));
+        if(!cSnap.exists()) throw new Error("La cuenta ya no existe.");
+        const cuentaData = cSnap.data();
+        if(cuentaData.cupo <= 0) throw new Error("No hay stock disponible.");
+        
+        // Guardar historial
         await addDoc(collection(db, "historial"), { 
             miembro: n, 
             miembro_id: n.toLowerCase(), 
             telefono: t,
-            app: cSnap.data().app, 
+            app: cuentaData.app, 
             fecha: serverTimestamp() 
         });
         
-        await updateDoc(doc(db, "cuentas", cId), { cupo: cSnap.data().cupo - 1 });
+        // Reducir stock
+        await updateDoc(doc(db, "cuentas", cId), { cupo: cuentaData.cupo - 1 });
         
+        // Mostrar resultado con stock restante
+        const nuevoStock = cuentaData.cupo - 1;
         document.getElementById("resultado-entrega").innerHTML = `
         <div class="card" style="border: 2px solid var(--accent); text-align:center;">
             <p style="color:var(--accent); font-weight:800;">✅ CUENTA ENTREGADA:</p>
-            <code id="copy-text" style="display:block; background:#000; padding:15px; color:var(--accent); white-space: pre-wrap; font-size:12px; border-radius:10px; margin:10px 0; text-align:left; font-family:monospace;">${cSnap.data().datos}</code>
+            <code id="copy-text" style="display:block; background:#000; padding:15px; color:var(--accent); white-space: pre-wrap; font-size:12px; border-radius:10px; margin:10px 0; text-align:left; font-family:monospace;">${cuentaData.datos}</code>
             <button onclick="copyToClipboard()">COPIAR DATOS 📋</button>
+            <p style="font-size:11px; margin-top:10px;">Stock restante de ${cuentaData.app}: ${nuevoStock}</p>
         </div>`;
+        
+        // Limpiar campos
+        document.getElementById("c-cliente-nombre").value = "";
+        document.getElementById("c-cliente-phone").value = "";
+        // No limpiar el selector para que pueda pedir otra si hay stock
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "OBTENER ACCESO VIP";
     }
 };
 
 window.copyToClipboard = () => {
-    const text = document.getElementById('copy-text').innerText;
+    const textElem = document.getElementById('copy-text');
+    if(!textElem) return;
+    const text = textElem.innerText;
     navigator.clipboard.writeText(text);
-    alert('Copiado');
+    alert('Datos copiados al portapapeles');
 };
 
 // ENVIAR QUEJA / CHAT
 window.enviarQueja = async () => {
-    const n = document.getElementById("q-nombre").value;
-    const p = document.getElementById("q-phone").value;
-    const m = document.getElementById("q-texto").value;
+    const n = document.getElementById("q-nombre").value.trim();
+    const p = document.getElementById("q-phone").value.trim();
+    const m = document.getElementById("q-texto").value.trim();
     if(n && p && m) {
         await addDoc(collection(db, "quejas"), { nombre: n, telefono: p, mensaje: m, fecha: serverTimestamp() });
         alert("Mensaje enviado. Andy te responderá pronto.");
@@ -305,7 +390,6 @@ function loadAdminData() {
         document.getElementById("historial-tabla-body").innerHTML = h;
     });
 
-    // LISTA DE CHATS PARA RESPONDER
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha", "desc")), snap => {
         let h = "";
         snap.forEach(d => {
@@ -337,24 +421,49 @@ function loadAdminData() {
 }
 
 window.mandarAdvertencia = (num) => {
-    const msg = prompt("Escribe la advertencia:");
+    if(!num) return alert("Número no disponible.");
+    const msg = prompt("Escribe el mensaje para el cliente:");
     if(msg) window.open(`https://wa.me/${num.replace(/\s+/g, '')}?text=${encodeURIComponent("⚠️ AVISO ANDY VIP: " + msg)}`, '_blank');
 };
 window.toggleUser = async (e, s) => { await updateDoc(doc(db, "usuarios_permisos", e), { estado: s }); };
 window.addCuenta = async () => {
-    const a = document.getElementById("c-app").value; const d = document.getElementById("c-datos").value; const c = parseInt(document.getElementById("c-cupo").value);
-    if(a && d) await addDoc(collection(db, "cuentas"), { app: a, datos: d, cupo: c });
+    const a = document.getElementById("c-app").value.trim();
+    const d = document.getElementById("c-datos").value.trim();
+    const c = parseInt(document.getElementById("c-cupo").value);
+    if(!a || !d) return alert("Nombre y datos son obligatorios.");
+    if(isNaN(c) || c < 0) return alert("Stock válido requerido.");
+    await addDoc(collection(db, "cuentas"), { app: a, datos: d, cupo: c });
+    document.getElementById("c-app").value = "";
+    document.getElementById("c-datos").value = "";
+    document.getElementById("c-cupo").value = "";
 };
 window.crearUsuario = async () => {
-    const e = document.getElementById("new-email").value; const p = document.getElementById("new-pass").value; const r = document.getElementById("new-role").value;
-    try { await createUserWithEmailAndPassword(auth, e, p); await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true }); alert("Acceso Creado."); } catch { alert("Error"); }
+    const e = document.getElementById("new-email").value.trim();
+    const p = document.getElementById("new-pass").value.trim();
+    const r = document.getElementById("new-role").value;
+    if(!e || !p) return alert("Completa email y contraseña.");
+    try {
+        await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "usuarios_permisos", e), { rol: r, estado: true });
+        alert("Acceso Creado.");
+        document.getElementById("new-email").value = "";
+        document.getElementById("new-pass").value = "";
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
 };
-window.resetCupo = async (id) => { const n = prompt("Nuevo Stock:"); if(n) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); };
-window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, p, id)); };
+window.resetCupo = async (id) => { 
+    const n = prompt("Nuevo Stock:"); 
+    if(n && !isNaN(parseInt(n))) await updateDoc(doc(db, "cuentas", id), { cupo: parseInt(n) }); 
+};
+window.eliminarDoc = async (p, id) => { if(confirm("¿Eliminar permanentemente?")) await deleteDoc(doc(db, p, id)); };
 window.limpiarHistorial = async () => {
-    if(confirm("¿Vaciar Historial?")){
+    if(confirm("¿Vaciar Historial? Esta acción no se puede deshacer.")){
         const q = await getDocs(collection(db, "historial"));
-        const b = writeBatch(db); q.forEach(d => b.delete(d.ref)); await b.commit();
+        const b = writeBatch(db); 
+        q.forEach(d => b.delete(d.ref)); 
+        await b.commit();
+        alert("Historial vaciado.");
     }
 };
 </script>
