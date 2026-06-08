@@ -8,14 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-/* === TEMAS NEÓN: Rosa fosforescente + Celeste eléctrico === */
+/* === TEMAS NEÓN: Gris fosforescente + Celeste eléctrico === */
 :root {
     --bg: #0a0a14;
     --card-bg: #11111f;
     --text: #f0f0ff;
-    --primary: #ff2a6d;      /* rosa fosforescente */
-    --primary-dark: #c7004d;
-    --primary-light: #ff9ebe;
+    --primary: #b0b0ff;      /* gris fosforescente (neón azulado) */
+    --primary-dark: #8080cc;
+    --primary-light: #e0e0ff;
     --accent: #00f0ff;        /* celeste eléctrico */
     --danger: #ff4444;
     --warning: #ff884d;
@@ -31,13 +31,15 @@
     --bg: #f5f0ff;
     --card-bg: #ffffff;
     --text: #1a0b2e;
-    --primary: #ff2a6d;
+    --primary: #6a6aff;
+    --primary-dark: #4a4ab0;
+    --primary-light: #c0c0ff;
     --accent: #00b4d8;
-    --border: #ffc0e0;
-    --input-bg: #ffeef4;
+    --border: #d0d0ff;
+    --input-bg: #f0f0ff;
     --sidebar-bg: #f5f0ffcc;
-    --table-header: #ffe0f0;
-    --progress-bg: #ffd6e8;
+    --table-header: #e0e0ff;
+    --progress-bg: #d0d0ff;
 }
 
 * { box-sizing: border-box; transition: background 0.2s, color 0.2s, border 0.2s; }
@@ -88,7 +90,7 @@ body::before {
     border-radius: 60px;
     font-weight: 800;
     font-size: 1.2rem;
-    box-shadow: 0 0 15px rgba(255,42,109,0.6);
+    box-shadow: 0 0 15px rgba(176,176,255,0.6);
     margin-right: 16px;
     white-space: nowrap;
     color: #0a0a14;
@@ -230,7 +232,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 <div id="login" class="container">
     <div class="card" style="text-align: center;">
-        <div style="font-size: 64px;">🍄‍🟫💖</div>
+        <div style="font-size: 64px;">🍄‍🟫</div>
         <h1 style="background: linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;">MEMBRESÍA VIP NEON</h1>
         <input id="log-email" placeholder="Usuario">
         <input id="log-pass" type="password" placeholder="Clave">
@@ -242,7 +244,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     
     <div class="sidebar">
         <div class="logo-area">
-            <span>🍄‍🟫💖</span> <strong>VIP NEON</strong>
+            <span>🍄‍🟫</span> <strong>VIP NEON</strong>
         </div>
         <button class="nav-btn seller-only" data-page="p-solicitar">🎁 Pedir Cuenta</button>
         <button class="nav-btn" data-page="p-quejas">📩 Chat Soporte</button>
@@ -365,7 +367,6 @@ function setDefaultPage(isAdmin) {
     if (defaultButton) {
         showPage(defaultPageId, defaultButton);
     } else {
-        // Fallback
         showPage(defaultPageId, null);
     }
 }
@@ -529,7 +530,7 @@ function loadAdminData() {
         </tr>`; });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
     });
-    onSnapshot(query(collection(db, "historial"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const data=d.data(); h+=`<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono||'N/A'}</td><td><button class="btn-small" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button></td>`; }); document.getElementById("historial-tabla-body").innerHTML=h; });
+    onSnapshot(query(collection(db, "historial"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const data=d.data(); h+=`<tr><td>${data.miembro}</td><td>${data.app}</td><td>${data.telefono||'N/A'}</td><td><button class="btn-small" onclick="mandarAdvertencia('${data.telefono}')">💬 Avisar</button></td></tr>`; }); document.getElementById("historial-tabla-body").innerHTML=h; });
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const q=d.data(); h+=`<div class="card"><b>🧑 ${q.nombre} (${q.telefono})</b><p>📝 ${q.mensaje}</p><div class="chat-admin-reply"><input id="reply-${q.telefono}" placeholder="Respuesta..."><button class="btn-small" onclick="responderWhatsApp('${q.telefono}','${q.nombre}')">📲 Responder</button> <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarDoc('quejas','${d.id}')">🗑️</button></div></div>`; }); document.getElementById("lista-quejas").innerHTML=h; });
     onSnapshot(collection(db, "usuarios_permisos"), snap => { let h=""; snap.forEach(d=>{ if(d.id!==MASTER) h+=`<div style="display:flex; justify-content:space-between; padding:12px;"><span>📧 ${d.id}</span><label class="switch"><input type="checkbox" ${d.data().estado?'checked':''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label></div>`; }); document.getElementById("lista-usuarios-admin").innerHTML=h; });
     onSnapshot(collection(db, "clientes"), snap => { let clientesArray = []; snap.forEach(d => { clientesArray.push({ id: d.id, ...d.data() }); }); renderClientes(clientesArray); });
@@ -559,7 +560,6 @@ onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.seller-only').forEach(el=>el.style.display='block'); 
         }
         loadUserData();
-        // Mostrar la página por defecto según rol
         setDefaultPage(isAdmin);
     } else { 
         document.getElementById("login").style.display="block"; 
