@@ -3,43 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEMBRESÍA VIP 🍄‍🟫 - NEON EDITION</title>
+<title>MEMBRESÍA VIP 🍄‍🟫 - EDICIÓN DORADA</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-/* === TEMAS NEÓN: Gris fosforescente + Celeste eléctrico === */
+/* === TEMAS DORADO PREMIUM === */
 :root {
-    --bg: #0a0a14;
-    --card-bg: #11111f;
-    --text: #f0f0ff;
-    --primary: #b0b0ff;      /* gris fosforescente (neón azulado) */
-    --primary-dark: #8080cc;
-    --primary-light: #e0e0ff;
-    --accent: #00f0ff;        /* celeste eléctrico */
-    --danger: #ff4444;
-    --warning: #ff884d;
-    --success: #00ff9d;
-    --border: #2a2a40;
-    --input-bg: #1a1a2e;
-    --sidebar-bg: #0e0e1acc;
-    --table-header: #1a1a2e;
-    --progress-bg: #2a2a40;
+    --bg: #1c180f;        /* Fondo dorado oscuro pero cálido */
+    --card-bg: #2c261b;
+    --text: #fff3e0;
+    --primary: #f5b042;   /* Dorado principal */
+    --primary-dark: #e09d32;
+    --primary-light: #ffe0a3;
+    --accent: #ffd966;     /* Dorado más claro */
+    --danger: #ff6644;
+    --warning: #ffaa33;
+    --success: #d4af37;    /* Dorado éxito */
+    --border: #4a3e2c;
+    --input-bg: #3a301f;
+    --sidebar-bg: #1c180fcc;
+    --table-header: #2c2418;
+    --progress-bg: #4a3e2c;
 }
 
 [data-theme="light"] {
-    --bg: #f5f0ff;
+    --bg: #fef7e6;        /* Fondo claro crema/dorado */
     --card-bg: #ffffff;
-    --text: #1a0b2e;
-    --primary: #6a6aff;
-    --primary-dark: #4a4ab0;
-    --primary-light: #c0c0ff;
-    --accent: #00b4d8;
-    --border: #d0d0ff;
-    --input-bg: #f0f0ff;
-    --sidebar-bg: #f5f0ffcc;
-    --table-header: #e0e0ff;
-    --progress-bg: #d0d0ff;
+    --text: #3a2a1a;
+    --primary: #d4af37;
+    --primary-dark: #b8902a;
+    --primary-light: #fce9b4;
+    --accent: #f5bc70;
+    --border: #e6d5b8;
+    --input-bg: #fff7e8;
+    --sidebar-bg: #fef7e6cc;
+    --table-header: #f5e6ce;
+    --progress-bg: #e6d5b8;
 }
 
 * { box-sizing: border-box; transition: background 0.2s, color 0.2s, border 0.2s; }
@@ -54,12 +54,12 @@ body{
 }
 
 body::before {
-    content: "🍄‍🟫⚡";
+    content: "✨🍄‍🟫✨";
     font-size: 300px;
     position: fixed;
     bottom: -100px;
     right: -100px;
-    opacity: 0.03;
+    opacity: 0.04;
     pointer-events: none;
     z-index: 0;
 }
@@ -90,10 +90,10 @@ body::before {
     border-radius: 60px;
     font-weight: 800;
     font-size: 1.2rem;
-    box-shadow: 0 0 15px rgba(176,176,255,0.6);
+    box-shadow: 0 0 15px rgba(245,176,66,0.6);
     margin-right: 16px;
     white-space: nowrap;
-    color: #0a0a14;
+    color: #1c180f;
 }
 
 .nav-btn { 
@@ -113,8 +113,8 @@ body::before {
 }
 .nav-btn.active { 
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: #0a0a14; 
-    box-shadow: 0 0 12px rgba(0,240,255,0.7);
+    color: #1c180f; 
+    box-shadow: 0 0 12px rgba(245,176,66,0.8);
     border-color: var(--accent);
 }
 .nav-btn:hover:not(.active) { transform: translateY(-2px); background: var(--primary-dark); color: white; }
@@ -148,7 +148,7 @@ input,button,select,textarea{
 }
 button{
     background: linear-gradient(95deg, var(--primary), var(--accent));
-    color: #0a0a14;
+    color: #1c180f;
     font-weight: 800;
     cursor: pointer;
     border: none;
@@ -202,7 +202,7 @@ td {
 
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #2a2a40; transition: .3s; border-radius: 34px; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4a3e2c; transition: .3s; border-radius: 34px; }
 .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--success); }
 input:checked + .slider:before { transform: translateX(20px); }
@@ -232,11 +232,11 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 <div id="login" class="container">
     <div class="card" style="text-align: center;">
-        <div style="font-size: 64px;">🍄‍🟫</div>
-        <h1 style="background: linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;">MEMBRESÍA VIP NEON</h1>
+        <div style="font-size: 64px;">✨🍄‍🟫✨</div>
+        <h1 style="background: linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;">MEMBRESÍA VIP DORADA</h1>
         <input id="log-email" placeholder="Usuario">
         <input id="log-pass" type="password" placeholder="Clave">
-        <button onclick="handleLogin()">⚡ INGRESAR</button>
+        <button onclick="handleLogin()">⚜️ INGRESAR ⚜️</button>
     </div>
 </div>
 
@@ -244,7 +244,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     
     <div class="sidebar">
         <div class="logo-area">
-            <span>🍄‍🟫</span> <strong>VIP NEON</strong>
+            <span>✨🍄‍🟫✨</span> <strong>VIP DORADO</strong>
         </div>
         <button class="nav-btn seller-only" data-page="p-solicitar">🎁 Pedir Cuenta</button>
         <button class="nav-btn" data-page="p-quejas">📩 Chat Soporte</button>
@@ -306,10 +306,12 @@ input:checked + .slider:before { transform: translateX(20px); }
             <div class="card"><h3>📜 Historial General</h3><div class="table-container"><table><thead><tr><th>Miembro</th><th>App</th><th>WhatsApp</th><th>Acción</th></tr></thead><tbody id="historial-tabla-body"></tbody></table></div><button class="btn-clear" onclick="limpiarHistorial()">🗑️ Vaciar Historial</button></div>
         </div>
 
-        <!-- CLIENTES con barra de días restantes -->
+        <!-- CLIENTES con métodos de pago + barra de días restantes -->
         <div id="p-clientes" class="page">
             <div class="card"><h3>📋 Registrar Cliente</h3>
-                <input id="cli-nombre" placeholder="Nombre"><input id="cli-telefono" placeholder="Teléfono">
+                <input id="cli-nombre" placeholder="Nombre">
+                <input id="cli-telefono" placeholder="Teléfono">
+                <input id="cli-metodos-pago" placeholder="Métodos de pago (Ej: Efectivo, Transferencia, Tarjeta)">
                 <label>📅 Último pago</label><input type="date" id="cli-fecha-pago">
                 <label>⏰ Fecha de corte</label><input type="date" id="cli-fecha-corte">
                 <button onclick="agregarCliente()">➕ Guardar</button>
@@ -345,7 +347,7 @@ const db = getFirestore(app);
 const MASTER = "andyobregon799@gmail.com";
 let cuentasMap = new Map();
 
-// Modo nocturno
+// Modo nocturno / diurno (tema dorado)
 window.toggleTheme = () => {
     const current = document.documentElement.getAttribute('data-theme');
     if (current === 'light') document.documentElement.setAttribute('data-theme', 'dark');
@@ -360,7 +362,6 @@ window.showPage = (pageId, btnElement) => {
     if (btnElement) btnElement.classList.add('active');
 };
 
-// Función para activar la primera página según rol
 function setDefaultPage(isAdmin) {
     let defaultPageId = isAdmin ? 'p-cuentas' : 'p-solicitar';
     let defaultButton = document.querySelector(`.nav-btn[data-page="${defaultPageId}"]`);
@@ -383,7 +384,7 @@ window.handleLogin = async () => {
 };
 window.logout = () => signOut(auth).then(() => location.reload());
 
-// ========== CLIENTES con barra y orden ==========
+// ========== CLIENTES con método de pago ==========
 function calcularDiasRestantes(fechaCorteStr) {
     if (!fechaCorteStr) return null;
     const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -392,11 +393,11 @@ function calcularDiasRestantes(fechaCorteStr) {
     return Math.ceil((corte - hoy) / (1000*60*60*24));
 }
 function getColorPorDias(dias) {
-    if (dias === null) return "#6b7280";
-    if (dias < 0) return "#ff2a6d";
-    if (dias <= 2) return "#ff884d";
-    if (dias <= 7) return "#00f0ff";
-    return "#00ff9d";
+    if (dias === null) return "#b8860b";
+    if (dias < 0) return "#ff6644";
+    if (dias <= 2) return "#ffaa33";
+    if (dias <= 7) return "#f5b042";
+    return "#d4af37";
 }
 function renderClientes(clientesData) {
     const sorted = [...clientesData].sort((a,b) => new Date(a.fechaCorte||'9999') - new Date(b.fechaCorte||'9999'));
@@ -413,13 +414,16 @@ function renderClientes(clientesData) {
             statusText = dias < 0 ? `⚠️ Vencido hace ${Math.abs(dias)} días` : `📅 ${dias} días restantes`;
         } else { statusText = "Sin fecha"; progressPercent = 0; }
         const colorFill = getColorPorDias(dias);
+        const metodosPago = c.metodosPago ? c.metodosPago : "No especificado";
         html += `<div class="cliente-card">
-            <strong>👤 ${c.nombre}</strong><br>📞 ${c.telefono}<br>
+            <strong>👤 ${c.nombre}</strong><br>
+            📞 ${c.telefono}<br>
+            💳 Métodos de pago: <span style="color:var(--accent); font-weight:bold;">${metodosPago}</span><br>
             💰 Último pago: ${c.fechaPago || '—'}<br>
             ⏰ Corte: ${c.fechaCorte || '—'} — ${statusText}
             <div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%; background-color: ${colorFill};"></div></div>
             <div class="flex-btns">
-                <button class="btn-small" style="background:var(--primary);color:white;" onclick="editarCliente('${c.id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.fechaPago}','${c.fechaCorte}')">✏️ Editar</button>
+                <button class="btn-small" style="background:var(--primary);color:#1c180f;" onclick="editarCliente('${c.id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.metodosPago ? c.metodosPago.replace(/'/g, "\\'") : ''}','${c.fechaPago}','${c.fechaCorte}')">✏️ Editar</button>
                 <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarCliente('${c.id}')">🗑️ Eliminar</button>
             </div>
         </div>`;
@@ -429,19 +433,38 @@ function renderClientes(clientesData) {
 window.agregarCliente = async () => {
     const nombre = document.getElementById("cli-nombre").value.trim();
     const telefono = document.getElementById("cli-telefono").value.trim();
+    const metodosPago = document.getElementById("cli-metodos-pago").value.trim();
     const fechaPago = document.getElementById("cli-fecha-pago").value;
     const fechaCorte = document.getElementById("cli-fecha-corte").value;
     if (!nombre || !telefono) return alert("Nombre y teléfono obligatorios.");
     if (!fechaPago || !fechaCorte) return alert("Selecciona ambas fechas.");
-    await addDoc(collection(db, "clientes"), { nombre, telefono, fechaPago, fechaCorte, creado: serverTimestamp() });
-    document.getElementById("cli-nombre").value = ""; document.getElementById("cli-telefono").value = ""; document.getElementById("cli-fecha-pago").value = ""; document.getElementById("cli-fecha-corte").value = "";
+    await addDoc(collection(db, "clientes"), { 
+        nombre, 
+        telefono, 
+        metodosPago: metodosPago || "No registrado",
+        fechaPago, 
+        fechaCorte, 
+        creado: serverTimestamp() 
+    });
+    document.getElementById("cli-nombre").value = ""; 
+    document.getElementById("cli-telefono").value = ""; 
+    document.getElementById("cli-metodos-pago").value = "";
+    document.getElementById("cli-fecha-pago").value = ""; 
+    document.getElementById("cli-fecha-corte").value = "";
 };
-window.editarCliente = async (id, nom, tel, pago, corte) => {
+window.editarCliente = async (id, nom, tel, metodos, pago, corte) => {
     const nuevoNom = prompt("Nuevo nombre:", nom) || nom;
     const nuevoTel = prompt("Nuevo teléfono:", tel) || tel;
+    const nuevoMetodos = prompt("Métodos de pago (Ej: Efectivo, Transferencia):", metodos) || metodos;
     const nuevoPago = prompt("Fecha pago (AAAA-MM-DD):", pago) || pago;
     const nuevoCorte = prompt("Fecha corte (AAAA-MM-DD):", corte) || corte;
-    await updateDoc(doc(db, "clientes", id), { nombre: nuevoNom, telefono: nuevoTel, fechaPago: nuevoPago, fechaCorte: nuevoCorte });
+    await updateDoc(doc(db, "clientes", id), { 
+        nombre: nuevoNom, 
+        telefono: nuevoTel, 
+        metodosPago: nuevoMetodos,
+        fechaPago: nuevoPago, 
+        fechaCorte: nuevoCorte 
+    });
 };
 window.eliminarCliente = async (id) => { if(confirm("Eliminar cliente?")) await deleteDoc(doc(db, "clientes", id)); };
 
@@ -524,8 +547,8 @@ function loadAdminData() {
         let html = ""; snap.forEach(d => { const c = d.data(); html += `<tr>
             <td><b>${c.app}</b><div class="datos-detalle">${c.datos}</div></td>
             <td><span class="badge">${c.cupo}</span></td>
-            <td><button class="btn-small" style="background:var(--primary);color:white;" onclick="editarCuentaCompleta('${d.id}','${c.app.replace(/'/g, "\\'")}','${c.datos.replace(/'/g, "\\'")}',${c.cupo})">✏️</button>
-            <button class="btn-small" style="background:var(--warning);color:white;" onclick="resetCupo('${d.id}')">🔄</button>
+            <td><button class="btn-small" style="background:var(--primary);color:#1c180f;" onclick="editarCuentaCompleta('${d.id}','${c.app.replace(/'/g, "\\'")}','${c.datos.replace(/'/g, "\\'")}',${c.cupo})">✏️</button>
+            <button class="btn-small" style="background:var(--warning);color:#1c180f;" onclick="resetCupo('${d.id}')">🔄</button>
             <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarDoc('cuentas','${d.id}')">🗑️</button></td>
         </tr>`; });
         document.getElementById("lista-cuentas-admin").innerHTML = html;
@@ -534,7 +557,7 @@ function loadAdminData() {
     onSnapshot(query(collection(db, "quejas"), orderBy("fecha","desc")), snap => { let h=""; snap.forEach(d=>{ const q=d.data(); h+=`<div class="card"><b>🧑 ${q.nombre} (${q.telefono})</b><p>📝 ${q.mensaje}</p><div class="chat-admin-reply"><input id="reply-${q.telefono}" placeholder="Respuesta..."><button class="btn-small" onclick="responderWhatsApp('${q.telefono}','${q.nombre}')">📲 Responder</button> <button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarDoc('quejas','${d.id}')">🗑️</button></div></div>`; }); document.getElementById("lista-quejas").innerHTML=h; });
     onSnapshot(collection(db, "usuarios_permisos"), snap => { let h=""; snap.forEach(d=>{ if(d.id!==MASTER) h+=`<div style="display:flex; justify-content:space-between; padding:12px;"><span>📧 ${d.id}</span><label class="switch"><input type="checkbox" ${d.data().estado?'checked':''} onchange="toggleUser('${d.id}', this.checked)"><span class="slider"></span></label></div>`; }); document.getElementById("lista-usuarios-admin").innerHTML=h; });
     onSnapshot(collection(db, "clientes"), snap => { let clientesArray = []; snap.forEach(d => { clientesArray.push({ id: d.id, ...d.data() }); }); renderClientes(clientesArray); });
-    onSnapshot(query(collection(db, "notas_admin"), orderBy("fecha","desc")), snap => { let html=""; snap.forEach(d=>{ const nota=d.data(); html+=`<div class="nota-card"><strong>📌 ${nota.titulo}</strong><pre style="background:var(--input-bg); padding:10px; border-radius:14px; margin:10px 0;">${nota.contenido}</pre><div class="flex-btns"><button class="btn-small" style="background:var(--primary);color:white;" onclick="editarNota('${d.id}','${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">✏️ Editar</button><button class="btn-small" style="background:var(--success);color:white;" onclick="subirNotaAlStock('${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">📤 Subir al Stock</button><button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarNota('${d.id}')">🗑️ Eliminar</button></div></div>`; }); document.getElementById("lista-notas-container").innerHTML=html||"<p>Sin notas</p>"; });
+    onSnapshot(query(collection(db, "notas_admin"), orderBy("fecha","desc")), snap => { let html=""; snap.forEach(d=>{ const nota=d.data(); html+=`<div class="nota-card"><strong>📌 ${nota.titulo}</strong><pre style="background:var(--input-bg); padding:10px; border-radius:14px; margin:10px 0;">${nota.contenido}</pre><div class="flex-btns"><button class="btn-small" style="background:var(--primary);color:#1c180f;" onclick="editarNota('${d.id}','${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">✏️ Editar</button><button class="btn-small" style="background:var(--success);color:#1c180f;" onclick="subirNotaAlStock('${nota.titulo.replace(/'/g, "\\'")}','${nota.contenido.replace(/'/g, "\\'")}')">📤 Subir al Stock</button><button class="btn-small" style="background:var(--danger);color:white;" onclick="eliminarNota('${d.id}')">🗑️ Eliminar</button></div></div>`; }); document.getElementById("lista-notas-container").innerHTML=html||"<p>Sin notas</p>"; });
 }
 window.mandarAdvertencia = (num) => { if(num) { const msg=prompt("Mensaje:"); if(msg) window.open(`https://wa.me/${num.replace(/\s+/g,'')}?text=${encodeURIComponent("⚠️ AVISO: "+msg)}`,'_blank'); } };
 window.toggleUser = async (e,s) => { await updateDoc(doc(db,"usuarios_permisos",e),{ estado:s }); };
@@ -545,7 +568,7 @@ function loadUserData() {
     onSnapshot(collection(db,"cuentas"), snap => { cuentasMap.clear(); let opts='<option value="">-- Selecciona --</option>'; snap.forEach(d=>{ const data=d.data(); cuentasMap.set(d.id,{app:data.app,cupo:data.cupo}); if(data.cupo>0) opts+=`<option value="${d.id}">${data.app} (${data.cupo})</option>`; else opts+=`<option value="${d.id}" disabled>${data.app} (AGOTADO)</option>`; }); document.getElementById("select-plataforma").innerHTML=opts; const sel=document.getElementById("select-plataforma"); sel.onchange=e=>{ const v=e.target.value; if(v && cuentasMap.has(v)) updateStockDisplay(v); else document.getElementById("stock-info").innerHTML=`📦 Stock: --`; }; if(sel.value && cuentasMap.has(sel.value)) updateStockDisplay(sel.value); else document.getElementById("btn-pedir").disabled=true; });
 }
 
-// ========== AUTH Y CARGA INICIAL CON PÁGINA POR DEFECTO ==========
+// ========== AUTH Y CARGA INICIAL ==========
 onAuthStateChanged(auth, async (user) => {
     if(user) {
         document.getElementById("login").style.display="none"; 
@@ -567,7 +590,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Asignar eventos a los botones de navegación después de cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.nav-btn').forEach(btn => {
         const pageId = btn.getAttribute('data-page');
