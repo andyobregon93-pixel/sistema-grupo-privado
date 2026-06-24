@@ -518,6 +518,16 @@
             font-weight: 700;
             font-size: 12px;
         }
+
+        /* Ocultar el select de plataforma que ya no usamos */
+        #select-plataforma,
+        #stock-info,
+        #btn-pedir,
+        #resultado-entrega,
+        #c-cliente-nombre,
+        #c-cliente-phone {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -553,7 +563,7 @@
         </div>
 
         <div class="container">
-            <!-- PEDIR CUENTA (solo sellers) -->
+            <!-- PEDIR CUENTA (solo sellers) - SOLO QR -->
             <div id="p-solicitar" class="page">
                 <div class="card">
                     <h3>🎟️ Reclamar cuenta VIP</h3>
@@ -561,14 +571,6 @@
                     <input id="c-codigo-qr" placeholder="Código QR (ej: QR-XXXX-XXXX)">
                     <button onclick="reclamarConCodigo()">🔑 RECLAMAR CON CÓDIGO</button>
                     <div id="resultado-reclamo"></div>
-                    <hr style="border-color: var(--border); margin: 20px 0;">
-                    <p style="opacity:0.7;">O si ya tienes cuenta asignada, ingresa tus datos:</p>
-                    <input id="c-cliente-nombre" placeholder="Nombre completo">
-                    <input id="c-cliente-phone" placeholder="Celular (Ej: +593987654321)">
-                    <select id="select-plataforma"><option>Cargando...</option></select>
-                    <div id="stock-info" class="stock-indicator">📦 Stock disponible: <span class="stock-value">--</span></div>
-                    <button id="btn-pedir" onclick="pedirCuenta()">🔥 OBTENER ACCESO</button>
-                    <div id="resultado-entrega"></div>
                 </div>
             </div>
 
@@ -887,47 +889,6 @@
 
         window.eliminarDoc = async (col, id) => { if (confirm("Eliminar?")) await deleteDoc(doc(db, col, id)); };
 
-        // ========== PEDIR CUENTA ==========
-        function updateStockDisplay(id) {
-            const c = cuentasMap.get(id);
-            if (c && c.cupo > 0) {
-                document.getElementById("stock-info").innerHTML = `📦 Stock: <span class="stock-value">${c.cupo}</span>`;
-                document.getElementById("btn-pedir").disabled = false;
-            } else {
-                document.getElementById("stock-info").innerHTML = `📦 Stock: AGOTADO`;
-                document.getElementById("btn-pedir").disabled = true;
-            }
-        }
-
-        window.pedirCuenta = async () => {
-            const nombre = document.getElementById("c-cliente-nombre").value.trim();
-            const telefono = document.getElementById("c-cliente-phone").value.trim();
-            const cuentaId = document.getElementById("select-plataforma").value;
-            if (!nombre || !telefono) return alert("Nombre y teléfono requeridos");
-            if (!cuentaId) return alert("Selecciona app");
-            const btn = document.getElementById("btn-pedir");
-            btn.disabled = true;
-            btn.textContent = "PROCESANDO...";
-            try {
-                const snap = await getDoc(doc(db, "cuentas", cuentaId));
-                if (!snap.exists()) throw new Error("No existe");
-                const data = snap.data();
-                if (data.cupo <= 0) throw new Error("Sin stock");
-                await addDoc(collection(db, "historial"), { miembro: nombre, telefono, app: data.app, fecha: serverTimestamp() });
-                await updateDoc(doc(db, "cuentas", cuentaId), { cupo: data.cupo - 1 });
-                document.getElementById("resultado-entrega").innerHTML =
-                    `<div class="card"><p>✅ CUENTA ENTREGADA</p><code id="copy-text" style="display:block;background:var(--input-bg);padding:12px;border-radius:16px;">${data.datos}</code><button onclick="copyToClipboard()">📋 Copiar</button></div>`;
-                document.getElementById("c-cliente-nombre").value = "";
-                document.getElementById("c-cliente-phone").value = "";
-            } catch (e) { alert("Error: " + e.message); } finally {
-                btn.disabled = false;
-                btn.textContent = "🔥 OBTENER ACCESO";
-            }
-        };
-
-        window.copyToClipboard = () => { const t = document.getElementById('copy-text')?.innerText; if (t) navigator.clipboard.writeText(t);
-            alert("Copiado"); };
-
         // ========== RECLAMAR CON CÓDIGO QR (MÚLTIPLES CUENTAS) ==========
         window.reclamarConCodigo = async () => {
             const codigo = document.getElementById("c-codigo-qr").value.trim();
@@ -1202,21 +1163,6 @@
                 q.forEach(d => b.delete(d.ref)); await b.commit();
                 alert("Historial vaciado"); } };
 
-        function loadUserData() {
-            onSnapshot(collection(db, "cuentas"), snap => { cuentasMap.clear();
-                let opts = '<option value="">-- Selecciona --</option>';
-                snap.forEach(d => { const data = d.data();
-                    cuentasMap.set(d.id, { app: data.app, cupo: data.cupo }); if (data.cupo > 0) opts +=
-                        `<option value="${d.id}">${data.app} (${data.cupo})</option>`; else opts +=
-                        `<option value="${d.id}" disabled>${data.app} (AGOTADO)</option>`; });
-                document.getElementById("select-plataforma").innerHTML = opts;
-                const sel = document.getElementById("select-plataforma");
-                sel.onchange = e => { const v = e.target.value; if (v && cuentasMap.has(v)) updateStockDisplay(v); else document
-                        .getElementById("stock-info").innerHTML = `📦 Stock: --`; };
-                if (sel.value && cuentasMap.has(sel.value)) updateStockDisplay(sel.value);
-                else document.getElementById("btn-pedir").disabled = true; });
-        }
-
         // ========== SORTEO ==========
         let participantes = [];
 
@@ -1271,7 +1217,6 @@
                     document.getElementById('ganador-telefono').value = '';
                     document.getElementById('qr-resultado').innerHTML = '';
                     cuentasSeleccionadas = [];
-                    // Desmarcar todos los checkboxes
                     document.querySelectorAll('#cuentas-multiples-container input[type="checkbox"]').forEach(cb => cb.checked =
                         false);
                     actualizarListaCuentasSeleccionadas();
@@ -1500,7 +1445,6 @@
                     document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
                     document.querySelectorAll('.seller-only').forEach(el => el.style.display = 'block');
                 }
-                loadUserData();
                 setDefaultPage(isAdmin);
 
                 // Verificar si hay código en URL
