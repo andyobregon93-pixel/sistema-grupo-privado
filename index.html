@@ -6,7 +6,8 @@
     <title>MEMBRESÍA VIP 🍄‍🟫 - EDICIÓN DORADA</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
+    <!-- CARGAR GMAIL API PRIMERO -->
+    <script src="https://apis.google.com/js/api.js" onload="onGapiLoad()"></script>
     <style>
         /* === TEMAS === */
         :root {
@@ -669,75 +670,7 @@
             color: var(--accent);
         }
 
-        /* ===== ESTILOS GMAIL Y SEGURIDAD ===== */
-        .gmail-cuentas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .gmail-cuenta-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
-
-        .gmail-cuenta-card .email {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .gmail-cuenta-card .estado-conexion {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-top: 8px;
-        }
-
-        .estado-conectado {
-            background: var(--success);
-            color: #1c180f;
-        }
-
-        .estado-desconectado {
-            background: var(--danger);
-            color: white;
-        }
-
-        .gmail-cuenta-card .btn-conectar {
-            background: var(--primary);
-            color: #1c180f;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            width: auto;
-            margin-top: 10px;
-        }
-
-        .gmail-cuenta-card .btn-conectar:hover {
-            transform: scale(1.05);
-        }
-
-        .gmail-cuenta-card .btn-desconectar {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            width: auto;
-            margin-top: 10px;
-        }
-
+        /* ===== ESTILOS GMAIL ===== */
         .gmail-codigos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -801,23 +734,7 @@
             color: white;
         }
 
-        .btn-agregar-cuenta {
-            background: var(--success);
-            color: #1c180f;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            width: auto;
-            margin-top: 10px;
-        }
-
-        .btn-agregar-cuenta:hover {
-            transform: scale(1.05);
-        }
-
-        /* INTERRUPTOR DE SEGURIDAD - ESTILOS ESPECIALES */
+        /* INTERRUPTOR DE SEGURIDAD */
         .seguridad-toggle {
             display: flex;
             align-items: center;
@@ -902,24 +819,6 @@
         }
 
         .estado-seguridad.inactivo {
-            background: var(--danger);
-            color: white;
-        }
-
-        .badge-seguridad {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .badge-seguridad.activo {
-            background: var(--verde-seguro);
-            color: white;
-        }
-
-        .badge-seguridad.inactivo {
             background: var(--danger);
             color: white;
         }
@@ -1089,17 +988,17 @@
                 </div>
             </div>
 
-            <!-- GMAIL CON INTERRUPTOR DE SEGURIDAD -->
+            <!-- GMAIL - LECTOR AUTOMÁTICO DE CÓDIGOS -->
             <div id="p-gmail" class="page">
                 <div class="card">
-                    <h3>📧 Gmail - Lector de Códigos</h3>
+                    <h3>📧 Gmail - Lector Automático de Códigos</h3>
                     
                     <!-- INTERRUPTOR DE SEGURIDAD -->
                     <div class="seguridad-toggle" style="border-color: var(--primary);">
                         <div class="info">
-                            <div class="titulo">🔐 Seguridad de Códigos de Verificación</div>
+                            <div class="titulo">🔐 Entrega Automática de Códigos</div>
                             <div class="descripcion">
-                                Controla si el sistema puede entregar códigos de verificación automáticamente.
+                                Cuando está ACTIVADO, el sistema entrega los códigos automáticamente al cliente.
                                 <br>
                                 <span id="estado-seguridad-texto" class="estado-seguridad activo">🟢 ACTIVADO</span>
                             </div>
@@ -1112,7 +1011,7 @@
 
                     <div style="background: var(--input-bg); padding: 15px; border-radius: 16px; margin: 15px 0;">
                         <h4>🔐 Conectar con Gmail</h4>
-                        <p style="font-size: 14px; opacity: 0.8;">Autoriza el acceso para que el sistema pueda leer los códigos de verificación.</p>
+                        <p style="font-size: 14px; opacity: 0.8;">Autoriza el acceso para que el sistema pueda leer los códigos de verificación AUTOMÁTICAMENTE.</p>
                         <button onclick="iniciarSesionGmail()" style="background: #EA4335; color: white; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <span style="font-size: 24px;">📧</span> Conectar con Gmail
                         </button>
@@ -1121,19 +1020,19 @@
 
                     <div style="background: var(--input-bg); padding: 15px; border-radius: 16px; margin: 15px 0;">
                         <h4>📨 Códigos de Verificación Detectados</h4>
-                        <p style="font-size: 14px; opacity: 0.7;">El sistema busca automáticamente códigos en los correos.</p>
+                        <p style="font-size: 14px; opacity: 0.7;">El sistema lee AUTOMÁTICAMENTE tu correo y muestra los códigos aquí.</p>
                         <button onclick="buscarCodigosGmail()" style="background: var(--primary); color:#1c180f; margin-top: 10px;">
                             🔍 Buscar códigos ahora
                         </button>
                         <div id="gmail-codigos-container" class="gmail-codigos-grid">
-                            <p style="opacity:0.5; text-align:center; grid-column: 1/-1;">Conecta con Gmail para ver los códigos detectados.</p>
+                            <p style="opacity:0.5; text-align:center; grid-column: 1/-1;">Conecta con Gmail para leer los códigos automáticamente.</p>
                         </div>
                     </div>
 
                     <div style="background: var(--input-bg); padding: 15px; border-radius: 16px; margin: 15px 0;">
                         <h4>⚙️ Configuración</h4>
                         <label>📌 Palabras clave para buscar códigos:</label>
-                        <input id="palabras-clave" value="código, código de verificación, verification code, activation code, PIN, 6 dígitos, 8 dígitos">
+                        <input id="palabras-clave" value="código, código de verificación, verification code, activation code, PIN">
                         <label>📧 Remitentes a buscar (opcional):</label>
                         <input id="remitentes-busqueda" placeholder="Ej: no-reply@netflix.com, activation@disneyplus.com">
                         <button onclick="guardarConfiguracionGmail()" style="background: var(--success); color:#1c180f;">💾 Guardar configuración</button>
@@ -1143,6 +1042,235 @@
         </div>
     </div>
 
+    <script>
+        // ===== CONFIGURACIÓN GMAIL API (TUS DATOS) =====
+        const CLIENT_ID = "693877756792-m4sq66h6h7pnip0rbuqlqncitv1quc0e.apps.googleusercontent.com";
+        const API_KEY = "AIzaSyD0duqv95tyr7-jcJB73FqOj-fHXNE5ukc";
+        const SCOPES = "https://www.googleapis.com/auth/gmail.readonly";
+
+        let gmailToken = null;
+        let gmailUser = null;
+        let seguridadActivada = true;
+        let gapiLoaded = false;
+
+        // ===== FUNCIÓN QUE SE EJECUTA CUANDO CARGA GAPI =====
+        function onGapiLoad() {
+            console.log("✅ GAPI cargado correctamente");
+            gapiLoaded = true;
+        }
+
+        // ===== FUNCIÓN PARA CAMBIAR SEGURIDAD =====
+        window.cambiarSeguridad = (checkbox) => {
+            seguridadActivada = checkbox.checked;
+            const texto = document.getElementById('estado-seguridad-texto');
+            if (seguridadActivada) {
+                texto.className = 'estado-seguridad activo';
+                texto.textContent = '🟢 ACTIVADO - Los códigos se entregan automáticamente';
+            } else {
+                texto.className = 'estado-seguridad inactivo';
+                texto.textContent = '🔴 DESACTIVADO - Los códigos NO se entregan';
+            }
+        };
+
+        // ===== FUNCIÓN PARA INICIAR SESIÓN CON GMAIL =====
+        window.iniciarSesionGmail = () => {
+            const statusDiv = document.getElementById('gmail-status');
+            
+            if (!gapiLoaded) {
+                statusDiv.className = 'gmail-status error';
+                statusDiv.textContent = '❌ Cargando Gmail API... Espera 5 segundos y vuelve a intentar.';
+                return;
+            }
+
+            statusDiv.className = 'gmail-status loading';
+            statusDiv.textContent = '⏳ Conectando con Gmail...';
+
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                scope: SCOPES,
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest']
+            }).then(() => {
+                const authInstance = gapi.auth2.getAuthInstance();
+                authInstance.signIn().then(() => {
+                    gmailToken = authInstance.currentUser.get().getAuthResponse().access_token;
+                    gmailUser = authInstance.currentUser.get().getBasicProfile().getEmail();
+                    statusDiv.className = 'gmail-status connected';
+                    statusDiv.textContent = `✅ Conectado como: ${gmailUser}`;
+                    buscarCodigosGmail();
+                }).catch((error) => {
+                    statusDiv.className = 'gmail-status error';
+                    statusDiv.textContent = `❌ Error al iniciar sesión: ${error.message || 'Cancelaste el acceso'}`;
+                });
+            }).catch((error) => {
+                statusDiv.className = 'gmail-status error';
+                statusDiv.textContent = `❌ Error al inicializar Gmail: ${error.message || 'Revisa tu CLIENT_ID'}`;
+            });
+        };
+
+        // ===== BUSCAR CÓDIGOS EN GMAIL =====
+        window.buscarCodigosGmail = async () => {
+            const container = document.getElementById('gmail-codigos-container');
+            const statusDiv = document.getElementById('gmail-status');
+            
+            if (!gmailToken) {
+                statusDiv.className = 'gmail-status error';
+                statusDiv.textContent = '❌ Primero conecta con Gmail usando el botón "Conectar con Gmail"';
+                return;
+            }
+
+            statusDiv.className = 'gmail-status loading';
+            statusDiv.textContent = '⏳ Buscando códigos en tu correo...';
+            container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">⏳ Buscando códigos...</p>';
+
+            try {
+                const remitentes = document.getElementById('remitentes-busqueda').value.split(',').map(r => r.trim()).filter(r => r);
+
+                let query = 'is:unread';
+                if (remitentes.length > 0) {
+                    query += ` ${remitentes.map(r => `from:${r}`).join(' OR ')}`;
+                }
+
+                const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=20`, {
+                    headers: { 'Authorization': `Bearer ${gmailToken}` }
+                });
+
+                const data = await response.json();
+                
+                if (!data.messages || data.messages.length === 0) {
+                    container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">📭 No se encontraron correos nuevos con códigos.</p>';
+                    statusDiv.className = 'gmail-status info';
+                    statusDiv.textContent = 'ℹ️ No se encontraron códigos nuevos.';
+                    return;
+                }
+
+                let codigosEncontrados = [];
+
+                for (const msg of data.messages) {
+                    const msgResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
+                        headers: { 'Authorization': `Bearer ${gmailToken}` }
+                    });
+                    const msgData = await msgResponse.json();
+
+                    let body = '';
+                    if (msgData.payload.parts) {
+                        for (const part of msgData.payload.parts) {
+                            if (part.mimeType === 'text/plain' && part.body.data) {
+                                body += atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                            }
+                        }
+                    } else if (msgData.payload.body.data) {
+                        body = atob(msgData.payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
+
+                    let from = '';
+                    let subject = '';
+                    for (const header of msgData.payload.headers) {
+                        if (header.name === 'From') from = header.value;
+                        if (header.name === 'Subject') subject = header.value;
+                    }
+
+                    const regexCodigos = /\b\d{4,8}\b/g;
+                    const codigos = body.match(regexCodigos) || [];
+
+                    for (const codigo of codigos) {
+                        if (codigo.length >= 4 && codigo.length <= 8) {
+                            codigosEncontrados.push({
+                                codigo: codigo,
+                                remitente: from,
+                                asunto: subject
+                            });
+                        }
+                    }
+                }
+
+                if (codigosEncontrados.length === 0) {
+                    container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">🔍 No se encontraron códigos de verificación en los correos.</p>';
+                    statusDiv.className = 'gmail-status info';
+                    statusDiv.textContent = 'ℹ️ No se encontraron códigos de verificación.';
+                    return;
+                }
+
+                let html = '';
+                codigosEncontrados.forEach((item, index) => {
+                    html += `
+                    <div class="gmail-codigo-card">
+                        <div class="remitente">📧 ${item.remitente}</div>
+                        <div class="asunto">📌 ${item.asunto}</div>
+                        <div class="codigo-valor">${item.codigo}</div>
+                        <button class="btn-small" style="background:var(--primary);color:#1c180f;" onclick="copiarTexto('${item.codigo}', this)">📋 Copiar código</button>
+                    </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                statusDiv.className = 'gmail-status success';
+                statusDiv.textContent = `✅ Se encontraron ${codigosEncontrados.length} códigos de verificación.`;
+
+            } catch (error) {
+                console.error('Error al buscar códigos:', error);
+                container.innerHTML = '<p style="color: var(--danger); text-align:center; grid-column: 1/-1;">❌ Error al buscar códigos.</p>';
+                statusDiv.className = 'gmail-status error';
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        };
+
+        window.guardarConfiguracionGmail = () => {
+            const statusDiv = document.getElementById('gmail-status');
+            statusDiv.className = 'gmail-status success';
+            statusDiv.textContent = '✅ Configuración guardada correctamente.';
+            setTimeout(() => {
+                statusDiv.className = 'gmail-status info';
+                statusDiv.textContent = 'ℹ️ Configuración guardada. Los cambios se aplicarán en la próxima búsqueda.';
+            }, 3000);
+        };
+
+        window.copiarTexto = (texto, btn) => {
+            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoLimpio).then(() => {
+                    const original = btn.textContent;
+                    btn.textContent = '✅ Copiado';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = original;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => { copiarFallback(textoLimpio, btn); });
+            } else { copiarFallback(textoLimpio, btn); }
+        };
+
+        function copiarFallback(texto, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const original = btn.textContent;
+                btn.textContent = '✅ Copiado';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (e) { alert('Error al copiar. Selecciona el texto manualmente.'); }
+            document.body.removeChild(textarea);
+        }
+
+        // ===== FUNCIÓN DE PRUEBA PARA VERIFICAR QUE GAPI CARGO =====
+        setTimeout(() => {
+            if (gapiLoaded) {
+                console.log("✅ GAPI listo para usar");
+            } else {
+                console.log("⏳ Esperando que GAPI cargue...");
+            }
+        }, 3000);
+    </script>
+
+    <!-- RESTAURANTE DEL CÓDIGO (Firebase, etc.) - LO MISMO QUE ANTES -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1160,36 +1288,6 @@
         let cuentasMap = new Map();
         let ganadorActual = null;
         let cuentasSeleccionadas = [];
-        let gmailToken = null;
-        let gmailUser = null;
-
-        // ====== CONFIGURACIÓN GMAIL API (TUS DATOS) ======
-        const CLIENT_ID = "693877756792-m4sq66h6h7pnip0rbuqlqncitv1quc0e.apps.googleusercontent.com";
-        const API_KEY = "AIzaSyD0duqv95tyr7-jcJB73FqOj-fHXNE5ukc";
-        const SCOPES = "https://www.googleapis.com/auth/gmail.readonly";
-
-        // Variable de seguridad - Controla si se entregan códigos
-        let seguridadActivada = true;
-
-        // ====== FUNCIÓN PARA CAMBIAR SEGURIDAD ======
-        window.cambiarSeguridad = (checkbox) => {
-            seguridadActivada = checkbox.checked;
-            const texto = document.getElementById('estado-seguridad-texto');
-            if (seguridadActivada) {
-                texto.className = 'estado-seguridad activo';
-                texto.textContent = '🟢 ACTIVADO - Los códigos se entregan automáticamente';
-            } else {
-                texto.className = 'estado-seguridad inactivo';
-                texto.textContent = '🔴 DESACTIVADO - Los códigos NO se entregan';
-            }
-        };
-
-        // Modo nocturno / diurno
-        window.toggleTheme = () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            if (current === 'light') document.documentElement.setAttribute('data-theme', 'dark');
-            else document.documentElement.setAttribute('data-theme', 'light');
-        };
 
         // ========== SHOW PAGE ==========
         window.showPage = (pageId, btnElement) => {
@@ -1359,209 +1457,7 @@
 
         window.eliminarDoc = async (col, id) => { if (confirm("Eliminar?")) await deleteDoc(doc(db, col, id)); };
 
-        // ========== FUNCIONES DE COPIA ==========
-        window.copiarTexto = (texto, btn) => {
-            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textoLimpio).then(() => {
-                    const original = btn.textContent;
-                    btn.textContent = '✅ Copiado';
-                    btn.classList.add('copied');
-                    setTimeout(() => {
-                        btn.textContent = original;
-                        btn.classList.remove('copied');
-                    }, 2000);
-                }).catch(() => { copiarFallback(textoLimpio, btn); });
-            } else { copiarFallback(textoLimpio, btn); }
-        };
-
-        function copiarFallback(texto, btn) {
-            const textarea = document.createElement('textarea');
-            textarea.value = texto;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                const original = btn.textContent;
-                btn.textContent = '✅ Copiado';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2000);
-            } catch (e) { alert('Error al copiar. Selecciona el texto manualmente.'); }
-            document.body.removeChild(textarea);
-        }
-
-        window.copiarTodo = (texto, btn) => {
-            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textoLimpio).then(() => {
-                    const original = btn.textContent;
-                    btn.textContent = '✅ ¡Todo copiado!';
-                    btn.classList.add('copied');
-                    setTimeout(() => {
-                        btn.textContent = original;
-                        btn.classList.remove('copied');
-                    }, 2500);
-                }).catch(() => { copiarFallback(textoLimpio, btn); });
-            } else { copiarFallback(textoLimpio, btn); }
-        };
-
-        // ========== GMAIL API ==========
-        function iniciarSesionGmail() {
-            const statusDiv = document.getElementById('gmail-status');
-            statusDiv.className = 'gmail-status loading';
-            statusDiv.textContent = '⏳ Conectando con Gmail...';
-
-            gapi.load('client:auth2', () => {
-                gapi.client.init({
-                    apiKey: API_KEY,
-                    clientId: CLIENT_ID,
-                    scope: SCOPES,
-                    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest']
-                }).then(() => {
-                    const authInstance = gapi.auth2.getAuthInstance();
-                    authInstance.signIn().then(() => {
-                        gmailToken = authInstance.currentUser.get().getAuthResponse().access_token;
-                        gmailUser = authInstance.currentUser.get().getBasicProfile().getEmail();
-                        statusDiv.className = 'gmail-status connected';
-                        statusDiv.textContent = `✅ Conectado como: ${gmailUser}`;
-                        buscarCodigosGmail();
-                    }).catch((error) => {
-                        statusDiv.className = 'gmail-status error';
-                        statusDiv.textContent = `❌ Error al iniciar sesión: ${error.message}`;
-                    });
-                }).catch((error) => {
-                    statusDiv.className = 'gmail-status error';
-                    statusDiv.textContent = `❌ Error al inicializar Gmail: ${error.message}`;
-                });
-            });
-        }
-
-        window.iniciarSesionGmail = iniciarSesionGmail;
-
-        window.buscarCodigosGmail = async () => {
-            const container = document.getElementById('gmail-codigos-container');
-            const statusDiv = document.getElementById('gmail-status');
-            
-            if (!gmailToken) {
-                statusDiv.className = 'gmail-status error';
-                statusDiv.textContent = '❌ Primero conecta con Gmail usando el botón "Conectar con Gmail"';
-                return;
-            }
-
-            statusDiv.className = 'gmail-status loading';
-            statusDiv.textContent = '⏳ Buscando códigos en tu correo...';
-            container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">⏳ Buscando códigos...</p>';
-
-            try {
-                const palabrasClave = document.getElementById('palabras-clave').value.split(',').map(p => p.trim()).filter(p => p);
-                const remitentes = document.getElementById('remitentes-busqueda').value.split(',').map(r => r.trim()).filter(r => r);
-
-                let query = 'is:unread';
-                if (remitentes.length > 0) {
-                    query += ` ${remitentes.map(r => `from:${r}`).join(' OR ')}`;
-                }
-
-                const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=20`, {
-                    headers: { 'Authorization': `Bearer ${gmailToken}` }
-                });
-
-                const data = await response.json();
-                
-                if (!data.messages || data.messages.length === 0) {
-                    container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">📭 No se encontraron correos nuevos con códigos.</p>';
-                    statusDiv.className = 'gmail-status info';
-                    statusDiv.textContent = 'ℹ️ No se encontraron códigos nuevos.';
-                    return;
-                }
-
-                let codigosEncontrados = [];
-
-                for (const msg of data.messages) {
-                    const msgResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
-                        headers: { 'Authorization': `Bearer ${gmailToken}` }
-                    });
-                    const msgData = await msgResponse.json();
-
-                    let body = '';
-                    if (msgData.payload.parts) {
-                        for (const part of msgData.payload.parts) {
-                            if (part.mimeType === 'text/plain' && part.body.data) {
-                                body += atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
-                            }
-                        }
-                    } else if (msgData.payload.body.data) {
-                        body = atob(msgData.payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
-                    }
-
-                    let from = '';
-                    let subject = '';
-                    for (const header of msgData.payload.headers) {
-                        if (header.name === 'From') from = header.value;
-                        if (header.name === 'Subject') subject = header.value;
-                    }
-
-                    const regexCodigos = /\b\d{4,8}\b/g;
-                    const codigos = body.match(regexCodigos) || [];
-
-                    for (const codigo of codigos) {
-                        if (codigo.length >= 4 && codigo.length <= 8) {
-                            codigosEncontrados.push({
-                                codigo: codigo,
-                                remitente: from,
-                                asunto: subject,
-                                cuerpo: body.substring(0, 200) + '...'
-                            });
-                        }
-                    }
-                }
-
-                if (codigosEncontrados.length === 0) {
-                    container.innerHTML = '<p style="opacity:0.5; text-align:center; grid-column: 1/-1;">🔍 No se encontraron códigos de verificación en los correos.</p>';
-                    statusDiv.className = 'gmail-status info';
-                    statusDiv.textContent = 'ℹ️ No se encontraron códigos de verificación.';
-                    return;
-                }
-
-                let html = '';
-                codigosEncontrados.forEach((item, index) => {
-                    html += `
-                    <div class="gmail-codigo-card">
-                        <div class="remitente">📧 ${item.remitente}</div>
-                        <div class="asunto">📌 ${item.asunto}</div>
-                        <div class="codigo-valor">${item.codigo}</div>
-                        <button class="btn-small" style="background:var(--primary);color:#1c180f;" onclick="copiarTexto('${item.codigo}', this)">📋 Copiar código</button>
-                    </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                statusDiv.className = 'gmail-status success';
-                statusDiv.textContent = `✅ Se encontraron ${codigosEncontrados.length} códigos de verificación.`;
-
-            } catch (error) {
-                console.error('Error al buscar códigos:', error);
-                container.innerHTML = '<p style="color: var(--danger); text-align:center; grid-column: 1/-1;">❌ Error al buscar códigos.</p>';
-                statusDiv.className = 'gmail-status error';
-                statusDiv.textContent = `❌ Error: ${error.message}`;
-            }
-        };
-
-        window.guardarConfiguracionGmail = () => {
-            const statusDiv = document.getElementById('gmail-status');
-            statusDiv.className = 'gmail-status success';
-            statusDiv.textContent = '✅ Configuración guardada correctamente.';
-            setTimeout(() => {
-                statusDiv.className = 'gmail-status info';
-                statusDiv.textContent = 'ℹ️ Configuración guardada. Los cambios se aplicarán en la próxima búsqueda.';
-            }, 3000);
-        };
-
-        // ========== RECLAMAR CON CÓDIGO QR (CON SEGURIDAD) ==========
+        // ========== RECLAMAR CON CÓDIGO QR (CON LECTURA AUTOMÁTICA DE GMAIL) ==========
         window.reclamarConCodigo = async () => {
             const codigo = document.getElementById("c-codigo-qr").value.trim();
             if (!codigo) return alert("Ingresa el código QR");
@@ -1633,6 +1529,68 @@
                     });
                 }
 
+                // ===== BUSCAR CÓDIGOS EN GMAIL AUTOMÁTICAMENTE =====
+                let codigoGmail = null;
+                let codigoEncontrado = false;
+
+                if (seguridadActivada && gmailToken) {
+                    try {
+                        const remitentes = document.getElementById('remitentes-busqueda').value.split(',').map(r => r.trim()).filter(r => r);
+                        let query = 'is:unread';
+                        if (remitentes.length > 0) {
+                            query += ` ${remitentes.map(r => `from:${r}`).join(' OR ')}`;
+                        }
+
+                        const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=10`, {
+                            headers: { 'Authorization': `Bearer ${gmailToken}` }
+                        });
+
+                        const dataGmail = await response.json();
+                        
+                        if (dataGmail.messages && dataGmail.messages.length > 0) {
+                            for (const msg of dataGmail.messages) {
+                                const msgResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
+                                    headers: { 'Authorization': `Bearer ${gmailToken}` }
+                                });
+                                const msgData = await msgResponse.json();
+
+                                let body = '';
+                                if (msgData.payload.parts) {
+                                    for (const part of msgData.payload.parts) {
+                                        if (part.mimeType === 'text/plain' && part.body.data) {
+                                            body += atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                                        }
+                                    }
+                                } else if (msgData.payload.body.data) {
+                                    body = atob(msgData.payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                                }
+
+                                const regexCodigos = /\b\d{4,8}\b/g;
+                                const codigos = body.match(regexCodigos) || [];
+                                
+                                for (const cod of codigos) {
+                                    if (cod.length >= 4 && cod.length <= 8) {
+                                        // Verificar si el código corresponde a esta app
+                                        const appLower = cuentasEntregadas[0]?.app?.toLowerCase() || '';
+                                        let from = '';
+                                        for (const header of msgData.payload.headers) {
+                                            if (header.name === 'From') from = header.value;
+                                        }
+                                        if (from.toLowerCase().includes(appLower) || appLower.includes('netflix') || appLower.includes('disney')) {
+                                            codigoGmail = cod;
+                                            codigoEncontrado = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (codigoEncontrado) break;
+                            }
+                        }
+                    } catch (e) {
+                        console.log("Error buscando códigos en Gmail:", e);
+                    }
+                }
+
                 // ===== GENERAR HTML CON CUADRITOS =====
                 const colores = ['color-card-1', 'color-card-2', 'color-card-3', 'color-card-4', 'color-card-5', 'color-card-6'];
                 const logos = {
@@ -1659,31 +1617,12 @@
                     return div.innerHTML;
                 }
 
-                // Buscar códigos de Gmail SOLO si la seguridad está ACTIVADA
-                let codigoGmail = null;
-                if (seguridadActivada && gmailToken) {
-                    // Buscar en los códigos guardados
-                    const codigosContainer = document.getElementById('gmail-codigos-container');
-                    const codigosCards = codigosContainer.querySelectorAll('.gmail-codigo-card');
-                    codigosCards.forEach(card => {
-                        const remitente = card.querySelector('.remitente')?.textContent || '';
-                        const appLower = cuentasEntregadas[0]?.app?.toLowerCase() || '';
-                        if (remitente.toLowerCase().includes(appLower) || appLower.includes('netflix') || appLower.includes('disney')) {
-                            const codigoValor = card.querySelector('.codigo-valor')?.textContent || '';
-                            if (codigoValor && codigoValor.length >= 4) {
-                                codigoGmail = codigoValor;
-                            }
-                        }
-                    });
-                }
-
                 let cuentasHTML = cuentasEntregadas.map((cuenta, index) => {
                     const colorClass = getColorClass(index);
                     const logo = getLogo(cuenta.app);
                     const datosEscapados = escapeHtml(cuenta.datos);
                     const appEscapada = escapeHtml(cuenta.app);
                     
-                    // Si la seguridad está desactivada, NO mostrar el código
                     const codigoExtra = (seguridadActivada && codigoGmail) ? `\n🔐 Código de verificación: ${codigoGmail}` : '';
                     const mensajeSeguridad = !seguridadActivada ? '\n⚠️ CÓDIGOS DE VERIFICACIÓN DESACTIVADOS' : '';
                     
@@ -1706,7 +1645,6 @@
                     textoCompleto += `📦 ${c.app}\n${c.datos}${codigoExtra}${mensajeSeguridad}\n\n`;
                 });
 
-                // Mensaje de seguridad para mostrar en la entrega
                 let mensajeSeguridadHTML = '';
                 if (!seguridadActivada) {
                     mensajeSeguridadHTML = `<div style="background: var(--danger); padding: 12px; border-radius: 12px; color: white; margin-bottom: 10px; text-align: center; font-weight: 700;">
@@ -1714,11 +1652,11 @@
                     </div>`;
                 } else if (codigoGmail) {
                     mensajeSeguridadHTML = `<div style="background: var(--success); padding: 12px; border-radius: 12px; color: #1c180f; margin-bottom: 10px; text-align: center; font-weight: 700;">
-                        🔐 Código de verificación detectado automáticamente: <span style="font-size: 1.3rem; letter-spacing: 3px;">${codigoGmail}</span>
+                        🔐 Código de verificación detectado AUTOMÁTICAMENTE: <span style="font-size: 1.3rem; letter-spacing: 3px;">${codigoGmail}</span>
                     </div>`;
                 } else if (seguridadActivada && gmailToken) {
                     mensajeSeguridadHTML = `<div style="background: var(--warning); padding: 12px; border-radius: 12px; color: #1c180f; margin-bottom: 10px; text-align: center; font-weight: 700;">
-                        🔍 Buscando código de verificación... Si hay uno en tu correo, aparecerá aquí.
+                        🔍 No se encontró código de verificación en tu correo. Revisa manualmente.
                     </div>`;
                 }
 
@@ -1750,6 +1688,21 @@
             } catch (error) {
                 resultadoDiv.innerHTML = `<p style="color: var(--danger);">❌ Error: ${error.message}</p>`;
             }
+        };
+
+        window.copiarTodo = (texto, btn) => {
+            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoLimpio).then(() => {
+                    const original = btn.textContent;
+                    btn.textContent = '✅ ¡Todo copiado!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = original;
+                        btn.classList.remove('copied');
+                    }, 2500);
+                }).catch(() => { copiarFallback(textoLimpio, btn); });
+            } else { copiarFallback(textoLimpio, btn); }
         };
 
         // ========== SOPORTE ==========
