@@ -25,22 +25,49 @@
             --table-header: #2c2418;
             --progress-bg: #4a3e2c;
             
-            /* NUEVOS COLORES */
+            /* NUEVOS COLORES - AHORA SÍ SE VEN */
             --azul-leon: #1a5276;
             --azul-leon-claro: #2e86c1;
             --rojo: #922b21;
             --rojo-claro: #e74c3c;
             --negro: #1c1c1c;
             --negro-claro: #2c2c2c;
+            --morado: #6c3483;
+            --verde: #1abc9c;
+            --naranja: #e67e22;
         }
 
-        /* Colores para las tarjetas de entrega */
-        .color-card-1 { border-left: 6px solid var(--azul-leon-claro); background: linear-gradient(135deg, var(--card-bg), #1a2a3a); }
-        .color-card-2 { border-left: 6px solid var(--rojo-claro); background: linear-gradient(135deg, var(--card-bg), #2a1a1a); }
-        .color-card-3 { border-left: 6px solid var(--primary); background: linear-gradient(135deg, var(--card-bg), #2a2418); }
-        .color-card-4 { border-left: 6px solid #6c3483; background: linear-gradient(135deg, var(--card-bg), #1a1a2a); }
-        .color-card-5 { border-left: 6px solid #1abc9c; background: linear-gradient(135deg, var(--card-bg), #0a2a22); }
-        .color-card-6 { border-left: 6px solid #e67e22; background: linear-gradient(135deg, var(--card-bg), #2a1a0a); }
+        /* Colores para las tarjetas de entrega - AHORA CON COLORES FUERTES */
+        .color-card-1 { 
+            border-left: 6px solid var(--azul-leon-claro); 
+            background: linear-gradient(135deg, #0a1a2e, #1a2a4a);
+            border: 2px solid var(--azul-leon-claro);
+        }
+        .color-card-2 { 
+            border-left: 6px solid var(--rojo-claro); 
+            background: linear-gradient(135deg, #2a0a0a, #4a1a1a);
+            border: 2px solid var(--rojo-claro);
+        }
+        .color-card-3 { 
+            border-left: 6px solid var(--primary); 
+            background: linear-gradient(135deg, #2a2418, #4a3a28);
+            border: 2px solid var(--primary);
+        }
+        .color-card-4 { 
+            border-left: 6px solid var(--morado); 
+            background: linear-gradient(135deg, #1a0a2a, #3a1a4a);
+            border: 2px solid var(--morado);
+        }
+        .color-card-5 { 
+            border-left: 6px solid var(--verde); 
+            background: linear-gradient(135deg, #0a1a1a, #1a3a3a);
+            border: 2px solid var(--verde);
+        }
+        .color-card-6 { 
+            border-left: 6px solid var(--naranja); 
+            background: linear-gradient(135deg, #2a1a0a, #4a2a1a);
+            border: 2px solid var(--naranja);
+        }
 
         [data-theme="light"] {
             --bg: #fef7e6;
@@ -62,6 +89,9 @@
             --rojo-claro: #e74c3c;
             --negro: #1c1c1c;
             --negro-claro: #2c2c2c;
+            --morado: #6c3483;
+            --verde: #1abc9c;
+            --naranja: #e67e22;
         }
 
         * { box-sizing: border-box; transition: background 0.2s, color 0.2s, border 0.2s; }
@@ -562,13 +592,14 @@
         .cuenta-entregada-card {
             border-radius: 16px;
             padding: 16px;
-            border: 1px solid var(--border);
             position: relative;
             transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .cuenta-entregada-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
         }
 
         .cuenta-entregada-card .app-header {
@@ -579,41 +610,48 @@
         }
 
         .cuenta-entregada-card .app-header .app-logo {
-            font-size: 28px;
-            width: 45px;
-            height: 45px;
+            font-size: 32px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--input-bg);
+            background: rgba(0,0,0,0.3);
             border-radius: 12px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .cuenta-entregada-card .app-header .app-name {
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .cuenta-entregada-card .app-datos {
-            font-family: monospace;
-            background: var(--input-bg);
-            padding: 10px;
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
             border-radius: 10px;
             font-size: 13px;
             word-break: break-all;
             margin: 8px 0;
-            border: 1px dashed var(--border);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e0e0e0;
+            max-height: 120px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
         }
 
         .cuenta-entregada-card .btn-copiar {
-            background: var(--primary);
-            color: #1c180f;
-            border: none;
-            padding: 6px 14px;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 16px;
             border-radius: 20px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
             width: auto;
@@ -621,11 +659,13 @@
         }
 
         .cuenta-entregada-card .btn-copiar:hover {
+            background: rgba(255,255,255,0.3);
             transform: scale(1.05);
         }
 
         .cuenta-entregada-card .btn-copiar.copied {
             background: var(--success);
+            color: #1c180f;
         }
 
         .btn-copiar-todo {
@@ -639,15 +679,17 @@
             transition: all 0.2s;
             width: auto;
             margin-top: 12px;
+            box-shadow: 0 4px 15px rgba(46, 134, 193, 0.4);
         }
 
         .btn-copiar-todo:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(46, 134, 193, 0.4);
+            box-shadow: 0 6px 25px rgba(46, 134, 193, 0.6);
         }
 
         .btn-copiar-todo.copied {
             background: var(--success);
+            color: #1c180f;
         }
 
         .entrega-header {
@@ -660,7 +702,7 @@
         }
 
         .entrega-header .ganador-info {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
         }
 
@@ -668,7 +710,19 @@
             color: var(--accent);
         }
 
-        /* Colores para las tarjetas de entrega con sus logos */
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar {
+            width: 4px;
+        }
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* App logos con colores específicos */
         .app-logo-netflix { background: #E50914; color: white; }
         .app-logo-disney { background: #113CCF; color: white; }
         .app-logo-hbo { background: #6A0DAD; color: white; }
@@ -677,18 +731,7 @@
         .app-logo-spotify { background: #1DB954; color: white; }
         .app-logo-youtube { background: #FF0000; color: white; }
         .app-logo-mubi { background: #1a1a2e; color: #FF6B6B; }
-        .app-logo-default { background: var(--input-bg); color: var(--text); }
-
-        .app-logo {
-            font-size: 28px;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
+        .app-logo-default { background: rgba(0,0,0,0.3); color: var(--text); }
     </style>
 </head>
 
@@ -1049,7 +1092,72 @@
 
         window.eliminarDoc = async (col, id) => { if (confirm("Eliminar?")) await deleteDoc(doc(db, col, id)); };
 
-        // ========== RECLAMAR CON CÓDIGO QR (CON CUADRITOS Y COLORES) ==========
+        // ========== FUNCIONES DE COPIA MEJORADAS ==========
+        window.copiarTexto = (texto, btn) => {
+            // Limpiar el texto de caracteres especiales
+            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoLimpio).then(() => {
+                    const original = btn.textContent;
+                    btn.textContent = '✅ Copiado';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = original;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => {
+                    // Fallback
+                    copiarFallback(textoLimpio, btn);
+                });
+            } else {
+                copiarFallback(textoLimpio, btn);
+            }
+        };
+
+        function copiarFallback(texto, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const original = btn.textContent;
+                btn.textContent = '✅ Copiado';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (e) {
+                alert('Error al copiar. Selecciona el texto manualmente.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        window.copiarTodo = (texto, btn) => {
+            const textoLimpio = texto.replace(/\\'/g, "'").replace(/\\"/g, '"');
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoLimpio).then(() => {
+                    const original = btn.textContent;
+                    btn.textContent = '✅ ¡Todo copiado!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = original;
+                        btn.classList.remove('copied');
+                    }, 2500);
+                }).catch(() => {
+                    copiarFallback(textoLimpio, btn);
+                });
+            } else {
+                copiarFallback(textoLimpio, btn);
+            }
+        };
+
+        // ========== RECLAMAR CON CÓDIGO QR ==========
         window.reclamarConCodigo = async () => {
             const codigo = document.getElementById("c-codigo-qr").value.trim();
             if (!codigo) return alert("Ingresa el código QR");
@@ -1132,6 +1240,7 @@
                     'spotify': '🎵',
                     'youtube': '▶️',
                     'mubi': '🎞️',
+                    'iptv': '📡',
                     'default': '📺'
                 };
 
@@ -1147,17 +1256,27 @@
                     return colores[index % colores.length];
                 }
 
+                // Escapar caracteres especiales para el HTML
+                function escapeHtml(text) {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                }
+
                 let cuentasHTML = cuentasEntregadas.map((cuenta, index) => {
                     const colorClass = getColorClass(index);
                     const logo = getLogo(cuenta.app);
+                    const datosEscapados = escapeHtml(cuenta.datos);
+                    const appEscapada = escapeHtml(cuenta.app);
+                    
                     return `
                     <div class="cuenta-entregada-card ${colorClass}">
                         <div class="app-header">
                             <div class="app-logo">${logo}</div>
-                            <div class="app-name">${cuenta.app}</div>
+                            <div class="app-name">${appEscapada}</div>
                         </div>
-                        <div class="app-datos">${cuenta.datos}</div>
-                        <button class="btn-copiar" onclick="copiarTexto('${cuenta.datos.replace(/'/g, "\\'")}', this)">📋 Copiar</button>
+                        <div class="app-datos">${datosEscapados}</div>
+                        <button class="btn-copiar" onclick="copiarTexto('${cuenta.datos.replace(/'/g, "\\'").replace(/\n/g, '\\n')}', this)">📋 Copiar</button>
                     </div>
                 `;
                 }).join('');
@@ -1169,20 +1288,20 @@
                 });
 
                 resultadoDiv.innerHTML = `
-                <div style="background: var(--success); padding: 20px; border-radius: 16px; color: #1c180f; margin-top: 10px;">
+                <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px; border-radius: 16px; color: #fff; margin-top: 10px; border: 2px solid var(--primary);">
                     <div class="entrega-header">
                         <div class="ganador-info">
-                            🎉 <span>${data.ganador}</span> - ¡Cuentas entregadas!
+                            🎉 <span style="color: var(--accent);">${escapeHtml(data.ganador)}</span> - ¡Cuentas entregadas!
                         </div>
                         <div>
-                            <button class="btn-copiar-todo" onclick="copiarTodo('${textoCompleto.replace(/'/g, "\\'")}', this)">📋 Copiar todo</button>
+                            <button class="btn-copiar-todo" onclick="copiarTodo('${textoCompleto.replace(/'/g, "\\'").replace(/\n/g, '\\n')}', this)">📋 Copiar todo</button>
                         </div>
                     </div>
                     <div class="cuentas-entregadas-grid">
                         ${cuentasHTML}
                     </div>
                     ${errores.length > 0 ? `<p style="color: var(--danger); margin-top: 10px;">⚠️ Errores: ${errores.join(', ')}</p>` : ''}
-                    <p style="margin-top:10px; font-size:13px;">📱 Código: ${codigo}</p>
+                    <p style="margin-top:10px; font-size:13px; opacity:0.6;">📱 Código: ${codigo}</p>
                 </div>
                 `;
 
@@ -1191,60 +1310,6 @@
             } catch (error) {
                 resultadoDiv.innerHTML = `<p style="color: var(--danger);">❌ Error: ${error.message}</p>`;
             }
-        };
-
-        // ===== FUNCIONES DE COPIA =====
-        window.copiarTexto = (texto, btn) => {
-            navigator.clipboard.writeText(texto).then(() => {
-                const original = btn.textContent;
-                btn.textContent = '✅ Copiado';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2000);
-            }).catch(() => {
-                // Fallback
-                const textarea = document.createElement('textarea');
-                textarea.value = texto;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                const original = btn.textContent;
-                btn.textContent = '✅ Copiado';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        };
-
-        window.copiarTodo = (texto, btn) => {
-            navigator.clipboard.writeText(texto).then(() => {
-                const original = btn.textContent;
-                btn.textContent = '✅ ¡Todo copiado!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2500);
-            }).catch(() => {
-                const textarea = document.createElement('textarea');
-                textarea.value = texto;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                const original = btn.textContent;
-                btn.textContent = '✅ ¡Todo copiado!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2500);
-            });
         };
 
         // ========== SOPORTE ==========
