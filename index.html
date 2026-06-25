@@ -2,12 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MEMBRESÍA VIP 🍄‍🟫 - EDICIÓN DORADA</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- CARGAR GMAIL API PRIMERO -->
-    <script src="https://apis.google.com/js/api.js" onload="onGapiLoad()"></script>
+    <script src="https://apis.google.com/js/api.js?onload=onGapiLoad" async defer></script>
     <style>
         /* === TEMAS === */
         :root {
@@ -79,6 +78,7 @@
             margin: 0;
             overflow-x: hidden;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body::before {
@@ -733,6 +733,22 @@
             background: var(--verde-seguro);
             color: white;
         }
+        .gmail-status.loading-api {
+            background: var(--azul-leon-claro);
+            color: white;
+        }
+
+        .btn-forzar {
+            background: var(--rojo-claro);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            width: auto;
+            margin-top: 10px;
+        }
 
         /* INTERRUPTOR DE SEGURIDAD */
         .seguridad-toggle {
@@ -821,6 +837,19 @@
         .estado-seguridad.inactivo {
             background: var(--danger);
             color: white;
+        }
+
+        /* Scroll mejorado para celular */
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar {
+            width: 4px;
+        }
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        .cuenta-entregada-card .app-datos::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -988,10 +1017,10 @@
                 </div>
             </div>
 
-            <!-- GMAIL - LECTOR AUTOMÁTICO DE CÓDIGOS -->
+            <!-- GMAIL - VERSIÓN PARA CELULAR -->
             <div id="p-gmail" class="page">
                 <div class="card">
-                    <h3>📧 Gmail - Lector Automático de Códigos</h3>
+                    <h3>📧 Gmail - Lector Automático</h3>
                     
                     <!-- INTERRUPTOR DE SEGURIDAD -->
                     <div class="seguridad-toggle" style="border-color: var(--primary);">
@@ -1011,10 +1040,20 @@
 
                     <div style="background: var(--input-bg); padding: 15px; border-radius: 16px; margin: 15px 0;">
                         <h4>🔐 Conectar con Gmail</h4>
-                        <p style="font-size: 14px; opacity: 0.8;">Autoriza el acceso para que el sistema pueda leer los códigos de verificación AUTOMÁTICAMENTE.</p>
+                        <p style="font-size: 14px; opacity: 0.8;">Autoriza el acceso para leer los códigos de verificación AUTOMÁTICAMENTE.</p>
+                        
                         <button onclick="iniciarSesionGmail()" style="background: #EA4335; color: white; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <span style="font-size: 24px;">📧</span> Conectar con Gmail
                         </button>
+
+                        <button onclick="forzarConexionGmail()" class="btn-forzar" style="margin-top: 10px;">
+                            ⚡ FORZAR CONEXIÓN
+                        </button>
+
+                        <button onclick="verificarGapi()" style="background: var(--primary); color:#1c180f; margin-top: 10px;">
+                            🔍 Verificar estado de GAPI
+                        </button>
+
                         <div id="gmail-status" style="margin-top: 10px;"></div>
                     </div>
 
@@ -1052,12 +1091,65 @@
         let gmailUser = null;
         let seguridadActivada = true;
         let gapiLoaded = false;
+        let gapiInitAttempts = 0;
 
         // ===== FUNCIÓN QUE SE EJECUTA CUANDO CARGA GAPI =====
         function onGapiLoad() {
             console.log("✅ GAPI cargado correctamente");
             gapiLoaded = true;
+            const statusDiv = document.getElementById('gmail-status');
+            if (statusDiv) {
+                statusDiv.className = 'gmail-status info';
+                statusDiv.textContent = '✅ GAPI cargado. ¡Ya puedes conectar con Gmail!';
+            }
         }
+
+        // ===== VERIFICAR ESTADO DE GAPI =====
+        window.verificarGapi = () => {
+            const statusDiv = document.getElementById('gmail-status');
+            if (typeof gapi !== 'undefined' && gapi.client) {
+                statusDiv.className = 'gmail-status success';
+                statusDiv.textContent = '✅ GAPI está cargado y listo para usar.';
+                gapiLoaded = true;
+            } else {
+                statusDiv.className = 'gmail-status error';
+                statusDiv.textContent = '❌ GAPI NO está cargado. Espera unos segundos y prueba "Forzar conexión".';
+            }
+        };
+
+        // ===== FORZAR CONEXIÓN GMAIL =====
+        window.forzarConexionGmail = () => {
+            const statusDiv = document.getElementById('gmail-status');
+            
+            if (!gapiLoaded && typeof gapi === 'undefined') {
+                statusDiv.className = 'gmail-status loading-api';
+                statusDiv.textContent = '⏳ Cargando GAPI... Espera 3 segundos y vuelve a intentar.';
+                
+                // Intentar recargar GAPI
+                const script = document.createElement('script');
+                script.src = 'https://apis.google.com/js/api.js?onload=onGapiLoad';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+                
+                setTimeout(() => {
+                    if (typeof gapi !== 'undefined' && gapi.client) {
+                        gapiLoaded = true;
+                        statusDiv.className = 'gmail-status success';
+                        statusDiv.textContent = '✅ GAPI cargado. Ahora intenta "Conectar con Gmail"';
+                    } else {
+                        statusDiv.className = 'gmail-status error';
+                        statusDiv.textContent = '❌ GAPI no pudo cargar. Revisa tu conexión a internet.';
+                    }
+                }, 5000);
+                return;
+            }
+
+            // Si GAPI ya está cargado pero no inicializado
+            if (gapiLoaded && typeof gapi !== 'undefined') {
+                iniciarSesionGmail();
+            }
+        };
 
         // ===== FUNCIÓN PARA CAMBIAR SEGURIDAD =====
         window.cambiarSeguridad = (checkbox) => {
@@ -1072,13 +1164,13 @@
             }
         };
 
-        // ===== FUNCIÓN PARA INICIAR SESIÓN CON GMAIL =====
+        // ===== INICIAR SESIÓN CON GMAIL =====
         window.iniciarSesionGmail = () => {
             const statusDiv = document.getElementById('gmail-status');
             
-            if (!gapiLoaded) {
-                statusDiv.className = 'gmail-status error';
-                statusDiv.textContent = '❌ Cargando Gmail API... Espera 5 segundos y vuelve a intentar.';
+            if (typeof gapi === 'undefined' || !gapi.client) {
+                statusDiv.className = 'gmail-status loading-api';
+                statusDiv.textContent = '⏳ GAPI no está listo. Usa "FORZAR CONEXIÓN" primero.';
                 return;
             }
 
@@ -1260,17 +1352,23 @@
             document.body.removeChild(textarea);
         }
 
-        // ===== FUNCIÓN DE PRUEBA PARA VERIFICAR QUE GAPI CARGO =====
+        // ===== INTENTAR CARGAR GAPI AUTOMÁTICAMENTE =====
         setTimeout(() => {
-            if (gapiLoaded) {
-                console.log("✅ GAPI listo para usar");
+            if (typeof gapi !== 'undefined' && gapi.client) {
+                gapiLoaded = true;
+                console.log("✅ GAPI detectado automáticamente");
             } else {
-                console.log("⏳ Esperando que GAPI cargue...");
+                console.log("⏳ GAPI aún no detectado, reintentando...");
+                // Reintentar cargar
+                const script = document.createElement('script');
+                script.src = 'https://apis.google.com/js/api.js?onload=onGapiLoad';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
             }
         }, 3000);
     </script>
 
-    <!-- RESTAURANTE DEL CÓDIGO (Firebase, etc.) - LO MISMO QUE ANTES -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1457,7 +1555,7 @@
 
         window.eliminarDoc = async (col, id) => { if (confirm("Eliminar?")) await deleteDoc(doc(db, col, id)); };
 
-        // ========== RECLAMAR CON CÓDIGO QR (CON LECTURA AUTOMÁTICA DE GMAIL) ==========
+        // ========== RECLAMAR CON CÓDIGO QR ==========
         window.reclamarConCodigo = async () => {
             const codigo = document.getElementById("c-codigo-qr").value.trim();
             if (!codigo) return alert("Ingresa el código QR");
@@ -1570,7 +1668,6 @@
                                 
                                 for (const cod of codigos) {
                                     if (cod.length >= 4 && cod.length <= 8) {
-                                        // Verificar si el código corresponde a esta app
                                         const appLower = cuentasEntregadas[0]?.app?.toLowerCase() || '';
                                         let from = '';
                                         for (const header of msgData.payload.headers) {
