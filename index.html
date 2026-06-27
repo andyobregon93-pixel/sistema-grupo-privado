@@ -6,6 +6,7 @@
     <title>MEMBRESÍA VIP 💎 - EDICIÓN ÉLITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --bg: #0a0e1a;
@@ -76,7 +77,6 @@
             z-index: 0;
         }
 
-        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 100%;
             background: var(--sidebar-bg);
@@ -258,6 +258,7 @@
         .badge-verde { background: var(--success); color: #fff; }
         .badge-rojo { background: var(--danger); color: #fff; }
         .badge-naranja { background: var(--warning); color: #fff; }
+        .badge-oro { background: #ffd700; color: #1a1a2e; }
 
         .logout, .theme-toggle {
             width: auto;
@@ -301,6 +302,55 @@
             border-bottom: 1px solid var(--border);
         }
         tr:hover td { background: rgba(0, 212, 255, 0.03); }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            border-color: var(--azul-electrico);
+            transform: translateY(-3px);
+        }
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--rosa));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon { font-size: 1.8rem; }
+
+        .alerta-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border-left: 4px solid var(--warning);
+            margin-bottom: 10px;
+        }
+        .alerta-card .alerta-texto {
+            font-size: 0.9rem;
+        }
+        .alerta-card .alerta-fecha {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
 
         /* ===== CLIENTES GRID ===== */
         .clientes-grid {
@@ -509,6 +559,71 @@
 
         .panel-editar::-webkit-scrollbar { width: 4px; }
         .panel-editar::-webkit-scrollbar-thumb { background: var(--azul-electrico); border-radius: 10px; }
+
+        /* ===== FACTURA PDF ===== */
+        .factura-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #1a1a2e;
+        }
+        .factura-container .factura-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .factura-container .factura-header h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #00d4ff;
+            margin: 0;
+        }
+        .factura-container .factura-header .factura-numero {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+        .factura-container .factura-cliente {
+            margin-bottom: 20px;
+        }
+        .factura-container .factura-cliente p {
+            margin: 4px 0;
+        }
+        .factura-container .factura-detalle {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .factura-container .factura-detalle th {
+            background: #00d4ff;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        .factura-container .factura-detalle td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .factura-container .factura-total {
+            text-align: right;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-top: 15px;
+            border-top: 2px solid #00d4ff;
+            padding-top: 15px;
+        }
+        .factura-container .factura-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
 
         /* ===== NOTAS ===== */
         .notas-grid {
@@ -869,6 +984,7 @@
             .cuentas-entregadas-grid { grid-template-columns: 1fr; }
             .codigos-grid { grid-template-columns: 1fr; }
             .notas-grid { grid-template-columns: 1fr; }
+            .dashboard-grid { grid-template-columns: 1fr 1fr; }
             .sidebar { gap: 8px; padding: 10px 14px; }
             .nav-btn { font-size: 11px; padding: 8px 14px; }
             .logo-area { font-size: 0.9rem; padding: 4px 14px; }
@@ -883,6 +999,7 @@
             .login-card { margin: 20px auto; padding: 16px; }
             .login-card .logo-grande { font-size: 48px; }
             .login-card h1 { font-size: 1.5rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -969,6 +1086,7 @@
             <div class="logo-area">
                 <span class="icono">💎</span> <strong>ÉLITE</strong>
             </div>
+            <button class="nav-btn admin-only" data-page="p-dashboard">📊 Dashboard</button>
             <button class="nav-btn seller-only" data-page="p-solicitar">🎟️ Reclamar</button>
             <button class="nav-btn" data-page="p-quejas">💬 Soporte</button>
             <button class="nav-btn admin-only" data-page="p-cuentas">📦 Stock</button>
@@ -983,7 +1101,50 @@
         </div>
 
         <div class="container">
-            <!-- PEDIR CUENTA -->
+            <!-- ===== DASHBOARD ===== -->
+            <div id="p-dashboard" class="page">
+                <div class="card">
+                    <div class="card-title">📊 Panel de Control</div>
+                    <div class="dashboard-grid" id="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-number" id="total-clientes">0</div>
+                            <div class="stat-label">Total Clientes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-number" id="total-cuentas">0</div>
+                            <div class="stat-label">Cuentas en Stock</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-number" id="clientes-vencer">0</div>
+                            <div class="stat-label">Por Vencer (7 días)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-number" id="ingresos-totales">$0</div>
+                            <div class="stat-label">Ingresos Totales</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🔔 Alertas de Vencimiento</div>
+                    <div id="alertas-container">
+                        <p style="opacity:0.6;">Cargando alertas...</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📈 Últimos Clientes Registrados</div>
+                    <div id="ultimos-clientes">
+                        <p style="opacity:0.6;">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PEDIR CUENTA ===== -->
             <div id="p-solicitar" class="page">
                 <div class="card">
                     <div class="card-title">🎟️ Reclamar Cuenta VIP</div>
@@ -994,7 +1155,7 @@
                 </div>
             </div>
 
-            <!-- SOPORTE -->
+            <!-- ===== SOPORTE ===== -->
             <div id="p-quejas" class="page">
                 <div class="card">
                     <div class="card-title">💬 Buzón de Soporte</div>
@@ -1011,7 +1172,7 @@
                 </div>
             </div>
 
-            <!-- STOCK -->
+            <!-- ===== STOCK ===== -->
             <div id="p-cuentas" class="page">
                 <div class="card">
                     <div class="card-title">➕ Agregar al Stock</div>
@@ -1031,7 +1192,7 @@
                 </div>
             </div>
 
-            <!-- NOTAS -->
+            <!-- ===== NOTAS ===== -->
             <div id="p-notas" class="page">
                 <div class="card">
                     <div class="card-title">📝 Crear Nota</div>
@@ -1045,7 +1206,7 @@
                 </div>
             </div>
 
-            <!-- HISTORIAL -->
+            <!-- ===== HISTORIAL ===== -->
             <div id="p-pedidos" class="page">
                 <div class="card">
                     <div class="card-title">📊 Historial de Entregas</div>
@@ -1059,7 +1220,7 @@
                 </div>
             </div>
 
-            <!-- CLIENTES -->
+            <!-- ===== CLIENTES ===== -->
             <div id="p-clientes" class="page">
                 <div class="card">
                     <div class="card-title">👥 Registrar Cliente</div>
@@ -1097,7 +1258,7 @@
                 </div>
             </div>
 
-            <!-- ADMIN -->
+            <!-- ===== ADMIN ===== -->
             <div id="p-admin" class="page">
                 <div class="card">
                     <div class="card-title">👑 Crear Usuario</div>
@@ -1112,7 +1273,7 @@
                 </div>
             </div>
 
-            <!-- SORTEO -->
+            <!-- ===== SORTEO ===== -->
             <div id="p-sorteo" class="page">
                 <div class="card">
                     <div class="card-title">🎰 Sorteo Élite</div>
@@ -1155,7 +1316,7 @@
                 </div>
             </div>
 
-            <!-- CÓDIGOS QR -->
+            <!-- ===== CÓDIGOS QR ===== -->
             <div id="p-codigos" class="page">
                 <div class="card">
                     <div class="card-title">📱 Gestión de Códigos QR</div>
@@ -1191,6 +1352,9 @@
         let cuentasSeleccionadas = [];
         let clienteEditando = null;
 
+        // ===== CONTADOR FACTURAS =====
+        let facturaCounter = 0;
+
         // ===== TEMA =====
         window.toggleTheme = () => {
             const current = document.documentElement.getAttribute('data-theme');
@@ -1207,7 +1371,7 @@
         };
 
         function setDefaultPage(isAdmin) {
-            let defaultPageId = isAdmin ? 'p-cuentas' : 'p-solicitar';
+            let defaultPageId = isAdmin ? 'p-dashboard' : 'p-solicitar';
             let defaultButton = document.querySelector(`.nav-btn[data-page="${defaultPageId}"]`);
             if (defaultButton) showPage(defaultPageId, defaultButton);
             else showPage(defaultPageId, null);
@@ -1245,6 +1409,113 @@
         });
 
         window.logout = () => signOut(auth).then(() => location.reload());
+
+        // ===== FUNCIÓN: GENERAR FACTURA PDF =====
+        window.generarFactura = (clienteData, cuentasEntregadas, metodo) => {
+            facturaCounter++;
+            const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const hora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            const numeroFactura = `F-${String(facturaCounter).padStart(4, '0')}-${new Date().getFullYear()}`;
+            
+            const total = cuentasEntregadas.length * 5; // Precio base por cuenta
+            
+            const facturaHTML = `
+            <div id="factura-pdf" style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: white; color: #1a1a2e; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00d4ff; padding-bottom: 15px; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="font-size: 1.8rem; font-weight: 900; color: #00d4ff; margin: 0;">💎 ÉLITE VIP</h2>
+                        <p style="font-size: 0.8rem; opacity: 0.6; margin: 0;">Sistema de Gestión Premium</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 0.8rem; opacity: 0.6; margin: 0;">FACTURA</p>
+                        <p style="font-weight: 700; font-size: 1.1rem; color: #00d4ff; margin: 0;">${numeroFactura}</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.9rem;">
+                    <div>
+                        <p style="font-weight: 700; margin: 0;">Cliente:</p>
+                        <p style="margin: 2px 0;"><strong>${clienteData.nombre}</strong></p>
+                        <p style="margin: 2px 0; opacity: 0.6;">📞 ${clienteData.telefono}</p>
+                        <p style="margin: 2px 0; opacity: 0.6;">📧 ${clienteData.email || 'No registrado'}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-weight: 700; margin: 0;">Fecha:</p>
+                        <p style="margin: 2px 0;">${fecha}</p>
+                        <p style="margin: 2px 0; opacity: 0.6;">${hora}</p>
+                        <p style="margin: 2px 0; opacity: 0.6;">Método: ${metodo || 'Manual'}</p>
+                    </div>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: #00d4ff; color: white;">
+                            <th style="padding: 10px; text-align: left;">#</th>
+                            <th style="padding: 10px; text-align: left;">Servicio</th>
+                            <th style="padding: 10px; text-align: right;">Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cuentasEntregadas.map((c, i) => `
+                            <tr>
+                                <td style="padding: 8px 10px; border-bottom: 1px solid #ddd;">${i+1}</td>
+                                <td style="padding: 8px 10px; border-bottom: 1px solid #ddd;">${c.app}</td>
+                                <td style="padding: 8px 10px; border-bottom: 1px solid #ddd; text-align: right;">$5.00</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div style="text-align: right; font-size: 1.2rem; font-weight: 800; border-top: 2px solid #00d4ff; padding-top: 15px; margin-top: 10px;">
+                    TOTAL: $${total}.00
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.6; text-align: center; border-top: 1px solid #ddd; padding-top: 15px;">
+                    <p>¡Gracias por confiar en nosotros! 💎</p>
+                    <p style="margin: 4px 0;">Esta factura es un comprobante de entrega de servicios.</p>
+                    <p style="margin: 4px 0; font-weight: 700; color: #00d4ff;">Código de verificación: ${numeroFactura}</p>
+                </div>
+            </div>
+            `;
+
+            // Crear y descargar PDF
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = facturaHTML;
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.top = '-9999px';
+            tempDiv.style.left = '-9999px';
+            document.body.appendChild(tempDiv);
+
+            const element = tempDiv.querySelector('#factura-pdf');
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Factura_${clienteData.nombre.replace(/\s/g, '_')}_${numeroFactura}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.body.removeChild(tempDiv);
+                
+                // Preguntar si quiere enviar por WhatsApp
+                if (confirm('📱 ¿Deseas enviar la factura por WhatsApp al cliente?')) {
+                    const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país):', clienteData.telefono);
+                    if (telefono) {
+                        const mensaje = `📄 *FACTURA DE SERVICIOS*\n\n` +
+                            `Cliente: ${clienteData.nombre}\n` +
+                            `Factura: ${numeroFactura}\n` +
+                            `Fecha: ${fecha}\n` +
+                            `Total: $${total}.00\n\n` +
+                            `✅ Servicios entregados:\n${cuentasEntregadas.map(c => `• ${c.app}`).join('\n')}\n\n` +
+                            `💎 ¡Gracias por confiar en ÉLITE VIP!`;
+                        
+                        window.open(`https://wa.me/${telefono.replace(/\s+/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    }
+                }
+            });
+        };
 
         // ===== PANEL EDITAR CLIENTE =====
         window.abrirPanelEditar = (id, nombre, telefono, email, metodos, plan, fechaPago, fechaCorte, monto, dias, estado, notas) => {
@@ -1303,7 +1574,6 @@
             }
         };
 
-        // Cerrar panel al hacer clic fuera
         document.getElementById('panel-editar-overlay')?.addEventListener('click', (e) => {
             if (e.target === e.currentTarget) cerrarPanelEditar();
         });
@@ -1365,6 +1635,7 @@
                         <button class="btn-small btn-azul" onclick="abrirPanelEditar('${id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.email || ''}','${c.metodosPago ? c.metodosPago.replace(/'/g, "\\'") : ''}','${c.plan || ''}','${c.fechaPago}','${c.fechaCorte}','${c.monto || '0'}','${c.diasPrueba || '0'}','${c.estado || 'Activo'}','${c.notas ? c.notas.replace(/'/g, "\\'") : ''}')">✏️ Editar</button>
                         <button class="btn-small btn-success" onclick="sumarDiasCliente('${id}','${c.fechaCorte}',5)">➕ +5 Días</button>
                         <button class="btn-small btn-warning" onclick="sumarDiasCliente('${id}','${c.fechaCorte}',-5)">➖ -5 Días</button>
+                        <button class="btn-small btn-rosa" onclick="generarFacturaCliente('${id}')">📄 Factura</button>
                         <button class="btn-small btn-danger" onclick="eliminarCliente('${id}')">🗑️</button>
                     </div>
                 </div>`;
@@ -1379,6 +1650,28 @@
             if (isNaN(corte)) return null;
             return Math.ceil((corte - hoy) / (1000*60*60*24));
         }
+
+        // ===== GENERAR FACTURA PARA CLIENTE =====
+        window.generarFacturaCliente = async (id) => {
+            try {
+                const docSnap = await getDoc(doc(db, "clientes", id));
+                if (!docSnap.exists()) return alert("Cliente no encontrado.");
+                const cliente = docSnap.data();
+                
+                // Buscar cuentas entregadas a este cliente en el historial
+                const q = query(collection(db, "historial"), where("miembro", "==", cliente.nombre));
+                const historialSnap = await getDocs(q);
+                const cuentas = historialSnap.docs.map(d => ({ app: d.data().app, datos: d.data().app }));
+                
+                if (cuentas.length === 0) {
+                    return alert("Este cliente no tiene cuentas entregadas registradas.");
+                }
+                
+                generarFactura(cliente, cuentas.slice(0, 5), 'Manual');
+            } catch (error) {
+                alert("❌ Error al generar factura: " + error.message);
+            }
+        };
 
         window.sumarDiasCliente = async (id, fechaCorte, dias) => {
             if (!fechaCorte) return alert("Este cliente no tiene fecha de corte.");
@@ -1431,6 +1724,57 @@
         window.eliminarCliente = async (id) => {
             if (confirm("¿Eliminar este cliente?")) await deleteDoc(doc(db, "clientes", id));
         };
+
+        // ===== DASHBOARD =====
+        function actualizarDashboard(clientes, cuentas) {
+            const totalClientes = clientes.length;
+            const totalCuentas = cuentas.reduce((sum, c) => sum + (c.cupo || 0), 0);
+            
+            const hoy = new Date();
+            const clientesPorVencer = clientes.filter(c => {
+                if (!c.fechaCorte) return false;
+                const corte = new Date(c.fechaCorte);
+                const diff = Math.ceil((corte - hoy) / (1000*60*60*24));
+                return diff >= 0 && diff <= 7;
+            });
+            
+            const ingresos = clientes.reduce((sum, c) => sum + (parseFloat(c.monto) || 0), 0);
+            
+            document.getElementById('total-clientes').textContent = totalClientes;
+            document.getElementById('total-cuentas').textContent = totalCuentas;
+            document.getElementById('clientes-vencer').textContent = clientesPorVencer.length;
+            document.getElementById('ingresos-totales').textContent = `$${ingresos.toFixed(2)}`;
+            
+            // Alertas
+            const alertasContainer = document.getElementById('alertas-container');
+            if (clientesPorVencer.length === 0) {
+                alertasContainer.innerHTML = '<p style="opacity:0.6;">✅ No hay clientes próximos a vencer.</p>';
+            } else {
+                alertasContainer.innerHTML = clientesPorVencer.map(c => {
+                    const dias = calcularDiasRestantes(c.fechaCorte);
+                    return `
+                    <div class="alerta-card">
+                        <div class="alerta-texto">⚠️ <strong>${c.nombre}</strong> - ${dias} días restantes para el corte</div>
+                        <div class="alerta-fecha">📅 Corte: ${c.fechaCorte}</div>
+                    </div>
+                    `;
+                }).join('');
+            }
+            
+            // Últimos clientes
+            const ultimos = clientes.slice(-5).reverse();
+            const ultimosContainer = document.getElementById('ultimos-clientes');
+            if (ultimos.length === 0) {
+                ultimosContainer.innerHTML = '<p style="opacity:0.6;">No hay clientes registrados.</p>';
+            } else {
+                ultimosContainer.innerHTML = ultimos.map(c => `
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);">
+                        <span><strong>${c.nombre}</strong> 📞 ${c.telefono}</span>
+                        <span style="opacity:0.6;">${c.fechaCorte || 'Sin fecha'}</span>
+                    </div>
+                `).join('');
+            }
+        }
 
         // ===== NOTAS =====
         window.agregarNota = async () => {
@@ -1515,11 +1859,14 @@
 
         // ===== ADMIN DATA =====
         function loadAdminData() {
+            // Stock
             onSnapshot(collection(db, "cuentas"), snap => {
                 let html = "", cuentasDisponibles = [];
+                let cuentasData = [];
                 snap.forEach(d => {
                     const c = d.data();
                     cuentasMap.set(d.id, { app: c.app, cupo: c.cupo });
+                    cuentasData.push(c);
                     html += `<tr>
                         <td><b>${c.app}</b></td>
                         <td><div class="datos-detalle">${c.datos}</div></td>
@@ -1534,8 +1881,14 @@
                 });
                 document.getElementById("lista-cuentas-admin").innerHTML = html;
                 renderCuentasMultiples(cuentasDisponibles);
+                
+                // Actualizar dashboard con cuentas
+                if (window.clientesData) {
+                    actualizarDashboard(window.clientesData, cuentasData);
+                }
             });
 
+            // Historial
             onSnapshot(query(collection(db, "historial"), orderBy("fecha", "desc")), snap => {
                 let h = "";
                 snap.forEach(d => {
@@ -1546,6 +1899,7 @@
                 document.getElementById("historial-tabla-body").innerHTML = h;
             });
 
+            // Quejas
             onSnapshot(query(collection(db, "quejas"), orderBy("fecha", "desc")), snap => {
                 let h = "";
                 snap.forEach(d => {
@@ -1563,6 +1917,7 @@
                 document.getElementById("lista-quejas").innerHTML = h;
             });
 
+            // Usuarios
             onSnapshot(collection(db, "usuarios_permisos"), snap => {
                 let h = "";
                 snap.forEach(d => {
@@ -1575,12 +1930,22 @@
                 document.getElementById("lista-usuarios-admin").innerHTML = h;
             });
 
+            // Clientes
             onSnapshot(collection(db, "clientes"), snap => {
                 let clientesArray = [];
                 snap.forEach(d => clientesArray.push({ id: d.id, ...d.data() }));
+                window.clientesData = clientesArray;
                 renderClientes(clientesArray);
+                
+                // Actualizar dashboard
+                onSnapshot(collection(db, "cuentas"), snap2 => {
+                    let cuentasData = [];
+                    snap2.forEach(d => cuentasData.push(d.data()));
+                    actualizarDashboard(clientesArray, cuentasData);
+                });
             });
 
+            // Notas
             onSnapshot(query(collection(db, "notas_admin"), orderBy("fecha", "desc")), snap => {
                 let html = "";
                 snap.forEach(d => {
@@ -1598,6 +1963,7 @@
                 document.getElementById("lista-notas-container").innerHTML = html || "<p style='opacity:0.6;'>Sin notas</p>";
             });
 
+            // Códigos QR
             onSnapshot(query(collection(db, "codigos_qr"), orderBy("fechaCreacion", "desc")), snap => {
                 let html = "";
                 snap.forEach(d => {
@@ -1773,7 +2139,10 @@
                 <div style="background: linear-gradient(135deg, #0a0e1a, #111827); padding: 20px; border-radius: 16px; border: 2px solid var(--azul-electrico); margin-top: 10px;">
                     <div class="entrega-header">
                         <div class="ganador-info">🎉 <span>${escapeHtml(data.ganador)}</span> - ¡Cuentas entregadas!</div>
-                        <button class="btn-copiar-todo" onclick="copiarTodo('${textoCompleto.replace(/'/g, "\\'").replace(/\n/g, '\\n')}', this)">📋 Copiar todo</button>
+                        <div class="flex-btns">
+                            <button class="btn-copiar-todo" onclick="copiarTodo('${textoCompleto.replace(/'/g, "\\'").replace(/\n/g, '\\n')}', this)">📋 Copiar todo</button>
+                            <button class="btn-small btn-rosa" onclick="generarFacturaClienteManual('${escapeHtml(data.ganador)}','${data.telefono || 'N/A'}', ${JSON.stringify(cuentasEntregadas).replace(/"/g, "'")})">📄 Factura PDF</button>
+                        </div>
                     </div>
                     <div class="cuentas-entregadas-grid">${cuentasHTML}</div>
                     ${errores.length > 0 ? `<p style="color: var(--danger); margin-top:10px;">⚠️ ${errores.join(', ')}</p>` : ''}
@@ -1784,6 +2153,12 @@
             } catch (error) {
                 resultadoDiv.innerHTML = `<p style="color: var(--danger);">❌ Error: ${error.message}</p>`;
             }
+        };
+
+        // ===== GENERAR FACTURA MANUAL DESDE RECLAMO =====
+        window.generarFacturaClienteManual = (nombre, telefono, cuentas) => {
+            const clienteData = { nombre, telefono };
+            generarFactura(clienteData, cuentas, 'QR Code');
         };
 
         // ===== FUNCIONES DE COPIA =====
