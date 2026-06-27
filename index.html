@@ -76,6 +76,7 @@
             z-index: 0;
         }
 
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 100%;
             background: var(--sidebar-bg);
@@ -301,6 +302,7 @@
         }
         tr:hover td { background: rgba(0, 212, 255, 0.03); }
 
+        /* ===== CLIENTES GRID ===== */
         .clientes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -412,6 +414,103 @@
             margin-top: 12px;
         }
 
+        /* ===== PANEL EDITAR CLIENTE ===== */
+        .panel-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .panel-overlay.active {
+            display: flex;
+        }
+
+        .panel-editar {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--azul-electrico);
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.2);
+            position: relative;
+        }
+
+        .panel-editar .panel-titulo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--rosa));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .panel-editar .panel-campo {
+            margin-bottom: 12px;
+        }
+
+        .panel-editar .panel-campo label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .panel-editar .panel-campo input,
+        .panel-editar .panel-campo select,
+        .panel-editar .panel-campo textarea {
+            margin-top: 0;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 12px;
+        }
+
+        .panel-editar .panel-botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .panel-editar .panel-botones button {
+            flex: 1;
+            padding: 12px;
+        }
+
+        .panel-editar .panel-cerrar {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            opacity: 0.6;
+        }
+
+        .panel-editar .panel-cerrar:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .panel-editar::-webkit-scrollbar { width: 4px; }
+        .panel-editar::-webkit-scrollbar-thumb { background: var(--azul-electrico); border-radius: 10px; }
+
+        /* ===== NOTAS ===== */
         .notas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -467,6 +566,7 @@
         .cuenta-asignada { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 12px; margin: 4px 0; text-align: left; }
         .cuenta-asignada .app-name { color: var(--azul-electrico); font-weight: 700; }
 
+        /* ===== CUENTAS MÚLTIPLES ===== */
         .cuentas-multiples {
             max-height: 200px;
             overflow-y: auto;
@@ -711,7 +811,6 @@
             word-break: break-all;
         }
 
-        /* ===== OCULTAR ELEMENTOS QUE NO SE USAN ===== */
         #select-plataforma, #stock-info, #btn-pedir, #resultado-entrega, 
         #c-cliente-nombre, #c-cliente-phone, #log-email, #log-pass {
             display: block !important;
@@ -775,6 +874,7 @@
             .logo-area { font-size: 0.9rem; padding: 4px 14px; }
             .container { padding: 12px; }
             .card { padding: 16px; }
+            .panel-editar { padding: 20px; margin: 10px; }
         }
 
         @media (max-width: 480px) {
@@ -798,6 +898,67 @@
             <input id="log-email" placeholder="Usuario" style="margin-top: 20px;">
             <input id="log-pass" type="password" placeholder="Clave">
             <button class="btn-login" id="btn-login">⚡ INGRESAR ⚡</button>
+        </div>
+    </div>
+
+    <!-- ===== PANEL EDITAR CLIENTE ===== -->
+    <div class="panel-overlay" id="panel-editar-overlay">
+        <div class="panel-editar">
+            <button class="panel-cerrar" onclick="cerrarPanelEditar()">✕</button>
+            <div class="panel-titulo">✏️ Editar Cliente</div>
+            <div id="panel-editar-contenido">
+                <div class="panel-campo">
+                    <label>Nombre completo</label>
+                    <input id="edit-nombre" placeholder="Nombre">
+                </div>
+                <div class="panel-campo">
+                    <label>Teléfono</label>
+                    <input id="edit-telefono" placeholder="Teléfono">
+                </div>
+                <div class="panel-campo">
+                    <label>Correo electrónico</label>
+                    <input id="edit-email" placeholder="Correo">
+                </div>
+                <div class="panel-campo">
+                    <label>Métodos de pago</label>
+                    <input id="edit-metodos" placeholder="Métodos de pago">
+                </div>
+                <div class="panel-campo">
+                    <label>Plan</label>
+                    <input id="edit-plan" placeholder="Plan">
+                </div>
+                <div class="panel-campo">
+                    <label>📅 Último pago</label>
+                    <input id="edit-fecha-pago" type="date">
+                </div>
+                <div class="panel-campo">
+                    <label>⏰ Próximo corte</label>
+                    <input id="edit-fecha-corte" type="date">
+                </div>
+                <div class="panel-campo">
+                    <label>💰 Monto pagado</label>
+                    <input id="edit-monto" type="number" placeholder="Monto">
+                </div>
+                <div class="panel-campo">
+                    <label>🧪 Días de prueba</label>
+                    <input id="edit-dias" type="number" placeholder="Días">
+                </div>
+                <div class="panel-campo">
+                    <label>Estado</label>
+                    <select id="edit-estado">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="panel-campo">
+                    <label>Notas adicionales</label>
+                    <textarea id="edit-notas" rows="2" placeholder="Notas"></textarea>
+                </div>
+                <div class="panel-botones">
+                    <button class="btn-success" onclick="guardarEdicionCliente()">💾 Guardar</button>
+                    <button class="btn-danger" onclick="cerrarPanelEditar()">❌ Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1028,6 +1189,7 @@
         let cuentasMap = new Map();
         let ganadorActual = null;
         let cuentasSeleccionadas = [];
+        let clienteEditando = null;
 
         // ===== TEMA =====
         window.toggleTheme = () => {
@@ -1058,28 +1220,22 @@
             if (!email || !password) return alert("Completa ambos campos.");
             
             try {
-                // Verificar si es el master o un usuario autorizado
                 if (email !== MASTER) {
                     const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
                     if (!userDoc.exists() || !userDoc.data().estado) {
                         return alert("❌ Usuario no autorizado.");
                     }
                 }
-                
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (err) {
                 alert("❌ Error de credenciales: " + err.message);
             }
         };
 
-        // ===== EVENTO CLICK PARA LOGIN =====
         document.addEventListener('DOMContentLoaded', () => {
             const btnLogin = document.getElementById('btn-login');
-            if (btnLogin) {
-                btnLogin.addEventListener('click', window.handleLogin);
-            }
+            if (btnLogin) btnLogin.addEventListener('click', window.handleLogin);
             
-            // Enter key para login
             document.getElementById('log-pass')?.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') window.handleLogin();
             });
@@ -1090,6 +1246,68 @@
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
+        // ===== PANEL EDITAR CLIENTE =====
+        window.abrirPanelEditar = (id, nombre, telefono, email, metodos, plan, fechaPago, fechaCorte, monto, dias, estado, notas) => {
+            clienteEditando = id;
+            
+            document.getElementById('edit-nombre').value = nombre || '';
+            document.getElementById('edit-telefono').value = telefono || '';
+            document.getElementById('edit-email').value = email || '';
+            document.getElementById('edit-metodos').value = metodos || '';
+            document.getElementById('edit-plan').value = plan || '';
+            document.getElementById('edit-fecha-pago').value = fechaPago || '';
+            document.getElementById('edit-fecha-corte').value = fechaCorte || '';
+            document.getElementById('edit-monto').value = monto || '';
+            document.getElementById('edit-dias').value = dias || '';
+            document.getElementById('edit-estado').value = estado || 'Activo';
+            document.getElementById('edit-notas').value = notas || '';
+            
+            document.getElementById('panel-editar-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.cerrarPanelEditar = () => {
+            document.getElementById('panel-editar-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+            clienteEditando = null;
+        };
+
+        window.guardarEdicionCliente = async () => {
+            if (!clienteEditando) return alert("No hay cliente seleccionado.");
+            
+            const nombre = document.getElementById('edit-nombre').value.trim();
+            const telefono = document.getElementById('edit-telefono').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const metodos = document.getElementById('edit-metodos').value.trim();
+            const plan = document.getElementById('edit-plan').value.trim();
+            const fechaPago = document.getElementById('edit-fecha-pago').value;
+            const fechaCorte = document.getElementById('edit-fecha-corte').value;
+            const monto = document.getElementById('edit-monto').value.trim();
+            const dias = document.getElementById('edit-dias').value.trim();
+            const estado = document.getElementById('edit-estado').value;
+            const notas = document.getElementById('edit-notas').value.trim();
+
+            if (!nombre || !telefono) return alert("Nombre y teléfono son obligatorios.");
+
+            try {
+                await updateDoc(doc(db, "clientes", clienteEditando), {
+                    nombre, telefono, email, metodosPago: metodos || "No registrado",
+                    plan: plan || "Básico", fechaPago, fechaCorte,
+                    monto: monto || "0", diasPrueba: dias || "0",
+                    estado: estado, notas: notas || ""
+                });
+                alert("✅ Cliente actualizado correctamente");
+                cerrarPanelEditar();
+            } catch (error) {
+                alert("❌ Error al actualizar: " + error.message);
+            }
+        };
+
+        // Cerrar panel al hacer clic fuera
+        document.getElementById('panel-editar-overlay')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) cerrarPanelEditar();
+        });
+
         // ===== FUNCIONES DE FECHAS =====
         function sumarDias(fechaStr, dias) {
             const fecha = new Date(fechaStr);
@@ -1097,7 +1315,7 @@
             return fecha.toISOString().split('T')[0];
         }
 
-        // ===== CLIENTES MEJORADO =====
+        // ===== CLIENTES =====
         function renderClientes(clientesData) {
             const sorted = [...clientesData].sort((a, b) => new Date(a.fechaCorte || '9999') - new Date(b.fechaCorte || '9999'));
             let html = "";
@@ -1144,7 +1362,7 @@
                         <div class="progreso-texto"><span>${statusText}</span><span>${Math.round(progressPercent)}%</span></div>
                     </div>
                     <div class="acciones">
-                        <button class="btn-small btn-azul" onclick="editarClienteCompleto('${id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.email || ''}','${c.metodosPago ? c.metodosPago.replace(/'/g, "\\'") : ''}','${c.plan || ''}','${c.fechaPago}','${c.fechaCorte}','${c.monto || '0'}','${c.diasPrueba || '0'}','${c.estado || 'Activo'}','${c.notas ? c.notas.replace(/'/g, "\\'") : ''}')">✏️ Editar</button>
+                        <button class="btn-small btn-azul" onclick="abrirPanelEditar('${id}','${c.nombre.replace(/'/g, "\\'")}','${c.telefono}','${c.email || ''}','${c.metodosPago ? c.metodosPago.replace(/'/g, "\\'") : ''}','${c.plan || ''}','${c.fechaPago}','${c.fechaCorte}','${c.monto || '0'}','${c.diasPrueba || '0'}','${c.estado || 'Activo'}','${c.notas ? c.notas.replace(/'/g, "\\'") : ''}')">✏️ Editar</button>
                         <button class="btn-small btn-success" onclick="sumarDiasCliente('${id}','${c.fechaCorte}',5)">➕ +5 Días</button>
                         <button class="btn-small btn-warning" onclick="sumarDiasCliente('${id}','${c.fechaCorte}',-5)">➖ -5 Días</button>
                         <button class="btn-small btn-danger" onclick="eliminarCliente('${id}')">🗑️</button>
@@ -1161,30 +1379,6 @@
             if (isNaN(corte)) return null;
             return Math.ceil((corte - hoy) / (1000*60*60*24));
         }
-
-        // ===== FUNCIONES DE CLIENTES MEJORADAS =====
-        window.editarClienteCompleto = async (id, nom, tel, email, metodos, plan, pago, corte, monto, dias, estado, notas) => {
-            const nuevoNom = prompt("Nuevo nombre:", nom) || nom;
-            const nuevoTel = prompt("Nuevo teléfono:", tel) || tel;
-            const nuevoEmail = prompt("Correo electrónico:", email) || email;
-            const nuevoMetodos = prompt("Métodos de pago:", metodos) || metodos;
-            const nuevoPlan = prompt("Plan:", plan) || plan;
-            const nuevoPago = prompt("Fecha último pago (AAAA-MM-DD):", pago) || pago;
-            const nuevoCorte = prompt("Fecha próximo corte (AAAA-MM-DD):", corte) || corte;
-            const nuevoMonto = prompt("Monto pagado:", monto) || monto;
-            const nuevoDias = prompt("Días de prueba:", dias) || dias;
-            const nuevoEstado = prompt("Estado (Activo/Inactivo):", estado) || estado;
-            const nuevoNotas = prompt("Notas adicionales:", notas) || notas;
-
-            await updateDoc(doc(db, "clientes", id), {
-                nombre: nuevoNom, telefono: nuevoTel, email: nuevoEmail,
-                metodosPago: nuevoMetodos, plan: nuevoPlan,
-                fechaPago: nuevoPago, fechaCorte: nuevoCorte,
-                monto: nuevoMonto, diasPrueba: nuevoDias,
-                estado: nuevoEstado, notas: nuevoNotas
-            });
-            alert("✅ Cliente actualizado");
-        };
 
         window.sumarDiasCliente = async (id, fechaCorte, dias) => {
             if (!fechaCorte) return alert("Este cliente no tiene fecha de corte.");
@@ -1844,25 +2038,10 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Configurar todos los nav-btn
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 const pageId = btn.getAttribute('data-page');
                 if (pageId) btn.addEventListener('click', () => showPage(pageId, btn));
             });
-            
-            // Login con Enter
-            const emailInput = document.getElementById('log-email');
-            const passInput = document.getElementById('log-pass');
-            if (emailInput) {
-                emailInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') window.handleLogin();
-                });
-            }
-            if (passInput) {
-                passInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') window.handleLogin();
-                });
-            }
         });
     </script>
 </body>
