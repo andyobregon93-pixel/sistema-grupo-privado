@@ -937,6 +937,26 @@
         ::-webkit-scrollbar-thumb { background: var(--azul-electrico); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--rosa); }
 
+        /* ===== REGISTRO SORTEO ===== */
+        .registro-sorteo-box {
+            background: var(--input-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 2px dashed var(--azul-electrico);
+        }
+        .registro-sorteo-box .registro-titulo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--azul-electrico);
+            margin-bottom: 10px;
+        }
+        .registro-sorteo-box .registro-subtitulo {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin-bottom: 15px;
+        }
+
         /* ===== LOGIN ===== */
         .login-card {
             max-width: 420px;
@@ -979,12 +999,46 @@
             box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
         }
 
+        /* ===== REGISTRADOS SORTEO ===== */
+        .registrados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .registrado-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .registrado-card:hover {
+            border-color: var(--azul-electrico);
+            transform: translateY(-3px);
+        }
+        .registrado-card .registrado-nombre {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .registrado-card .registrado-detalle {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin: 4px 0;
+        }
+        .registrado-card .registrado-fecha {
+            font-size: 0.75rem;
+            opacity: 0.5;
+        }
+
         @media (max-width: 768px) {
             .clientes-grid { grid-template-columns: 1fr; }
             .cuentas-entregadas-grid { grid-template-columns: 1fr; }
             .codigos-grid { grid-template-columns: 1fr; }
             .notas-grid { grid-template-columns: 1fr; }
             .dashboard-grid { grid-template-columns: 1fr 1fr; }
+            .registrados-grid { grid-template-columns: 1fr; }
             .sidebar { gap: 8px; padding: 10px 14px; }
             .nav-btn { font-size: 11px; padding: 8px 14px; }
             .logo-area { font-size: 0.9rem; padding: 4px 14px; }
@@ -1095,6 +1149,7 @@
             <button class="nav-btn admin-only" data-page="p-clientes">👥 Clientes</button>
             <button class="nav-btn admin-only" data-page="p-sorteo">🎰 Sorteo</button>
             <button class="nav-btn admin-only" data-page="p-codigos">📱 QR</button>
+            <button class="nav-btn admin-only" data-page="p-registrados">📋 Registrados</button>
             <button class="nav-btn admin-only" data-page="p-admin">🔐 Admin</button>
             <button class="theme-toggle" onclick="toggleTheme()" style="background: var(--card-bg); color: var(--text); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 700; white-space: nowrap;">🌓 Modo</button>
             <button class="logout" onclick="logout()" style="background: var(--card-bg); color: var(--text); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 700; white-space: nowrap;">Salir</button>
@@ -1126,6 +1181,11 @@
                             <div class="stat-number" id="ingresos-totales">$0</div>
                             <div class="stat-label">Ingresos Totales</div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-number" id="total-registrados">0</div>
+                            <div class="stat-label">Registrados Sorteo</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1144,7 +1204,7 @@
                 </div>
             </div>
 
-            <!-- ===== PEDIR CUENTA ===== -->
+            <!-- ===== PEDIR CUENTA (con registro sorteo) ===== -->
             <div id="p-solicitar" class="page">
                 <div class="card">
                     <div class="card-title">🎟️ Reclamar Cuenta VIP</div>
@@ -1152,6 +1212,21 @@
                     <input id="c-codigo-qr" placeholder="Código QR (ej: QR-XXXX-XXXX)">
                     <button onclick="reclamarConCodigo()">🔑 RECLAMAR CON CÓDIGO</button>
                     <div id="resultado-reclamo" style="margin-top: 15px;"></div>
+                </div>
+
+                <!-- ===== FORMULARIO REGISTRO SORTEO ===== -->
+                <div class="card">
+                    <div class="card-title">🎰 Regístrate para el Sorteo</div>
+                    <p class="card-subtitle">Completa tus datos para participar en el próximo sorteo VIP</p>
+                    <div class="registro-sorteo-box">
+                        <div class="registro-titulo">📝 Formulario de Inscripción</div>
+                        <div class="registro-subtitulo">Llena tus datos y sé parte del sorteo</div>
+                        <input id="reg-nombre" placeholder="Nombre completo">
+                        <input id="reg-telefono" placeholder="Número de teléfono (Ej: +593987654321)">
+                        <input id="reg-pais" placeholder="País">
+                        <button onclick="registrarSorteo()" style="background: linear-gradient(135deg, var(--rosa), var(--azul-electrico));">🎯 REGISTRARME</button>
+                        <div id="registro-mensaje" style="margin-top: 10px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1258,6 +1333,22 @@
                 </div>
             </div>
 
+            <!-- ===== REGISTRADOS SORTEO ===== -->
+            <div id="p-registrados" class="page">
+                <div class="card">
+                    <div class="card-title">📋 Registrados para el Sorteo</div>
+                    <p class="card-subtitle">Lista de personas que se han registrado para participar en el sorteo</p>
+                    <div class="flex-btns" style="margin-bottom: 15px;">
+                        <button onclick="copiarListaRegistrados()" class="btn-azul" style="width: auto;">📋 Copiar lista para sorteo</button>
+                        <button onclick="exportarRegistrados()" class="btn-success" style="width: auto;">📤 Exportar CSV</button>
+                        <button onclick="limpiarRegistrados()" class="btn-danger" style="width: auto;">🗑️ Limpiar todo</button>
+                    </div>
+                    <div id="lista-registrados-container" class="registrados-grid">
+                        <p style="opacity:0.6; text-align:center; grid-column: 1/-1;">No hay registrados aún.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- ===== ADMIN ===== -->
             <div id="p-admin" class="page">
                 <div class="card">
@@ -1278,6 +1369,9 @@
                 <div class="card">
                     <div class="card-title">🎰 Sorteo Élite</div>
                     <p class="card-subtitle">Pega tu lista de participantes (uno por línea) y haz girar la ruleta.</p>
+                    <div class="flex-btns">
+                        <button onclick="cargarListaRegistrados()" class="btn-azul" style="width: auto;">📥 Cargar registrados</button>
+                    </div>
                     <textarea id="participantes-input" class="participantes-area" placeholder="Ej:&#10;Juan Pérez&#10;María García&#10;Carlos López"></textarea>
                     <div class="flex-btns" style="justify-content: center;">
                         <button onclick="cargarParticipantes()" style="background: linear-gradient(135deg, var(--azul-electrico), var(--azul-electrico-dark));">📥 Cargar lista</button>
@@ -1351,6 +1445,7 @@
         let ganadorActual = null;
         let cuentasSeleccionadas = [];
         let clienteEditando = null;
+        let registradosData = [];
 
         // ===== CONTADOR FACTURAS =====
         let facturaCounter = 0;
@@ -1410,6 +1505,145 @@
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
+        // ===== REGISTRO SORTEO =====
+        window.registrarSorteo = async () => {
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const telefono = document.getElementById('reg-telefono').value.trim();
+            const pais = document.getElementById('reg-pais').value.trim();
+            const mensajeDiv = document.getElementById('registro-mensaje');
+
+            if (!nombre || !telefono || !pais) {
+                mensajeDiv.innerHTML = `<p style="color: var(--danger);">❌ Todos los campos son obligatorios.</p>`;
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "registrados_sorteo"), {
+                    nombre,
+                    telefono,
+                    pais,
+                    fechaRegistro: serverTimestamp()
+                });
+
+                mensajeDiv.innerHTML = `<p style="color: var(--success);">✅ ¡Te has registrado exitosamente! ¡Buena suerte!</p>`;
+                document.getElementById('reg-nombre').value = '';
+                document.getElementById('reg-telefono').value = '';
+                document.getElementById('reg-pais').value = '';
+                
+                setTimeout(() => { mensajeDiv.innerHTML = ''; }, 5000);
+            } catch (error) {
+                mensajeDiv.innerHTML = `<p style="color: var(--danger);">❌ Error al registrar: ${error.message}</p>`;
+            }
+        };
+
+        // ===== LISTA REGISTRADOS =====
+        function renderRegistrados(registrados) {
+            const container = document.getElementById('lista-registrados-container');
+            if (registrados.length === 0) {
+                container.innerHTML = '<p style="opacity:0.6; text-align:center; grid-column: 1/-1;">No hay registrados aún.</p>';
+                return;
+            }
+
+            let html = '';
+            registrados.forEach((r, index) => {
+                const fecha = r.fechaRegistro?.toDate?.()?.toLocaleDateString() || 'Fecha desconocida';
+                html += `
+                <div class="registrado-card">
+                    <div class="registrado-nombre">${index + 1}. ${r.nombre}</div>
+                    <div class="registrado-detalle">📞 ${r.telefono}</div>
+                    <div class="registrado-detalle">🌍 ${r.pais}</div>
+                    <div class="registrado-fecha">📅 ${fecha}</div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // ===== COPIAR LISTA REGISTRADOS =====
+        window.copiarListaRegistrados = () => {
+            if (registradosData.length === 0) {
+                alert('No hay registrados para copiar.');
+                return;
+            }
+
+            const lista = registradosData.map(r => r.nombre).join('\n');
+            
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(lista).then(() => {
+                    alert(`✅ ${registradosData.length} nombres copiados al portapapeles. Pégarlos en la ruleta.`);
+                }).catch(() => {
+                    copiarFallback(lista);
+                });
+            } else {
+                copiarFallback(lista);
+            }
+        };
+
+        function copiarFallback(texto) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert(`✅ ${registradosData.length} nombres copiados al portapapeles. Pégarlos en la ruleta.`);
+            } catch (e) {
+                alert('Error al copiar. Selecciona el texto manualmente.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ===== CARGAR LISTA REGISTRADOS EN RULETA =====
+        window.cargarListaRegistrados = () => {
+            if (registradosData.length === 0) {
+                alert('No hay registrados para cargar.');
+                return;
+            }
+
+            const lista = registradosData.map(r => r.nombre).join('\n');
+            document.getElementById('participantes-input').value = lista;
+            alert(`✅ ${registradosData.length} nombres cargados en la ruleta. Presiona "Cargar lista" para confirmar.`);
+        };
+
+        // ===== EXPORTAR REGISTRADOS A CSV =====
+        window.exportarRegistrados = () => {
+            if (registradosData.length === 0) {
+                alert('No hay registrados para exportar.');
+                return;
+            }
+
+            let csv = 'Nombre,Teléfono,País,Fecha\n';
+            registradosData.forEach(r => {
+                const fecha = r.fechaRegistro?.toDate?.()?.toLocaleDateString() || '';
+                csv += `${r.nombre},${r.telefono},${r.pais},${fecha}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `registrados_sorteo_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        // ===== LIMPIAR REGISTRADOS =====
+        window.limpiarRegistrados = async () => {
+            if (!confirm('¿Eliminar TODOS los registros del sorteo?')) return;
+            if (!confirm('¿Estás seguro? Esta acción no se puede deshacer.')) return;
+
+            try {
+                const q = await getDocs(collection(db, "registrados_sorteo"));
+                const batch = writeBatch(db);
+                q.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                alert('✅ Todos los registros han sido eliminados.');
+            } catch (error) {
+                alert('❌ Error al limpiar: ' + error.message);
+            }
+        };
+
         // ===== FUNCIÓN: GENERAR FACTURA PDF =====
         window.generarFactura = (clienteData, cuentasEntregadas, metodo) => {
             facturaCounter++;
@@ -1417,8 +1651,8 @@
             const hora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
             const numeroFactura = `F-${String(facturaCounter).padStart(4, '0')}-${new Date().getFullYear()}`;
             
-            const total = cuentasEntregadas.length * 5; // Precio base por cuenta
-            
+            const total = cuentasEntregadas.length * 5;
+
             const facturaHTML = `
             <div id="factura-pdf" style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: white; color: #1a1a2e; border-radius: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00d4ff; padding-bottom: 15px; margin-bottom: 20px;">
@@ -1478,7 +1712,6 @@
             </div>
             `;
 
-            // Crear y descargar PDF
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = facturaHTML;
             tempDiv.style.position = 'fixed';
@@ -1499,7 +1732,6 @@
             html2pdf().set(opt).from(element).save().then(() => {
                 document.body.removeChild(tempDiv);
                 
-                // Preguntar si quiere enviar por WhatsApp
                 if (confirm('📱 ¿Deseas enviar la factura por WhatsApp al cliente?')) {
                     const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país):', clienteData.telefono);
                     if (telefono) {
@@ -1651,14 +1883,12 @@
             return Math.ceil((corte - hoy) / (1000*60*60*24));
         }
 
-        // ===== GENERAR FACTURA PARA CLIENTE =====
         window.generarFacturaCliente = async (id) => {
             try {
                 const docSnap = await getDoc(doc(db, "clientes", id));
                 if (!docSnap.exists()) return alert("Cliente no encontrado.");
                 const cliente = docSnap.data();
                 
-                // Buscar cuentas entregadas a este cliente en el historial
                 const q = query(collection(db, "historial"), where("miembro", "==", cliente.nombre));
                 const historialSnap = await getDocs(q);
                 const cuentas = historialSnap.docs.map(d => ({ app: d.data().app, datos: d.data().app }));
@@ -1744,8 +1974,8 @@
             document.getElementById('total-cuentas').textContent = totalCuentas;
             document.getElementById('clientes-vencer').textContent = clientesPorVencer.length;
             document.getElementById('ingresos-totales').textContent = `$${ingresos.toFixed(2)}`;
+            document.getElementById('total-registrados').textContent = registradosData.length;
             
-            // Alertas
             const alertasContainer = document.getElementById('alertas-container');
             if (clientesPorVencer.length === 0) {
                 alertasContainer.innerHTML = '<p style="opacity:0.6;">✅ No hay clientes próximos a vencer.</p>';
@@ -1761,7 +1991,6 @@
                 }).join('');
             }
             
-            // Últimos clientes
             const ultimos = clientes.slice(-5).reverse();
             const ultimosContainer = document.getElementById('ultimos-clientes');
             if (ultimos.length === 0) {
@@ -1882,7 +2111,6 @@
                 document.getElementById("lista-cuentas-admin").innerHTML = html;
                 renderCuentasMultiples(cuentasDisponibles);
                 
-                // Actualizar dashboard con cuentas
                 if (window.clientesData) {
                     actualizarDashboard(window.clientesData, cuentasData);
                 }
@@ -1937,12 +2165,23 @@
                 window.clientesData = clientesArray;
                 renderClientes(clientesArray);
                 
-                // Actualizar dashboard
                 onSnapshot(collection(db, "cuentas"), snap2 => {
                     let cuentasData = [];
                     snap2.forEach(d => cuentasData.push(d.data()));
                     actualizarDashboard(clientesArray, cuentasData);
                 });
+            });
+
+            // Registrados Sorteo
+            onSnapshot(query(collection(db, "registrados_sorteo"), orderBy("fechaRegistro", "desc")), snap => {
+                registradosData = [];
+                snap.forEach(d => {
+                    registradosData.push({ id: d.id, ...d.data() });
+                });
+                renderRegistrados(registradosData);
+                
+                // Actualizar dashboard
+                document.getElementById('total-registrados').textContent = registradosData.length;
             });
 
             // Notas
@@ -2155,7 +2394,6 @@
             }
         };
 
-        // ===== GENERAR FACTURA MANUAL DESDE RECLAMO =====
         window.generarFacturaClienteManual = (nombre, telefono, cuentas) => {
             const clienteData = { nombre, telefono };
             generarFactura(clienteData, cuentas, 'QR Code');
