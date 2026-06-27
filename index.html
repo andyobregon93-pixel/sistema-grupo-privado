@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
+        /* ... (estilos existentes) ... */
         :root {
             --bg: #0a0e1a;
             --card-bg: #111827;
@@ -926,7 +927,7 @@
             word-break: break-all;
         }
 
-        #select-plataforma, #stock-info, #btn-pedir, #resultado-entrega, 
+        #select-plataforma, #stock-info, #btn-pedir, #resultado-entrega,
         #c-cliente-nombre, #c-cliente-phone, #log-email, #log-pass {
             display: block !important;
             width: 100% !important;
@@ -1094,6 +1095,7 @@
             <button class="nav-btn admin-only" data-page="p-pedidos">📊 Historial</button>
             <button class="nav-btn admin-only" data-page="p-clientes">👥 Clientes</button>
             <button class="nav-btn admin-only" data-page="p-sorteo">🎰 Sorteo</button>
+            <button class="nav-btn admin-only" data-page="p-registros-sorteo">📋 Registros Sorteo</button> <!-- Nuevo botón -->
             <button class="nav-btn admin-only" data-page="p-codigos">📱 QR</button>
             <button class="nav-btn admin-only" data-page="p-admin">🔐 Admin</button>
             <button class="theme-toggle" onclick="toggleTheme()" style="background: var(--card-bg); color: var(--text); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 700; white-space: nowrap;">🌓 Modo</button>
@@ -1278,6 +1280,19 @@
                 <div class="card">
                     <div class="card-title">🎰 Sorteo Élite</div>
                     <p class="card-subtitle">Pega tu lista de participantes (uno por línea) y haz girar la ruleta.</p>
+
+                    <!-- Nuevo formulario de registro -->
+                    <div style="border: 2px solid var(--azul-electrico); border-radius: 16px; padding: 20px; margin-bottom: 20px; background: var(--input-bg);">
+                        <h3 style="margin-top: 0; color: var(--azul-electrico);">📝 Regístrate para el Sorteo</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <input id="registro-nombre" placeholder="Tu nombre completo">
+                            <input id="registro-celular" placeholder="Número de celular">
+                        </div>
+                        <input id="registro-pais" placeholder="País">
+                        <button onclick="registrarParticipante()" style="margin-top: 10px;">✅ Registrarme</button>
+                        <div id="mensaje-registro" style="margin-top: 10px;"></div>
+                    </div>
+
                     <textarea id="participantes-input" class="participantes-area" placeholder="Ej:&#10;Juan Pérez&#10;María García&#10;Carlos López"></textarea>
                     <div class="flex-btns" style="justify-content: center;">
                         <button onclick="cargarParticipantes()" style="background: linear-gradient(135deg, var(--azul-electrico), var(--azul-electrico-dark));">📥 Cargar lista</button>
@@ -1312,6 +1327,31 @@
                         <div class="card-title" style="font-size: 1rem;">📨 Mensaje para el ganador</div>
                         <input id="mensaje-ganador" value="🎉 ¡Felicidades! Has sido seleccionado como ganador del sorteo. Escanea tu QR para reclamar tus premios.">
                         <button onclick="enviarMensajeGanador()" style="background: #25D366; color:white;">📲 Enviar por WhatsApp</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== REGISTROS SORTEO (NUEVA PÁGINA) ===== -->
+            <div id="p-registros-sorteo" class="page">
+                <div class="card">
+                    <div class="card-title">📋 Registros del Sorteo</div>
+                    <p class="card-subtitle">Lista de todos los participantes registrados en el sorteo.</p>
+                    <button class="btn-small btn-success" onclick="copiarListaRegistrados()" style="margin-bottom: 15px;">📋 Copiar Lista para Ruleta</button>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Celular</th>
+                                    <th>País</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-registrados-sorteo">
+                                <tr><td colspan="5" style="text-align:center; opacity:0.6;">No hay registros aún.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1351,6 +1391,7 @@
         let ganadorActual = null;
         let cuentasSeleccionadas = [];
         let clienteEditando = null;
+        let participantesRegistrados = []; // Para la nueva funcionalidad
 
         // ===== CONTADOR FACTURAS =====
         let facturaCounter = 0;
@@ -1382,7 +1423,7 @@
             const email = document.getElementById("log-email").value.trim();
             const password = document.getElementById("log-pass").value.trim();
             if (!email || !password) return alert("Completa ambos campos.");
-            
+
             try {
                 if (email !== MASTER) {
                     const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
@@ -1399,7 +1440,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const btnLogin = document.getElementById('btn-login');
             if (btnLogin) btnLogin.addEventListener('click', window.handleLogin);
-            
+
             document.getElementById('log-pass')?.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') window.handleLogin();
             });
@@ -1410,15 +1451,118 @@
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
+        // ===== NUEVA FUNCIÓN: REGISTRAR PARTICIPANTE =====
+        window.registrarParticipante = async () => {
+            const nombre = document.getElementById('registro-nombre').value.trim();
+            const celular = document.getElementById('registro-celular').value.trim();
+            const pais = document.getElementById('registro-pais').value.trim();
+            const mensajeDiv = document.getElementById('mensaje-registro');
+
+            if (!nombre || !celular || !pais) {
+                mensajeDiv.innerHTML = '<p style="color: var(--danger);">⚠️ Completa todos los campos.</p>';
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "registros_sorteo"), {
+                    nombre,
+                    celular,
+                    pais,
+                    fechaRegistro: serverTimestamp()
+                });
+                mensajeDiv.innerHTML = '<p style="color: var(--success);">✅ ¡Registro exitoso! Estás participando en el sorteo.</p>';
+                document.getElementById('registro-nombre').value = '';
+                document.getElementById('registro-celular').value = '';
+                document.getElementById('registro-pais').value = '';
+                // Actualizar lista de registros si está visible
+                if (document.getElementById('p-registros-sorteo').classList.contains('active')) {
+                    cargarRegistrosSorteo();
+                }
+            } catch (error) {
+                mensajeDiv.innerHTML = `<p style="color: var(--danger);">❌ Error al registrar: ${error.message}</p>`;
+            }
+        };
+
+        // ===== CARGAR REGISTROS SORTEO =====
+        async function cargarRegistrosSorteo() {
+            const tbody = document.getElementById('lista-registrados-sorteo');
+            try {
+                const q = query(collection(db, "registros_sorteo"), orderBy("fechaRegistro", "desc"));
+                const querySnap = await getDocs(q);
+
+                if (querySnap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; opacity:0.6;">No hay registros aún.</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                let contador = 1;
+                querySnap.forEach(doc => {
+                    const data = doc.data();
+                    const fecha = data.fechaRegistro?.toDate?.()?.toLocaleDateString('es-ES', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) || 'N/A';
+                    html += `<tr>
+                        <td>${contador}</td>
+                        <td><strong>${data.nombre}</strong></td>
+                        <td>${data.celular}</td>
+                        <td>${data.pais}</td>
+                        <td>${fecha}</td>
+                    </tr>`;
+                    contador++;
+                });
+                tbody.innerHTML = html;
+            } catch (error) {
+                console.error("Error cargando registros:", error);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--danger);">❌ Error al cargar los registros.</td></tr>`;
+            }
+        }
+
+        // ===== COPIAR LISTA DE REGISTRADOS =====
+        window.copiarListaRegistrados = async () => {
+            try {
+                const q = query(collection(db, "registros_sorteo"), orderBy("fechaRegistro", "desc"));
+                const querySnap = await getDocs(q);
+
+                if (querySnap.empty) {
+                    alert('No hay participantes registrados para copiar.');
+                    return;
+                }
+
+                let lista = '';
+                querySnap.forEach(doc => {
+                    const data = doc.data();
+                    lista += `${data.nombre}\n`;
+                });
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(lista);
+                    alert('✅ Lista de participantes copiada al portapapeles. Puedes pegarla directamente en la ruleta.');
+                } else {
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = lista;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('✅ Lista de participantes copiada al portapapeles. Puedes pegarla directamente en la ruleta.');
+                }
+            } catch (error) {
+                alert('❌ Error al copiar la lista: ' + error.message);
+            }
+        };
+
         // ===== FUNCIÓN: GENERAR FACTURA PDF =====
         window.generarFactura = (clienteData, cuentasEntregadas, metodo) => {
             facturaCounter++;
             const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
             const hora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
             const numeroFactura = `F-${String(facturaCounter).padStart(4, '0')}-${new Date().getFullYear()}`;
-            
+
             const total = cuentasEntregadas.length * 5; // Precio base por cuenta
-            
+
             const facturaHTML = `
             <div id="factura-pdf" style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: white; color: #1a1a2e; border-radius: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00d4ff; padding-bottom: 15px; margin-bottom: 20px;">
@@ -1431,7 +1575,7 @@
                         <p style="font-weight: 700; font-size: 1.1rem; color: #00d4ff; margin: 0;">${numeroFactura}</p>
                     </div>
                 </div>
-                
+
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.9rem;">
                     <div>
                         <p style="font-weight: 700; margin: 0;">Cliente:</p>
@@ -1446,7 +1590,7 @@
                         <p style="margin: 2px 0; opacity: 0.6;">Método: ${metodo || 'Manual'}</p>
                     </div>
                 </div>
-                
+
                 <table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
                     <thead>
                         <tr style="background: #00d4ff; color: white;">
@@ -1465,11 +1609,11 @@
                         `).join('')}
                     </tbody>
                 </table>
-                
+
                 <div style="text-align: right; font-size: 1.2rem; font-weight: 800; border-top: 2px solid #00d4ff; padding-top: 15px; margin-top: 10px;">
                     TOTAL: $${total}.00
                 </div>
-                
+
                 <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.6; text-align: center; border-top: 1px solid #ddd; padding-top: 15px;">
                     <p>¡Gracias por confiar en nosotros! 💎</p>
                     <p style="margin: 4px 0;">Esta factura es un comprobante de entrega de servicios.</p>
@@ -1487,7 +1631,7 @@
             document.body.appendChild(tempDiv);
 
             const element = tempDiv.querySelector('#factura-pdf');
-            
+
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: `Factura_${clienteData.nombre.replace(/\s/g, '_')}_${numeroFactura}.pdf`,
@@ -1498,7 +1642,7 @@
 
             html2pdf().set(opt).from(element).save().then(() => {
                 document.body.removeChild(tempDiv);
-                
+
                 // Preguntar si quiere enviar por WhatsApp
                 if (confirm('📱 ¿Deseas enviar la factura por WhatsApp al cliente?')) {
                     const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país):', clienteData.telefono);
@@ -1510,7 +1654,7 @@
                             `Total: $${total}.00\n\n` +
                             `✅ Servicios entregados:\n${cuentasEntregadas.map(c => `• ${c.app}`).join('\n')}\n\n` +
                             `💎 ¡Gracias por confiar en ÉLITE VIP!`;
-                        
+
                         window.open(`https://wa.me/${telefono.replace(/\s+/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
                     }
                 }
@@ -1520,7 +1664,7 @@
         // ===== PANEL EDITAR CLIENTE =====
         window.abrirPanelEditar = (id, nombre, telefono, email, metodos, plan, fechaPago, fechaCorte, monto, dias, estado, notas) => {
             clienteEditando = id;
-            
+
             document.getElementById('edit-nombre').value = nombre || '';
             document.getElementById('edit-telefono').value = telefono || '';
             document.getElementById('edit-email').value = email || '';
@@ -1532,7 +1676,7 @@
             document.getElementById('edit-dias').value = dias || '';
             document.getElementById('edit-estado').value = estado || 'Activo';
             document.getElementById('edit-notas').value = notas || '';
-            
+
             document.getElementById('panel-editar-overlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         };
@@ -1545,7 +1689,7 @@
 
         window.guardarEdicionCliente = async () => {
             if (!clienteEditando) return alert("No hay cliente seleccionado.");
-            
+
             const nombre = document.getElementById('edit-nombre').value.trim();
             const telefono = document.getElementById('edit-telefono').value.trim();
             const email = document.getElementById('edit-email').value.trim();
@@ -1657,16 +1801,16 @@
                 const docSnap = await getDoc(doc(db, "clientes", id));
                 if (!docSnap.exists()) return alert("Cliente no encontrado.");
                 const cliente = docSnap.data();
-                
+
                 // Buscar cuentas entregadas a este cliente en el historial
                 const q = query(collection(db, "historial"), where("miembro", "==", cliente.nombre));
                 const historialSnap = await getDocs(q);
                 const cuentas = historialSnap.docs.map(d => ({ app: d.data().app, datos: d.data().app }));
-                
+
                 if (cuentas.length === 0) {
                     return alert("Este cliente no tiene cuentas entregadas registradas.");
                 }
-                
+
                 generarFactura(cliente, cuentas.slice(0, 5), 'Manual');
             } catch (error) {
                 alert("❌ Error al generar factura: " + error.message);
@@ -1729,7 +1873,7 @@
         function actualizarDashboard(clientes, cuentas) {
             const totalClientes = clientes.length;
             const totalCuentas = cuentas.reduce((sum, c) => sum + (c.cupo || 0), 0);
-            
+
             const hoy = new Date();
             const clientesPorVencer = clientes.filter(c => {
                 if (!c.fechaCorte) return false;
@@ -1737,14 +1881,14 @@
                 const diff = Math.ceil((corte - hoy) / (1000*60*60*24));
                 return diff >= 0 && diff <= 7;
             });
-            
+
             const ingresos = clientes.reduce((sum, c) => sum + (parseFloat(c.monto) || 0), 0);
-            
+
             document.getElementById('total-clientes').textContent = totalClientes;
             document.getElementById('total-cuentas').textContent = totalCuentas;
             document.getElementById('clientes-vencer').textContent = clientesPorVencer.length;
             document.getElementById('ingresos-totales').textContent = `$${ingresos.toFixed(2)}`;
-            
+
             // Alertas
             const alertasContainer = document.getElementById('alertas-container');
             if (clientesPorVencer.length === 0) {
@@ -1760,7 +1904,7 @@
                     `;
                 }).join('');
             }
-            
+
             // Últimos clientes
             const ultimos = clientes.slice(-5).reverse();
             const ultimosContainer = document.getElementById('ultimos-clientes');
@@ -1881,7 +2025,7 @@
                 });
                 document.getElementById("lista-cuentas-admin").innerHTML = html;
                 renderCuentasMultiples(cuentasDisponibles);
-                
+
                 // Actualizar dashboard con cuentas
                 if (window.clientesData) {
                     actualizarDashboard(window.clientesData, cuentasData);
@@ -1936,7 +2080,7 @@
                 snap.forEach(d => clientesArray.push({ id: d.id, ...d.data() }));
                 window.clientesData = clientesArray;
                 renderClientes(clientesArray);
-                
+
                 // Actualizar dashboard
                 onSnapshot(collection(db, "cuentas"), snap2 => {
                     let cuentasData = [];
@@ -1990,6 +2134,9 @@
                 });
                 document.getElementById("lista-codigos-container").innerHTML = html || "<p style='opacity:0.6;'>No hay códigos generados.</p>";
             });
+
+            // ===== NUEVO: CARGAR REGISTROS SORTEO =====
+            cargarRegistrosSorteo();
         }
 
         window.toggleUser = async (e, s) => { await updateDoc(doc(db, "usuarios_permisos", e), { estado: s }); };
