@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
+        /* ===== TODOS LOS ESTILOS IGUALES ===== */
         :root {
             --bg: #0a0e1a;
             --card-bg: #111827;
@@ -957,6 +958,39 @@
             margin-bottom: 15px;
         }
 
+        /* ===== REGISTRADOS ===== */
+        .registrados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .registrado-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .registrado-card:hover {
+            border-color: var(--azul-electrico);
+            transform: translateY(-3px);
+        }
+        .registrado-card .registrado-nombre {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .registrado-card .registrado-detalle {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin: 4px 0;
+        }
+        .registrado-card .registrado-fecha {
+            font-size: 0.75rem;
+            opacity: 0.5;
+        }
+
         /* ===== LOGIN ===== */
         .login-card {
             max-width: 420px;
@@ -997,39 +1031,6 @@
         .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
-        }
-
-        /* ===== REGISTRADOS SORTEO ===== */
-        .registrados-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .registrado-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-        .registrado-card:hover {
-            border-color: var(--azul-electrico);
-            transform: translateY(-3px);
-        }
-        .registrado-card .registrado-nombre {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        .registrado-card .registrado-detalle {
-            font-size: 0.85rem;
-            opacity: 0.7;
-            margin: 4px 0;
-        }
-        .registrado-card .registrado-fecha {
-            font-size: 0.75rem;
-            opacity: 0.5;
         }
 
         @media (max-width: 768px) {
@@ -1204,7 +1205,7 @@
                 </div>
             </div>
 
-            <!-- ===== PEDIR CUENTA (con registro sorteo) ===== -->
+            <!-- ===== PEDIR CUENTA ===== -->
             <div id="p-solicitar" class="page">
                 <div class="card">
                     <div class="card-title">🎟️ Reclamar Cuenta VIP</div>
@@ -1214,7 +1215,7 @@
                     <div id="resultado-reclamo" style="margin-top: 15px;"></div>
                 </div>
 
-                <!-- ===== FORMULARIO REGISTRO SORTEO ===== -->
+                <!-- ===== REGISTRO SORTEO ===== -->
                 <div class="card">
                     <div class="card-title">🎰 Regístrate para el Sorteo</div>
                     <p class="card-subtitle">Completa tus datos para participar en el próximo sorteo VIP</p>
@@ -1491,16 +1492,37 @@
             }
         };
 
+        // ===== EVENTO LOGIN =====
         document.addEventListener('DOMContentLoaded', () => {
+            // Botón login
             const btnLogin = document.getElementById('btn-login');
-            if (btnLogin) btnLogin.addEventListener('click', window.handleLogin);
+            if (btnLogin) {
+                btnLogin.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.handleLogin();
+                });
+            }
             
-            document.getElementById('log-pass')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') window.handleLogin();
-            });
-            document.getElementById('log-email')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') window.handleLogin();
-            });
+            // Enter para login
+            const passInput = document.getElementById('log-pass');
+            const emailInput = document.getElementById('log-email');
+            
+            if (passInput) {
+                passInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        window.handleLogin();
+                    }
+                });
+            }
+            if (emailInput) {
+                emailInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        window.handleLogin();
+                    }
+                });
+            }
         });
 
         window.logout = () => signOut(auth).then(() => location.reload());
@@ -2180,7 +2202,6 @@
                 });
                 renderRegistrados(registradosData);
                 
-                // Actualizar dashboard
                 document.getElementById('total-registrados').textContent = registradosData.length;
             });
 
