@@ -711,14 +711,59 @@
             word-break: break-all;
         }
 
-        #select-plataforma, #stock-info, #btn-pedir, #resultado-entrega, #c-cliente-nombre, #c-cliente-phone {
-            display: none !important;
+        /* ===== OCULTAR ELEMENTOS QUE NO SE USAN ===== */
+        #select-plataforma, #stock-info, #btn-pedir, #resultado-entrega, 
+        #c-cliente-nombre, #c-cliente-phone, #log-email, #log-pass {
+            display: block !important;
+            width: 100% !important;
         }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--azul-electrico); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--rosa); }
+
+        /* ===== LOGIN ===== */
+        .login-card {
+            max-width: 420px;
+            margin: 40px auto;
+            text-align: center;
+        }
+        .login-card .logo-grande {
+            font-size: 64px;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--rosa));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .login-card h1 {
+            font-weight: 900;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--rosa));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .login-card p {
+            opacity: 0.6;
+            margin: 0;
+        }
+
+        .btn-login {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, var(--azul-electrico), var(--rosa));
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
 
         @media (max-width: 768px) {
             .clientes-grid { grid-template-columns: 1fr; }
@@ -735,23 +780,28 @@
         @media (max-width: 480px) {
             .nav-btn { font-size: 10px; padding: 6px 10px; }
             .logo-area { font-size: 0.8rem; padding: 4px 10px; }
+            .login-card { margin: 20px auto; padding: 16px; }
+            .login-card .logo-grande { font-size: 48px; }
+            .login-card h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- ===== LOGIN ===== -->
     <div id="login" class="container">
-        <div class="card" style="text-align: center; max-width: 420px; margin: 40px auto;">
-            <div style="font-size: 64px; background: linear-gradient(135deg, var(--azul-electrico), var(--rosa)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💎🌸💎</div>
-            <h1 style="font-weight: 900; font-size: 2rem; background: linear-gradient(135deg, var(--azul-electrico), var(--rosa)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MEMBRESÍA ÉLITE</h1>
-            <p style="opacity: 0.6; margin: 0;">Sistema de Gestión VIP</p>
+        <div class="card login-card">
+            <div class="logo-grande">💎🌸💎</div>
+            <h1>MEMBRESÍA ÉLITE</h1>
+            <p>Sistema de Gestión VIP</p>
             <input id="log-email" placeholder="Usuario" style="margin-top: 20px;">
             <input id="log-pass" type="password" placeholder="Clave">
-            <button onclick="handleLogin()" style="margin-top: 16px;">⚡ INGRESAR ⚡</button>
+            <button class="btn-login" id="btn-login">⚡ INGRESAR ⚡</button>
         </div>
     </div>
 
+    <!-- ===== APP ===== -->
     <div id="app" style="display:none">
 
         <div class="sidebar">
@@ -1003,17 +1053,41 @@
 
         // ===== LOGIN =====
         window.handleLogin = async () => {
-            const e = document.getElementById("log-email").value.trim();
-            const p = document.getElementById("log-pass").value.trim();
-            if (!e || !p) return alert("Completa ambos campos.");
+            const email = document.getElementById("log-email").value.trim();
+            const password = document.getElementById("log-pass").value.trim();
+            if (!email || !password) return alert("Completa ambos campos.");
+            
             try {
-                if (e !== MASTER) {
-                    const userDoc = await getDoc(doc(db, "usuarios_permisos", e));
-                    if (!userDoc.exists() || !userDoc.data().estado) return alert("No autorizado.");
+                // Verificar si es el master o un usuario autorizado
+                if (email !== MASTER) {
+                    const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
+                    if (!userDoc.exists() || !userDoc.data().estado) {
+                        return alert("❌ Usuario no autorizado.");
+                    }
                 }
-                await signInWithEmailAndPassword(auth, e, p);
-            } catch (err) { alert("Error de credenciales."); }
+                
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                alert("❌ Error de credenciales: " + err.message);
+            }
         };
+
+        // ===== EVENTO CLICK PARA LOGIN =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnLogin = document.getElementById('btn-login');
+            if (btnLogin) {
+                btnLogin.addEventListener('click', window.handleLogin);
+            }
+            
+            // Enter key para login
+            document.getElementById('log-pass')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') window.handleLogin();
+            });
+            document.getElementById('log-email')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') window.handleLogin();
+            });
+        });
+
         window.logout = () => signOut(auth).then(() => location.reload());
 
         // ===== FUNCIONES DE FECHAS =====
@@ -1121,12 +1195,6 @@
                 alert(`✅ Fecha actualizada a: ${nuevaFecha}`);
             }
         };
-
-        function sumarDias(fechaStr, dias) {
-            const fecha = new Date(fechaStr);
-            fecha.setDate(fecha.getDate() + dias);
-            return fecha.toISOString().split('T')[0];
-        }
 
         window.agregarCliente = async () => {
             const nombre = document.getElementById("cli-nombre").value.trim();
@@ -1776,10 +1844,25 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Configurar todos los nav-btn
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 const pageId = btn.getAttribute('data-page');
                 if (pageId) btn.addEventListener('click', () => showPage(pageId, btn));
             });
+            
+            // Login con Enter
+            const emailInput = document.getElementById('log-email');
+            const passInput = document.getElementById('log-pass');
+            if (emailInput) {
+                emailInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') window.handleLogin();
+                });
+            }
+            if (passInput) {
+                passInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') window.handleLogin();
+                });
+            }
         });
     </script>
 </body>
