@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MEMBRESÍA VIP 💎 - ICIÓN ÉLITE</title>
+    <title>MEMBRESÍA VIP 💎 - EDICIÓN ÉLITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* ... (estilos existentes) ... */
         :root {
             --bg: #0a0e1a;
             --card-bg: #111827;
@@ -980,6 +979,46 @@
             box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
         }
 
+        /* ===== REGISTRO SORTEO (OCULTO POR DEFECTO) ===== */
+        .registro-sorteo-box {
+            border: 2px solid var(--azul-electrico);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--input-bg);
+            display: none;
+        }
+        .registro-sorteo-box.visible {
+            display: block;
+        }
+        .registro-sorteo-box h3 {
+            margin-top: 0;
+            color: var(--azul-electrico);
+            font-size: 1.2rem;
+        }
+        .registro-sorteo-box .mensaje-registro {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .btn-registro-sorteo {
+            background: linear-gradient(135deg, #ff6b6b, #ff2d95);
+            color: #fff;
+            font-weight: 800;
+            padding: 14px 20px;
+            border-radius: 16px;
+            border: 2px solid var(--rosa);
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-size: 1.1rem;
+            box-shadow: 0 0 30px rgba(255, 45, 149, 0.3);
+        }
+        .btn-registro-sorteo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(255, 45, 149, 0.5);
+        }
+
         @media (max-width: 768px) {
             .clientes-grid { grid-template-columns: 1fr; }
             .cuentas-entregadas-grid { grid-template-columns: 1fr; }
@@ -992,6 +1031,8 @@
             .container { padding: 12px; }
             .card { padding: 16px; }
             .panel-editar { padding: 20px; margin: 10px; }
+            .registro-sorteo-box { padding: 12px; }
+            .registro-sorteo-box input { font-size: 14px; }
         }
 
         @media (max-width: 480px) {
@@ -1095,7 +1136,7 @@
             <button class="nav-btn admin-only" data-page="p-pedidos">📊 Historial</button>
             <button class="nav-btn admin-only" data-page="p-clientes">👥 Clientes</button>
             <button class="nav-btn admin-only" data-page="p-sorteo">🎰 Sorteo</button>
-            <button class="nav-btn admin-only" data-page="p-registros-sorteo">📋 Registros Sorteo</button> <!-- Nuevo botón -->
+            <button class="nav-btn admin-only" data-page="p-registros-sorteo">📋 Registros Sorteo</button>
             <button class="nav-btn admin-only" data-page="p-codigos">📱 QR</button>
             <button class="nav-btn admin-only" data-page="p-admin">🔐 Admin</button>
             <button class="theme-toggle" onclick="toggleTheme()" style="background: var(--card-bg); color: var(--text); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 700; white-space: nowrap;">🌓 Modo</button>
@@ -1146,8 +1187,26 @@
                 </div>
             </div>
 
-            <!-- ===== PEDIR CUENTA ===== -->
+            <!-- ===== PEDIR CUENTA / RECLAMAR ===== -->
             <div id="p-solicitar" class="page">
+                <!-- BOTÓN PARA REGISTRARSE EN EL SORTEO -->
+                <div class="card">
+                    <button class="btn-registro-sorteo" onclick="toggleRegistroSorteo()">🎯 Registrarse para el Sorteo</button>
+                    <!-- FORMULARIO DE REGISTRO (OCULTO POR DEFECTO) -->
+                    <div id="registro-sorteo-form" class="registro-sorteo-box">
+                        <h3>📝 Completa tus datos para participar</h3>
+                        <p style="opacity:0.7; font-size:0.9rem; margin-bottom:10px;">¡Regístrate y participa en nuestro sorteo exclusivo!</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <input id="registro-nombre" placeholder="Tu nombre completo">
+                            <input id="registro-celular" placeholder="Número de celular">
+                        </div>
+                        <input id="registro-pais" placeholder="País">
+                        <button onclick="registrarParticipante()" style="margin-top: 10px;">✅ Registrarme</button>
+                        <div id="mensaje-registro" class="mensaje-registro"></div>
+                    </div>
+                </div>
+
+                <!-- RECLAMAR CUENTA VIP -->
                 <div class="card">
                     <div class="card-title">🎟️ Reclamar Cuenta VIP</div>
                     <p class="card-subtitle">Ingresa tu código QR único para reclamar tus cuentas</p>
@@ -1280,19 +1339,6 @@
                 <div class="card">
                     <div class="card-title">🎰 Sorteo Élite</div>
                     <p class="card-subtitle">Pega tu lista de participantes (uno por línea) y haz girar la ruleta.</p>
-
-                    <!-- Nuevo formulario de registro -->
-                    <div style="border: 2px solid var(--azul-electrico); border-radius: 16px; padding: 20px; margin-bottom: 20px; background: var(--input-bg);">
-                        <h3 style="margin-top: 0; color: var(--azul-electrico);">📝 Regístrate para el Sorteo</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <input id="registro-nombre" placeholder="Tu nombre completo">
-                            <input id="registro-celular" placeholder="Número de celular">
-                        </div>
-                        <input id="registro-pais" placeholder="País">
-                        <button onclick="registrarParticipante()" style="margin-top: 10px;">✅ Registrarme</button>
-                        <div id="mensaje-registro" style="margin-top: 10px;"></div>
-                    </div>
-
                     <textarea id="participantes-input" class="participantes-area" placeholder="Ej:&#10;Juan Pérez&#10;María García&#10;Carlos López"></textarea>
                     <div class="flex-btns" style="justify-content: center;">
                         <button onclick="cargarParticipantes()" style="background: linear-gradient(135deg, var(--azul-electrico), var(--azul-electrico-dark));">📥 Cargar lista</button>
@@ -1331,11 +1377,11 @@
                 </div>
             </div>
 
-            <!-- ===== REGISTROS SORTEO (NUEVA PÁGINA) ===== -->
+            <!-- ===== REGISTROS SORTEO ===== -->
             <div id="p-registros-sorteo" class="page">
                 <div class="card">
                     <div class="card-title">📋 Registros del Sorteo</div>
-                    <p class="card-subtitle">Lista de todos los participantes registrados en el sorteo.</p>
+                    <p class="card-subtitle">Lista de todos los participantes registrados para el sorteo.</p>
                     <button class="btn-small btn-success" onclick="copiarListaRegistrados()" style="margin-bottom: 15px;">📋 Copiar Lista para Ruleta</button>
                     <div class="table-container">
                         <table>
@@ -1345,7 +1391,7 @@
                                     <th>Nombre</th>
                                     <th>Celular</th>
                                     <th>País</th>
-                                    <th>Fecha</th>
+                                    <th>Fecha Registro</th>
                                 </tr>
                             </thead>
                             <tbody id="lista-registrados-sorteo">
@@ -1391,7 +1437,6 @@
         let ganadorActual = null;
         let cuentasSeleccionadas = [];
         let clienteEditando = null;
-        let participantesRegistrados = []; // Para la nueva funcionalidad
 
         // ===== CONTADOR FACTURAS =====
         let facturaCounter = 0;
@@ -1451,7 +1496,16 @@
 
         window.logout = () => signOut(auth).then(() => location.reload());
 
-        // ===== NUEVA FUNCIÓN: REGISTRAR PARTICIPANTE =====
+        // ===== MOSTRAR/OCULTAR FORMULARIO DE REGISTRO =====
+        window.toggleRegistroSorteo = () => {
+            const form = document.getElementById('registro-sorteo-form');
+            form.classList.toggle('visible');
+            if (form.classList.contains('visible')) {
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        };
+
+        // ===== REGISTRAR PARTICIPANTE =====
         window.registrarParticipante = async () => {
             const nombre = document.getElementById('registro-nombre').value.trim();
             const celular = document.getElementById('registro-celular').value.trim();
@@ -1478,6 +1532,10 @@
                 if (document.getElementById('p-registros-sorteo').classList.contains('active')) {
                     cargarRegistrosSorteo();
                 }
+                // Ocultar el formulario después de 3 segundos
+                setTimeout(() => {
+                    document.getElementById('registro-sorteo-form').classList.remove('visible');
+                }, 3000);
             } catch (error) {
                 mensajeDiv.innerHTML = `<p style="color: var(--danger);">❌ Error al registrar: ${error.message}</p>`;
             }
@@ -1540,7 +1598,6 @@
                     await navigator.clipboard.writeText(lista);
                     alert('✅ Lista de participantes copiada al portapapeles. Puedes pegarla directamente en la ruleta.');
                 } else {
-                    // Fallback
                     const textarea = document.createElement('textarea');
                     textarea.value = lista;
                     document.body.appendChild(textarea);
@@ -1561,7 +1618,7 @@
             const hora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
             const numeroFactura = `F-${String(facturaCounter).padStart(4, '0')}-${new Date().getFullYear()}`;
 
-            const total = cuentasEntregadas.length * 5; // Precio base por cuenta
+            const total = cuentasEntregadas.length * 5;
 
             const facturaHTML = `
             <div id="factura-pdf" style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: white; color: #1a1a2e; border-radius: 12px;">
@@ -1622,7 +1679,6 @@
             </div>
             `;
 
-            // Crear y descargar PDF
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = facturaHTML;
             tempDiv.style.position = 'fixed';
@@ -1643,7 +1699,6 @@
             html2pdf().set(opt).from(element).save().then(() => {
                 document.body.removeChild(tempDiv);
 
-                // Preguntar si quiere enviar por WhatsApp
                 if (confirm('📱 ¿Deseas enviar la factura por WhatsApp al cliente?')) {
                     const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país):', clienteData.telefono);
                     if (telefono) {
@@ -1802,7 +1857,6 @@
                 if (!docSnap.exists()) return alert("Cliente no encontrado.");
                 const cliente = docSnap.data();
 
-                // Buscar cuentas entregadas a este cliente en el historial
                 const q = query(collection(db, "historial"), where("miembro", "==", cliente.nombre));
                 const historialSnap = await getDocs(q);
                 const cuentas = historialSnap.docs.map(d => ({ app: d.data().app, datos: d.data().app }));
@@ -1889,7 +1943,6 @@
             document.getElementById('clientes-vencer').textContent = clientesPorVencer.length;
             document.getElementById('ingresos-totales').textContent = `$${ingresos.toFixed(2)}`;
 
-            // Alertas
             const alertasContainer = document.getElementById('alertas-container');
             if (clientesPorVencer.length === 0) {
                 alertasContainer.innerHTML = '<p style="opacity:0.6;">✅ No hay clientes próximos a vencer.</p>';
@@ -1905,7 +1958,6 @@
                 }).join('');
             }
 
-            // Últimos clientes
             const ultimos = clientes.slice(-5).reverse();
             const ultimosContainer = document.getElementById('ultimos-clientes');
             if (ultimos.length === 0) {
@@ -2026,7 +2078,6 @@
                 document.getElementById("lista-cuentas-admin").innerHTML = html;
                 renderCuentasMultiples(cuentasDisponibles);
 
-                // Actualizar dashboard con cuentas
                 if (window.clientesData) {
                     actualizarDashboard(window.clientesData, cuentasData);
                 }
@@ -2081,7 +2132,6 @@
                 window.clientesData = clientesArray;
                 renderClientes(clientesArray);
 
-                // Actualizar dashboard
                 onSnapshot(collection(db, "cuentas"), snap2 => {
                     let cuentasData = [];
                     snap2.forEach(d => cuentasData.push(d.data()));
@@ -2135,7 +2185,7 @@
                 document.getElementById("lista-codigos-container").innerHTML = html || "<p style='opacity:0.6;'>No hay códigos generados.</p>";
             });
 
-            // ===== NUEVO: CARGAR REGISTROS SORTEO =====
+            // Cargar registros del sorteo
             cargarRegistrosSorteo();
         }
 
