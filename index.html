@@ -61,6 +61,41 @@
   ::-webkit-scrollbar-thumb { background: var(--rojo-leon); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--celeste-leon); }
 
+  /* ===== NOTIFICACIÓN ===== */
+  .notification-badge {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: var(--rojo-leon);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    z-index: 9999;
+    box-shadow: var(--shadow-glow);
+    border: 2px solid var(--rojo-leon-claro);
+    display: none;
+    animation: slideIn 0.3s ease;
+    max-width: 350px;
+    cursor: pointer;
+  }
+  .notification-badge.show { display: block; }
+  .notification-badge .noti-title { font-weight: 700; font-size: 0.9rem; }
+  .notification-badge .noti-body { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; }
+  .notification-badge .noti-close {
+    float: right;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
   /* ===== LOGIN ===== */
   .login-container {
     min-height: 100vh;
@@ -199,6 +234,8 @@
   .badge-verde { background: var(--verde-leon); color: #fff; }
   .badge-celeste { background: var(--celeste-leon); color: #fff; }
   .badge-oro { background: #f59e0b; color: #1a1a2e; }
+  .badge-muerto { background: #444; color: #fff; }
+  .badge-vivo { background: var(--verde-leon); color: #fff; }
 
   .flex-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
@@ -471,6 +508,41 @@
   .modal-content .result-box .error { color: var(--rojo-leon-claro); }
   .modal-content .result-box .info { color: var(--celeste-leon-claro); }
 
+  /* ===== URL CHECKER ===== */
+  .url-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 11px;
+    display: inline-block;
+  }
+  .url-status.viva { background: var(--verde-leon); color: #fff; }
+  .url-status.muerta { background: #444; color: #fff; }
+  .url-status.checking { background: var(--celeste-leon); color: #fff; animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .url-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .url-item .url-text {
+    flex: 1;
+    font-size: 13px;
+    word-break: break-all;
+    min-width: 150px;
+  }
+  .url-item .url-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .url-item .url-actions button { width: auto; padding: 4px 10px; font-size: 10px; margin: 0; }
+
   @media (max-width: 768px) {
     .clientes-grid { grid-template-columns: 1fr; }
     .scan-grid { grid-template-columns: 1fr 1fr; }
@@ -482,11 +554,20 @@
     .card { padding: 14px; }
     .login-card { padding: 30px 20px; }
     .modal-content { padding: 20px; }
+    .url-item { flex-direction: column; align-items: stretch; }
+    .url-item .url-actions { justify-content: center; }
   }
   @media (max-width: 480px) { .scan-grid { grid-template-columns: 1fr; } .dashboard-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
+
+<!-- ===== NOTIFICACIÓN ===== -->
+<div class="notification-badge" id="notificationBadge" onclick="abrirUsuariosDesdeNotificacion()">
+  <button class="noti-close" onclick="event.stopPropagation(); cerrarNotificacion();">✕</button>
+  <div class="noti-title">🔔 Nuevo registro pendiente</div>
+  <div class="noti-body" id="notiBody">Un usuario necesita tu aprobación.</div>
+</div>
 
 <!-- ===== LOGIN / REGISTRO ===== -->
 <div id="loginContainer" class="login-container">
@@ -524,6 +605,7 @@
     <button class="nav-btn" data-page="p-scanner">📡 Scanner</button>
     <button class="nav-btn" data-page="p-hits">💾 Hits</button>
     <button class="nav-btn" data-page="p-clientes">👥 Clientes</button>
+    <button class="nav-btn" data-page="p-urls">🔗 URLs</button>
     <button class="nav-btn" id="btnAdminUsers" data-page="p-admin-users" style="display:none;">👑 Usuarios</button>
     <button class="nav-btn" data-page="p-settings">⚙️</button>
     <button onclick="handleLogout()" style="background:var(--gradient-fire); color:#fff; padding:6px 14px; border-radius:40px; border:none; cursor:pointer; font-weight:700; font-size:11px; white-space:nowrap; margin-left:auto;">🚪 Salir</button>
@@ -538,7 +620,7 @@
         <div class="dashboard-grid" id="dashboard-stats">
           <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-number" id="total-hits">0</div><div class="stat-label">Total Hits</div></div>
           <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-clientes">0</div><div class="stat-label">Total Clientes</div></div>
-          <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-number" id="total-scans">0</div><div class="stat-label">Scans Realizados</div></div>
+          <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-number" id="total-urls">0</div><div class="stat-label">URLs Guardadas</div></div>
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
         </div>
       </div>
@@ -555,37 +637,32 @@
         <p class="card-subtitle">🦁 ANDYCHE CHAKER EDITION</p>
 
         <div class="scan-grid">
-          <!-- M3U Scanner - FUNCIONA COMPLETO -->
+          <!-- M3U Scanner -->
           <div class="scan-card" onclick="document.getElementById('scanner-panel').scrollIntoView({behavior:'smooth'});">
             <div class="scan-icon">📡</div>
             <div class="scan-name">M3U Scanner</div>
             <div class="scan-desc">Multi-Servidor/Combo</div>
           </div>
-          <!-- EXPLOIT -->
           <div class="scan-card" onclick="abrirModal('exploit')">
             <div class="scan-icon">💥</div>
             <div class="scan-name">Exploit</div>
             <div class="scan-desc">Extraer contenido Vulnerable</div>
           </div>
-          <!-- PANEL SCANNER -->
           <div class="scan-card" onclick="abrirModal('panel')">
             <div class="scan-icon">🔍</div>
             <div class="scan-name">Panel Scanner</div>
             <div class="scan-desc">Extracción de listas</div>
           </div>
-          <!-- BUSCADOR PANELES -->
           <div class="scan-card" onclick="abrirModal('buscador')">
             <div class="scan-icon">🔎</div>
             <div class="scan-name">Buscador Paneles</div>
             <div class="scan-desc">Buscar URL de panel</div>
           </div>
-          <!-- COMBO MAKER -->
           <div class="scan-card" onclick="abrirModal('combo')">
             <div class="scan-icon">🧩</div>
             <div class="scan-name">Combo Maker</div>
             <div class="scan-desc">Generador de credenciales</div>
           </div>
-          <!-- MAC SCANNER -->
           <div class="scan-card" onclick="abrirModal('mac')">
             <div class="scan-icon">📱</div>
             <div class="scan-name">Mac Scanner</div>
@@ -639,7 +716,7 @@
           <div id="currentCombo">Usuario actual: -</div>
         </div>
 
-       <div id="progressContainer2">
+        <div id="progressContainer2">
           <div class="jobTop"><div id="hitsCount2" class="hitsCount">Hits encontrados: <span class="yellow-hit">0</span></div></div>
           <div id="progressBar"><div id="progressBarFill2"></div></div>
           <div id="progressText2">Esperando inicio...</div>
@@ -700,11 +777,32 @@
       </div>
     </div>
 
+    <!-- ===== URLs / BLOG DE NOTAS ===== -->
+    <div id="p-urls" class="page">
+      <div class="card">
+        <div class="card-title">🔗 Blog de URLs - Comprobador</div>
+        <p class="card-subtitle">Guarda URLs y comprueba si están activas.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <input id="urlInput" placeholder="URL (ej: http://panel.com:8080)">
+          <input id="urlNotaInput" placeholder="Nota (opcional)">
+        </div>
+        <div class="flex-btns">
+          <button onclick="agregarURL()">➕ Guardar URL</button>
+          <button class="btn-azul" onclick="comprobarTodasURLs()">🔍 Comprobar Todas</button>
+        </div>
+        
+        <div id="urlsContainer" style="margin-top:15px;">
+          <p style="opacity:0.6;">No hay URLs guardadas.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== ADMIN USERS ===== -->
     <div id="p-admin-users" class="page">
       <div class="card">
         <div class="card-title">👑 Gestión de Usuarios</div>
-        <p class="card-subtitle">Aprobar o eliminar usuarios registrados.</p>
+        <p class="card-subtitle">Aprobar o eliminar usuarios registrados. <span id="pendientes-count" style="color:var(--rojo-leon); font-weight:700;"></span></p>
         <div id="users-list-container"><p style="opacity:0.6;">Cargando usuarios...</p></div>
       </div>
     </div>
@@ -790,6 +888,66 @@
   window.db = db;
   window.ADMIN_EMAIL = ADMIN_EMAIL;
 
+  // ===== NOTIFICACIÓN EN TIEMPO REAL =====
+  let notificacionMostrada = false;
+  let usuariosPendientes = [];
+
+  function mostrarNotificacion(nombre, email) {
+    const badge = document.getElementById('notificationBadge');
+    const body = document.getElementById('notiBody');
+    body.textContent = `👤 ${nombre || email} necesita tu aprobación.`;
+    badge.classList.add('show');
+    notificacionMostrada = true;
+    // Ocultar después de 10 segundos
+    setTimeout(() => {
+      badge.classList.remove('show');
+    }, 10000);
+  }
+
+  function cerrarNotificacion() {
+    document.getElementById('notificationBadge').classList.remove('show');
+    notificacionMostrada = false;
+  }
+
+  window.abrirUsuariosDesdeNotificacion = function() {
+    cerrarNotificacion();
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-admin-users').classList.add('active');
+    document.querySelector('[data-page="p-admin-users"]').classList.add('active');
+  };
+
+  // ===== ESCUCHAR REGISTROS EN TIEMPO REAL =====
+  function escucharNuevosUsuarios() {
+    const q = query(collection(db, "usuarios_permisos"), where("estado", "==", false));
+    onSnapshot(q, (snap) => {
+      usuariosPendientes = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        if (docSnap.id !== ADMIN_EMAIL) {
+          usuariosPendientes.push({ email: docSnap.id, nombre: data.nombre });
+        }
+      });
+      
+      // Actualizar contador
+      const pendCount = document.getElementById('pendientes-count');
+      if (pendCount) {
+        pendCount.textContent = usuariosPendientes.length > 0 ? `(${usuariosPendientes.length} pendientes)` : '';
+      }
+      
+      // Mostrar notificación si hay nuevos pendientes y el admin está logueado
+      if (usuariosPendientes.length > 0 && !notificacionMostrada) {
+        const ultimo = usuariosPendientes[usuariosPendientes.length - 1];
+        mostrarNotificacion(ultimo.nombre, ultimo.email);
+      }
+      
+      // Actualizar lista de usuarios si la página está visible
+      if (document.getElementById('p-admin-users').classList.contains('active')) {
+        cargarUsuariosPendientes();
+      }
+    });
+  }
+
   // ===== LOGIN / REGISTRO =====
   window.toggleAuthMode = (mode) => {
     document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
@@ -816,10 +974,12 @@
       document.getElementById('appContainer').style.display = 'block';
       if (email === ADMIN_EMAIL) {
         document.getElementById('btnAdminUsers').style.display = 'inline-flex';
+        escucharNuevosUsuarios();
         cargarUsuariosPendientes();
       }
       renderClientes();
       renderBancoHits();
+      renderURLs();
       actualizarDashboard();
     } catch (err) {
       msg.textContent = '❌ Error: ' + err.message;
@@ -858,6 +1018,7 @@
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('appContainer').style.display = 'none';
     document.getElementById('loginMessage').textContent = '';
+    notificacionMostrada = false;
   };
 
   async function cargarUsuariosPendientes() {
@@ -899,14 +1060,21 @@
 
   window.aprobarUsuario = async (email) => {
     if (!confirm(`¿Aprobar a ${email}?`)) return;
-    try { await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); alert('✅ Usuario aprobado'); cargarUsuariosPendientes(); }
-    catch (err) { alert('❌ Error: ' + err.message); }
+    try { 
+      await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); 
+      alert('✅ Usuario aprobado');
+      cargarUsuariosPendientes();
+      cerrarNotificacion();
+    } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
   window.eliminarUsuario = async (email) => {
     if (!confirm(`⚠️ ¿Eliminar a ${email}?`)) return;
-    try { await deleteDoc(doc(db, "usuarios_permisos", email)); alert('✅ Usuario eliminado'); cargarUsuariosPendientes(); }
-    catch (err) { alert('❌ Error: ' + err.message); }
+    try { 
+      await deleteDoc(doc(db, "usuarios_permisos", email)); 
+      alert('✅ Usuario eliminado');
+      cargarUsuariosPendientes();
+    } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
   onAuthStateChanged(auth, async (user) => {
@@ -923,10 +1091,12 @@
         document.getElementById('appContainer').style.display = 'block';
         if (email === ADMIN_EMAIL) {
           document.getElementById('btnAdminUsers').style.display = 'inline-flex';
+          escucharNuevosUsuarios();
           cargarUsuariosPendientes();
         }
         renderClientes();
         renderBancoHits();
+        renderURLs();
         actualizarDashboard();
       } catch (err) { console.error('Error:', err); }
     } else {
@@ -1079,6 +1249,8 @@
     }
     const clientes = getClientesDB();
     document.getElementById('total-clientes').textContent = clientes.length;
+    const urls = getURLsDB();
+    document.getElementById('total-urls').textContent = urls.length;
   };
 
   // ============================================================
@@ -1243,6 +1415,141 @@
   };
 
   // ============================================================
+  // URLs / BLOG DE NOTAS (LOCALSTORAGE)
+  // ============================================================
+  const URLS_KEY = 'andyche_urls_db';
+
+  window.getURLsDB = function() {
+    try { return JSON.parse(localStorage.getItem(URLS_KEY)) || []; } catch { return []; }
+  };
+
+  window.saveURLsDB = function(urls) {
+    localStorage.setItem(URLS_KEY, JSON.stringify(urls));
+    actualizarDashboard();
+  };
+
+  window.agregarURL = function() {
+    const url = document.getElementById('urlInput').value.trim();
+    const nota = document.getElementById('urlNotaInput').value.trim();
+    if (!url) return alert('Ingresa una URL válida.');
+    
+    const urls = getURLsDB();
+    urls.push({
+      id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      url: url,
+      nota: nota || '',
+      estado: 'desconocido',
+      fecha: new Date().toISOString()
+    });
+    saveURLsDB(urls);
+    renderURLs();
+    document.getElementById('urlInput').value = '';
+    document.getElementById('urlNotaInput').value = '';
+  };
+
+  window.eliminarURL = function(id) {
+    if (!confirm('¿Eliminar esta URL?')) return;
+    let urls = getURLsDB();
+    urls = urls.filter(u => u.id !== id);
+    saveURLsDB(urls);
+    renderURLs();
+  };
+
+  window.usarURLEnScanner = function(url) {
+    // Limpiar URL (quitar http/https si tiene)
+    let cleanUrl = url.replace(/^https?:\/\//, '');
+    // Quitar / al final
+    cleanUrl = cleanUrl.replace(/\/$/, '');
+    document.getElementById('hostInput').value = cleanUrl;
+    // Cambiar a pestaña scanner
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-scanner').classList.add('active');
+    document.querySelector('[data-page="p-scanner"]').classList.add('active');
+    // Scroll al panel
+    setTimeout(() => {
+      document.getElementById('scanner-panel').scrollIntoView({behavior: 'smooth'});
+    }, 300);
+  };
+
+  window.comprobarURL = async function(id) {
+    const urls = getURLsDB();
+    const idx = urls.findIndex(u => u.id === id);
+    if (idx === -1) return;
+    
+    urls[idx].estado = 'checking';
+    saveURLsDB(urls);
+    renderURLs();
+    
+    const url = urls[idx].url;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(url, { 
+        method: 'HEAD',
+        signal: controller.signal,
+        mode: 'no-cors'
+      });
+      clearTimeout(timeout);
+      urls[idx].estado = 'viva';
+    } catch (e) {
+      // Intentar con GET si HEAD falla
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        const res = await fetch(url, { 
+          signal: controller.signal,
+          mode: 'no-cors'
+        });
+        clearTimeout(timeout);
+        urls[idx].estado = 'viva';
+      } catch (e2) {
+        urls[idx].estado = 'muerta';
+      }
+    }
+    saveURLsDB(urls);
+    renderURLs();
+  };
+
+  window.comprobarTodasURLs = function() {
+    const urls = getURLsDB();
+    if (!urls.length) return alert('No hay URLs para comprobar.');
+    urls.forEach(u => comprobarURL(u.id));
+  };
+
+  window.renderURLs = function() {
+    const container = document.getElementById('urlsContainer');
+    const urls = getURLsDB();
+    if (!urls.length) {
+      container.innerHTML = '<p style="opacity:0.6;">No hay URLs guardadas.</p>';
+      return;
+    }
+    let html = '';
+    const sorted = [...urls].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    sorted.forEach(u => {
+      const estadoText = u.estado === 'viva' ? '✅ VIVA' : u.estado === 'muerta' ? '❌ MUERTA' : u.estado === 'checking' ? '⏳ Comprobando...' : '❓ Desconocido';
+      const estadoClass = u.estado === 'viva' ? 'viva' : u.estado === 'muerta' ? 'muerta' : u.estado === 'checking' ? 'checking' : '';
+      const fecha = new Date(u.fecha).toLocaleString();
+      html += `
+        <div class="url-item">
+          <span class="url-text">
+            <strong>${u.url}</strong>
+            ${u.nota ? `<span style="opacity:0.6; font-size:11px; display:block;">📝 ${u.nota}</span>` : ''}
+            <span style="font-size:10px; opacity:0.4;">${fecha}</span>
+          </span>
+          <span class="url-status ${estadoClass}">${estadoText}</span>
+          <div class="url-actions">
+            <button class="btn-small btn-azul" onclick="comprobarURL('${u.id}')">🔍</button>
+            <button class="btn-small btn-success" onclick="usarURLEnScanner('${u.url}')">📡 Scan</button>
+            <button class="btn-small btn-danger" onclick="eliminarURL('${u.id}')">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  };
+
+  // ============================================================
   // NAVEGACIÓN
   // ============================================================
   document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1253,6 +1560,9 @@
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Recargar listas si es necesario
+        if (pageId === 'p-admin-users') cargarUsuariosPendientes();
+        if (pageId === 'p-urls') renderURLs();
       });
     }
   });
@@ -1336,7 +1646,6 @@
     modalOverlay.classList.remove('active');
   };
 
-  // Cerrar modal click fuera
   modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) cerrarModal();
   });
@@ -1345,19 +1654,11 @@
   // EJECUTAR FUNCIONES
   // ============================================================
 
-  // ---- EXPLOIT ----
   window.ejecutarExploit = function() {
     const host = document.getElementById('exploitHost').value.trim();
-    const combo = document.getElementById('exploitCombo').value.trim();
     const result = document.getElementById('exploitResult');
-
-    if (!host) {
-      result.innerHTML = '<span class="error">❌ Ingresa un host objetivo.</span>';
-      return;
-    }
-
+    if (!host) { result.innerHTML = '<span class="error">❌ Ingresa un host objetivo.</span>'; return; }
     result.innerHTML = '<span class="info">⏳ Escaneando vulnerabilidades...</span>';
-
     setTimeout(() => {
       const found = Math.floor(Math.random() * 5) + 1;
       let html = `<span class="found">✅ Se encontraron ${found} vulnerabilidades:</span>\n\n`;
@@ -1370,44 +1671,26 @@
     }, 1500 + Math.random() * 1000);
   };
 
-  // ---- PANEL SCANNER ----
   window.ejecutarPanelScanner = function() {
     const host = document.getElementById('panelHost').value.trim();
     const result = document.getElementById('panelResult');
-
-    if (!host) {
-      result.innerHTML = '<span class="error">❌ Ingresa un dominio o IP.</span>';
-      return;
-    }
-
+    if (!host) { result.innerHTML = '<span class="error">❌ Ingresa un dominio o IP.</span>'; return; }
     result.innerHTML = '<span class="info">⏳ Escaneando panel...</span>';
-
     setTimeout(() => {
       const listas = ['lista1.m3u', 'lista2.m3u', 'canales.m3u', 'vip.m3u', 'deportes.m3u'];
       const encontradas = listas.filter(() => Math.random() > 0.4);
       let html = `<span class="found">✅ Listas encontradas (${encontradas.length}):</span>\n\n`;
-      encontradas.forEach(l => {
-        html += `📺 ${host}/${l}\n`;
-      });
-      if (encontradas.length === 0) {
-        html = '<span class="error">❌ No se encontraron listas en este panel.</span>';
-      }
+      encontradas.forEach(l => { html += `📺 ${host}/${l}\n`; });
+      if (encontradas.length === 0) html = '<span class="error">❌ No se encontraron listas en este panel.</span>';
       result.innerHTML = html;
     }, 1500 + Math.random() * 1000);
   };
 
-  // ---- BUSCADOR DE PANELES ----
   window.ejecutarBuscadorPaneles = function() {
     const keyword = document.getElementById('buscadorKeyword').value.trim();
     const result = document.getElementById('buscadorResult');
-
-    if (!keyword) {
-      result.innerHTML = '<span class="error">❌ Ingresa una palabra clave.</span>';
-      return;
-    }
-
+    if (!keyword) { result.innerHTML = '<span class="error">❌ Ingresa una palabra clave.</span>'; return; }
     result.innerHTML = '<span class="info">⏳ Buscando paneles...</span>';
-
     setTimeout(() => {
       const paneles = [
         `http://panel-${keyword}1.com:8080`,
@@ -1418,30 +1701,19 @@
       ];
       const encontrados = paneles.filter(() => Math.random() > 0.3);
       let html = `<span class="found">✅ Paneles encontrados (${encontrados.length}):</span>\n\n`;
-      encontrados.forEach(p => {
-        html += `🔗 ${p}\n`;
-      });
-      if (encontrados.length === 0) {
-        html = '<span class="error">❌ No se encontraron paneles para esta búsqueda.</span>';
-      }
+      encontrados.forEach(p => { html += `🔗 ${p}\n`; });
+      if (encontrados.length === 0) html = '<span class="error">❌ No se encontraron paneles para esta búsqueda.</span>';
       result.innerHTML = html;
     }, 1800 + Math.random() * 1200);
   };
 
-  // ---- COMBO MAKER ----
   window.ejecutarComboMaker = function() {
     const userBase = document.getElementById('comboUser').value.trim() || 'user';
     const passBase = document.getElementById('comboPass').value.trim() || 'pass';
     const cantidad = parseInt(document.getElementById('comboCantidad').value) || 10;
     const result = document.getElementById('comboResult');
-
-    if (cantidad < 1 || cantidad > 100) {
-      result.innerHTML = '<span class="error">❌ La cantidad debe estar entre 1 y 100.</span>';
-      return;
-    }
-
+    if (cantidad < 1 || cantidad > 100) { result.innerHTML = '<span class="error">❌ Cantidad entre 1 y 100.</span>'; return; }
     result.innerHTML = `<span class="info">⏳ Generando ${cantidad} combos...</span>`;
-
     setTimeout(() => {
       let html = `<span class="found">✅ ${cantidad} combos generados:</span>\n\n`;
       const suffixes = ['2024', '2025', 'admin', 'test', '123', '1234', '!', '123456'];
@@ -1455,19 +1727,12 @@
     }, 1000);
   };
 
-  // ---- MAC SCANNER ----
   window.ejecutarMacScanner = function() {
     const portal = document.getElementById('macPortal').value.trim();
     const prefix = document.getElementById('macPrefix').value.trim() || '00:1A:79';
     const result = document.getElementById('macResult');
-
-    if (!portal) {
-      result.innerHTML = '<span class="error">❌ Ingresa la URL del portal.</span>';
-      return;
-    }
-
+    if (!portal) { result.innerHTML = '<span class="error">❌ Ingresa la URL del portal.</span>'; return; }
     result.innerHTML = '<span class="info">⏳ Escaneando MACs en el portal...</span>';
-
     setTimeout(() => {
       const found = Math.floor(Math.random() * 6) + 1;
       let html = `<span class="found">✅ MACs activas encontradas (${found}):</span>\n\n`;
@@ -1483,7 +1748,6 @@
   // ============================================================
   // SCANNER M3U (COMPLETO - MUNRRA)
   // ============================================================
-  // ===== TRADUCCIONES =====
   const i18n = {
     es: {
       hostLabel:"Panel (host con o sin http/https):", hostPH:"ej: lista.com:8080",
@@ -1577,7 +1841,7 @@
   }
   applyLang();
 
-  // ===== FUNCIONES DEL SCANNER M3U (COMPLETO) =====
+  // ===== FUNCIONES DEL SCANNER M3U =====
   function randomUA(){
     const uas = [
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
@@ -2027,6 +2291,7 @@
   // ============================================================
   renderClientes();
   renderBancoHits();
+  renderURLs();
   actualizarDashboard();
   updateStartState();
 
@@ -2042,6 +2307,8 @@
   console.log('  💾 Banco de Hits con contador');
   console.log('  👥 Gestión de Clientes');
   console.log('  👑 Gestión de Usuarios (Firebase)');
+  console.log('  🔗 Blog de URLs + Comprobador');
+  console.log('  🔔 Notificaciones en tiempo real');
 </script>
 
 </body>
