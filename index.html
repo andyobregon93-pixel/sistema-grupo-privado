@@ -61,41 +61,6 @@
   ::-webkit-scrollbar-thumb { background: var(--rojo-leon); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--celeste-leon); }
 
-  /* ===== NOTIFICACIÓN ===== */
-  .notification-badge {
-    position: fixed;
-    top: 70px;
-    right: 20px;
-    background: var(--rojo-leon);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    z-index: 9999;
-    box-shadow: var(--shadow-glow);
-    border: 2px solid var(--rojo-leon-claro);
-    display: none;
-    animation: slideIn 0.3s ease;
-    max-width: 350px;
-    cursor: pointer;
-  }
-  .notification-badge.show { display: block; }
-  .notification-badge .noti-title { font-weight: 700; font-size: 0.9rem; }
-  .notification-badge .noti-body { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; }
-  .notification-badge .noti-close {
-    float: right;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0 4px;
-  }
-
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
   /* ===== LOGIN ===== */
   .login-container {
     min-height: 100vh;
@@ -121,12 +86,51 @@
   .login-card .logo-grande { font-size: 64px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .login-card h1 { font-weight: 900; font-size: 1.8rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Orbitron', monospace; }
   .login-card p { opacity: 0.6; margin: 0; font-size: 0.9rem; }
-  .login-card input { width: 100%; padding: 14px 18px; margin-top: 14px; border-radius: 16px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 1rem; transition: all 0.3s; }
-  .login-card input:focus { outline: none; border-color: var(--celeste-leon); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+  
+  .login-card .input-group {
+    position: relative;
+    margin-top: 14px;
+  }
+  .login-card .input-group input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text);
+    font-size: 1rem;
+    transition: all 0.3s;
+    margin: 0;
+    padding-right: 50px;
+  }
+  .login-card .input-group input:focus {
+    outline: none;
+    border-color: var(--celeste-leon);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  }
+  .login-card .input-group .toggle-pass {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    width: auto;
+    opacity: 0.6;
+    margin: 0;
+  }
+  .login-card .input-group .toggle-pass:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
+
   .login-card .btn-login { width: 100%; padding: 14px; margin-top: 16px; border-radius: 16px; border: none; font-weight: 700; font-size: 1rem; background: var(--gradient); color: #fff; cursor: pointer; transition: all 0.3s; }
   .login-card .btn-login:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
   .login-card .switch-auth { margin-top: 16px; font-size: 0.85rem; opacity: 0.7; cursor: pointer; color: var(--celeste-leon); }
   .login-card .switch-auth:hover { opacity: 1; }
+  .login-card .forgot-pass { margin-top: 10px; font-size: 0.8rem; opacity: 0.5; cursor: pointer; color: var(--celeste-leon); }
+  .login-card .forgot-pass:hover { opacity: 1; }
 
   /* ===== SIDEBAR ===== */
   .sidebar {
@@ -454,6 +458,7 @@
 
   .user-pending { border-left: 4px solid var(--rojo-leon); background: rgba(220, 38, 38, 0.05); }
   .user-approved { border-left: 4px solid var(--verde-leon); }
+  .user-blocked { border-left: 4px solid #666; background: rgba(100, 100, 100, 0.05); opacity: 0.7; }
 
   /* ===== MODAL ===== */
   .modal-overlay {
@@ -543,6 +548,8 @@
   }
   .url-item .url-actions button { width: auto; padding: 4px 10px; font-size: 10px; margin: 0; }
 
+  .badge-bloqueado { background: #666; color: #fff; }
+
   @media (max-width: 768px) {
     .clientes-grid { grid-template-columns: 1fr; }
     .scan-grid { grid-template-columns: 1fr 1fr; }
@@ -562,13 +569,6 @@
 </head>
 <body>
 
-<!-- ===== NOTIFICACIÓN ===== -->
-<div class="notification-badge" id="notificationBadge" onclick="abrirUsuariosDesdeNotificacion()">
-  <button class="noti-close" onclick="event.stopPropagation(); cerrarNotificacion();">✕</button>
-  <div class="noti-title">🔔 Nuevo registro pendiente</div>
-  <div class="noti-body" id="notiBody">Un usuario necesita tu aprobación.</div>
-</div>
-
 <!-- ===== LOGIN / REGISTRO ===== -->
 <div id="loginContainer" class="login-container">
   <div class="login-card" id="loginCard">
@@ -578,18 +578,42 @@
 
     <div id="loginForm">
       <input id="loginEmail" type="email" placeholder="Correo electrónico">
-      <input id="loginPass" type="password" placeholder="Contraseña">
+      <div class="input-group">
+        <input id="loginPass" type="password" placeholder="Contraseña">
+        <button class="toggle-pass" onclick="togglePasswordVisibility('loginPass', this)">👁️</button>
+      </div>
       <button class="btn-login" onclick="handleLogin()">🔐 INICIAR SESIÓN</button>
+      <p class="forgot-pass" onclick="mostrarRecuperarPass()">¿Olvidaste tu contraseña?</p>
       <p class="switch-auth" onclick="toggleAuthMode('register')">¿No tienes cuenta? <strong>Regístrate</strong></p>
     </div>
 
     <div id="registerForm" style="display:none;">
       <input id="registerEmail" type="email" placeholder="Correo electrónico">
-      <input id="registerPass" type="password" placeholder="Contraseña (mínimo 6 caracteres)">
+      <div class="input-group">
+        <input id="registerPass" type="password" placeholder="Contraseña (mínimo 6 caracteres)">
+        <button class="toggle-pass" onclick="togglePasswordVisibility('registerPass', this)">👁️</button>
+      </div>
       <input id="registerName" placeholder="Tu nombre completo">
       <button class="btn-login" onclick="handleRegister()">📝 REGISTRARSE</button>
       <p class="switch-auth" onclick="toggleAuthMode('login')">¿Ya tienes cuenta? <strong>Inicia sesión</strong></p>
       <p style="font-size:0.8rem; opacity:0.5; margin-top:12px;">⚠️ El admin debe aprobar tu cuenta para acceder.</p>
+    </div>
+
+    <div id="forgotForm" style="display:none;">
+      <p style="font-size:0.9rem; opacity:0.7; margin-bottom:10px;">Ingresa tu correo para recibir un código de recuperación.</p>
+      <input id="forgotEmail" type="email" placeholder="Correo electrónico">
+      <div id="forgotCodeSection" style="display:none;">
+        <input id="forgotCode" type="text" placeholder="Código de verificación">
+        <input id="forgotNewPass" type="password" placeholder="Nueva contraseña">
+        <div class="input-group">
+          <input id="forgotNewPassConfirm" type="password" placeholder="Confirmar nueva contraseña">
+          <button class="toggle-pass" onclick="togglePasswordVisibility('forgotNewPassConfirm', this)">👁️</button>
+        </div>
+      </div>
+      <button class="btn-login" onclick="enviarCodigoRecuperacion()" id="btnEnviarCodigo">📧 Enviar código</button>
+      <button class="btn-login" onclick="verificarCodigoRecuperacion()" id="btnVerificarCodigo" style="display:none;">✅ Verificar y cambiar</button>
+      <p class="switch-auth" onclick="toggleAuthMode('login')">← Volver al inicio</p>
+      <div id="forgotMessage" style="margin-top:10px; font-size:0.9rem;"></div>
     </div>
 
     <div id="loginMessage" style="margin-top:12px; font-size:0.9rem;"></div>
@@ -637,7 +661,6 @@
         <p class="card-subtitle">🦁 ANDYCHE CHAKER EDITION</p>
 
         <div class="scan-grid">
-          <!-- M3U Scanner -->
           <div class="scan-card" onclick="document.getElementById('scanner-panel').scrollIntoView({behavior:'smooth'});">
             <div class="scan-icon">📡</div>
             <div class="scan-name">M3U Scanner</div>
@@ -671,7 +694,7 @@
         </div>
       </div>
 
-      <!-- ===== SCANNER PANEL (M3U - COMPLETO) ===== -->
+      <!-- ===== SCANNER PANEL (M3U) ===== -->
       <div id="scanner-panel" class="card">
         <div class="card-title">🔍 M3U Scanner - Multi Combo</div>
 
@@ -781,7 +804,7 @@
     <div id="p-urls" class="page">
       <div class="card">
         <div class="card-title">🔗 Blog de URLs - Comprobador</div>
-        <p class="card-subtitle">Guarda URLs y comprueba si están activas.</p>
+        <p class="card-subtitle">Guarda URLs y comprueba si están activas (conexión REAL).</p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <input id="urlInput" placeholder="URL (ej: http://panel.com:8080)">
@@ -790,6 +813,7 @@
         <div class="flex-btns">
           <button onclick="agregarURL()">➕ Guardar URL</button>
           <button class="btn-azul" onclick="comprobarTodasURLs()">🔍 Comprobar Todas</button>
+          <button class="btn-warning" onclick="limpiarURLsMuertas()">🗑️ Eliminar Muertas</button>
         </div>
         
         <div id="urlsContainer" style="margin-top:15px;">
@@ -802,7 +826,10 @@
     <div id="p-admin-users" class="page">
       <div class="card">
         <div class="card-title">👑 Gestión de Usuarios</div>
-        <p class="card-subtitle">Aprobar o eliminar usuarios registrados. <span id="pendientes-count" style="color:var(--rojo-leon); font-weight:700;"></span></p>
+        <p class="card-subtitle">Aprobar, bloquear o eliminar usuarios registrados.</p>
+        <div class="flex-btns">
+          <button class="btn-azul" onclick="actualizarListaUsuarios()">🔄 Actualizar Lista</button>
+        </div>
         <div id="users-list-container"><p style="opacity:0.6;">Cargando usuarios...</p></div>
       </div>
     </div>
@@ -870,7 +897,7 @@
 <!-- ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -888,74 +915,100 @@
   window.db = db;
   window.ADMIN_EMAIL = ADMIN_EMAIL;
 
-  // ===== NOTIFICACIÓN EN TIEMPO REAL =====
-  let notificacionMostrada = false;
-  let usuariosPendientes = [];
-
-  function mostrarNotificacion(nombre, email) {
-    const badge = document.getElementById('notificationBadge');
-    const body = document.getElementById('notiBody');
-    body.textContent = `👤 ${nombre || email} necesita tu aprobación.`;
-    badge.classList.add('show');
-    notificacionMostrada = true;
-    // Ocultar después de 10 segundos
-    setTimeout(() => {
-      badge.classList.remove('show');
-    }, 10000);
-  }
-
-  function cerrarNotificacion() {
-    document.getElementById('notificationBadge').classList.remove('show');
-    notificacionMostrada = false;
-  }
-
-  window.abrirUsuariosDesdeNotificacion = function() {
-    cerrarNotificacion();
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('p-admin-users').classList.add('active');
-    document.querySelector('[data-page="p-admin-users"]').classList.add('active');
+  // ===== TOGGLE PASSWORD VISIBILITY =====
+  window.togglePasswordVisibility = function(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
   };
 
-  // ===== ESCUCHAR REGISTROS EN TIEMPO REAL =====
-  function escucharNuevosUsuarios() {
-    const q = query(collection(db, "usuarios_permisos"), where("estado", "==", false));
-    onSnapshot(q, (snap) => {
-      usuariosPendientes = [];
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (docSnap.id !== ADMIN_EMAIL) {
-          usuariosPendientes.push({ email: docSnap.id, nombre: data.nombre });
-        }
-      });
+  // ===== RECUPERAR CONTRASEÑA (código en navegador) =====
+  let codigoRecuperacion = '';
+  let emailRecuperacion = '';
+
+  window.mostrarRecuperarPass = function() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'block';
+    document.getElementById('forgotCodeSection').style.display = 'none';
+    document.getElementById('btnEnviarCodigo').style.display = 'block';
+    document.getElementById('btnVerificarCodigo').style.display = 'none';
+    document.getElementById('forgotMessage').textContent = '';
+  };
+
+  window.enviarCodigoRecuperacion = function() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const msg = document.getElementById('forgotMessage');
+    if (!email) { msg.textContent = '⚠️ Ingresa tu correo electrónico.'; return; }
+
+    // Generar código de 6 dígitos
+    codigoRecuperacion = Math.floor(100000 + Math.random() * 900000).toString();
+    emailRecuperacion = email;
+
+    // Mostrar el código en el navegador (simulación)
+    msg.innerHTML = `
+      ✅ Código enviado a <strong>${email}</strong> (simulado)\n
+      📋 <strong style="color:var(--verde-leon); font-size:1.2rem;">Código: ${codigoRecuperacion}</strong>
+    `;
+    document.getElementById('forgotCodeSection').style.display = 'block';
+    document.getElementById('btnEnviarCodigo').style.display = 'none';
+    document.getElementById('btnVerificarCodigo').style.display = 'block';
+
+    // También mostrar en alert para que sea más visible
+    alert(`📧 CÓDIGO DE RECUPERACIÓN\n\nTu código es: ${codigoRecuperacion}\n\nIngrésalo en la página para cambiar tu contraseña.`);
+  };
+
+  window.verificarCodigoRecuperacion = async function() {
+    const code = document.getElementById('forgotCode').value.trim();
+    const newPass = document.getElementById('forgotNewPass').value.trim();
+    const newPassConfirm = document.getElementById('forgotNewPassConfirm').value.trim();
+    const msg = document.getElementById('forgotMessage');
+
+    if (!code) { msg.textContent = '⚠️ Ingresa el código de verificación.'; return; }
+    if (code !== codigoRecuperacion) { msg.textContent = '❌ Código incorrecto. Intenta de nuevo.'; return; }
+    if (!newPass || newPass.length < 6) { msg.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.'; return; }
+    if (newPass !== newPassConfirm) { msg.textContent = '⚠️ Las contraseñas no coinciden.'; return; }
+
+    try {
+      // Intentar cambiar la contraseña en Firebase (solo funciona si el usuario está logueado)
+      // Como no está logueado, usamos sendPasswordResetEmail
+      await sendPasswordResetEmail(auth, emailRecuperacion);
+      msg.innerHTML = `
+        ✅ Se ha enviado un enlace de restablecimiento a <strong>${emailRecuperacion}</strong>\n
+        📧 Revisa tu correo (puede estar en spam).
+      `;
+      // Limpiar campos
+      document.getElementById('forgotCode').value = '';
+      document.getElementById('forgotNewPass').value = '';
+      document.getElementById('forgotNewPassConfirm').value = '';
+      codigoRecuperacion = '';
       
-      // Actualizar contador
-      const pendCount = document.getElementById('pendientes-count');
-      if (pendCount) {
-        pendCount.textContent = usuariosPendientes.length > 0 ? `(${usuariosPendientes.length} pendientes)` : '';
-      }
-      
-      // Mostrar notificación si hay nuevos pendientes y el admin está logueado
-      if (usuariosPendientes.length > 0 && !notificacionMostrada) {
-        const ultimo = usuariosPendientes[usuariosPendientes.length - 1];
-        mostrarNotificacion(ultimo.nombre, ultimo.email);
-      }
-      
-      // Actualizar lista de usuarios si la página está visible
-      if (document.getElementById('p-admin-users').classList.contains('active')) {
-        cargarUsuariosPendientes();
-      }
-    });
-  }
+      // Volver al login después de 3 segundos
+      setTimeout(() => {
+        toggleAuthMode('login');
+        document.getElementById('forgotForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+      }, 3000);
+    } catch (err) {
+      msg.textContent = '❌ Error: ' + err.message;
+    }
+  };
 
   // ===== LOGIN / REGISTRO =====
-  window.toggleAuthMode = (mode) => {
+  window.toggleAuthMode = function(mode) {
     document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
     document.getElementById('registerForm').style.display = mode === 'register' ? 'block' : 'none';
+    document.getElementById('forgotForm').style.display = 'none';
     document.getElementById('loginMessage').textContent = '';
+    document.getElementById('forgotMessage').textContent = '';
   };
 
-  window.handleLogin = async () => {
+  window.handleLogin = async function() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('loginMessage');
@@ -964,8 +1017,8 @@
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, pass);
       const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-      if (!userDoc.exists() || !userDoc.data().estado) {
-        msg.textContent = '⏳ Tu cuenta está pendiente de aprobación. Espera al admin.';
+      if (!userDoc.exists() || userDoc.data().estado === false) {
+        msg.textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
         await signOut(auth);
         return;
       }
@@ -974,8 +1027,7 @@
       document.getElementById('appContainer').style.display = 'block';
       if (email === ADMIN_EMAIL) {
         document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-        escucharNuevosUsuarios();
-        cargarUsuariosPendientes();
+        await cargarUsuariosPendientes();
       }
       renderClientes();
       renderBancoHits();
@@ -986,7 +1038,7 @@
     }
   };
 
-  window.handleRegister = async () => {
+  window.handleRegister = async function() {
     const email = document.getElementById('registerEmail').value.trim();
     const pass = document.getElementById('registerPass').value.trim();
     const name = document.getElementById('registerName').value.trim();
@@ -1013,16 +1065,21 @@
     }
   };
 
-  window.handleLogout = async () => {
+  window.handleLogout = async function() {
     await signOut(auth);
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('appContainer').style.display = 'none';
     document.getElementById('loginMessage').textContent = '';
-    notificacionMostrada = false;
+  };
+
+  // ===== CARGAR USUARIOS (con botón actualizar) =====
+  window.actualizarListaUsuarios = async function() {
+    await cargarUsuariosPendientes();
   };
 
   async function cargarUsuariosPendientes() {
     const container = document.getElementById('users-list-container');
+    container.innerHTML = '<p style="opacity:0.6;">Cargando usuarios...</p>';
     try {
       const q = query(collection(db, "usuarios_permisos"));
       const querySnap = await getDocs(q);
@@ -1035,17 +1092,23 @@
         const data = docSnap.data();
         const email = docSnap.id;
         const esAdmin = email === ADMIN_EMAIL;
-        const estado = data.estado ? '✅ Aprobado' : '⏳ Pendiente';
-        const estadoClass = data.estado ? 'badge-verde' : 'badge-rojo';
+        let estado = '❓ Desconocido';
+        let estadoClass = '';
+        if (data.estado === true) { estado = '✅ Aprobado'; estadoClass = 'badge-verde'; }
+        else if (data.estado === false) { estado = '⏳ Pendiente'; estadoClass = 'badge-rojo'; }
+        else if (data.estado === 'bloqueado') { estado = '🚫 Bloqueado'; estadoClass = 'badge-muerto'; }
         const rol = data.rol || 'seller';
-        html += `<tr class="${data.estado ? 'user-approved' : 'user-pending'}">
+        const bloqueado = data.estado === 'bloqueado';
+        html += `<tr class="${data.estado === true ? 'user-approved' : data.estado === false ? 'user-pending' : 'user-blocked'}">
           <td><strong>${email}</strong> ${esAdmin ? '👑' : ''}</td>
           <td>${data.nombre || 'N/A'}</td>
           <td><span class="badge ${estadoClass}">${estado}</span></td>
           <td>${rol}</td>
           <td>
             ${!esAdmin ? `
-              ${!data.estado ? `<button class="btn-small btn-success" onclick="aprobarUsuario('${email}')">✅ Aprobar</button>` : ''}
+              ${data.estado === false ? `<button class="btn-small btn-success" onclick="aprobarUsuario('${email}')">✅ Aprobar</button>` : ''}
+              ${data.estado === true ? `<button class="btn-small btn-warning" onclick="bloquearUsuario('${email}')">🚫 Bloquear</button>` : ''}
+              ${bloqueado ? `<button class="btn-small btn-success" onclick="desbloquearUsuario('${email}')">🔓 Desbloquear</button>` : ''}
               <button class="btn-small btn-danger" onclick="eliminarUsuario('${email}')">🗑️ Eliminar</button>
             ` : '<span style="opacity:0.5;">Admin</span>'}
           </td>
@@ -1058,22 +1121,39 @@
     }
   }
 
-  window.aprobarUsuario = async (email) => {
+  window.aprobarUsuario = async function(email) {
     if (!confirm(`¿Aprobar a ${email}?`)) return;
     try { 
       await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); 
       alert('✅ Usuario aprobado');
-      cargarUsuariosPendientes();
-      cerrarNotificacion();
+      await cargarUsuariosPendientes();
     } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  window.eliminarUsuario = async (email) => {
-    if (!confirm(`⚠️ ¿Eliminar a ${email}?`)) return;
+  window.bloquearUsuario = async function(email) {
+    if (!confirm(`🚫 ¿Bloquear a ${email}?`)) return;
+    try { 
+      await updateDoc(doc(db, "usuarios_permisos", email), { estado: 'bloqueado' }); 
+      alert('🚫 Usuario bloqueado');
+      await cargarUsuariosPendientes();
+    } catch (err) { alert('❌ Error: ' + err.message); }
+  };
+
+  window.desbloquearUsuario = async function(email) {
+    if (!confirm(`🔓 ¿Desbloquear a ${email}?`)) return;
+    try { 
+      await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); 
+      alert('🔓 Usuario desbloqueado');
+      await cargarUsuariosPendientes();
+    } catch (err) { alert('❌ Error: ' + err.message); }
+  };
+
+  window.eliminarUsuario = async function(email) {
+    if (!confirm(`⚠️ ¿Eliminar permanentemente a ${email}?`)) return;
     try { 
       await deleteDoc(doc(db, "usuarios_permisos", email)); 
       alert('✅ Usuario eliminado');
-      cargarUsuariosPendientes();
+      await cargarUsuariosPendientes();
     } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
@@ -1082,17 +1162,16 @@
       const email = user.email;
       try {
         const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-        if (!userDoc.exists() || !userDoc.data().estado) {
+        if (!userDoc.exists() || userDoc.data().estado === false || userDoc.data().estado === 'bloqueado') {
           await signOut(auth);
-          document.getElementById('loginMessage').textContent = '⏳ Tu cuenta está pendiente de aprobación.';
+          document.getElementById('loginMessage').textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
           return;
         }
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('appContainer').style.display = 'block';
         if (email === ADMIN_EMAIL) {
           document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-          escucharNuevosUsuarios();
-          cargarUsuariosPendientes();
+          await cargarUsuariosPendientes();
         }
         renderClientes();
         renderBancoHits();
@@ -1415,7 +1494,7 @@
   };
 
   // ============================================================
-  // URLs / BLOG DE NOTAS (LOCALSTORAGE)
+  // URLs / BLOG DE NOTAS (LOCALSTORAGE) - CON COMPROBADOR REAL
   // ============================================================
   const URLS_KEY = 'andyche_urls_db';
 
@@ -1433,10 +1512,16 @@
     const nota = document.getElementById('urlNotaInput').value.trim();
     if (!url) return alert('Ingresa una URL válida.');
     
+    // Asegurar que tenga http
+    let urlFinal = url;
+    if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
+      urlFinal = 'http://' + urlFinal;
+    }
+    
     const urls = getURLsDB();
     urls.push({
       id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-      url: url,
+      url: urlFinal,
       nota: nota || '',
       estado: 'desconocido',
       fecha: new Date().toISOString()
@@ -1455,23 +1540,28 @@
     renderURLs();
   };
 
+  window.limpiarURLsMuertas = function() {
+    if (!confirm('¿Eliminar todas las URLs marcadas como MUERTAS?')) return;
+    let urls = getURLsDB();
+    urls = urls.filter(u => u.estado !== 'muerta');
+    saveURLsDB(urls);
+    renderURLs();
+  };
+
   window.usarURLEnScanner = function(url) {
-    // Limpiar URL (quitar http/https si tiene)
     let cleanUrl = url.replace(/^https?:\/\//, '');
-    // Quitar / al final
     cleanUrl = cleanUrl.replace(/\/$/, '');
     document.getElementById('hostInput').value = cleanUrl;
-    // Cambiar a pestaña scanner
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('p-scanner').classList.add('active');
     document.querySelector('[data-page="p-scanner"]').classList.add('active');
-    // Scroll al panel
     setTimeout(() => {
       document.getElementById('scanner-panel').scrollIntoView({behavior: 'smooth'});
     }, 300);
   };
 
+  // ===== COMPROBADOR REAL DE URLs =====
   window.comprobarURL = async function(id) {
     const urls = getURLsDB();
     const idx = urls.findIndex(u => u.id === id);
@@ -1484,29 +1574,46 @@
     const url = urls[idx].url;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      
       const res = await fetch(url, { 
-        method: 'HEAD',
+        method: 'GET',
         signal: controller.signal,
-        mode: 'no-cors'
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
       });
-      clearTimeout(timeout);
-      urls[idx].estado = 'viva';
-    } catch (e) {
-      // Intentar con GET si HEAD falla
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        const res = await fetch(url, { 
-          signal: controller.signal,
-          mode: 'no-cors'
-        });
-        clearTimeout(timeout);
+      
+      clearTimeout(timeoutId);
+      
+      // Si la respuesta es ok o el status es 200-299, está viva
+      if (res.ok || (res.status >= 200 && res.status < 400)) {
         urls[idx].estado = 'viva';
+      } else {
+        urls[idx].estado = 'muerta';
+      }
+    } catch (e) {
+      // Si falla, intentar con HEAD como alternativa
+      try {
+        const controller2 = new AbortController();
+        const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
+        
+        const res2 = await fetch(url, { 
+          method: 'HEAD',
+          signal: controller2.signal,
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+        });
+        
+        clearTimeout(timeoutId2);
+        
+        if (res2.ok || (res2.status >= 200 && res2.status < 400)) {
+          urls[idx].estado = 'viva';
+        } else {
+          urls[idx].estado = 'muerta';
+        }
       } catch (e2) {
         urls[idx].estado = 'muerta';
       }
     }
+    
     saveURLsDB(urls);
     renderURLs();
   };
@@ -1514,7 +1621,18 @@
   window.comprobarTodasURLs = function() {
     const urls = getURLsDB();
     if (!urls.length) return alert('No hay URLs para comprobar.');
-    urls.forEach(u => comprobarURL(u.id));
+    // Comprobar una por una con delay para no saturar
+    let i = 0;
+    function comprobarSiguiente() {
+      if (i >= urls.length) {
+        alert('✅ Todas las URLs han sido comprobadas.');
+        return;
+      }
+      comprobarURL(urls[i].id);
+      i++;
+      setTimeout(comprobarSiguiente, 1500);
+    }
+    comprobarSiguiente();
   };
 
   window.renderURLs = function() {
@@ -1527,8 +1645,12 @@
     let html = '';
     const sorted = [...urls].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     sorted.forEach(u => {
-      const estadoText = u.estado === 'viva' ? '✅ VIVA' : u.estado === 'muerta' ? '❌ MUERTA' : u.estado === 'checking' ? '⏳ Comprobando...' : '❓ Desconocido';
-      const estadoClass = u.estado === 'viva' ? 'viva' : u.estado === 'muerta' ? 'muerta' : u.estado === 'checking' ? 'checking' : '';
+      let estadoText = '❓ Desconocido';
+      let estadoClass = '';
+      if (u.estado === 'viva') { estadoText = '✅ VIVA'; estadoClass = 'viva'; }
+      else if (u.estado === 'muerta') { estadoText = '❌ MUERTA'; estadoClass = 'muerta'; }
+      else if (u.estado === 'checking') { estadoText = '⏳ Comprobando...'; estadoClass = 'checking'; }
+      
       const fecha = new Date(u.fecha).toLocaleString();
       html += `
         <div class="url-item">
@@ -1560,7 +1682,6 @@
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // Recargar listas si es necesario
         if (pageId === 'p-admin-users') cargarUsuariosPendientes();
         if (pageId === 'p-urls') renderURLs();
       });
@@ -2307,8 +2428,10 @@
   console.log('  💾 Banco de Hits con contador');
   console.log('  👥 Gestión de Clientes');
   console.log('  👑 Gestión de Usuarios (Firebase)');
-  console.log('  🔗 Blog de URLs + Comprobador');
-  console.log('  🔔 Notificaciones en tiempo real');
+  console.log('  🔗 Blog de URLs + Comprobador REAL');
+  console.log('  👁️ Ver contraseña en login');
+  console.log('  🔑 Recuperar contraseña con código');
+  console.log('  🚫 Bloquear/Desbloquear usuarios');
 </script>
 
 </body>
