@@ -238,8 +238,6 @@
   .badge-verde { background: var(--verde-leon); color: #fff; }
   .badge-celeste { background: var(--celeste-leon); color: #fff; }
   .badge-oro { background: #f59e0b; color: #1a1a2e; }
-  .badge-muerto { background: #444; color: #fff; }
-  .badge-vivo { background: var(--verde-leon); color: #fff; }
 
   .flex-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
@@ -513,34 +511,27 @@
   .modal-content .result-box .error { color: var(--rojo-leon-claro); }
   .modal-content .result-box .info { color: var(--celeste-leon-claro); }
 
-  /* ===== URL CHECKER ===== */
-  .url-status {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 11px;
-    display: inline-block;
-  }
-  .url-status.viva { background: var(--verde-leon); color: #fff; }
-  .url-status.muerta { background: #444; color: #fff; }
-  .url-status.checking { background: var(--celeste-leon); color: #fff; animation: pulse 1s infinite; }
-
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
+  /* ===== URL ITEMS (SIN VERIFICACIÓN) ===== */
   .url-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
   }
+  .url-item:hover { background: rgba(14, 165, 233, 0.05); }
   .url-item .url-text {
     flex: 1;
     font-size: 13px;
     word-break: break-all;
     min-width: 150px;
   }
+  .url-item .url-text .url-link {
+    color: var(--celeste-leon);
+    text-decoration: none;
+  }
+  .url-item .url-text .url-link:hover { text-decoration: underline; }
   .url-item .url-actions {
     display: flex;
     gap: 6px;
@@ -800,21 +791,17 @@
       </div>
     </div>
 
-    <!-- ===== URLs / BLOG DE NOTAS ===== -->
+    <!-- ===== URLs / BLOG DE NOTAS (SIN VERIFICACIÓN) ===== -->
     <div id="p-urls" class="page">
       <div class="card">
-        <div class="card-title">🔗 Blog de URLs - Comprobador</div>
-        <p class="card-subtitle">Guarda URLs y comprueba si están activas (conexión REAL).</p>
+        <div class="card-title">🔗 Blog de URLs - Bloc de Notas</div>
+        <p class="card-subtitle">Guarda tus URLs favoritas con notas y accede rápido al escáner.</p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <input id="urlInput" placeholder="URL (ej: http://panel.com:8080)">
           <input id="urlNotaInput" placeholder="Nota (opcional)">
         </div>
-        <div class="flex-btns">
-          <button onclick="agregarURL()">➕ Guardar URL</button>
-          <button class="btn-azul" onclick="comprobarTodasURLs()">🔍 Comprobar Todas</button>
-          <button class="btn-warning" onclick="limpiarURLsMuertas()">🗑️ Eliminar Muertas</button>
-        </div>
+        <button onclick="agregarURL()">➕ Guardar URL</button>
         
         <div id="urlsContainer" style="margin-top:15px;">
           <p style="opacity:0.6;">No hay URLs guardadas.</p>
@@ -927,7 +914,7 @@
     }
   };
 
-  // ===== RECUPERAR CONTRASEÑA (código en navegador) =====
+  // ===== RECUPERAR CONTRASEÑA =====
   let codigoRecuperacion = '';
   let emailRecuperacion = '';
 
@@ -946,11 +933,9 @@
     const msg = document.getElementById('forgotMessage');
     if (!email) { msg.textContent = '⚠️ Ingresa tu correo electrónico.'; return; }
 
-    // Generar código de 6 dígitos
     codigoRecuperacion = Math.floor(100000 + Math.random() * 900000).toString();
     emailRecuperacion = email;
 
-    // Mostrar el código en el navegador (simulación)
     msg.innerHTML = `
       ✅ Código enviado a <strong>${email}</strong> (simulado)\n
       📋 <strong style="color:var(--verde-leon); font-size:1.2rem;">Código: ${codigoRecuperacion}</strong>
@@ -959,7 +944,6 @@
     document.getElementById('btnEnviarCodigo').style.display = 'none';
     document.getElementById('btnVerificarCodigo').style.display = 'block';
 
-    // También mostrar en alert para que sea más visible
     alert(`📧 CÓDIGO DE RECUPERACIÓN\n\nTu código es: ${codigoRecuperacion}\n\nIngrésalo en la página para cambiar tu contraseña.`);
   };
 
@@ -975,20 +959,16 @@
     if (newPass !== newPassConfirm) { msg.textContent = '⚠️ Las contraseñas no coinciden.'; return; }
 
     try {
-      // Intentar cambiar la contraseña en Firebase (solo funciona si el usuario está logueado)
-      // Como no está logueado, usamos sendPasswordResetEmail
       await sendPasswordResetEmail(auth, emailRecuperacion);
       msg.innerHTML = `
         ✅ Se ha enviado un enlace de restablecimiento a <strong>${emailRecuperacion}</strong>\n
         📧 Revisa tu correo (puede estar en spam).
       `;
-      // Limpiar campos
       document.getElementById('forgotCode').value = '';
       document.getElementById('forgotNewPass').value = '';
       document.getElementById('forgotNewPassConfirm').value = '';
       codigoRecuperacion = '';
       
-      // Volver al login después de 3 segundos
       setTimeout(() => {
         toggleAuthMode('login');
         document.getElementById('forgotForm').style.display = 'none';
@@ -1017,7 +997,7 @@
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, pass);
       const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-      if (!userDoc.exists() || userDoc.data().estado === false) {
+      if (!userDoc.exists() || userDoc.data().estado === false || userDoc.data().estado === 'bloqueado') {
         msg.textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
         await signOut(auth);
         return;
@@ -1072,7 +1052,7 @@
     document.getElementById('loginMessage').textContent = '';
   };
 
-  // ===== CARGAR USUARIOS (con botón actualizar) =====
+  // ===== CARGAR USUARIOS =====
   window.actualizarListaUsuarios = async function() {
     await cargarUsuariosPendientes();
   };
@@ -1494,7 +1474,7 @@
   };
 
   // ============================================================
-  // URLs / BLOG DE NOTAS (LOCALSTORAGE) - CON COMPROBADOR REAL
+  // URLs / BLOG DE NOTAS (SIN VERIFICACIÓN)
   // ============================================================
   const URLS_KEY = 'andyche_urls_db';
 
@@ -1512,7 +1492,6 @@
     const nota = document.getElementById('urlNotaInput').value.trim();
     if (!url) return alert('Ingresa una URL válida.');
     
-    // Asegurar que tenga http
     let urlFinal = url;
     if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
       urlFinal = 'http://' + urlFinal;
@@ -1523,7 +1502,6 @@
       id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
       url: urlFinal,
       nota: nota || '',
-      estado: 'desconocido',
       fecha: new Date().toISOString()
     });
     saveURLsDB(urls);
@@ -1536,14 +1514,6 @@
     if (!confirm('¿Eliminar esta URL?')) return;
     let urls = getURLsDB();
     urls = urls.filter(u => u.id !== id);
-    saveURLsDB(urls);
-    renderURLs();
-  };
-
-  window.limpiarURLsMuertas = function() {
-    if (!confirm('¿Eliminar todas las URLs marcadas como MUERTAS?')) return;
-    let urls = getURLsDB();
-    urls = urls.filter(u => u.estado !== 'muerta');
     saveURLsDB(urls);
     renderURLs();
   };
@@ -1561,80 +1531,6 @@
     }, 300);
   };
 
-  // ===== COMPROBADOR REAL DE URLs =====
-  window.comprobarURL = async function(id) {
-    const urls = getURLsDB();
-    const idx = urls.findIndex(u => u.id === id);
-    if (idx === -1) return;
-    
-    urls[idx].estado = 'checking';
-    saveURLsDB(urls);
-    renderURLs();
-    
-    const url = urls[idx].url;
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-      
-      const res = await fetch(url, { 
-        method: 'GET',
-        signal: controller.signal,
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-      });
-      
-      clearTimeout(timeoutId);
-      
-      // Si la respuesta es ok o el status es 200-299, está viva
-      if (res.ok || (res.status >= 200 && res.status < 400)) {
-        urls[idx].estado = 'viva';
-      } else {
-        urls[idx].estado = 'muerta';
-      }
-    } catch (e) {
-      // Si falla, intentar con HEAD como alternativa
-      try {
-        const controller2 = new AbortController();
-        const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
-        
-        const res2 = await fetch(url, { 
-          method: 'HEAD',
-          signal: controller2.signal,
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-        });
-        
-        clearTimeout(timeoutId2);
-        
-        if (res2.ok || (res2.status >= 200 && res2.status < 400)) {
-          urls[idx].estado = 'viva';
-        } else {
-          urls[idx].estado = 'muerta';
-        }
-      } catch (e2) {
-        urls[idx].estado = 'muerta';
-      }
-    }
-    
-    saveURLsDB(urls);
-    renderURLs();
-  };
-
-  window.comprobarTodasURLs = function() {
-    const urls = getURLsDB();
-    if (!urls.length) return alert('No hay URLs para comprobar.');
-    // Comprobar una por una con delay para no saturar
-    let i = 0;
-    function comprobarSiguiente() {
-      if (i >= urls.length) {
-        alert('✅ Todas las URLs han sido comprobadas.');
-        return;
-      }
-      comprobarURL(urls[i].id);
-      i++;
-      setTimeout(comprobarSiguiente, 1500);
-    }
-    comprobarSiguiente();
-  };
-
   window.renderURLs = function() {
     const container = document.getElementById('urlsContainer');
     const urls = getURLsDB();
@@ -1645,23 +1541,15 @@
     let html = '';
     const sorted = [...urls].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     sorted.forEach(u => {
-      let estadoText = '❓ Desconocido';
-      let estadoClass = '';
-      if (u.estado === 'viva') { estadoText = '✅ VIVA'; estadoClass = 'viva'; }
-      else if (u.estado === 'muerta') { estadoText = '❌ MUERTA'; estadoClass = 'muerta'; }
-      else if (u.estado === 'checking') { estadoText = '⏳ Comprobando...'; estadoClass = 'checking'; }
-      
       const fecha = new Date(u.fecha).toLocaleString();
       html += `
         <div class="url-item">
           <span class="url-text">
-            <strong>${u.url}</strong>
+            <a href="${u.url}" target="_blank" class="url-link"><strong>${u.url}</strong></a>
             ${u.nota ? `<span style="opacity:0.6; font-size:11px; display:block;">📝 ${u.nota}</span>` : ''}
             <span style="font-size:10px; opacity:0.4;">${fecha}</span>
           </span>
-          <span class="url-status ${estadoClass}">${estadoText}</span>
           <div class="url-actions">
-            <button class="btn-small btn-azul" onclick="comprobarURL('${u.id}')">🔍</button>
             <button class="btn-small btn-success" onclick="usarURLEnScanner('${u.url}')">📡 Scan</button>
             <button class="btn-small btn-danger" onclick="eliminarURL('${u.id}')">🗑️</button>
           </div>
@@ -2428,7 +2316,7 @@
   console.log('  💾 Banco de Hits con contador');
   console.log('  👥 Gestión de Clientes');
   console.log('  👑 Gestión de Usuarios (Firebase)');
-  console.log('  🔗 Blog de URLs + Comprobador REAL');
+  console.log('  🔗 Blog de URLs (SIN VERIFICACIÓN)');
   console.log('  👁️ Ver contraseña en login');
   console.log('  🔑 Recuperar contraseña con código');
   console.log('  🚫 Bloquear/Desbloquear usuarios');
