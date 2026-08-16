@@ -511,7 +511,7 @@
   .modal-content .result-box .error { color: var(--rojo-leon-claro); }
   .modal-content .result-box .info { color: var(--celeste-leon-claro); }
 
-  /* ===== URL ITEMS (SIN VERIFICACIÓN) ===== */
+  /* ===== URL ITEMS ===== */
   .url-item {
     display: flex;
     align-items: center;
@@ -538,8 +538,6 @@
     flex-wrap: wrap;
   }
   .url-item .url-actions button { width: auto; padding: 4px 10px; font-size: 10px; margin: 0; }
-
-  .badge-bloqueado { background: #666; color: #fff; }
 
   @media (max-width: 768px) {
     .clientes-grid { grid-template-columns: 1fr; }
@@ -619,7 +617,7 @@
     <button class="nav-btn active" data-page="p-dashboard">📊 Dashboard</button>
     <button class="nav-btn" data-page="p-scanner">📡 Scanner</button>
     <button class="nav-btn" data-page="p-hits">💾 Hits</button>
-    <button class="nav-btn" data-page="p-clientes">👥 Clientes</button>
+    <button class="nav-btn" id="btnClientes" data-page="p-clientes" style="display:none;">👥 Clientes</button>
     <button class="nav-btn" data-page="p-urls">🔗 URLs</button>
     <button class="nav-btn" id="btnAdminUsers" data-page="p-admin-users" style="display:none;">👑 Usuarios</button>
     <button class="nav-btn" data-page="p-settings">⚙️</button>
@@ -759,7 +757,7 @@
       </div>
     </div>
 
-    <!-- ===== CLIENTES ===== -->
+    <!-- ===== CLIENTES (SOLO ADMIN) ===== -->
     <div id="p-clientes" class="page">
       <div class="card">
         <div class="card-title">👥 Registrar Cliente</div>
@@ -791,7 +789,7 @@
       </div>
     </div>
 
-    <!-- ===== URLs / BLOG DE NOTAS (SIN VERIFICACIÓN) ===== -->
+    <!-- ===== URLs / BLOG DE NOTAS ===== -->
     <div id="p-urls" class="page">
       <div class="card">
         <div class="card-title">🔗 Blog de URLs - Bloc de Notas</div>
@@ -885,7 +883,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, onSnapshot, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -902,7 +900,12 @@
   window.db = db;
   window.ADMIN_EMAIL = ADMIN_EMAIL;
 
-  // ===== TOGGLE PASSWORD VISIBILITY =====
+  let currentUserEmail = null;
+  let currentUserIsAdmin = false;
+
+  // ============================================================
+  // TOGGLE PASSWORD VISIBILITY
+  // ============================================================
   window.togglePasswordVisibility = function(inputId, btn) {
     const input = document.getElementById(inputId);
     if (input.type === 'password') {
@@ -914,7 +917,9 @@
     }
   };
 
-  // ===== RECUPERAR CONTRASEÑA =====
+  // ============================================================
+  // RECUPERAR CONTRASEÑA
+  // ============================================================
   let codigoRecuperacion = '';
   let emailRecuperacion = '';
 
@@ -979,7 +984,9 @@
     }
   };
 
-  // ===== LOGIN / REGISTRO =====
+  // ============================================================
+  // LOGIN / REGISTRO
+  // ============================================================
   window.toggleAuthMode = function(mode) {
     document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
     document.getElementById('registerForm').style.display = mode === 'register' ? 'block' : 'none';
@@ -1005,13 +1012,24 @@
       msg.textContent = '✅ Inicio de sesión exitoso!';
       document.getElementById('loginContainer').style.display = 'none';
       document.getElementById('appContainer').style.display = 'block';
-      if (email === ADMIN_EMAIL) {
+      
+      currentUserEmail = email;
+      currentUserIsAdmin = email === ADMIN_EMAIL;
+      
+      // Mostrar/ocultar botones según rol
+      if (currentUserIsAdmin) {
         document.getElementById('btnAdminUsers').style.display = 'inline-flex';
+        document.getElementById('btnClientes').style.display = 'inline-flex';
         await cargarUsuariosPendientes();
+        cargarClientesAdmin();
+      } else {
+        document.getElementById('btnAdminUsers').style.display = 'none';
+        document.getElementById('btnClientes').style.display = 'none';
       }
-      renderClientes();
-      renderBancoHits();
-      renderURLs();
+      
+      // Cargar datos del usuario
+      await cargarHitsUsuario(email);
+      await cargarURLsUsuario(email);
       actualizarDashboard();
     } catch (err) {
       msg.textContent = '❌ Error: ' + err.message;
@@ -1050,14 +1068,19 @@
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('appContainer').style.display = 'none';
     document.getElementById('loginMessage').textContent = '';
+    currentUserEmail = null;
+    currentUserIsAdmin = false;
   };
 
-  // ===== CARGAR USUARIOS =====
+  // ============================================================
+  // CARGAR USUARIOS (ADMIN)
+  // ============================================================
   window.actualizarListaUsuarios = async function() {
     await cargarUsuariosPendientes();
   };
 
   async function cargarUsuariosPendientes() {
+    if (!currentUserIsAdmin) return;
     const container = document.getElementById('users-list-container');
     container.innerHTML = '<p style="opacity:0.6;">Cargando usuarios...</p>';
     try {
@@ -1137,92 +1160,93 @@
     } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const email = user.email;
-      try {
-        const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-        if (!userDoc.exists() || userDoc.data().estado === false || userDoc.data().estado === 'bloqueado') {
-          await signOut(auth);
-          document.getElementById('loginMessage').textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
-          return;
-        }
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'block';
-        if (email === ADMIN_EMAIL) {
-          document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-          await cargarUsuariosPendientes();
-        }
-        renderClientes();
-        renderBancoHits();
-        renderURLs();
-        actualizarDashboard();
-      } catch (err) { console.error('Error:', err); }
-    } else {
-      document.getElementById('loginContainer').style.display = 'flex';
-      document.getElementById('appContainer').style.display = 'none';
-    }
-  });
-
   // ============================================================
-  // BANCO DE HITS (LOCALSTORAGE)
+  // HITS POR USUARIO (FIRESTORE)
   // ============================================================
-  const STORAGE_KEY = 'andyche_hits_db';
+  let hitsUsuario = [];
 
-  window.getHitsDB = function() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
-  };
-
-  window.saveHitsDB = function(hits) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(hits));
-  };
-
-  window.addHitToDB = function(hitData) {
-    const db = getHitsDB();
-    const existing = db.find(h => h.texto === hitData.texto);
-    if (existing) {
-      existing.usos = (existing.usos || 0) + 1;
-      existing.ultimoUso = new Date().toISOString();
-    } else {
-      db.push({
-        id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-        texto: hitData.texto,
-        user: hitData.user || 'desconocido',
-        pass: hitData.pass || 'desconocido',
-        host: hitData.host || 'desconocido',
-        fecha: new Date().toISOString(),
-        usos: 1,
-        ultimoUso: new Date().toISOString()
+  async function cargarHitsUsuario(email) {
+    if (!email) return;
+    try {
+      const q = query(collection(db, "usuarios", email, "hits"));
+      const querySnap = await getDocs(q);
+      hitsUsuario = [];
+      querySnap.forEach(docSnap => {
+        hitsUsuario.push({ id: docSnap.id, ...docSnap.data() });
       });
-    }
-    saveHitsDB(db);
-    renderBancoHits();
-    actualizarDashboard();
-    return db;
-  };
-
-  window.eliminarHitDB = function(id) {
-    let db = getHitsDB();
-    db = db.filter(h => h.id !== id);
-    saveHitsDB(db);
-    renderBancoHits();
-    actualizarDashboard();
-  };
-
-  window.limpiarTodosLosHits = function() {
-    if (confirm('⚠️ ¿Eliminar TODOS los hits del banco?')) {
-      saveHitsDB([]);
       renderBancoHits();
       actualizarDashboard();
+    } catch (err) {
+      console.error('Error cargando hits:', err);
+    }
+  }
+
+  window.addHitToDB = async function(hitData) {
+    if (!currentUserEmail) return;
+    try {
+      // Verificar si ya existe (por texto)
+      const q = query(collection(db, "usuarios", currentUserEmail, "hits"), where("texto", "==", hitData.texto));
+      const querySnap = await getDocs(q);
+      
+      if (!querySnap.empty) {
+        // Actualizar usos
+        const docRef = querySnap.docs[0].ref;
+        const data = querySnap.docs[0].data();
+        await updateDoc(docRef, {
+          usos: (data.usos || 0) + 1,
+          ultimoUso: new Date().toISOString()
+        });
+      } else {
+        // Crear nuevo hit
+        await addDoc(collection(db, "usuarios", currentUserEmail, "hits"), {
+          texto: hitData.texto,
+          user: hitData.user || 'desconocido',
+          pass: hitData.pass || 'desconocido',
+          host: hitData.host || 'desconocido',
+          fecha: new Date().toISOString(),
+          usos: 1,
+          ultimoUso: new Date().toISOString()
+        });
+      }
+      await cargarHitsUsuario(currentUserEmail);
+    } catch (err) {
+      console.error('Error guardando hit:', err);
+    }
+  };
+
+  window.eliminarHitDB = async function(id) {
+    if (!currentUserEmail) return;
+    if (!confirm('¿Eliminar este hit?')) return;
+    try {
+      await deleteDoc(doc(db, "usuarios", currentUserEmail, "hits", id));
+      await cargarHitsUsuario(currentUserEmail);
+    } catch (err) {
+      console.error('Error eliminando hit:', err);
+    }
+  };
+
+  window.limpiarTodosLosHits = async function() {
+    if (!currentUserEmail) return;
+    if (!confirm('⚠️ ¿Eliminar TODOS los hits del banco?')) return;
+    try {
+      const q = query(collection(db, "usuarios", currentUserEmail, "hits"));
+      const querySnap = await getDocs(q);
+      const batch = writeBatch(db);
+      querySnap.forEach(docSnap => {
+        batch.delete(docSnap.ref);
+      });
+      await batch.commit();
+      await cargarHitsUsuario(currentUserEmail);
+    } catch (err) {
+      console.error('Error limpiando hits:', err);
     }
   };
 
   window.exportarHits = function() {
-    const db = getHitsDB();
-    if (!db.length) return alert('No hay hits para exportar.');
+    if (!hitsUsuario.length) return alert('No hay hits para exportar.');
     let texto = '🦁 ANDYCHE CHAKER - BANCO DE HITS 🦁\n';
     texto += '========================================\n\n';
-    db.forEach((h, i) => {
+    hitsUsuario.forEach((h, i) => {
       texto += `📌 HIT #${i+1} | Usos: ${h.usos || 0}\n`;
       texto += `${h.texto}\n\n`;
       texto += '----------------------------------------\n\n';
@@ -1236,13 +1260,12 @@
 
   window.renderBancoHits = function() {
     const container = document.getElementById('hitsContainer');
-    const db = getHitsDB();
-    if (!db.length) {
+    if (!hitsUsuario.length) {
       container.innerHTML = '<p style="opacity:0.6;">No hay hits guardados.</p>';
       return;
     }
     let html = '';
-    const sorted = [...db].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    const sorted = [...hitsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     sorted.forEach(h => {
       const fecha = new Date(h.fecha).toLocaleString();
       html += `
@@ -1263,16 +1286,20 @@
   };
 
   window.copiarHit = function(id) {
-    const db = getHitsDB();
-    const hit = db.find(h => h.id === id);
+    const hit = hitsUsuario.find(h => h.id === id);
     if (!hit) return;
-    hit.usos = (hit.usos || 0) + 1;
-    hit.ultimoUso = new Date().toISOString();
-    saveHitsDB(db);
-    renderBancoHits();
+    // Incrementar usos
+    if (currentUserEmail) {
+      updateDoc(doc(db, "usuarios", currentUserEmail, "hits", id), {
+        usos: (hit.usos || 0) + 1,
+        ultimoUso: new Date().toISOString()
+      }).then(() => {
+        cargarHitsUsuario(currentUserEmail);
+      });
+    }
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(hit.texto).then(() => {
-        alert('✅ Hit copiado! (Usos: ' + hit.usos + ')');
+        alert('✅ Hit copiado! (Usos: ' + (hit.usos + 1) + ')');
       }).catch(() => copiarFallback(hit.texto));
     } else {
       copiarFallback(hit.texto);
@@ -1291,41 +1318,127 @@
     alert('✅ Hit copiado al portapapeles!');
   }
 
-  window.actualizarDashboard = function() {
-    const db = getHitsDB();
-    document.getElementById('total-hits').textContent = db.length;
-    const container = document.getElementById('ultimos-hits');
-    const sorted = [...db].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 5);
-    if (!sorted.length) {
-      container.innerHTML = '<p style="opacity:0.6;">No hay hits aún. Ejecuta un escaneo.</p>';
-    } else {
-      container.innerHTML = sorted.map(h => `
-        <div style="padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-          <span>👤 ${h.user || 'desconocido'}:${h.pass || 'desconocido'}</span>
-          <span style="opacity:0.6;">📋 ${h.usos || 0} usos</span>
-        </div>
-      `).join('');
+  // ============================================================
+  // URLs POR USUARIO (FIRESTORE)
+  // ============================================================
+  let urlsUsuario = [];
+
+  async function cargarURLsUsuario(email) {
+    if (!email) return;
+    try {
+      const q = query(collection(db, "usuarios", email, "urls"));
+      const querySnap = await getDocs(q);
+      urlsUsuario = [];
+      querySnap.forEach(docSnap => {
+        urlsUsuario.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      renderURLs();
+      actualizarDashboard();
+    } catch (err) {
+      console.error('Error cargando URLs:', err);
     }
-    const clientes = getClientesDB();
-    document.getElementById('total-clientes').textContent = clientes.length;
-    const urls = getURLsDB();
-    document.getElementById('total-urls').textContent = urls.length;
+  }
+
+  window.agregarURL = async function() {
+    const url = document.getElementById('urlInput').value.trim();
+    const nota = document.getElementById('urlNotaInput').value.trim();
+    if (!url) return alert('Ingresa una URL válida.');
+    if (!currentUserEmail) return alert('Usuario no autenticado.');
+    
+    let urlFinal = url;
+    if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
+      urlFinal = 'http://' + urlFinal;
+    }
+    
+    try {
+      await addDoc(collection(db, "usuarios", currentUserEmail, "urls"), {
+        url: urlFinal,
+        nota: nota || '',
+        fecha: new Date().toISOString()
+      });
+      document.getElementById('urlInput').value = '';
+      document.getElementById('urlNotaInput').value = '';
+      await cargarURLsUsuario(currentUserEmail);
+    } catch (err) {
+      alert('❌ Error guardando URL: ' + err.message);
+    }
+  };
+
+  window.eliminarURL = async function(id) {
+    if (!currentUserEmail) return;
+    if (!confirm('¿Eliminar esta URL?')) return;
+    try {
+      await deleteDoc(doc(db, "usuarios", currentUserEmail, "urls", id));
+      await cargarURLsUsuario(currentUserEmail);
+    } catch (err) {
+      alert('❌ Error eliminando URL: ' + err.message);
+    }
+  };
+
+  window.usarURLEnScanner = function(url) {
+    let cleanUrl = url.replace(/^https?:\/\//, '');
+    cleanUrl = cleanUrl.replace(/\/$/, '');
+    document.getElementById('hostInput').value = cleanUrl;
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-scanner').classList.add('active');
+    document.querySelector('[data-page="p-scanner"]').classList.add('active');
+    setTimeout(() => {
+      document.getElementById('scanner-panel').scrollIntoView({behavior: 'smooth'});
+    }, 300);
+  };
+
+  window.renderURLs = function() {
+    const container = document.getElementById('urlsContainer');
+    if (!urlsUsuario.length) {
+      container.innerHTML = '<p style="opacity:0.6;">No hay URLs guardadas.</p>';
+      return;
+    }
+    let html = '';
+    const sorted = [...urlsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    sorted.forEach(u => {
+      const fecha = new Date(u.fecha).toLocaleString();
+      html += `
+        <div class="url-item">
+          <span class="url-text">
+            <a href="${u.url}" target="_blank" class="url-link"><strong>${u.url}</strong></a>
+            ${u.nota ? `<span style="opacity:0.6; font-size:11px; display:block;">📝 ${u.nota}</span>` : ''}
+            <span style="font-size:10px; opacity:0.4;">${fecha}</span>
+          </span>
+          <div class="url-actions">
+            <button class="btn-small btn-success" onclick="usarURLEnScanner('${u.url}')">📡 Scan</button>
+            <button class="btn-small btn-danger" onclick="eliminarURL('${u.id}')">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
   };
 
   // ============================================================
-  // CLIENTES (LOCALSTORAGE)
+  // CLIENTES (SOLO ADMIN - FIRESTORE GLOBAL)
   // ============================================================
-  const CLIENTES_KEY = 'andyche_clientes_db';
+  let clientesAdmin = [];
 
-  window.getClientesDB = function() {
-    try { return JSON.parse(localStorage.getItem(CLIENTES_KEY)) || []; } catch { return []; }
-  };
+  async function cargarClientesAdmin() {
+    if (!currentUserIsAdmin) return;
+    try {
+      const q = query(collection(db, "clientes_global"));
+      const querySnap = await getDocs(q);
+      clientesAdmin = [];
+      querySnap.forEach(docSnap => {
+        clientesAdmin.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      renderClientesAdmin();
+      actualizarDashboard();
+    } catch (err) {
+      console.error('Error cargando clientes:', err);
+    }
+  }
 
-  window.saveClientesDB = function(clientes) {
-    localStorage.setItem(CLIENTES_KEY, JSON.stringify(clientes));
-  };
-
-  window.agregarCliente = function() {
+  window.agregarCliente = async function() {
+    if (!currentUserIsAdmin) return alert('Solo el admin puede gestionar clientes.');
+    
     const nombre = document.getElementById('cli-nombre').value.trim();
     const telefono = document.getElementById('cli-telefono').value.trim();
     const email = document.getElementById('cli-email').value.trim();
@@ -1341,32 +1454,40 @@
     if (!nombre || !telefono) return alert('Nombre y teléfono son obligatorios.');
     if (!fechaPago || !fechaCorte) return alert('Selecciona ambas fechas.');
 
-    const clientes = getClientesDB();
-    clientes.push({
-      id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-      nombre, telefono, email, metodosPago: metodosPago || 'No registrado',
-      plan: plan || 'Básico', fechaPago, fechaCorte,
-      monto: monto || '0', diasPrueba: diasPrueba || '0',
-      estado: estado, notas: notas || '',
-      creado: new Date().toISOString()
-    });
-    saveClientesDB(clientes);
-    renderClientes();
-    actualizarDashboard();
-    ['cli-nombre','cli-telefono','cli-email','cli-metodos-pago','cli-plan','cli-fecha-pago','cli-fecha-corte','cli-monto','cli-dias','cli-estado','cli-notas'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
+    try {
+      await addDoc(collection(db, "clientes_global"), {
+        nombre, telefono, email, metodosPago: metodosPago || 'No registrado',
+        plan: plan || 'Básico', fechaPago, fechaCorte,
+        monto: monto || '0', diasPrueba: diasPrueba || '0',
+        estado: estado, notas: notas || '',
+        creado: new Date().toISOString(),
+        creadoPor: currentUserEmail
+      });
+      document.getElementById('cli-nombre').value = '';
+      document.getElementById('cli-telefono').value = '';
+      document.getElementById('cli-email').value = '';
+      document.getElementById('cli-metodos-pago').value = '';
+      document.getElementById('cli-plan').value = '';
+      document.getElementById('cli-fecha-pago').value = '';
+      document.getElementById('cli-fecha-corte').value = '';
+      document.getElementById('cli-monto').value = '';
+      document.getElementById('cli-dias').value = '';
+      document.getElementById('cli-estado').value = '';
+      document.getElementById('cli-notas').value = '';
+      await cargarClientesAdmin();
+    } catch (err) {
+      alert('❌ Error guardando cliente: ' + err.message);
+    }
   };
 
-  window.renderClientes = function() {
+  function renderClientesAdmin() {
     const container = document.getElementById('lista-clientes-container');
-    const clientes = getClientesDB();
-    if (!clientes.length) {
+    if (!clientesAdmin.length) {
       container.innerHTML = '<p style="opacity:0.6; text-align:center;">Sin clientes registrados.</p>';
       return;
     }
     let html = '';
-    clientes.forEach(c => {
+    clientesAdmin.forEach(c => {
       const dias = calcularDiasRestantes(c.fechaCorte);
       let progressPercent = 0, statusText = '', statusColor = '';
       if (dias !== null) {
@@ -1402,7 +1523,7 @@
       `;
     });
     container.innerHTML = html;
-  };
+  }
 
   function calcularDiasRestantes(fechaCorteStr) {
     if (!fechaCorteStr) return null;
@@ -1412,20 +1533,22 @@
     return Math.ceil((corte - hoy) / (1000*60*60*24));
   }
 
-  window.eliminarCliente = function(id) {
+  window.eliminarCliente = async function(id) {
+    if (!currentUserIsAdmin) return alert('Solo admin puede eliminar clientes.');
     if (!confirm('¿Eliminar este cliente?')) return;
-    let clientes = getClientesDB();
-    clientes = clientes.filter(c => c.id !== id);
-    saveClientesDB(clientes);
-    renderClientes();
-    actualizarDashboard();
+    try {
+      await deleteDoc(doc(db, "clientes_global", id));
+      await cargarClientesAdmin();
+    } catch (err) {
+      alert('❌ Error eliminando cliente: ' + err.message);
+    }
   };
 
   let clienteEditando = null;
 
   window.abrirPanelEditar = function(id) {
-    const clientes = getClientesDB();
-    const c = clientes.find(cl => cl.id === id);
+    if (!currentUserIsAdmin) return alert('Solo admin puede editar clientes.');
+    const c = clientesAdmin.find(cl => cl.id === id);
     if (!c) return;
     clienteEditando = id;
     document.getElementById('edit-nombre').value = c.nombre || '';
@@ -1447,15 +1570,13 @@
     clienteEditando = null;
   };
 
-  window.guardarEdicionCliente = function() {
+  window.guardarEdicionCliente = async function() {
+    if (!currentUserIsAdmin) return alert('Solo admin puede editar clientes.');
     if (!clienteEditando) return alert('No hay cliente seleccionado.');
-    const clientes = getClientesDB();
-    const idx = clientes.findIndex(c => c.id === clienteEditando);
-    if (idx === -1) return alert('Cliente no encontrado.');
-    clientes[idx] = {
-      ...clientes[idx],
-      nombre: document.getElementById('edit-nombre').value.trim() || clientes[idx].nombre,
-      telefono: document.getElementById('edit-telefono').value.trim() || clientes[idx].telefono,
+    
+    const data = {
+      nombre: document.getElementById('edit-nombre').value.trim(),
+      telefono: document.getElementById('edit-telefono').value.trim(),
       email: document.getElementById('edit-email').value.trim(),
       metodosPago: document.getElementById('edit-metodos').value.trim() || 'No registrado',
       plan: document.getElementById('edit-plan').value.trim() || 'Básico',
@@ -1466,97 +1587,37 @@
       estado: document.getElementById('edit-estado').value,
       notas: document.getElementById('edit-notas').value.trim()
     };
-    saveClientesDB(clientes);
-    renderClientes();
-    actualizarDashboard();
-    cerrarPanelEditar();
-    alert('✅ Cliente actualizado');
+    
+    try {
+      await updateDoc(doc(db, "clientes_global", clienteEditando), data);
+      cerrarPanelEditar();
+      await cargarClientesAdmin();
+      alert('✅ Cliente actualizado');
+    } catch (err) {
+      alert('❌ Error actualizando cliente: ' + err.message);
+    }
   };
 
   // ============================================================
-  // URLs / BLOG DE NOTAS (SIN VERIFICACIÓN)
+  // DASHBOARD
   // ============================================================
-  const URLS_KEY = 'andyche_urls_db';
-
-  window.getURLsDB = function() {
-    try { return JSON.parse(localStorage.getItem(URLS_KEY)) || []; } catch { return []; }
-  };
-
-  window.saveURLsDB = function(urls) {
-    localStorage.setItem(URLS_KEY, JSON.stringify(urls));
-    actualizarDashboard();
-  };
-
-  window.agregarURL = function() {
-    const url = document.getElementById('urlInput').value.trim();
-    const nota = document.getElementById('urlNotaInput').value.trim();
-    if (!url) return alert('Ingresa una URL válida.');
+  window.actualizarDashboard = function() {
+    document.getElementById('total-hits').textContent = hitsUsuario.length;
+    document.getElementById('total-urls').textContent = urlsUsuario.length;
+    document.getElementById('total-clientes').textContent = clientesAdmin.length;
     
-    let urlFinal = url;
-    if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
-      urlFinal = 'http://' + urlFinal;
-    }
-    
-    const urls = getURLsDB();
-    urls.push({
-      id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-      url: urlFinal,
-      nota: nota || '',
-      fecha: new Date().toISOString()
-    });
-    saveURLsDB(urls);
-    renderURLs();
-    document.getElementById('urlInput').value = '';
-    document.getElementById('urlNotaInput').value = '';
-  };
-
-  window.eliminarURL = function(id) {
-    if (!confirm('¿Eliminar esta URL?')) return;
-    let urls = getURLsDB();
-    urls = urls.filter(u => u.id !== id);
-    saveURLsDB(urls);
-    renderURLs();
-  };
-
-  window.usarURLEnScanner = function(url) {
-    let cleanUrl = url.replace(/^https?:\/\//, '');
-    cleanUrl = cleanUrl.replace(/\/$/, '');
-    document.getElementById('hostInput').value = cleanUrl;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('p-scanner').classList.add('active');
-    document.querySelector('[data-page="p-scanner"]').classList.add('active');
-    setTimeout(() => {
-      document.getElementById('scanner-panel').scrollIntoView({behavior: 'smooth'});
-    }, 300);
-  };
-
-  window.renderURLs = function() {
-    const container = document.getElementById('urlsContainer');
-    const urls = getURLsDB();
-    if (!urls.length) {
-      container.innerHTML = '<p style="opacity:0.6;">No hay URLs guardadas.</p>';
-      return;
-    }
-    let html = '';
-    const sorted = [...urls].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    sorted.forEach(u => {
-      const fecha = new Date(u.fecha).toLocaleString();
-      html += `
-        <div class="url-item">
-          <span class="url-text">
-            <a href="${u.url}" target="_blank" class="url-link"><strong>${u.url}</strong></a>
-            ${u.nota ? `<span style="opacity:0.6; font-size:11px; display:block;">📝 ${u.nota}</span>` : ''}
-            <span style="font-size:10px; opacity:0.4;">${fecha}</span>
-          </span>
-          <div class="url-actions">
-            <button class="btn-small btn-success" onclick="usarURLEnScanner('${u.url}')">📡 Scan</button>
-            <button class="btn-small btn-danger" onclick="eliminarURL('${u.id}')">🗑️</button>
-          </div>
+    const container = document.getElementById('ultimos-hits');
+    const sorted = [...hitsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 5);
+    if (!sorted.length) {
+      container.innerHTML = '<p style="opacity:0.6;">No hay hits aún. Ejecuta un escaneo.</p>';
+    } else {
+      container.innerHTML = sorted.map(h => `
+        <div style="padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+          <span>👤 ${h.user || 'desconocido'}:${h.pass || 'desconocido'}</span>
+          <span style="opacity:0.6;">📋 ${h.usos || 0} usos</span>
         </div>
-      `;
-    });
-    container.innerHTML = html;
+      `).join('');
+    }
   };
 
   // ============================================================
@@ -1570,8 +1631,10 @@
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (pageId === 'p-admin-users') cargarUsuariosPendientes();
+        if (pageId === 'p-admin-users' && currentUserIsAdmin) cargarUsuariosPendientes();
         if (pageId === 'p-urls') renderURLs();
+        if (pageId === 'p-clientes' && currentUserIsAdmin) renderClientesAdmin();
+        if (pageId === 'p-hits') renderBancoHits();
       });
     }
   });
@@ -2248,21 +2311,7 @@
       try{
         const totalHits = (HITS[1]?.length||0) + (HITS[2]?.length||0) + (HITS[3]?.length||0);
         if(document.getElementById('autoDownload').checked && totalHits > 0){
-          const db = window.getHitsDB();
-          if(db.length){
-            let texto = '🦁 ANDYCHE CHAKER - SCAN RESULT 🦁\n';
-            texto += '========================================\n\n';
-            db.forEach((h, i) => {
-              texto += `📌 HIT #${i+1} | Usos: ${h.usos || 0}\n`;
-              texto += `${h.texto}\n\n`;
-              texto += '----------------------------------------\n\n';
-            });
-            const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `andyche_scan_${new Date().toISOString().slice(0,10)}.txt`;
-            a.click();
-          }
+          // Los hits ya se guardaron individualmente en mostrarHit
         }
       } catch(_){}
       document.getElementById('startBtn').disabled = false;
@@ -2279,11 +2328,10 @@
   });
 
   document.getElementById('saveBtn').addEventListener('click', ()=>{
-    const db = window.getHitsDB();
-    if(!db.length) return alert('No hay hits para guardar.');
+    if (!hitsUsuario.length) return alert('No hay hits para guardar.');
     let texto = '🦁 ANDYCHE CHAKER - BANCO DE HITS 🦁\n';
     texto += '========================================\n\n';
-    db.forEach((h, i) => {
+    hitsUsuario.forEach((h, i) => {
       texto += `📌 HIT #${i+1} | Usos: ${h.usos || 0}\n`;
       texto += `${h.texto}\n\n`;
       texto += '----------------------------------------\n\n';
@@ -2298,25 +2346,54 @@
   // ============================================================
   // INICIALIZAR
   // ============================================================
-  renderClientes();
-  renderBancoHits();
-  renderURLs();
-  actualizarDashboard();
-  updateStartState();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const email = user.email;
+      try {
+        const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
+        if (!userDoc.exists() || userDoc.data().estado === false || userDoc.data().estado === 'bloqueado') {
+          await signOut(auth);
+          document.getElementById('loginMessage').textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
+          return;
+        }
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        
+        currentUserEmail = email;
+        currentUserIsAdmin = email === ADMIN_EMAIL;
+        
+        if (currentUserIsAdmin) {
+          document.getElementById('btnAdminUsers').style.display = 'inline-flex';
+          document.getElementById('btnClientes').style.display = 'inline-flex';
+          await cargarUsuariosPendientes();
+          await cargarClientesAdmin();
+        } else {
+          document.getElementById('btnAdminUsers').style.display = 'none';
+          document.getElementById('btnClientes').style.display = 'none';
+        }
+        
+        await cargarHitsUsuario(email);
+        await cargarURLsUsuario(email);
+        actualizarDashboard();
+      } catch (err) { console.error('Error:', err); }
+    } else {
+      document.getElementById('loginContainer').style.display = 'flex';
+      document.getElementById('appContainer').style.display = 'none';
+    }
+  });
 
   console.log('🦁 ANDYCHE CHAKER - IPTV Scanner Pro V7.9.1');
   console.log('🔥 Colores León: Rojo, Verde y Celeste!');
-  console.log('✅ TODAS LAS FUNCIONES ACTIVAS:');
+  console.log('✅ DATOS POR USUARIO:');
   console.log('  📡 M3U Scanner (COMPLETO - MUNRRA)');
   console.log('  💥 Exploit');
   console.log('  🔍 Panel Scanner');
   console.log('  🔎 Buscador Paneles');
   console.log('  🧩 Combo Maker');
   console.log('  📱 Mac Scanner');
-  console.log('  💾 Banco de Hits con contador');
-  console.log('  👥 Gestión de Clientes');
-  console.log('  👑 Gestión de Usuarios (Firebase)');
-  console.log('  🔗 Blog de URLs (SIN VERIFICACIÓN)');
+  console.log('  💾 Banco de Hits (POR USUARIO)');
+  console.log('  👥 Clientes (SOLO ADMIN)');
+  console.log('  🔗 Blog de URLs (POR USUARIO)');
   console.log('  👁️ Ver contraseña en login');
   console.log('  🔑 Recuperar contraseña con código');
   console.log('  🚫 Bloquear/Desbloquear usuarios');
