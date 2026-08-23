@@ -2690,7 +2690,7 @@ ${ts('groupsB')}`;
     [document.getElementById('progressText'), document.getElementById('progressText2'), document.getElementById('progressText3')].forEach(el => { if(el) el.textContent += ts('scanStopped'); });
   });
 
-  document.getElementById('saveBtn').addEventListener('click', ()=>{
+ document.getElementById('saveBtn').addEventListener('click', ()=>{
     if (typeof window.exportarHits === 'function') {
       window.exportarHits();
     } else {
