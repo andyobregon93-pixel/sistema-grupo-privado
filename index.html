@@ -609,6 +609,115 @@
   }
   .url-item .url-actions button { width: auto; padding: 4px 10px; font-size: 10px; margin: 0; }
 
+  /* ===== RUEDA DE SORTEO ===== */
+  .rueda-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    position: relative;
+  }
+  .rueda-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+  }
+  .rueda {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid var(--rojo-leon);
+    box-shadow: var(--shadow-glow);
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  }
+  .rueda .segmento {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 0;
+    left: 50%;
+    transform-origin: 0% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    text-align: center;
+    padding: 5px;
+    box-sizing: border-box;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    cursor: default;
+  }
+  .rueda .segmento span {
+    transform: rotate(45deg);
+    display: block;
+    font-size: 9px;
+    line-height: 1.2;
+    word-wrap: break-word;
+    max-width: 60px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .rueda .center-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 900;
+  }
+  .rueda .flecha {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    color: var(--rojo-leon);
+    z-index: 10;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
+    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+  }
+  .participantes-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    background: var(--input-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .participante-tag {
+    background: var(--gradient);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+  }
+
   @media (max-width: 768px) {
     .clientes-grid { grid-template-columns: 1fr; }
     .scan-grid { grid-template-columns: 1fr 1fr; }
@@ -623,6 +732,9 @@
     .url-item { flex-direction: column; align-items: stretch; }
     .url-item .url-actions { justify-content: center; }
     .toast { bottom: 15px; right: 15px; left: 15px; max-width: none; }
+    .rueda-wrapper { width: 220px; height: 220px; }
+    .rueda .segmento span { font-size: 7px; max-width: 40px; }
+    .rueda .center-circle { width: 40px; height: 40px; font-size: 16px; }
   }
   @media (max-width: 480px) { .scan-grid { grid-template-columns: 1fr; } .dashboard-grid { grid-template-columns: 1fr; } }
 </style>
@@ -720,6 +832,67 @@
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
         </div>
       </div>
+      
+      <!-- ===== RUEDA DE SORTEO - PARA TODOS ===== -->
+      <div class="card">
+        <div class="card-title">🎯 Sorteo del Loco Andy</div>
+        <p class="card-subtitle">¡Participa y gana premios increíbles!</p>
+        
+        <!-- Botón para anotarse (visible para todos) -->
+        <button onclick="abrirModalRegistroSorteo()" class="btn-rosa" style="margin-bottom: 15px; font-weight: 800; font-size: 1.1rem;">
+          🎯 ANOTARME PARA EL SORTEO
+        </button>
+        
+        <!-- Rueda de sorteo -->
+        <div class="rueda-container">
+          <div class="rueda-wrapper">
+            <div class="flecha">▼</div>
+            <div class="rueda" id="ruedaSorteo">
+              <!-- Los segmentos se generan con JavaScript -->
+            </div>
+            <div class="center-circle">🎯</div>
+          </div>
+        </div>
+        
+        <!-- Botones de control de la rueda -->
+        <div class="flex-btns" style="justify-content: center; margin-top: 10px;">
+          <button onclick="girarRuleta()" id="btnGirarRuleta" style="background: var(--gradient); font-size: 1.1rem; font-weight: 800; padding: 12px 30px; width: auto;">
+            🎰 GIRAR RULETA
+          </button>
+        </div>
+        
+        <!-- Participantes inscritos -->
+        <div style="margin-top: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 0.9rem;">👥 Participantes inscritos: <span id="totalParticipantes">0</span></span>
+          </div>
+          <div class="participantes-lista" id="listaParticipantes">
+            <p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>
+          </div>
+        </div>
+        
+        <!-- Panel de Administración del Sorteo (SOLO ADMIN) -->
+        <div id="adminSorteoPanel" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <span style="font-weight: 700; font-size: 1rem; color: var(--rojo-leon);">👑 Gestión del Sorteo (Admin)</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onclick="cargarParticipantesEnRuleta()" class="btn-success" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
+                🎯 CARGAR EN LA RULETA
+              </button>
+              <button onclick="eliminarTodosParticipantes()" class="btn-danger" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
+                🗑️ ELIMINAR TODOS
+              </button>
+            </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <p style="font-size: 0.8rem; opacity: 0.6;">📋 Total de participantes registrados: <strong id="totalParticipantesAdmin">0</strong></p>
+          </div>
+          <div id="listaParticipantesAdmin" style="max-height: 200px; overflow-y: auto; margin-top: 10px; background: var(--input-bg); border-radius: 12px; padding: 10px; border: 1px solid var(--border);">
+            <p style="opacity: 0.5; font-size: 0.8rem;">No hay participantes registrados.</p>
+          </div>
+        </div>
+      </div>
+      
       <div class="card">
         <div class="card-title">📈 Últimos Hits</div>
         <div id="ultimos-hits" style="max-height:300px; overflow-y:auto;"><p style="opacity:0.6;">No hay hits aún. Ejecuta un escaneo.</p></div>
@@ -969,6 +1142,37 @@
   </div>
 </div>
 
+<!-- ===== MODAL PARA REGISTRO EN SORTEO ===== -->
+<div class="modal-overlay" id="modalRegistroSorteo">
+  <div class="modal-content">
+    <button class="modal-close" onclick="cerrarModalRegistroSorteo()">✕</button>
+    <div class="modal-title">🎯 Anotarme para el Sorteo</div>
+    <div id="modalRegistroBody">
+      <p style="margin-bottom: 15px; opacity: 0.7;">Ingresa tus datos para participar en el sorteo del loco Andy 🦁</p>
+      <input id="registroSorteoNombre" placeholder="Tu nombre completo" style="margin-bottom: 10px;">
+      <input id="registroSorteoTelefono" placeholder="Número de móvil" type="tel">
+      <button onclick="registrarParticipanteSorteo()" class="btn-success" style="margin-top: 15px; font-size: 1.1rem; font-weight: 800;">
+        🎯 ¡QUIERO PARTICIPAR!
+      </button>
+      <div id="registroSorteoMensaje" style="margin-top: 15px; font-size: 0.95rem; font-weight: 700;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL GANADOR ===== -->
+<div class="modal-overlay" id="modalGanador">
+  <div class="modal-content" style="border-color: #fbbf24; text-align: center;">
+    <button class="modal-close" onclick="cerrarModalGanador()">✕</button>
+    <div class="modal-title" style="font-size: 2rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏆 ¡GANADOR!</🏆></div>
+    <div id="ganadorBody" style="padding: 20px 0;">
+      <div style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
+      <div id="ganadorNombre" style="font-size: 2rem; font-weight: 900; color: #fbbf24;">¡FELICIDADES!</div>
+      <div id="ganadorDetalles" style="font-size: 1rem; opacity: 0.8; margin-top: 10px;"></div>
+      <button onclick="cerrarModalGanador()" class="btn-success" style="margin-top: 20px; font-size: 1.1rem; padding: 12px 40px; width: auto;">🎊 ¡Genial!</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================================ -->
 <!-- FIREBASE + TODAS LAS FUNCIONES + APROBACIÓN EN TIEMPO REAL -->
 <!-- ============================================================ -->
@@ -1131,12 +1335,15 @@
               if (email === ADMIN_EMAIL) {
                 document.getElementById('btnAdminUsers').style.display = 'inline-flex';
                 document.getElementById('btnClientes').style.display = 'inline-flex';
+                document.getElementById('adminSorteoPanel').style.display = 'block';
                 cargarUsuariosPendientes();
                 cargarClientesAdmin();
                 escucharNuevosRegistros();
+                cargarParticipantesSorteo();
               } else {
                 document.getElementById('btnAdminUsers').style.display = 'none';
                 document.getElementById('btnClientes').style.display = 'none';
+                document.getElementById('adminSorteoPanel').style.display = 'none';
               }
               cargarHitsUsuario(email);
               cargarURLsUsuario(email);
@@ -1223,12 +1430,15 @@
       if (currentUserIsAdmin) {
         document.getElementById('btnAdminUsers').style.display = 'inline-flex';
         document.getElementById('btnClientes').style.display = 'inline-flex';
+        document.getElementById('adminSorteoPanel').style.display = 'block';
         await cargarUsuariosPendientes();
         await cargarClientesAdmin();
         escucharNuevosRegistros();
+        await cargarParticipantesSorteo();
       } else {
         document.getElementById('btnAdminUsers').style.display = 'none';
         document.getElementById('btnClientes').style.display = 'none';
+        document.getElementById('adminSorteoPanel').style.display = 'none';
       }
       
       await cargarHitsUsuario(email);
@@ -1808,6 +2018,313 @@
   };
 
   // ============================================================
+  // SORTEO - RULETA Y PARTICIPANTES
+  // ============================================================
+  let participantesSorteo = [];
+  let ruletaGirando = false;
+
+  // Cargar participantes del sorteo desde Firebase
+  async function cargarParticipantesSorteo() {
+    try {
+      const q = query(collection(db, "sorteo_participantes"));
+      const querySnap = await getDocs(q);
+      participantesSorteo = [];
+      querySnap.forEach(docSnap => {
+        participantesSorteo.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      actualizarListaParticipantes();
+      generarRuleta();
+    } catch (err) {
+      console.error('Error cargando participantes:', err);
+    }
+  }
+
+  // Actualizar la lista visual de participantes
+  function actualizarListaParticipantes() {
+    // Lista pública
+    const listaEl = document.getElementById('listaParticipantes');
+    const totalEl = document.getElementById('totalParticipantes');
+    totalEl.textContent = participantesSorteo.length;
+    
+    if (participantesSorteo.length === 0) {
+      listaEl.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún. ¡Sé el primero!</p>';
+    } else {
+      listaEl.innerHTML = participantesSorteo.map(p => 
+        `<span class="participante-tag">🎯 ${p.nombre}</span>`
+      ).join('');
+    }
+    
+    // Lista de admin (solo si es admin)
+    if (currentUserIsAdmin) {
+      const adminLista = document.getElementById('listaParticipantesAdmin');
+      const totalAdmin = document.getElementById('totalParticipantesAdmin');
+      totalAdmin.textContent = participantesSorteo.length;
+      
+      if (participantesSorteo.length === 0) {
+        adminLista.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem;">No hay participantes registrados.</p>';
+      } else {
+        adminLista.innerHTML = participantesSorteo.map(p => 
+          `<div style="display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid var(--border); font-size: 0.85rem;">
+            <span>📱 ${p.nombre}</span>
+            <span style="opacity: 0.6;">${p.telefono}</span>
+          </div>`
+        ).join('');
+      }
+    }
+  }
+
+  // Generar la ruleta con los participantes
+  function generarRuleta() {
+    const rueda = document.getElementById('ruedaSorteo');
+    if (!rueda) return;
+    
+    // Limpiar ruleta
+    rueda.innerHTML = '';
+    
+    if (participantesSorteo.length === 0) {
+      // Mostrar mensaje de "Sin participantes"
+      rueda.style.background = 'var(--input-bg)';
+      rueda.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">
+          Sin participantes<br>¡Anímate!
+        </div>
+      `;
+      return;
+    }
+    
+    rueda.style.background = 'transparent';
+    const numParticipantes = participantesSorteo.length;
+    const colores = [
+      '#dc2626', '#0ea5e9', '#16a34a', '#f59e0b', '#8b5cf6', 
+      '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#22d3ee',
+      '#f43f5e', '#84cc16', '#a855f7', '#f472b6', '#06b6d4'
+    ];
+    
+    const angulo = 360 / numParticipantes;
+    
+    participantesSorteo.forEach((p, index) => {
+      const segmento = document.createElement('div');
+      segmento.className = 'segmento';
+      const color = colores[index % colores.length];
+      segmento.style.background = color;
+      segmento.style.transform = `rotate(${index * angulo}deg)`;
+      segmento.style.clipPath = `polygon(0 0, 100% 0, 0 100%)`;
+      // Ajustar para que se vea bien
+      segmento.innerHTML = `<span>${p.nombre}</span>`;
+      rueda.appendChild(segmento);
+    });
+    
+    // Resetear rotación
+    rueda.style.transform = 'rotate(0deg)';
+  }
+
+  // Girar la ruleta
+  window.girarRuleta = function() {
+    if (ruletaGirando) return;
+    if (participantesSorteo.length < 2) {
+      alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.');
+      return;
+    }
+    
+    ruletaGirando = true;
+    document.getElementById('btnGirarRuleta').disabled = true;
+    const rueda = document.getElementById('ruedaSorteo');
+    
+    // Ángulo aleatorio con vueltas extra
+    const vueltas = 5 + Math.floor(Math.random() * 5);
+    const anguloExtra = Math.random() * 360;
+    const anguloTotal = vueltas * 360 + anguloExtra;
+    
+    // Sonido de inicio
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'square';
+      o.frequency.setValueAtTime(440, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + 0.15);
+    } catch(_) {}
+    
+    // Aplicar rotación
+    rueda.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    rueda.style.transform = `rotate(${anguloTotal}deg)`;
+    
+    // Calcular ganador después de la animación
+    setTimeout(() => {
+      // Calcular en qué segmento cayó
+      const numParticipantes = participantesSorteo.length;
+      const anguloSegmento = 360 / numParticipantes;
+      
+      // Normalizar el ángulo final (0-360)
+      const anguloFinal = anguloTotal % 360;
+      
+      // El índice del ganador (invertido porque la flecha está arriba)
+      // La flecha apunta hacia arriba (270° en coordenadas estándar)
+      // El segmento que está en la parte superior es el que tiene el centro en 270°
+      let indiceGanador = Math.floor((360 - anguloFinal) / anguloSegmento) % numParticipantes;
+      
+      // Ajuste por la posición de la flecha
+      indiceGanador = (numParticipantes - Math.floor((anguloFinal + anguloSegmento/2) / anguloSegmento)) % numParticipantes;
+      
+      const ganador = participantesSorteo[indiceGanador];
+      
+      // Mostrar modal de ganador
+      mostrarGanador(ganador);
+      
+      ruletaGirando = false;
+      document.getElementById('btnGirarRuleta').disabled = false;
+      
+      // Sonido de ganador
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        [523, 659, 784].forEach((freq, i) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+          g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.1);
+          g.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + i * 0.1 + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.25);
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.start(audioCtx.currentTime + i * 0.1);
+          o.stop(audioCtx.currentTime + i * 0.1 + 0.25);
+        });
+      } catch(_) {}
+      
+    }, 4200);
+  };
+
+  // Mostrar ganador en modal
+  function mostrarGanador(participante) {
+    document.getElementById('ganadorNombre').textContent = `🎉 ${participante.nombre} 🎉`;
+    document.getElementById('ganadorDetalles').textContent = `📱 ${participante.telefono}`;
+    document.getElementById('modalGanador').classList.add('active');
+  }
+
+  window.cerrarModalGanador = function() {
+    document.getElementById('modalGanador').classList.remove('active');
+  };
+
+  // ============================================================
+  // FUNCIONES DEL SORTEO (GLOBALES)
+  // ============================================================
+  
+  // Abrir modal de registro para el sorteo
+  window.abrirModalRegistroSorteo = function() {
+    if (!currentUserEmail) {
+      alert('⚠️ Debes iniciar sesión para participar en el sorteo.');
+      return;
+    }
+    document.getElementById('registroSorteoNombre').value = '';
+    document.getElementById('registroSorteoTelefono').value = '';
+    document.getElementById('registroSorteoMensaje').textContent = '';
+    document.getElementById('modalRegistroSorteo').classList.add('active');
+  };
+
+  window.cerrarModalRegistroSorteo = function() {
+    document.getElementById('modalRegistroSorteo').classList.remove('active');
+  };
+
+  // Registrar participante en el sorteo
+  window.registrarParticipanteSorteo = async function() {
+    const nombre = document.getElementById('registroSorteoNombre').value.trim();
+    const telefono = document.getElementById('registroSorteoTelefono').value.trim();
+    const mensaje = document.getElementById('registroSorteoMensaje');
+    
+    if (!nombre || !telefono) {
+      mensaje.innerHTML = '⚠️ Completa todos los campos.';
+      mensaje.style.color = 'var(--rojo-leon)';
+      return;
+    }
+    
+    // Verificar si ya está registrado
+    const existe = participantesSorteo.some(p => p.telefono === telefono || p.nombre.toLowerCase() === nombre.toLowerCase());
+    if (existe) {
+      mensaje.innerHTML = '⚠️ Ya estás registrado en el sorteo. ¡Suerte! 🍀';
+      mensaje.style.color = '#f59e0b';
+      return;
+    }
+    
+    try {
+      await addDoc(collection(db, "sorteo_participantes"), {
+        nombre: nombre,
+        telefono: telefono,
+        fechaRegistro: new Date().toISOString(),
+        registradoPor: currentUserEmail
+      });
+      
+      mensaje.innerHTML = '✅ ¡Listo! Estás participando en el sorteo del loco Andy 🦁🎯';
+      mensaje.style.color = 'var(--verde-leon)';
+      
+      window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando en el sorteo del loco Andy. ¡Buena suerte! 🍀`);
+      
+      // Recargar participantes
+      await cargarParticipantesSorteo();
+      
+      // Cerrar modal después de 2 segundos
+      setTimeout(() => {
+        cerrarModalRegistroSorteo();
+      }, 2500);
+      
+    } catch (err) {
+      mensaje.innerHTML = '❌ Error al registrar: ' + err.message;
+      mensaje.style.color = 'var(--rojo-leon)';
+    }
+  };
+
+  // Cargar participantes en la ruleta (ADMIN)
+  window.cargarParticipantesEnRuleta = function() {
+    if (!currentUserIsAdmin) {
+      alert('⚠️ Solo el administrador puede realizar esta acción.');
+      return;
+    }
+    
+    if (participantesSorteo.length < 2) {
+      alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.');
+      return;
+    }
+    
+    generarRuleta();
+    window.mostrarToast('🎯 Participantes cargados', `${participantesSorteo.length} participantes listos para el sorteo. ¡Gira la ruleta!`);
+  };
+
+  // Eliminar todos los participantes (ADMIN)
+  window.eliminarTodosParticipantes = async function() {
+    if (!currentUserIsAdmin) {
+      alert('⚠️ Solo el administrador puede realizar esta acción.');
+      return;
+    }
+    
+    if (participantesSorteo.length === 0) {
+      alert('⚠️ No hay participantes para eliminar.');
+      return;
+    }
+    
+    if (!confirm(`⚠️ ¿Eliminar TODOS los ${participantesSorteo.length} participantes del sorteo? Esta acción no se puede deshacer.`)) return;
+    
+    try {
+      const q = query(collection(db, "sorteo_participantes"));
+      const querySnap = await getDocs(q);
+      const batch = writeBatch(db);
+      querySnap.forEach(docSnap => {
+        batch.delete(docSnap.ref);
+      });
+      await batch.commit();
+      
+      await cargarParticipantesSorteo();
+      window.mostrarToast('🗑️ Participantes eliminados', 'Todos los participantes han sido eliminados del sorteo.');
+    } catch (err) {
+      alert('❌ Error eliminando participantes: ' + err.message);
+    }
+  };
+
+  // ============================================================
   // DASHBOARD
   // ============================================================
   window.actualizarDashboard = function() {
@@ -2055,12 +2572,15 @@
         if (currentUserIsAdmin) {
           document.getElementById('btnAdminUsers').style.display = 'inline-flex';
           document.getElementById('btnClientes').style.display = 'inline-flex';
+          document.getElementById('adminSorteoPanel').style.display = 'block';
           await cargarUsuariosPendientes();
           await cargarClientesAdmin();
           escucharNuevosRegistros();
+          await cargarParticipantesSorteo();
         } else {
           document.getElementById('btnAdminUsers').style.display = 'none';
           document.getElementById('btnClientes').style.display = 'none';
+          document.getElementById('adminSorteoPanel').style.display = 'none';
         }
         
         await cargarHitsUsuario(email);
@@ -2078,6 +2598,7 @@
   console.log('✅ Escáner MUNRRA FUNCIONAL');
   console.log('✅ Panel Scanner integrado');
   console.log('✅ Notificaciones automáticas');
+  console.log('✅ Rueda de sorteo con participantes');
   console.log('✅ TODO FUNCIONANDO AL 100%');
 </script>
 
@@ -2612,6 +3133,7 @@ ${ts('groupsB')}`;
   console.log('🦁 ANDYCHE CHAKER - IPTV Scanner Pro V7.9.1');
   console.log('🔥 M3U Scanner (MUNRRA) FUNCIONAL');
   console.log('✅ APROBACIÓN EN TIEMPO REAL ACTIVADA');
+  console.log('✅ RUEDA DE SORTEO CON PARTICIPANTES');
   console.log('✅ TODO FUNCIONANDO AL 100%');
 </script>
 </body>
