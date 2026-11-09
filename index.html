@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>🦁 ANDYCHE CHAKER - SORTEO + MEMBRESÍA</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
 
@@ -15,7 +16,6 @@
     --border: #1e2d4a;
     --input-bg: #1a2744;
     --progress-bg: #1e2d4a;
-    
     --rojo-leon: #dc2626;
     --rojo-leon-claro: #ef4444;
     --rojo-leon-oscuro: #b91c1c;
@@ -25,18 +25,14 @@
     --celeste-leon: #0ea5e9;
     --celeste-leon-claro: #38bdf8;
     --celeste-leon-oscuro: #0284c7;
-    
     --gradient: linear-gradient(135deg, var(--rojo-leon), var(--celeste-leon), var(--verde-leon));
     --gradient-fire: linear-gradient(135deg, var(--rojo-leon), var(--rojo-leon-oscuro));
     --gradient-sky: linear-gradient(135deg, var(--celeste-leon), var(--celeste-leon-oscuro));
     --gradient-jungle: linear-gradient(135deg, var(--verde-leon), var(--verde-leon-oscuro));
     --shadow-glow: 0 0 30px rgba(220, 38, 38, 0.3), 0 0 60px rgba(14, 165, 233, 0.15), 0 0 90px rgba(22, 163, 74, 0.1);
-    
     --accent-start: #a855f7;
     --accent-end: #22d3ee;
     --accent-gradient: linear-gradient(180deg, var(--accent-start), var(--accent-end));
-
-    /* Membresía - Blanco y Amarillo */
     --amarillo: #fbbf24;
     --amarillo-claro: #fde047;
     --amarillo-oscuro: #f59e0b;
@@ -74,7 +70,6 @@
   ::-webkit-scrollbar-thumb { background: var(--rojo-leon); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--celeste-leon); }
 
-  /* ===== LOGIN ===== */
   .login-container {
     min-height: 100vh;
     display: flex;
@@ -102,75 +97,26 @@
   .login-card .logo-grande { font-size: 64px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .login-card h1 { font-weight: 900; font-size: 1.8rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Orbitron', monospace; }
   .login-card p { opacity: 0.6; margin: 0; font-size: 0.9rem; }
-  
-  .login-card .input-group {
-    position: relative;
-    margin-top: 14px;
-  }
-  .login-card .input-group input {
-    width: 100%;
-    padding: 14px 18px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    color: var(--text);
-    font-size: 1rem;
-    transition: all 0.3s;
-    margin: 0;
-    padding-right: 50px;
-  }
-  .login-card .input-group input:focus {
-    outline: none;
-    border-color: var(--celeste-leon);
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
-  }
-  .login-card .input-group .toggle-pass {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0;
-    width: auto;
-    opacity: 0.6;
-    margin: 0;
-  }
+  .login-card .input-group { position: relative; margin-top: 14px; }
+  .login-card .input-group input { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 1rem; transition: all 0.3s; margin: 0; padding-right: 50px; }
+  .login-card .input-group input:focus { outline: none; border-color: var(--celeste-leon); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+  .login-card .input-group .toggle-pass { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; padding: 0; width: auto; opacity: 0.6; margin: 0; }
   .login-card .input-group .toggle-pass:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
-
   .login-card .btn-login { width: 100%; padding: 14px; margin-top: 16px; border-radius: 16px; border: none; font-weight: 700; font-size: 1rem; background: var(--gradient); color: #fff; cursor: pointer; transition: all 0.3s; }
   .login-card .btn-login:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-  .login-card .switch-auth { margin-top: 16px; font-size: 0.85rem; opacity: 0.7; cursor: pointer; color: var(--celeste-leon); }
-  .login-card .switch-auth:hover { opacity: 1; }
 
-  /* ===== BOTÓN REGISTRO SORTEO (PÚBLICO) ===== */
   .btn-sorteo-publico {
-    max-width: 420px;
-    width: 100%;
-    padding: 20px 30px;
-    border-radius: 32px;
+    max-width: 420px; width: 100%; padding: 20px 30px; border-radius: 32px;
     border: 3px solid transparent;
     background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--gradient);
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
-    box-shadow: var(--shadow-glow);
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Orbitron', monospace;
-    font-weight: 900;
-    font-size: 1.3rem;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+    box-shadow: var(--shadow-glow); text-align: center; cursor: pointer;
+    transition: all 0.3s ease; font-family: 'Orbitron', monospace; font-weight: 900;
+    font-size: 1.3rem; color: #fff; text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
     animation: pulse 2s infinite;
   }
-  .btn-sorteo-publico:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 50px rgba(220, 38, 38, 0.4);
-  }
+  .btn-sorteo-publico:hover { transform: scale(1.02); box-shadow: 0 0 50px rgba(220, 38, 38, 0.4); }
   .btn-sorteo-publico .icono-grande { font-size: 3rem; display: block; margin-bottom: 5px; }
   .btn-sorteo-publico .subtitulo { font-size: 0.7rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; opacity: 0.7; }
 
@@ -181,103 +127,46 @@
   }
 
   .texto-administrador {
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.8rem;
-    opacity: 0.4;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-    padding: 8px;
+    max-width: 420px; width: 100%; text-align: center; font-size: 0.8rem;
+    opacity: 0.4; margin-top: 10px; cursor: pointer; transition: all 0.3s; padding: 8px;
   }
   .texto-administrador:hover { opacity: 0.8; }
 
-  /* Toast */
   .toast {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: var(--card-bg);
-    border: 2px solid var(--verde-leon);
-    border-radius: 16px;
-    padding: 16px 24px;
-    box-shadow: var(--shadow-glow);
-    z-index: 9999;
-    max-width: 400px;
-    display: none;
-    animation: slideUp 0.5s ease;
+    position: fixed; bottom: 30px; right: 30px; background: var(--card-bg);
+    border: 2px solid var(--verde-leon); border-radius: 16px; padding: 16px 24px;
+    box-shadow: var(--shadow-glow); z-index: 9999; max-width: 400px;
+    display: none; animation: slideUp 0.5s ease;
   }
   .toast.show { display: block; }
   .toast .toast-title { font-weight: 700; color: var(--verde-leon-claro); font-size: 1rem; }
   .toast .toast-body { font-size: 0.9rem; opacity: 0.8; margin-top: 4px; }
-  .toast .toast-close {
-    float: right;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0 4px;
-    opacity: 0.6;
-  }
+  .toast .toast-close { float: right; background: none; border: none; color: var(--text); font-size: 18px; cursor: pointer; padding: 0 4px; opacity: 0.6; }
   .toast .toast-close:hover { opacity: 1; }
 
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-  /* ===== SIDEBAR (ADMIN) ===== */
   .sidebar {
-    width: 100%;
-    background: rgba(10, 14, 26, 0.9);
-    backdrop-filter: blur(16px);
-    padding: 10px 18px;
-    display: flex;
-    overflow-x: auto;
-    gap: 8px;
-    border-bottom: 2px solid var(--rojo-leon);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    scrollbar-width: none;
-    align-items: center;
+    width: 100%; background: rgba(10, 14, 26, 0.9); backdrop-filter: blur(16px);
+    padding: 10px 18px; display: flex; overflow-x: auto; gap: 8px;
+    border-bottom: 2px solid var(--rojo-leon); position: sticky; top: 0;
+    z-index: 100; scrollbar-width: none; align-items: center;
   }
   .sidebar::-webkit-scrollbar { display: none; }
 
   .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--gradient);
-    padding: 6px 16px;
-    border-radius: 60px;
-    font-weight: 800;
-    font-size: 0.9rem;
-    box-shadow: var(--shadow-glow);
-    margin-right: 14px;
-    white-space: nowrap;
-    color: #fff;
-    font-family: 'Orbitron', monospace;
-    letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 10px; background: var(--gradient);
+    padding: 6px 16px; border-radius: 60px; font-weight: 800; font-size: 0.9rem;
+    box-shadow: var(--shadow-glow); margin-right: 14px; white-space: nowrap;
+    color: #fff; font-family: 'Orbitron', monospace; letter-spacing: 0.5px;
   }
   .logo-area .icono { font-size: 1.3rem; }
 
   .nav-btn {
-    background: var(--card-bg);
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: 40px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    background: var(--card-bg); color: var(--text); padding: 8px 14px;
+    border-radius: 40px; font-size: 11px; font-weight: 700; white-space: nowrap;
+    border: 1px solid var(--border); cursor: pointer; transition: all 0.3s ease;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .nav-btn.active { background: var(--gradient); color: #fff; box-shadow: var(--shadow-glow); border-color: transparent; }
   .nav-btn:hover:not(.active) { transform: translateY(-2px); border-color: var(--rojo-leon); box-shadow: 0 0 20px rgba(220, 38, 38, 0.15); }
@@ -287,38 +176,22 @@
   .container { padding: 16px; max-width: 1200px; margin: auto; }
   .page { display: none; animation: fadeIn 0.4s ease; }
   .page.active { display: block; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
   .card {
-    background: var(--card-bg);
-    backdrop-filter: blur(4px);
-    padding: 24px;
-    border-radius: 24px;
-    margin-top: 16px;
-    border: 1px solid var(--border);
+    background: var(--card-bg); backdrop-filter: blur(4px); padding: 24px;
+    border-radius: 24px; margin-top: 16px; border: 1px solid var(--border);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
-
   .card-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; font-family: 'Orbitron', monospace; }
   .card-subtitle { font-size: 0.9rem; opacity: 0.7; margin-bottom: 14px; }
 
   input, button, select, textarea {
-    width: 100%;
-    padding: 12px 16px;
-    margin-top: 10px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    box-sizing: border-box;
-    font-family: inherit;
-    font-weight: 500;
-    background: var(--input-bg);
-    color: var(--text);
-    transition: all 0.3s;
+    width: 100%; padding: 12px 16px; margin-top: 10px; border-radius: 16px;
+    border: 1px solid var(--border); box-sizing: border-box; font-family: inherit;
+    font-weight: 500; background: var(--input-bg); color: var(--text); transition: all 0.3s;
   }
-
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--celeste-leon); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
-
   button { background: var(--gradient); color: #fff; font-weight: 700; cursor: pointer; border: none; transition: all 0.3s; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
   button:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
   button:active { transform: scale(0.97); }
@@ -329,374 +202,84 @@
   .btn-success { background: var(--gradient-jungle); }
   .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .btn-azul { background: var(--gradient-sky); }
-  .btn-rosa { background: var(--gradient); }
 
   .badge { padding: 4px 12px; border-radius: 40px; font-size: 11px; font-weight: 700; background: var(--border); }
-  .badge-rojo { background: var(--rojo-leon); color: #fff; }
-  .badge-verde { background: var(--verde-leon); color: #fff; }
-  .badge-celeste { background: var(--celeste-leon); color: #fff; }
-  .badge-oro { background: #f59e0b; color: #1a1a2e; }
-
   .flex-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .stat-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 16px;
-    border: 1px solid var(--border);
-    text-align: center;
-    transition: all 0.3s;
-  }
+  .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: var(--card-bg); border-radius: 16px; padding: 16px; border: 1px solid var(--border); text-align: center; transition: all 0.3s; }
   .stat-card:hover { border-color: var(--rojo-leon); transform: translateY(-3px); }
   .stat-card .stat-number { font-size: 1.8rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .stat-card .stat-label { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
   .stat-card .stat-icon { font-size: 1.6rem; }
 
-  /* ===== RUEDA DE SORTEO ===== */
-  .rueda-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-    position: relative;
-  }
-  .rueda-wrapper {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
-  }
-  .rueda {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    border: 4px solid var(--rojo-leon);
-    box-shadow: var(--shadow-glow);
-    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-  }
-  .rueda .segmento {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    top: 0;
-    left: 50%;
-    transform-origin: 0% 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 0 5px rgba(0,0,0,0.8);
-    text-align: center;
-    padding: 5px;
-    box-sizing: border-box;
-    clip-path: polygon(0 0, 100% 0, 0 100%);
-    cursor: default;
-  }
-  .rueda .segmento span {
-    transform: rotate(45deg);
-    display: block;
-    font-size: 9px;
-    line-height: 1.2;
-    word-wrap: break-word;
-    max-width: 60px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .rueda .center-circle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background: var(--gradient);
-    border-radius: 50%;
-    border: 3px solid #fff;
-    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: #fff;
-    font-weight: 900;
-  }
-  .rueda .flecha {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 30px;
-    color: var(--rojo-leon);
-    z-index: 10;
-    text-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
-    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
-  }
+  .rueda-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0; position: relative; }
+  .rueda-wrapper { position: relative; width: 300px; height: 300px; margin: 0 auto; }
+  .rueda { width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid var(--rojo-leon); box-shadow: var(--shadow-glow); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+  .rueda .segmento { position: absolute; width: 50%; height: 50%; top: 0; left: 50%; transform-origin: 0% 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; text-shadow: 0 0 5px rgba(0,0,0,0.8); text-align: center; padding: 5px; box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 0 100%); cursor: default; }
+  .rueda .segmento span { transform: rotate(45deg); display: block; font-size: 9px; line-height: 1.2; word-wrap: break-word; max-width: 60px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+  .rueda .center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: var(--gradient); border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 20px rgba(220, 38, 38, 0.5); z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 900; }
+  .rueda .flecha { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 30px; color: var(--rojo-leon); z-index: 10; text-shadow: 0 0 20px rgba(220, 38, 38, 0.8); filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5)); }
 
-  .participantes-lista {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-    max-height: 150px;
-    overflow-y: auto;
-    padding: 10px;
-    background: var(--input-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border);
-  }
-  .participante-tag {
-    background: var(--gradient);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    animation: fadeIn 0.3s ease;
-  }
+  .participantes-lista { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; max-height: 150px; overflow-y: auto; padding: 10px; background: var(--input-bg); border-radius: 12px; border: 1px solid var(--border); }
+  .participante-tag { background: var(--gradient); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease; }
 
-  /* ===== MODAL ===== */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(6px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
   .modal-overlay.active { display: flex; }
-  .modal-content {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 30px;
-    max-width: 550px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    border: 2px solid var(--celeste-leon);
-    box-shadow: var(--shadow-glow);
-  }
+  .modal-content { background: var(--card-bg); border-radius: 24px; padding: 30px; max-width: 550px; width: 100%; max-height: 85vh; overflow-y: auto; border: 2px solid var(--celeste-leon); box-shadow: var(--shadow-glow); }
   .modal-content .modal-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .modal-content .modal-close {
-    float: right;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 24px;
-    cursor: pointer;
-    width: auto;
-    padding: 0 8px;
-  }
+  .modal-content .modal-close { float: right; background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; width: auto; padding: 0 8px; }
   .modal-content .modal-close:hover { opacity: 0.7; }
 
-  .registro-exitoso {
-    text-align: center;
-    padding: 20px;
-  }
+  .registro-exitoso { text-align: center; padding: 20px; }
   .registro-exitoso .icono { font-size: 4rem; margin-bottom: 10px; }
   .registro-exitoso .mensaje { font-size: 1.2rem; font-weight: 700; color: var(--verde-leon-claro); }
   .registro-exitoso .subtitulo { opacity: 0.7; margin-top: 8px; }
 
-  /* ===== GANADOR MODAL ===== */
-  .ganador-content {
-    text-align: center;
-    padding: 20px 0;
-  }
+  .ganador-content { text-align: center; padding: 20px 0; }
   .ganador-content .trofeo { font-size: 4rem; margin-bottom: 10px; animation: bounce 1s infinite; }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
   .ganador-content .nombre { font-size: 2.2rem; font-weight: 900; color: #fbbf24; text-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
   .ganador-content .detalle { font-size: 1rem; opacity: 0.7; margin-top: 8px; }
 
-  /* ============================================================ */
-  /* ===== PANEL DE MEMBRESÍA - BLANCO Y AMARILLO ===== */
-  /* ============================================================ */
-  .membresia-hero {
-    background: var(--gradient-amarillo);
-    border-radius: 24px;
-    padding: 24px;
-    margin-bottom: 20px;
-    color: var(--texto-oscuro);
-    box-shadow: 0 8px 40px rgba(251, 191, 36, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
+  /* ===== MEMBRESÍA AMARILLO/BLANCO ===== */
+  .membresia-hero { background: var(--gradient-amarillo); border-radius: 24px; padding: 24px; margin-bottom: 20px; color: var(--texto-oscuro); box-shadow: 0 8px 40px rgba(251, 191, 36, 0.35); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .membresia-hero h2 { font-size: 1.5rem; font-weight: 900; font-family: 'Orbitron', monospace; }
   .membresia-hero p { font-size: 0.85rem; font-weight: 600; opacity: 0.85; margin-top: 4px; }
   .membresia-hero .icono-hero { font-size: 3rem; }
 
-  .membresia-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    margin-bottom: 20px;
-    padding-bottom: 6px;
-    scrollbar-width: none;
-  }
+  .membresia-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 6px; scrollbar-width: none; }
   .membresia-tabs::-webkit-scrollbar { display: none; }
-  .membresia-tab {
-    padding: 10px 18px;
-    border-radius: 40px;
-    border: 2px solid var(--amarillo);
-    background: transparent;
-    color: var(--amarillo);
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s;
-    width: auto;
-    margin: 0;
-  }
+  .membresia-tab { padding: 10px 18px; border-radius: 40px; border: 2px solid var(--amarillo); background: transparent; color: var(--amarillo); font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap; transition: all 0.3s; width: auto; margin: 0; }
   .membresia-tab:hover { background: rgba(251, 191, 36, 0.1); transform: none; box-shadow: none; }
-  .membresia-tab.active {
-    background: var(--gradient-amarillo);
-    color: var(--texto-oscuro);
-    border-color: transparent;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
-  }
+  .membresia-tab.active { background: var(--gradient-amarillo); color: var(--texto-oscuro); border-color: transparent; box-shadow: 0 0 20px rgba(251, 191, 36, 0.35); }
 
   .m-tab { display: none; animation: fadeIn 0.3s ease; }
   .m-tab.active { display: block; }
 
-  .membresia-card {
-    background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
-    border: 2px solid var(--amarillo);
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 16px;
-    color: var(--texto-oscuro);
-    box-shadow: 0 8px 30px rgba(251, 191, 36, 0.15);
-  }
-  .membresia-card h3 {
-    color: var(--texto-oscuro);
-    font-size: 1.05rem;
-    font-weight: 900;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .membresia-card label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--texto-marron);
-    margin-top: 12px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  .membresia-card input,
-  .membresia-card select,
-  .membresia-card textarea {
-    background: var(--amarillo-fondo);
-    border: 2px solid #fde68a;
-    color: var(--texto-oscuro);
-    margin-top: 0;
-    width: 100%;
-    font-weight: 600;
-  }
-  .membresia-card input::placeholder,
-  .membresia-card textarea::placeholder {
-    color: #b45309;
-    opacity: 0.5;
-  }
-  .membresia-card input:focus,
-  .membresia-card select:focus,
-  .membresia-card textarea:focus {
-    outline: none;
-    border-color: var(--amarillo-oscuro);
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-  }
+  .membresia-card { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); border: 2px solid var(--amarillo); border-radius: 20px; padding: 22px; margin-bottom: 16px; color: var(--texto-oscuro); box-shadow: 0 8px 30px rgba(251, 191, 36, 0.15); }
+  .membresia-card h3 { color: var(--texto-oscuro); font-size: 1.05rem; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .membresia-card label { display: block; font-size: 0.78rem; font-weight: 800; color: var(--texto-marron); margin-top: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .membresia-card input, .membresia-card select, .membresia-card textarea { background: var(--amarillo-fondo); border: 2px solid #fde68a; color: var(--texto-oscuro); margin-top: 0; width: 100%; font-weight: 600; }
+  .membresia-card input::placeholder, .membresia-card textarea::placeholder { color: #b45309; opacity: 0.5; }
+  .membresia-card input:focus, .membresia-card select:focus, .membresia-card textarea:focus { outline: none; border-color: var(--amarillo-oscuro); background: #ffffff; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
 
-  .btn-amarillo {
-    background: var(--gradient-amarillo) !important;
-    color: var(--texto-oscuro) !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-    border: none;
-  }
+  .btn-amarillo { background: var(--gradient-amarillo) !important; color: var(--texto-oscuro) !important; font-weight: 800 !important; text-shadow: none !important; border: none; }
   .btn-amarillo:hover { box-shadow: 0 0 25px rgba(251, 191, 36, 0.5) !important; }
-
-  .btn-amarillo-outline {
-    background: transparent !important;
-    color: var(--texto-marron) !important;
-    border: 2px solid var(--amarillo) !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-  }
+  .btn-amarillo-outline { background: transparent !important; color: var(--texto-marron) !important; border: 2px solid var(--amarillo) !important; font-weight: 800 !important; text-shadow: none !important; }
   .btn-amarillo-outline:hover { background: rgba(251, 191, 36, 0.15) !important; }
+  .btn-rojo-mini { background: linear-gradient(135deg, #dc2626, #b91c1c) !important; color: #fff !important; text-shadow: none !important; }
+  .btn-verde-mini { background: linear-gradient(135deg, #16a34a, #15803d) !important; color: #fff !important; text-shadow: none !important; }
+  .btn-wsp { background: linear-gradient(135deg, #25d366, #128c7e) !important; color: #fff !important; text-shadow: none !important; }
 
-  .btn-rojo-mini {
-    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
-    color: #fff !important;
-    text-shadow: none !important;
-  }
-
-  .btn-verde-mini {
-    background: linear-gradient(135deg, #16a34a, #15803d) !important;
-    color: #fff !important;
-    text-shadow: none !important;
-  }
-
-  .membresia-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .membresia-stat {
-    background: linear-gradient(135deg, #ffffff, #fffbeb);
-    border: 2px solid var(--amarillo);
-    border-radius: 16px;
-    padding: 16px 12px;
-    text-align: center;
-    color: var(--texto-oscuro);
-    transition: all 0.3s;
-  }
+  .membresia-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .membresia-stat { background: linear-gradient(135deg, #ffffff, #fffbeb); border: 2px solid var(--amarillo); border-radius: 16px; padding: 16px 12px; text-align: center; color: var(--texto-oscuro); transition: all 0.3s; }
   .membresia-stat:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3); }
   .membresia-stat .m-icon { font-size: 1.6rem; margin-bottom: 4px; }
   .membresia-stat .m-numero { font-size: 2rem; font-weight: 900; color: #b45309; line-height: 1; }
   .membresia-stat .m-label { font-size: 0.72rem; font-weight: 800; color: var(--texto-marron); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
 
-  .cliente-row {
-    background: #ffffff;
-    border: 2px solid #fde68a;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 10px;
-    color: var(--texto-oscuro);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    justify-content: space-between;
-    transition: all 0.3s;
-  }
+  .cliente-row { background: #ffffff; border: 2px solid #fde68a; border-radius: 14px; padding: 14px; margin-bottom: 10px; color: var(--texto-oscuro); display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; transition: all 0.3s; }
   .cliente-row:hover { border-color: var(--amarillo-oscuro); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); }
   .cliente-row.atrasado { border-color: #dc2626; background: #fef2f2; }
   .cliente-row.gratis { border-color: #16a34a; background: #f0fdf4; }
@@ -709,14 +292,7 @@
   .cliente-info .cliente-vence.ok { color: #16a34a; }
 
   .cliente-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-  .cliente-badge {
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
+  .cliente-badge { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; }
   .cliente-badge.ok { background: #dcfce7; color: #15803d; }
   .cliente-badge.atrasado { background: #fee2e2; color: #b91c1c; }
   .cliente-badge.gratis { background: #dbeafe; color: #1e40af; }
@@ -724,78 +300,42 @@
 
   .cliente-acciones { display: flex; gap: 4px; flex-wrap: wrap; }
 
-  .empty-msg {
-    text-align: center;
-    padding: 30px 20px;
-    opacity: 0.6;
-    font-size: 0.9rem;
-    color: var(--texto-marron);
-    font-weight: 700;
-  }
+  .empty-msg { text-align: center; padding: 30px 20px; opacity: 0.6; font-size: 0.9rem; color: var(--texto-marron); font-weight: 700; }
 
-  .nota-blog {
-    background: #ffffff;
-    border: 2px solid #fde68a;
-    border-left: 6px solid var(--amarillo);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    color: var(--texto-oscuro);
-    position: relative;
-  }
+  .nota-blog { background: #ffffff; border: 2px solid #fde68a; border-left: 6px solid var(--amarillo); border-radius: 12px; padding: 16px; margin-bottom: 12px; color: var(--texto-oscuro); }
   .nota-blog .nota-titulo { font-weight: 900; font-size: 1.05rem; color: var(--texto-oscuro); margin-bottom: 6px; }
   .nota-blog .nota-meta { font-size: 0.72rem; color: var(--texto-marron); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
   .nota-blog .nota-contenido { font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; color: #292524; }
-  .nota-blog .nota-cat {
-    display: inline-block;
-    padding: 2px 10px;
-    background: var(--gradient-amarillo);
-    color: var(--texto-oscuro);
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 0.3px;
-  }
+  .nota-blog .nota-cat { display: inline-block; padding: 2px 10px; background: var(--gradient-amarillo); color: var(--texto-oscuro); border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.3px; }
   .nota-blog .nota-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
 
-  .modal-amarillo {
-    border: 2px solid var(--amarillo) !important;
-    background: linear-gradient(135deg, #ffffff, #fffbeb) !important;
-    color: var(--texto-oscuro) !important;
-  }
-  .modal-amarillo .modal-title {
-    background: var(--gradient-amarillo) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-  }
+  /* ===== CUENTAS GUARDADAS ===== */
+  .cuenta-item { background: #ffffff; border: 2px solid #fde68a; border-left: 6px solid #a855f7; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: var(--texto-oscuro); }
+  .cuenta-item .cuenta-servicio { font-weight: 900; font-size: 1.05rem; color: var(--texto-oscuro); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .cuenta-item .cuenta-cred { font-family: 'Courier New', monospace; background: var(--amarillo-fondo); padding: 10px 14px; border-radius: 8px; margin: 8px 0; font-size: 0.85rem; border: 1px solid #fde68a; word-break: break-all; }
+  .cuenta-item .cuenta-cred strong { color: #78350f; font-weight: 800; }
+  .cuenta-item .cuenta-meta { font-size: 0.72rem; color: var(--texto-marron); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+  .cuenta-item .cuenta-notas { font-size: 0.85rem; color: #292524; margin-top: 6px; font-style: italic; }
+  .cuenta-item .cuenta-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ===== HISTORIAL PAGOS ===== */
+  .pago-item { background: #ffffff; border: 2px solid #fde68a; border-left: 6px solid #16a34a; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: var(--texto-oscuro); }
+  .pago-item .pago-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .pago-item .pago-id { font-family: 'Courier New', monospace; font-weight: 800; color: #b45309; font-size: 0.9rem; background: var(--amarillo-fondo); padding: 4px 10px; border-radius: 8px; display: inline-block; }
+  .pago-item .pago-monto { font-size: 1.5rem; font-weight: 900; color: #16a34a; }
+  .pago-item .pago-fecha { font-size: 0.78rem; color: var(--texto-marron); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+  .pago-item .pago-cliente { font-weight: 800; font-size: 0.95rem; margin-top: 4px; }
+  .pago-item .pago-detalle { font-size: 0.82rem; color: #57534e; margin-top: 4px; font-weight: 600; }
+  .pago-item .pago-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .modal-amarillo { border: 2px solid var(--amarillo) !important; background: linear-gradient(135deg, #ffffff, #fffbeb) !important; color: var(--texto-oscuro) !important; }
+  .modal-amarillo .modal-title { background: var(--gradient-amarillo) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
   .modal-amarillo .modal-close { color: var(--texto-oscuro) !important; }
-  .modal-amarillo input,
-  .modal-amarillo select,
-  .modal-amarillo textarea {
-    background: var(--amarillo-fondo) !important;
-    border: 2px solid #fde68a !important;
-    color: var(--texto-oscuro) !important;
-    font-weight: 600;
-  }
-  .modal-amarillo input:focus,
-  .modal-amarillo select:focus,
-  .modal-amarillo textarea:focus {
-    border-color: var(--amarillo-oscuro) !important;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important;
-    background: #fff !important;
-  }
-  .modal-amarillo label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--texto-marron);
-    margin-top: 12px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-  }
+  .modal-amarillo input, .modal-amarillo select, .modal-amarillo textarea { background: var(--amarillo-fondo) !important; border: 2px solid #fde68a !important; color: var(--texto-oscuro) !important; font-weight: 600; }
+  .modal-amarillo input:focus, .modal-amarillo select:focus, .modal-amarillo textarea:focus { border-color: var(--amarillo-oscuro) !important; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important; background: #fff !important; }
+  .modal-amarillo label { display: block; font-size: 0.78rem; font-weight: 800; color: var(--texto-marron); margin-top: 12px; margin-bottom: 4px; text-transform: uppercase; }
+
+  .cuenta-info-box { background: var(--amarillo-fondo); border: 2px dashed #fde68a; border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: 0.85rem; color: var(--texto-marron); font-weight: 700; }
 
   @media (max-width: 768px) {
     .rueda-wrapper { width: 220px; height: 220px; }
@@ -820,27 +360,17 @@
 </head>
 <body>
 
-<!-- ===== PÁGINA DE INICIO ===== -->
 <div id="loginContainer" class="login-container">
-  
-  <!-- BOTÓN PÚBLICO PARA REGISTRARSE EN EL SORTEO -->
   <div class="btn-sorteo-publico" onclick="abrirModalRegistroSorteo()">
     <span class="icono-grande">🎯</span>
     REGÍSTRATE PARA EL SORTEO
     <div class="subtitulo">🦁 Sorteo del Loco Andy - ¡Participa y gana!</div>
   </div>
-
-  <!-- TEXTO "SOY ADMINISTRADOR" para mostrar el login -->
-  <div class="texto-administrador" onclick="toggleLogin()">
-    👑 Soy Administrador
-  </div>
-
-  <!-- FORMULARIO DE LOGIN (oculto por defecto) -->
+  <div class="texto-administrador" onclick="toggleLogin()">👑 Soy Administrador</div>
   <div class="login-card" id="loginCard" style="display:none;">
     <div class="logo-grande">🦁</div>
     <h1>ANDYCHE CHAKER</h1>
     <p>Panel de Administración</p>
-
     <div id="loginForm">
       <input id="loginEmail" type="email" placeholder="Correo electrónico">
       <div class="input-group">
@@ -853,16 +383,13 @@
   </div>
 </div>
 
-<!-- ===== TOAST ===== -->
 <div class="toast" id="toastNotification">
   <button class="toast-close" onclick="cerrarToast()">✕</button>
   <div class="toast-title" id="toastTitle">✅ ¡Registro exitoso!</div>
   <div class="toast-body" id="toastBody">Estás participando en el sorteo del Loco Andy 🦁</div>
 </div>
 
-<!-- ===== APP (ADMIN) ===== -->
 <div id="appContainer" style="display:none;">
-
   <div class="sidebar">
     <div class="logo-area"><span class="icono">🦁</span><strong>ANDYCHE</strong></div>
     <button class="nav-btn active" data-page="p-dashboard">📊 Dashboard</button>
@@ -872,8 +399,7 @@
   </div>
 
   <div class="container">
-
-    <!-- ===== DASHBOARD ===== -->
+    <!-- DASHBOARD -->
     <div id="p-dashboard" class="page active">
       <div class="card">
         <div class="card-title">📊 Panel de Control - Sorteo del Loco Andy</div>
@@ -881,48 +407,29 @@
           <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-participantes">0</div><div class="stat-label">Total Participantes</div></div>
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
         </div>
-
-        <!-- BOTÓN ACCESO RÁPIDO AL PANEL DE MEMBRESÍA -->
-        <button onclick="document.querySelector('.nav-btn[data-page=&quot;p-membresia&quot;]').click();" 
-          class="btn-amarillo" 
-          style="width:100%; padding:18px; font-size:1.05rem; margin-top:8px; border-radius:18px;">
-          💳 ENTRAR PANEL DE ADMINISTRACIÓN DE CLIENTES DE MEMBRESÍA
-        </button>
+        <button onclick="document.querySelector('.nav-btn[data-page=&quot;p-membresia&quot;]').click();" class="btn-amarillo" style="width:100%; padding:18px; font-size:1.05rem; margin-top:8px; border-radius:18px;">💳 ENTRAR PANEL DE ADMINISTRACIÓN DE CLIENTES DE MEMBRESÍA</button>
       </div>
-      
-      <!-- ===== RUEDA DE SORTEO ===== -->
       <div class="card">
         <div class="card-title">🎯 Ruleta del Sorteo</div>
         <p class="card-subtitle">¡Gira la ruleta y elige al ganador!</p>
-        
         <div class="rueda-container">
           <div class="rueda-wrapper">
             <div class="flecha">▼</div>
             <div class="rueda" id="ruedaSorteo">
-              <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">
-                Sin participantes<br>¡Espera inscripciones!
-              </div>
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">Sin participantes<br>¡Espera inscripciones!</div>
             </div>
             <div class="center-circle">🎯</div>
           </div>
         </div>
-        
         <div class="flex-btns" style="justify-content: center; margin-top: 10px;">
-          <button onclick="girarRuleta()" id="btnGirarRuleta" style="background: var(--gradient); font-size: 1.1rem; font-weight: 800; padding: 12px 30px; width: auto;">
-            🎰 GIRAR RULETA
-          </button>
+          <button onclick="girarRuleta()" id="btnGirarRuleta" style="background: var(--gradient); font-size: 1.1rem; font-weight: 800; padding: 12px 30px; width: auto;">🎰 GIRAR RULETA</button>
         </div>
-        
         <div style="margin-top: 15px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: 700; font-size: 0.9rem;">👥 Participantes inscritos: <span id="totalParticipantesDash">0</span></span>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button onclick="cargarParticipantesEnRuleta()" class="btn-success" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
-                🎯 CARGAR EN RULETA
-              </button>
-              <button onclick="eliminarTodosParticipantes()" class="btn-danger" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">
-                🗑️ ELIMINAR TODOS
-              </button>
+              <button onclick="cargarParticipantesEnRuleta()" class="btn-success" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">🎯 CARGAR EN RULETA</button>
+              <button onclick="eliminarTodosParticipantes()" class="btn-danger" style="font-size: 0.8rem; padding: 8px 16px; width: auto;">🗑️ ELIMINAR TODOS</button>
             </div>
           </div>
           <div class="participantes-lista" id="listaParticipantesDash">
@@ -932,7 +439,7 @@
       </div>
     </div>
 
-    <!-- ===== PARTICIPANTES ===== -->
+    <!-- PARTICIPANTES -->
     <div id="p-participantes" class="page">
       <div class="card">
         <div class="card-title">👥 Lista de Participantes</div>
@@ -960,13 +467,12 @@
       </div>
     </div>
 
-    <!-- ===== PANEL DE MEMBRESÍA (NUEVO) ===== -->
+    <!-- MEMBRESÍA -->
     <div id="p-membresia" class="page">
-      
       <div class="membresia-hero">
         <div>
           <h2>💳 Panel de Clientes de Membresía</h2>
-          <p>Gestión completa: clientes, pagos, cuentas y blog de notas ⚡</p>
+          <p>Clientes · Pagos · Facturas PDF · WhatsApp · Cuentas · Blog ⚡</p>
         </div>
         <div class="icono-hero">👑</div>
       </div>
@@ -975,61 +481,37 @@
         <button class="membresia-tab active" data-tab="m-dashboard">📊 Dashboard</button>
         <button class="membresia-tab" data-tab="m-registrar">➕ Registrar Cliente</button>
         <button class="membresia-tab" data-tab="m-clientes">👥 Clientes</button>
-        <button class="membresia-tab" data-tab="m-notas">📝 Blog de Notas</button>
-        <button class="membresia-tab" data-tab="m-config">⚙️ Configuración</button>
+        <button class="membresia-tab" data-tab="m-pagos">🧾 Historial Pagos</button>
+        <button class="membresia-tab" data-tab="m-cuentas">📚 Cuentas</button>
+        <button class="membresia-tab" data-tab="m-notas">📝 Blog Notas</button>
+        <button class="membresia-tab" data-tab="m-config">⚙️ Config</button>
       </div>
 
-      <!-- DASHBOARD MEMBRESÍA -->
+      <!-- DASHBOARD M -->
       <div id="m-dashboard" class="m-tab active">
         <div class="membresia-stats-grid">
-          <div class="membresia-stat">
-            <div class="m-icon">👥</div>
-            <div class="m-numero" id="m-total-clientes">0</div>
-            <div class="m-label">Total Clientes</div>
-          </div>
-          <div class="membresia-stat">
-            <div class="m-icon">✅</div>
-            <div class="m-numero" id="m-clientes-aldia">0</div>
-            <div class="m-label">Al Día</div>
-          </div>
-          <div class="membresia-stat">
-            <div class="m-icon">⚠️</div>
-            <div class="m-numero" id="m-clientes-atrasados">0</div>
-            <div class="m-label">Atrasados</div>
-          </div>
-          <div class="membresia-stat">
-            <div class="m-icon">🎁</div>
-            <div class="m-numero" id="m-clientes-gratis">0</div>
-            <div class="m-label">Sin Pago</div>
-          </div>
-          <div class="membresia-stat">
-            <div class="m-icon">🔢</div>
-            <div class="m-numero" id="m-total-cuentas">0</div>
-            <div class="m-label">Total Cuentas</div>
-          </div>
-          <div class="membresia-stat">
-            <div class="m-icon">📦</div>
-            <div class="m-numero" id="m-cuentas-mes">0</div>
-            <div class="m-label">Cuentas Pedidas Mes</div>
-          </div>
+          <div class="membresia-stat"><div class="m-icon">👥</div><div class="m-numero" id="m-total-clientes">0</div><div class="m-label">Total Clientes</div></div>
+          <div class="membresia-stat"><div class="m-icon">✅</div><div class="m-numero" id="m-clientes-aldia">0</div><div class="m-label">Al Día</div></div>
+          <div class="membresia-stat"><div class="m-icon">⚠️</div><div class="m-numero" id="m-clientes-atrasados">0</div><div class="m-label">Atrasados</div></div>
+          <div class="membresia-stat"><div class="m-icon">🎁</div><div class="m-numero" id="m-clientes-gratis">0</div><div class="m-label">Sin Pago</div></div>
+          <div class="membresia-stat"><div class="m-icon">🔢</div><div class="m-numero" id="m-total-cuentas">0</div><div class="m-label">Total Cuentas</div></div>
+          <div class="membresia-stat"><div class="m-icon">📦</div><div class="m-numero" id="m-cuentas-mes">0</div><div class="m-label">Cuentas Mes</div></div>
+          <div class="membresia-stat"><div class="m-icon">💰</div><div class="m-numero" id="m-total-pagos">0</div><div class="m-label">$ Cobrado Mes</div></div>
         </div>
-
         <div class="membresia-card">
           <h3>⚡ Acciones Rápidas</h3>
           <div class="flex-btns">
             <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="irATabMembresia('m-registrar')">➕ Registrar Cliente</button>
             <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="irATabMembresia('m-clientes')">👥 Ver Clientes</button>
-            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="reiniciarConteoMes()">🔄 Reiniciar Conteo Mes</button>
+            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="reiniciarConteoMes()">🔄 Reiniciar Mes</button>
           </div>
         </div>
-
         <div class="membresia-card">
           <h3>⚠️ Clientes Atrasados</h3>
           <div id="m-lista-atrasados"></div>
         </div>
-
         <div class="membresia-card">
-          <h3>🎁 Miembros Sin Pago (Familiares/Amigos)</h3>
+          <h3>🎁 Miembros Sin Pago</h3>
           <div id="m-lista-gratis"></div>
         </div>
       </div>
@@ -1038,48 +520,35 @@
       <div id="m-registrar" class="m-tab">
         <div class="membresia-card">
           <h3>➕ Registrar Nuevo Cliente</h3>
-          
           <label>Nombre completo *</label>
           <input id="m-nombre" placeholder="Ej: Juan Pérez">
-
-          <label>Teléfono *</label>
-          <input id="m-telefono" type="tel" placeholder="Ej: 0991234567">
-
+          <label>Teléfono * (para WhatsApp)</label>
+          <input id="m-telefono" type="tel" placeholder="Ej: 593991234567">
           <label>Email (opcional)</label>
           <input id="m-email" type="email" placeholder="cliente@email.com">
-
           <label>Fecha de Ingreso *</label>
           <input id="m-fecha-ingreso" type="date">
-
           <label>Fecha de Vencimiento / Próximo Pago *</label>
           <input id="m-fecha-vencimiento" type="date">
-
           <label>Monto de Pago ($)</label>
           <input id="m-monto" type="number" step="0.01" placeholder="0.00" value="0">
-
           <label>Tipo de Cliente *</label>
           <select id="m-tipo">
             <option value="pago">💵 Cliente con Pago</option>
             <option value="gratis">🎁 Familiar / Amigo (Sin Pago)</option>
           </select>
-
           <label>Cuentas Totales del Cliente</label>
           <input id="m-cuentas-totales" type="number" min="0" value="1">
-
           <label>Cuentas Pedidas Este Mes</label>
           <input id="m-cuentas-mes-cliente" type="number" min="0" value="0">
-
           <label>Notas</label>
           <textarea id="m-notas-cliente" placeholder="Notas opcionales..." rows="3"></textarea>
-
-          <button class="btn-amarillo" onclick="registrarClienteMembresia()" style="margin-top:20px; font-size:1rem;">
-            ✅ Registrar Cliente
-          </button>
+          <button class="btn-amarillo" onclick="registrarClienteMembresia()" style="margin-top:20px; font-size:1rem;">✅ Registrar Cliente</button>
           <div id="m-registro-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
         </div>
       </div>
 
-      <!-- LISTA CLIENTES -->
+      <!-- CLIENTES -->
       <div id="m-clientes" class="m-tab">
         <div class="membresia-card">
           <h3>👥 Lista de Clientes</h3>
@@ -1088,48 +557,100 @@
         </div>
       </div>
 
+      <!-- HISTORIAL PAGOS -->
+      <div id="m-pagos" class="m-tab">
+        <div class="membresia-card">
+          <h3>🧾 Historial de Pagos</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Todos los comprobantes quedan guardados. Puedes re-descargar el PDF o reenviarlo por WhatsApp.</p>
+          <input id="m-buscar-pagos" placeholder="🔍 Buscar por ID, cliente o monto..." oninput="filtrarPagosMembresia()" style="margin-bottom:16px;">
+          <div id="m-lista-pagos"></div>
+        </div>
+      </div>
+
+      <!-- CUENTAS GUARDADAS -->
+      <div id="m-cuentas" class="m-tab">
+        <div class="membresia-card">
+          <h3>📚 Mis Cuentas Guardadas</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Guarda aquí tus cuentas (Netflix, Disney, correos, etc). 🔒 Protegido con contraseña.</p>
+          <div class="flex-btns">
+            <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(abrirModalNuevaCuenta)">➕ Nueva Cuenta</button>
+            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(cerrarSesionPasswordNotas)">🔒 Cerrar Sesión</button>
+          </div>
+          <div id="m-lista-cuentas" style="margin-top:16px;"></div>
+        </div>
+      </div>
+
       <!-- BLOG NOTAS -->
       <div id="m-notas" class="m-tab">
         <div class="membresia-card">
           <h3>📝 Blog de Notas - Los que más ayudan</h3>
-          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">
-            Aquí puedes escribir notas sobre los clientes que más ayudan con activaciones y más. 🔒 Requiere contraseña para editar.
-          </p>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Notas sobre clientes que más ayudan con activaciones. 🔒 Requiere contraseña.</p>
           <div class="flex-btns">
             <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(abrirModalNuevaNota)">➕ Nueva Nota</button>
-            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(cerrarSesionPasswordNotas)">🔒 Cerrar Sesión Editor</button>
+            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(cerrarSesionPasswordNotas)">🔒 Cerrar Sesión</button>
           </div>
           <div id="m-lista-notas" style="margin-top:16px;"></div>
         </div>
       </div>
 
-      <!-- CONFIGURACIÓN -->
+      <!-- CONFIG -->
       <div id="m-config" class="m-tab">
         <div class="membresia-card">
-          <h3>⚙️ Configuración</h3>
-          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">
-            Configura la contraseña para editar el blog de notas (correo/clave del editor).
-          </p>
-          
-          <label>Contraseña del Editor de Notas</label>
+          <h3>⚙️ Contraseña del Editor</h3>
+          <label>Nueva Contraseña</label>
           <input id="m-config-password" type="password" placeholder="Nueva contraseña">
-
           <label>Confirmar Contraseña</label>
           <input id="m-config-password2" type="password" placeholder="Confirmar contraseña">
-
-          <button class="btn-amarillo" onclick="cambiarPasswordEditor()" style="margin-top:16px;">
-            💾 Guardar Contraseña
-          </button>
+          <button class="btn-amarillo" onclick="cambiarPasswordEditor()" style="margin-top:16px;">💾 Guardar Contraseña</button>
           <div id="m-config-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
+        </div>
+
+        <div class="membresia-card">
+          <h3>🏦 Cuentas de Cobro (para las facturas PDF)</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Configura las cuentas donde recibes cada método. Aparecerán en el PDF automáticamente.</p>
+
+          <label>🟣 Nequi - Número</label>
+          <input id="cfg-nequi-numero" placeholder="Ej: 3001234567">
+          <label>🟣 Nequi - Titular</label>
+          <input id="cfg-nequi-titular" placeholder="Ej: Andy Obregon">
+
+          <label>🏦 Transferencia - Banco</label>
+          <input id="cfg-transf-banco" placeholder="Ej: Bancolombia">
+          <label>🏦 Transferencia - Cuenta</label>
+          <input id="cfg-transf-cuenta" placeholder="Ej: 123-456789-01">
+          <label>🏦 Transferencia - Titular</label>
+          <input id="cfg-transf-titular" placeholder="Ej: Andy Obregon">
+
+          <label>💰 Depósito - Banco</label>
+          <input id="cfg-dep-banco" placeholder="Ej: Banco Pichincha">
+          <label>💰 Depósito - Cuenta</label>
+          <input id="cfg-dep-cuenta" placeholder="Ej: 2201234567">
+          <label>💰 Depósito - Titular</label>
+          <input id="cfg-dep-titular" placeholder="Ej: Andy Obregon">
+
+          <label>🔵 PayPal - Email</label>
+          <input id="cfg-paypal-email" placeholder="tupaypal@email.com">
+          <label>🔵 PayPal - Titular</label>
+          <input id="cfg-paypal-titular" placeholder="Ej: Andy Obregon">
+
+          <label>🟡 Binance - Email/ID</label>
+          <input id="cfg-binance-email" placeholder="tucorreo@email.com">
+          <label>🟡 Binance - Titular</label>
+          <input id="cfg-binance-titular" placeholder="Ej: Andy Obregon">
+
+          <label>💵 Efectivo - Info adicional</label>
+          <input id="cfg-efectivo-info" placeholder="Ej: Pago en persona">
+
+          <button class="btn-amarillo" onclick="guardarCuentasPago()" style="margin-top:16px;">💾 Guardar Cuentas de Cobro</button>
+          <div id="m-config-cuentas-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
         </div>
       </div>
 
     </div>
-
   </div>
 </div>
 
-<!-- ===== MODAL REGISTRO SORTEO (PÚBLICO) ===== -->
+<!-- MODAL REGISTRO SORTEO -->
 <div class="modal-overlay" id="modalRegistroSorteo">
   <div class="modal-content">
     <button class="modal-close" onclick="cerrarModalRegistroSorteo()">✕</button>
@@ -1138,12 +659,8 @@
       <p style="margin-bottom: 15px; opacity: 0.7;">Ingresa tus datos para participar en el sorteo del Loco Andy 🦁</p>
       <input id="registroSorteoNombre" placeholder="Tu nombre completo" style="margin-bottom: 10px;">
       <input id="registroSorteoTelefono" placeholder="Número de móvil" type="tel">
-      <button onclick="registrarParticipanteSorteo()" class="btn-success" style="margin-top: 15px; font-size: 1.1rem; font-weight: 800;">
-        🎯 ¡QUIERO PARTICIPAR!
-      </button>
+      <button onclick="registrarParticipanteSorteo()" class="btn-success" style="margin-top: 15px; font-size: 1.1rem; font-weight: 800;">🎯 ¡QUIERO PARTICIPAR!</button>
       <div id="registroSorteoMensaje" style="margin-top: 15px; font-size: 0.95rem; font-weight: 700;"></div>
-      
-      <!-- Mensaje de éxito (se muestra después de registrar) -->
       <div id="registroExitoso" style="display: none;" class="registro-exitoso">
         <div class="icono">🎉</div>
         <div class="mensaje">✅ ¡Listo! Estás participando en el sorteo del Loco Andy 🦁</div>
@@ -1153,7 +670,7 @@
   </div>
 </div>
 
-<!-- ===== MODAL GANADOR ===== -->
+<!-- MODAL GANADOR -->
 <div class="modal-overlay" id="modalGanador">
   <div class="modal-content" style="border-color: #fbbf24;">
     <button class="modal-close" onclick="cerrarModalGanador()">✕</button>
@@ -1167,23 +684,56 @@
   </div>
 </div>
 
-<!-- ===== MODAL PAGO MEMBRESÍA ===== -->
+<!-- MODAL PAGO -->
 <div class="modal-overlay" id="modalPagoMembresia">
   <div class="modal-content modal-amarillo">
     <button class="modal-close" onclick="cerrarModal('modalPagoMembresia')">✕</button>
     <div class="modal-title">💵 Registrar Pago</div>
     <p style="font-size:0.9rem; margin-bottom:6px; font-weight:700;">Cliente: <strong id="pago-cliente-nombre"></strong></p>
-    <label>Monto ($)</label>
+    <label>Monto ($) *</label>
     <input id="pago-monto" type="number" step="0.01" placeholder="0.00">
+    <label>Método de Pago *</label>
+    <select id="pago-metodo" onchange="actualizarCuentaPago()">
+      <option value="nequi">🟣 Nequi</option>
+      <option value="transferencia">🏦 Transferencia bancaria</option>
+      <option value="deposito">💰 Depósito bancario</option>
+      <option value="paypal">🔵 PayPal</option>
+      <option value="binance">🟡 Binance</option>
+      <option value="efectivo">💵 Efectivo</option>
+    </select>
+    <label>Cuenta que recibe el pago</label>
+    <div class="cuenta-info-box" id="pago-cuenta-display">Selecciona un método de pago</div>
     <label>Días a extender desde hoy</label>
     <input id="pago-dias-extra" type="number" value="30" min="1">
     <label>Notas del pago (opcional)</label>
     <input id="pago-notas" placeholder="Ej: Pago mensual...">
-    <button class="btn-amarillo" onclick="confirmarPagoMembresia()" style="margin-top:16px;">✅ Registrar Pago</button>
+    <button class="btn-amarillo" onclick="confirmarPagoMembresia()" style="margin-top:16px;">✅ Confirmar Pago y Generar PDF</button>
+    <p style="font-size:0.75rem; color:var(--texto-marron); margin-top:10px; text-align:center; font-weight:600;">El comprobante PDF se descargará automáticamente.</p>
   </div>
 </div>
 
-<!-- ===== MODAL AJUSTAR DÍAS ===== -->
+<!-- MODAL PAGO EXITOSO -->
+<div class="modal-overlay" id="modalPagoExitoso">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModal('modalPagoExitoso')">✕</button>
+    <div style="text-align:center; padding: 10px 0;">
+      <div style="font-size: 4rem; margin-bottom: 10px;">✅</div>
+      <div class="modal-title" style="font-size: 1.5rem;">¡Pago Registrado!</div>
+      <p style="font-size:0.9rem; color:var(--texto-marron); margin-top:8px; font-weight:700;">El PDF se descargó automáticamente 📥</p>
+      <div style="background:var(--amarillo-fondo); border:2px solid #fde68a; border-radius:12px; padding:14px; margin-top:14px; text-align:left;">
+        <div style="font-family:monospace; font-weight:800; color:#b45309; font-size:0.9rem;" id="exito-pago-id">ID: ---</div>
+        <div style="font-size:1.6rem; font-weight:900; color:#16a34a; margin-top:4px;" id="exito-pago-monto">$0.00</div>
+        <div style="font-size:0.85rem; color:var(--texto-marron); margin-top:4px; font-weight:600;" id="exito-pago-cliente">---</div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; justify-content:center;">
+        <button class="btn-wsp" style="width:auto; padding:12px 22px; font-size:0.95rem;" onclick="enviarPagoActualWhatsApp()">📱 Enviar por WhatsApp</button>
+        <button class="btn-amarillo" style="width:auto; padding:12px 22px; font-size:0.95rem;" onclick="descargarPagoActualPDF()">📥 Descargar de nuevo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DIAS -->
 <div class="modal-overlay" id="modalDias">
   <div class="modal-content modal-amarillo">
     <button class="modal-close" onclick="cerrarModal('modalDias')">✕</button>
@@ -1199,12 +749,12 @@
   </div>
 </div>
 
-<!-- ===== MODAL PASSWORD EDITOR NOTAS ===== -->
+<!-- MODAL PASSWORD -->
 <div class="modal-overlay" id="modalPassword">
   <div class="modal-content modal-amarillo">
     <button class="modal-close" onclick="cerrarModalPasswordNotas()">✕</button>
     <div class="modal-title">🔒 Verificación Requerida</div>
-    <p style="font-size:0.9rem; margin-bottom:8px; font-weight:600;">Ingresa la contraseña del editor de notas.</p>
+    <p style="font-size:0.9rem; margin-bottom:8px; font-weight:600;">Ingresa la contraseña del editor.</p>
     <label>Contraseña</label>
     <input type="password" id="passwordInput" placeholder="Contraseña del editor">
     <div class="flex-btns" style="margin-top:12px;">
@@ -1214,7 +764,7 @@
   </div>
 </div>
 
-<!-- ===== MODAL NOTA ===== -->
+<!-- MODAL NOTA -->
 <div class="modal-overlay" id="modalNota">
   <div class="modal-content modal-amarillo">
     <button class="modal-close" onclick="cerrarModal('modalNota')">✕</button>
@@ -1238,13 +788,31 @@
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- FIREBASE + TODAS LAS FUNCIONES -->
-<!-- ============================================================ -->
+<!-- MODAL CUENTA -->
+<div class="modal-overlay" id="modalCuenta">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModal('modalCuenta')">✕</button>
+    <div class="modal-title" id="modal-cuenta-titulo">📚 Nueva Cuenta</div>
+    <label>Servicio / Plataforma *</label>
+    <input id="cuenta-servicio" placeholder="Ej: Netflix, Disney, Correo...">
+    <label>Email / Usuario *</label>
+    <input id="cuenta-email" placeholder="cuenta@email.com">
+    <label>Contraseña *</label>
+    <input id="cuenta-password" placeholder="Contraseña">
+    <label>Perfil / Detalle</label>
+    <input id="cuenta-perfil" placeholder="Ej: Perfil 1 - Andy">
+    <label>Notas</label>
+    <textarea id="cuenta-notas" rows="3" placeholder="Notas adicionales..."></textarea>
+    <input type="hidden" id="cuenta-editando-id" value="">
+    <button class="btn-amarillo" onclick="guardarCuenta()" style="margin-top:16px;">💾 Guardar Cuenta</button>
+    <div id="cuenta-msg" style="margin-top:10px; font-weight:800;"></div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, getDoc, getDocs, query, where, deleteDoc, onSnapshot, serverTimestamp, addDoc, writeBatch, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, query, where, deleteDoc, onSnapshot, addDoc, writeBatch, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -1265,23 +833,27 @@
   let participantesSorteo = [];
   let ruletaGirando = false;
 
-  // ============================================================
-  // ESTADO DE MEMBRESÍA
-  // ============================================================
   let membresiaClientes = [];
   let membresiaNotas = [];
-  let membresiaConfig = { password: 'admin123' };
+  let membresiaCuentas = [];
+  let membresiaPagos = [];
+  let membresiaConfig = {
+    password: 'admin123',
+    cuentasPago: { nequi:{numero:'',titular:''}, transferencia:{banco:'',cuenta:'',titular:''}, deposito:{banco:'',cuenta:'',titular:''}, paypal:{email:'',titular:''}, binance:{email:'',titular:''}, efectivo:{info:'Pago en efectivo'} }
+  };
   let passwordNotasVerificado = false;
   let pendingNotaCallback = null;
   let clientePagoId = null;
   let clienteDiasId = null;
   let filtroClientes = '';
+  let filtroPagos = '';
+  let pagoActualParaCompartir = null;
   let unsubscribeClientesM = null;
   let unsubscribeNotasM = null;
+  let unsubscribeCuentasM = null;
+  let unsubscribePagosM = null;
 
-  // ============================================================
-  // TOAST
-  // ============================================================
+  // ===== TOAST =====
   window.mostrarToast = function(titulo, mensaje) {
     const toast = document.getElementById('toastNotification');
     document.getElementById('toastTitle').textContent = titulo;
@@ -1289,67 +861,34 @@
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 8000);
   };
+  window.cerrarToast = function() { document.getElementById('toastNotification').classList.remove('show'); };
 
-  window.cerrarToast = function() {
-    document.getElementById('toastNotification').classList.remove('show');
-  };
-
-  // ============================================================
-  // TOGGLE PASSWORD
-  // ============================================================
   window.togglePasswordVisibility = function(inputId, btn) {
     const input = document.getElementById(inputId);
-    if (input.type === 'password') {
-      input.type = 'text';
-      btn.textContent = '🙈';
-    } else {
-      input.type = 'password';
-      btn.textContent = '👁️';
-    }
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁️'; }
   };
 
-  // ============================================================
-  // MOSTRAR/OCULTAR LOGIN
-  // ============================================================
   window.toggleLogin = function() {
     const loginCard = document.getElementById('loginCard');
-    if (loginCard.style.display === 'none') {
-      loginCard.style.display = 'block';
-      loginCard.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      loginCard.style.display = 'none';
-    }
+    if (loginCard.style.display === 'none') { loginCard.style.display = 'block'; loginCard.scrollIntoView({ behavior: 'smooth' }); }
+    else { loginCard.style.display = 'none'; }
   };
 
-  // ============================================================
-  // LOGIN (SOLO ADMIN)
-  // ============================================================
   window.handleLogin = async function() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('loginMessage');
-    
     if (!email || !pass) { msg.textContent = '⚠️ Completa todos los campos.'; return; }
-
     try {
       await signInWithEmailAndPassword(auth, email, pass);
       msg.textContent = '✅ Inicio de sesión exitoso!';
-      
-      if (email !== ADMIN_EMAIL) {
-        msg.textContent = '❌ Solo el administrador puede acceder.';
-        await signOut(auth);
-        return;
-      }
-      
+      if (email !== ADMIN_EMAIL) { msg.textContent = '❌ Solo el administrador puede acceder.'; await signOut(auth); return; }
       document.getElementById('loginContainer').style.display = 'none';
       document.getElementById('appContainer').style.display = 'block';
       currentUserIsAdmin = true;
-      
       await cargarParticipantesSorteo();
-      
-    } catch (err) {
-      msg.textContent = '❌ Error: ' + err.message;
-    }
+    } catch (err) { msg.textContent = '❌ Error: ' + err.message; }
   };
 
   window.handleLogout = async function() {
@@ -1361,111 +900,59 @@
     currentUserIsAdmin = false;
     document.getElementById('toastNotification').classList.remove('show');
     passwordNotasVerificado = false;
-    if (unsubscribeClientesM) { unsubscribeClientesM(); unsubscribeClientesM = null; }
-    if (unsubscribeNotasM) { unsubscribeNotasM(); unsubscribeNotasM = null; }
+    [unsubscribeClientesM, unsubscribeNotasM, unsubscribeCuentasM, unsubscribePagosM].forEach(u => { if (u) u(); });
+    unsubscribeClientesM = unsubscribeNotasM = unsubscribeCuentasM = unsubscribePagosM = null;
   };
 
-  // ============================================================
-  // CARGAR PARTICIPANTES DEL SORTEO
-  // ============================================================
+  // ===== SORTEO =====
   async function cargarParticipantesSorteo() {
     try {
       const q = query(collection(db, "sorteo_participantes"));
       const querySnap = await getDocs(q);
       participantesSorteo = [];
-      querySnap.forEach(docSnap => {
-        participantesSorteo.push({ id: docSnap.id, ...docSnap.data() });
-      });
+      querySnap.forEach(docSnap => participantesSorteo.push({ id: docSnap.id, ...docSnap.data() }));
       actualizarListaParticipantes();
       generarRuleta();
-    } catch (err) {
-      console.error('Error cargando participantes:', err);
-    }
+    } catch (err) { console.error('Error cargando participantes:', err); }
   }
 
-  // Escuchar cambios en tiempo real (solo para admin)
   function escucharCambiosParticipantes() {
     const q = query(collection(db, "sorteo_participantes"));
     onSnapshot(q, (snap) => {
       if (currentUserIsAdmin) {
         participantesSorteo = [];
-        snap.forEach(docSnap => {
-          participantesSorteo.push({ id: docSnap.id, ...docSnap.data() });
-        });
+        snap.forEach(docSnap => participantesSorteo.push({ id: docSnap.id, ...docSnap.data() }));
         actualizarListaParticipantes();
         generarRuleta();
       }
     });
   }
 
-  // ============================================================
-  // ACTUALIZAR LISTA DE PARTICIPANTES
-  // ============================================================
   function actualizarListaParticipantes() {
     const total = participantesSorteo.length;
-    
-    // Dashboard
     document.getElementById('total-participantes').textContent = total;
     document.getElementById('totalParticipantesDash').textContent = total;
-    
-    // Lista en dashboard
     const listaEl = document.getElementById('listaParticipantesDash');
-    if (total === 0) {
-      listaEl.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>';
-    } else {
-      listaEl.innerHTML = participantesSorteo.map(p => 
-        `<span class="participante-tag">🎯 ${p.nombre}</span>`
-      ).join('');
-    }
-    
-    // Tabla en página de participantes
+    if (total === 0) listaEl.innerHTML = '<p style="opacity: 0.5; font-size: 0.8rem; width: 100%; text-align: center;">No hay participantes aún.</p>';
+    else listaEl.innerHTML = participantesSorteo.map(p => `<span class="participante-tag">🎯 ${p.nombre}</span>`).join('');
     const tabla = document.getElementById('tablaParticipantes');
-    if (total === 0) {
-      tabla.innerHTML = '<tr><td colspan="5" style="text-align: center; opacity: 0.5; padding: 20px;">No hay participantes registrados.</td></tr>';
-    } else {
-      tabla.innerHTML = participantesSorteo.map((p, i) => `
-        <tr style="border-bottom: 1px solid var(--border);">
-          <td style="padding: 10px;">${i + 1}</td>
-          <td style="padding: 10px; font-weight: 600;">${p.nombre}</td>
-          <td style="padding: 10px;">${p.telefono}</td>
-          <td style="padding: 10px; font-size: 0.8rem; opacity: 0.7;">${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}</td>
-          <td style="padding: 10px;">
-            <button class="btn-small btn-danger" onclick="eliminarParticipante('${p.id}')">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
-    }
+    if (total === 0) tabla.innerHTML = '<tr><td colspan="5" style="text-align: center; opacity: 0.5; padding: 20px;">No hay participantes registrados.</td></tr>';
+    else tabla.innerHTML = participantesSorteo.map((p, i) => `<tr style="border-bottom: 1px solid var(--border);"><td style="padding: 10px;">${i + 1}</td><td style="padding: 10px; font-weight: 600;">${p.nombre}</td><td style="padding: 10px;">${p.telefono}</td><td style="padding: 10px; font-size: 0.8rem; opacity: 0.7;">${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}</td><td style="padding: 10px;"><button class="btn-small btn-danger" onclick="eliminarParticipante('${p.id}')">🗑️</button></td></tr>`).join('');
   }
 
-  // ============================================================
-  // GENERAR RULETA
-  // ============================================================
   function generarRuleta() {
     const rueda = document.getElementById('ruedaSorteo');
     if (!rueda) return;
-    
     rueda.innerHTML = '';
-    
     if (participantesSorteo.length === 0) {
       rueda.style.background = 'var(--input-bg)';
-      rueda.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">
-          Sin participantes<br>¡Espera inscripciones!
-        </div>
-      `;
+      rueda.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; font-size: 1rem; opacity: 0.5; text-align: center; padding: 20px; border-radius: 50%;">Sin participantes<br>¡Espera inscripciones!</div>`;
       return;
     }
-    
     rueda.style.background = 'transparent';
     const num = participantesSorteo.length;
-    const colores = [
-      '#dc2626', '#0ea5e9', '#16a34a', '#f59e0b', '#8b5cf6', 
-      '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#22d3ee',
-      '#f43f5e', '#84cc16', '#a855f7', '#f472b6', '#06b6d4'
-    ];
-    
+    const colores = ['#dc2626', '#0ea5e9', '#16a34a', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#22d3ee', '#f43f5e', '#84cc16', '#a855f7', '#f472b6', '#06b6d4'];
     const angulo = 360 / num;
-    
     participantesSorteo.forEach((p, index) => {
       const segmento = document.createElement('div');
       segmento.className = 'segmento';
@@ -1475,99 +962,41 @@
       segmento.innerHTML = `<span>${p.nombre}</span>`;
       rueda.appendChild(segmento);
     });
-    
     rueda.style.transform = 'rotate(0deg)';
   }
 
-  // ============================================================
-  // GIRAR RULETA
-  // ============================================================
   window.girarRuleta = function() {
     if (ruletaGirando) return;
-    if (participantesSorteo.length < 2) {
-      alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.');
-      return;
-    }
-    
+    if (participantesSorteo.length < 2) { alert('⚠️ Se necesitan al menos 2 participantes.'); return; }
     ruletaGirando = true;
     document.getElementById('btnGirarRuleta').disabled = true;
     const rueda = document.getElementById('ruedaSorteo');
-    
     const vueltas = 5 + Math.floor(Math.random() * 5);
     const anguloExtra = Math.random() * 360;
     const anguloTotal = vueltas * 360 + anguloExtra;
-    
-    // Sonido
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'square';
-      o.frequency.setValueAtTime(440, audioCtx.currentTime);
-      g.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-      o.connect(g);
-      g.connect(audioCtx.destination);
-      o.start();
-      o.stop(audioCtx.currentTime + 0.15);
-    } catch(_) {}
-    
+    try { const ac = new (window.AudioContext || window.webkitAudioContext)(); const o = ac.createOscillator(); const g = ac.createGain(); o.type='square'; o.frequency.setValueAtTime(440, ac.currentTime); g.gain.setValueAtTime(0.05, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.15); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+0.15); } catch(_) {}
     rueda.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
     rueda.style.transform = `rotate(${anguloTotal}deg)`;
-    
     setTimeout(() => {
       const num = participantesSorteo.length;
       const anguloSegmento = 360 / num;
       const anguloFinal = anguloTotal % 360;
-      
-      // Calcular índice del ganador
       let indice = Math.floor((360 - anguloFinal + anguloSegmento/2) / anguloSegmento) % num;
       if (indice < 0) indice += num;
-      const ganador = participantesSorteo[indice];
-      
-      mostrarGanador(ganador);
-      
+      mostrarGanador(participantesSorteo[indice]);
       ruletaGirando = false;
       document.getElementById('btnGirarRuleta').disabled = false;
-      
-      // Sonido de ganador
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        [523, 659, 784].forEach((freq, i) => {
-          const o = audioCtx.createOscillator();
-          const g = audioCtx.createGain();
-          o.type = 'sine';
-          o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
-          g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.1);
-          g.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + i * 0.1 + 0.02);
-          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.25);
-          o.connect(g);
-          g.connect(audioCtx.destination);
-          o.start(audioCtx.currentTime + i * 0.1);
-          o.stop(audioCtx.currentTime + i * 0.1 + 0.25);
-        });
-      } catch(_) {}
-      
+      try { const ac = new (window.AudioContext || window.webkitAudioContext)(); [523,659,784].forEach((f,i)=>{const o=ac.createOscillator();const g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(f,ac.currentTime+i*0.1);g.gain.setValueAtTime(0,ac.currentTime+i*0.1);g.gain.linearRampToValueAtTime(0.15,ac.currentTime+i*0.1+0.02);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+i*0.1+0.25);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+i*0.1);o.stop(ac.currentTime+i*0.1+0.25);}); } catch(_) {}
     }, 4200);
   };
 
-  // ============================================================
-  // MOSTRAR GANADOR
-  // ============================================================
   function mostrarGanador(participante) {
     document.getElementById('ganadorNombre').textContent = `🎉 ${participante.nombre} 🎉`;
     document.getElementById('ganadorDetalles').textContent = `📱 ${participante.telefono}`;
     document.getElementById('modalGanador').classList.add('active');
   }
+  window.cerrarModalGanador = function() { document.getElementById('modalGanador').classList.remove('active'); };
 
-  window.cerrarModalGanador = function() {
-    document.getElementById('modalGanador').classList.remove('active');
-  };
-
-  // ============================================================
-  // FUNCIONES PÚBLICAS DEL SORTEO
-  // ============================================================
-  
   window.abrirModalRegistroSorteo = function() {
     document.getElementById('registroSorteoNombre').value = '';
     document.getElementById('registroSorteoTelefono').value = '';
@@ -1576,122 +1005,68 @@
     document.getElementById('registroExitoso').style.display = 'none';
     document.getElementById('modalRegistroSorteo').classList.add('active');
   };
-
-  window.cerrarModalRegistroSorteo = function() {
-    document.getElementById('modalRegistroSorteo').classList.remove('active');
-  };
+  window.cerrarModalRegistroSorteo = function() { document.getElementById('modalRegistroSorteo').classList.remove('active'); };
 
   window.registrarParticipanteSorteo = async function() {
     const nombre = document.getElementById('registroSorteoNombre').value.trim();
     const telefono = document.getElementById('registroSorteoTelefono').value.trim();
     const mensaje = document.getElementById('registroSorteoMensaje');
-    
-    if (!nombre || !telefono) {
-      mensaje.innerHTML = '⚠️ Completa todos los campos.';
-      mensaje.style.color = 'var(--rojo-leon)';
-      return;
-    }
-    
+    if (!nombre || !telefono) { mensaje.innerHTML = '⚠️ Completa todos los campos.'; mensaje.style.color = 'var(--rojo-leon)'; return; }
     const existe = participantesSorteo.some(p => p.telefono === telefono || p.nombre.toLowerCase() === nombre.toLowerCase());
-    if (existe) {
-      mensaje.innerHTML = '⚠️ Ya estás registrado en el sorteo. ¡Suerte! 🍀';
-      mensaje.style.color = '#f59e0b';
-      return;
-    }
-    
+    if (existe) { mensaje.innerHTML = '⚠️ Ya estás registrado. ¡Suerte! 🍀'; mensaje.style.color = '#f59e0b'; return; }
     try {
-      await addDoc(collection(db, "sorteo_participantes"), {
-        nombre: nombre,
-        telefono: telefono,
-        fechaRegistro: new Date().toISOString()
-      });
-      
+      await addDoc(collection(db, "sorteo_participantes"), { nombre, telefono, fechaRegistro: new Date().toISOString() });
       mensaje.style.display = 'none';
       document.getElementById('registroExitoso').style.display = 'block';
-      
-      window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando en el sorteo del Loco Andy. ¡Buena suerte! 🍀`);
-      
-      if (currentUserIsAdmin) {
-        await cargarParticipantesSorteo();
-      }
-      
-      setTimeout(() => {
-        cerrarModalRegistroSorteo();
-      }, 3000);
-      
-    } catch (err) {
-      mensaje.innerHTML = '❌ Error al registrar: ' + err.message;
-      mensaje.style.color = 'var(--rojo-leon)';
-      mensaje.style.display = 'block';
-    }
+      window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando. ¡Buena suerte! 🍀`);
+      if (currentUserIsAdmin) await cargarParticipantesSorteo();
+      setTimeout(() => cerrarModalRegistroSorteo(), 3000);
+    } catch (err) { mensaje.innerHTML = '❌ Error: ' + err.message; mensaje.style.color = 'var(--rojo-leon)'; mensaje.style.display = 'block'; }
   };
 
   window.cargarParticipantesEnRuleta = function() {
-    if (!currentUserIsAdmin) { alert('⚠️ Solo el administrador puede realizar esta acción.'); return; }
-    if (participantesSorteo.length < 2) { alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.'); return; }
+    if (!currentUserIsAdmin) { alert('⚠️ Solo el admin.'); return; }
+    if (participantesSorteo.length < 2) { alert('⚠️ Se necesitan al menos 2 participantes.'); return; }
     generarRuleta();
-    window.mostrarToast('🎯 Participantes cargados', `${participantesSorteo.length} participantes listos para el sorteo. ¡Gira la ruleta!`);
+    window.mostrarToast('🎯 Participantes cargados', `${participantesSorteo.length} participantes listos.`);
   };
 
   window.eliminarTodosParticipantes = async function() {
-    if (!currentUserIsAdmin) { alert('⚠️ Solo el administrador puede realizar esta acción.'); return; }
-    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes para eliminar.'); return; }
-    if (!confirm(`⚠️ ¿Eliminar TODOS los ${participantesSorteo.length} participantes del sorteo? Esta acción no se puede deshacer.`)) return;
-    
+    if (!currentUserIsAdmin) { alert('⚠️ Solo el admin.'); return; }
+    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes.'); return; }
+    if (!confirm(`⚠️ ¿Eliminar TODOS los ${participantesSorteo.length} participantes?`)) return;
     try {
       const q = query(collection(db, "sorteo_participantes"));
-      const querySnap = await getDocs(q);
+      const snap = await getDocs(q);
       const batch = writeBatch(db);
-      querySnap.forEach(docSnap => { batch.delete(docSnap.ref); });
+      snap.forEach(d => batch.delete(d.ref));
       await batch.commit();
       await cargarParticipantesSorteo();
-      window.mostrarToast('🗑️ Participantes eliminados', 'Todos los participantes han sido eliminados del sorteo.');
-    } catch (err) {
-      alert('❌ Error eliminando participantes: ' + err.message);
-    }
+      window.mostrarToast('🗑️ Eliminados', 'Todos los participantes han sido eliminados.');
+    } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
   window.eliminarParticipante = async function(id) {
     if (!currentUserIsAdmin) return;
     if (!confirm('¿Eliminar este participante?')) return;
-    try {
-      await deleteDoc(doc(db, "sorteo_participantes", id));
-      await cargarParticipantesSorteo();
-      window.mostrarToast('🗑️ Eliminado', 'Participante eliminado del sorteo.');
-    } catch (err) {
-      alert('❌ Error eliminando participante: ' + err.message);
-    }
+    try { await deleteDoc(doc(db, "sorteo_participantes", id)); await cargarParticipantesSorteo(); window.mostrarToast('🗑️ Eliminado', 'Participante eliminado.'); }
+    catch (err) { alert('❌ Error: ' + err.message); }
   };
 
   window.exportarParticipantes = function() {
     if (!currentUserIsAdmin) return;
-    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes para exportar.'); return; }
-    
-    let texto = '🦁 ANDYCHE CHAKER - PARTICIPANTES DEL SORTEO 🦁\n';
-    texto += '========================================\n\n';
-    texto += `📅 Exportado: ${new Date().toLocaleString()}\n`;
-    texto += `👥 Total: ${participantesSorteo.length}\n\n`;
-    texto += '----------------------------------------\n\n';
-    
-    participantesSorteo.forEach((p, i) => {
-      texto += `📌 #${i+1}\n`;
-      texto += `   Nombre: ${p.nombre}\n`;
-      texto += `   Teléfono: ${p.telefono}\n`;
-      texto += `   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n\n`;
-    });
-    
+    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes.'); return; }
+    let texto = '🦁 ANDYCHE CHAKER - PARTICIPANTES 🦁\n========================================\n\n';
+    texto += `📅 Exportado: ${new Date().toLocaleString()}\n👥 Total: ${participantesSorteo.length}\n\n----------------------------------------\n\n`;
+    participantesSorteo.forEach((p, i) => { texto += `📌 #${i+1}\n   Nombre: ${p.nombre}\n   Teléfono: ${p.telefono}\n   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n\n`; });
     const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `participantes_sorteo_${new Date().toISOString().slice(0,10)}.txt`;
-    a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `participantes_sorteo_${new Date().toISOString().slice(0,10)}.txt`; a.click();
   };
 
   // ============================================================
-  // ============ PANEL DE MEMBRESÍA - FUNCIONES ================
+  // MEMBRESÍA
   // ============================================================
-
-  // Cambio de tabs de membresía
   document.querySelectorAll('.membresia-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const tabId = tab.getAttribute('data-tab');
@@ -1710,28 +1085,64 @@
     if (targetTab) targetTab.classList.add('active');
   };
 
-  window.cerrarModal = function(id) {
-    document.getElementById(id).classList.remove('active');
-  };
+  window.cerrarModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-  // ----- Cargar configuración -----
   async function cargarConfigMembresia() {
     try {
-      const docRef = doc(db, 'membresia_config', 'editor');
-      const snap = await getDoc(docRef);
+      const ref = doc(db, 'membresia_config', 'editor');
+      const snap = await getDoc(ref);
       if (snap.exists()) {
-        const data = snap.data();
-        membresiaConfig = { password: data.password || 'admin123' };
+        const d = snap.data();
+        membresiaConfig.password = d.password || 'admin123';
+        if (d.cuentasPago) membresiaConfig.cuentasPago = { ...membresiaConfig.cuentasPago, ...d.cuentasPago };
       } else {
-        await setDoc(docRef, { password: 'admin123' });
-        membresiaConfig = { password: 'admin123' };
+        await setDoc(ref, membresiaConfig);
       }
-    } catch (err) {
-      console.error('Error cargando config:', err);
-    }
+      cargarCuentasPagoEnConfig();
+    } catch (err) { console.error('Error config:', err); }
   }
 
-  // ----- Cargar clientes -----
+  function cargarCuentasPagoEnConfig() {
+    const c = membresiaConfig.cuentasPago || {};
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    set('cfg-nequi-numero', c.nequi?.numero);
+    set('cfg-nequi-titular', c.nequi?.titular);
+    set('cfg-transf-banco', c.transferencia?.banco);
+    set('cfg-transf-cuenta', c.transferencia?.cuenta);
+    set('cfg-transf-titular', c.transferencia?.titular);
+    set('cfg-dep-banco', c.deposito?.banco);
+    set('cfg-dep-cuenta', c.deposito?.cuenta);
+    set('cfg-dep-titular', c.deposito?.titular);
+    set('cfg-paypal-email', c.paypal?.email);
+    set('cfg-paypal-titular', c.paypal?.titular);
+    set('cfg-binance-email', c.binance?.email);
+    set('cfg-binance-titular', c.binance?.titular);
+    set('cfg-efectivo-info', c.efectivo?.info);
+  }
+
+  window.guardarCuentasPago = async function() {
+    const get = id => (document.getElementById(id)?.value || '').trim();
+    const cuentasPago = {
+      nequi: { numero: get('cfg-nequi-numero'), titular: get('cfg-nequi-titular') },
+      transferencia: { banco: get('cfg-transf-banco'), cuenta: get('cfg-transf-cuenta'), titular: get('cfg-transf-titular') },
+      deposito: { banco: get('cfg-dep-banco'), cuenta: get('cfg-dep-cuenta'), titular: get('cfg-dep-titular') },
+      paypal: { email: get('cfg-paypal-email'), titular: get('cfg-paypal-titular') },
+      binance: { email: get('cfg-binance-email'), titular: get('cfg-binance-titular') },
+      efectivo: { info: get('cfg-efectivo-info') }
+    };
+    const msg = document.getElementById('m-config-cuentas-msg');
+    try {
+      await updateDoc(doc(db, 'membresia_config', 'editor'), { cuentasPago });
+      membresiaConfig.cuentasPago = cuentasPago;
+      msg.textContent = '✅ Cuentas de cobro guardadas correctamente';
+      msg.style.color = '#16a34a';
+      window.mostrarToast('🏦 Cuentas Guardadas', 'Las cuentas de cobro han sido actualizadas.');
+    } catch (err) {
+      msg.textContent = '❌ Error: ' + err.message;
+      msg.style.color = '#dc2626';
+    }
+  };
+
   async function cargarClientesMembresia() {
     try {
       const snap = await getDocs(collection(db, 'membresia_clientes'));
@@ -1739,30 +1150,44 @@
       snap.forEach(d => membresiaClientes.push({ id: d.id, ...d.data() }));
       renderDashboardMembresia();
       renderListaClientes();
-    } catch (err) {
-      console.error('Error cargando clientes:', err);
-    }
+    } catch (err) { console.error('Error clientes:', err); }
   }
 
-  // ----- Cargar notas -----
   async function cargarNotasMembresia() {
     try {
       const snap = await getDocs(collection(db, 'membresia_notas'));
       membresiaNotas = [];
       snap.forEach(d => membresiaNotas.push({ id: d.id, ...d.data() }));
       renderNotas();
-    } catch (err) {
-      console.error('Error cargando notas:', err);
-    }
+    } catch (err) { console.error('Error notas:', err); }
   }
 
-  // ----- Cargar todo al iniciar sesión -----
+  async function cargarCuentasMembresia() {
+    try {
+      const snap = await getDocs(collection(db, 'membresia_cuentas'));
+      membresiaCuentas = [];
+      snap.forEach(d => membresiaCuentas.push({ id: d.id, ...d.data() }));
+      renderCuentas();
+    } catch (err) { console.error('Error cuentas:', err); }
+  }
+
+  async function cargarPagosMembresia() {
+    try {
+      const snap = await getDocs(collection(db, 'membresia_pagos'));
+      membresiaPagos = [];
+      snap.forEach(d => membresiaPagos.push({ id: d.id, ...d.data() }));
+      renderPagos();
+      renderDashboardMembresia();
+    } catch (err) { console.error('Error pagos:', err); }
+  }
+
   async function cargarMembresiaCompleta() {
     await cargarConfigMembresia();
     await cargarClientesMembresia();
     await cargarNotasMembresia();
+    await cargarCuentasMembresia();
+    await cargarPagosMembresia();
 
-    // Listeners en tiempo real
     if (unsubscribeClientesM) unsubscribeClientesM();
     unsubscribeClientesM = onSnapshot(collection(db, 'membresia_clientes'), (snap) => {
       if (!currentUserIsAdmin) return;
@@ -1771,7 +1196,6 @@
       renderDashboardMembresia();
       renderListaClientes();
     });
-
     if (unsubscribeNotasM) unsubscribeNotasM();
     unsubscribeNotasM = onSnapshot(collection(db, 'membresia_notas'), (snap) => {
       if (!currentUserIsAdmin) return;
@@ -1779,31 +1203,41 @@
       snap.forEach(d => membresiaNotas.push({ id: d.id, ...d.data() }));
       renderNotas();
     });
+    if (unsubscribeCuentasM) unsubscribeCuentasM();
+    unsubscribeCuentasM = onSnapshot(collection(db, 'membresia_cuentas'), (snap) => {
+      if (!currentUserIsAdmin) return;
+      membresiaCuentas = [];
+      snap.forEach(d => membresiaCuentas.push({ id: d.id, ...d.data() }));
+      renderCuentas();
+    });
+    if (unsubscribePagosM) unsubscribePagosM();
+    unsubscribePagosM = onSnapshot(collection(db, 'membresia_pagos'), (snap) => {
+      if (!currentUserIsAdmin) return;
+      membresiaPagos = [];
+      snap.forEach(d => membresiaPagos.push({ id: d.id, ...d.data() }));
+      renderPagos();
+      renderDashboardMembresia();
+    });
   }
 
-  // ----- Helpers de estado cliente -----
   function getEstadoCliente(cliente) {
     if (cliente.tipo === 'gratis') return 'gratis';
     if (!cliente.fechaVencimiento) return 'atrasado';
     const venc = new Date(cliente.fechaVencimiento);
-    const hoy = new Date();
-    hoy.setHours(0,0,0,0);
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
     return venc >= hoy ? 'aldia' : 'atrasado';
   }
 
   function formatearFecha(fecha) {
     if (!fecha) return '—';
-    try {
-      const d = new Date(fecha);
-      return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch { return '—'; }
+    try { const d = new Date(fecha); return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' }); }
+    catch { return '—'; }
   }
 
-  // ----- Render dashboard -----
   function renderDashboardMembresia() {
     const total = membresiaClientes.length;
-    let aldia = 0, atrasados = 0, gratis = 0, totalCuentas = 0, cuentasMes = 0;
-
+    let aldia = 0, atrasados = 0, gratis = 0, totalCuentas = 0, cuentasMes = 0, totalPagosMes = 0;
+    const now = new Date();
     membresiaClientes.forEach(c => {
       const estado = getEstadoCliente(c);
       if (estado === 'aldia') aldia++;
@@ -1812,52 +1246,29 @@
       totalCuentas += Number(c.cuentasTotales) || 0;
       cuentasMes += Number(c.cuentasPedidoMes) || 0;
     });
-
+    membresiaPagos.forEach(p => {
+      const f = new Date(p.fecha);
+      if (f.getMonth() === now.getMonth() && f.getFullYear() === now.getFullYear()) totalPagosMes += Number(p.monto) || 0;
+    });
     document.getElementById('m-total-clientes').textContent = total;
     document.getElementById('m-clientes-aldia').textContent = aldia;
     document.getElementById('m-clientes-atrasados').textContent = atrasados;
     document.getElementById('m-clientes-gratis').textContent = gratis;
     document.getElementById('m-total-cuentas').textContent = totalCuentas;
     document.getElementById('m-cuentas-mes').textContent = cuentasMes;
+    document.getElementById('m-total-pagos').textContent = totalPagosMes.toFixed(0);
 
-    // Lista atrasados
     const listaAtras = document.getElementById('m-lista-atrasados');
     const atrasList = membresiaClientes.filter(c => getEstadoCliente(c) === 'atrasado');
-    if (atrasList.length === 0) {
-      listaAtras.innerHTML = '<div class="empty-msg">✅ No hay clientes atrasados. ¡Todo al día!</div>';
-    } else {
-      listaAtras.innerHTML = atrasList.map(c => `
-        <div class="cliente-row atrasado" style="padding:10px;">
-          <div class="cliente-info">
-            <div class="cliente-nombre">⚠️ ${c.nombre}</div>
-            <div class="cliente-datos">📱 ${c.telefono || '—'} · Venció: ${formatearFecha(c.fechaVencimiento)}</div>
-          </div>
-          <div class="cliente-acciones">
-            <button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button>
-            <button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button>
-          </div>
-        </div>
-      `).join('');
-    }
+    listaAtras.innerHTML = atrasList.length === 0 ? '<div class="empty-msg">✅ No hay clientes atrasados. ¡Todo al día!</div>' :
+      atrasList.map(c => `<div class="cliente-row atrasado" style="padding:10px;"><div class="cliente-info"><div class="cliente-nombre">⚠️ ${c.nombre}</div><div class="cliente-datos">📱 ${c.telefono || '—'} · Venció: ${formatearFecha(c.fechaVencimiento)}</div></div><div class="cliente-acciones"><button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button><button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button></div></div>`).join('');
 
-    // Lista gratis
     const listaGratis = document.getElementById('m-lista-gratis');
     const gratisList = membresiaClientes.filter(c => c.tipo === 'gratis');
-    if (gratisList.length === 0) {
-      listaGratis.innerHTML = '<div class="empty-msg">No hay miembros sin pago registrados.</div>';
-    } else {
-      listaGratis.innerHTML = gratisList.map(c => `
-        <div class="cliente-row gratis" style="padding:10px;">
-          <div class="cliente-info">
-            <div class="cliente-nombre">🎁 ${c.nombre}</div>
-            <div class="cliente-datos">📱 ${c.telefono || '—'} · Cuentas: ${c.cuentasTotales || 0}</div>
-          </div>
-        </div>
-      `).join('');
-    }
+    listaGratis.innerHTML = gratisList.length === 0 ? '<div class="empty-msg">No hay miembros sin pago registrados.</div>' :
+      gratisList.map(c => `<div class="cliente-row gratis" style="padding:10px;"><div class="cliente-info"><div class="cliente-nombre">🎁 ${c.nombre}</div><div class="cliente-datos">📱 ${c.telefono || '—'} · Cuentas: ${c.cuentasTotales || 0}</div></div></div>`).join('');
   }
 
-  // ----- Render lista clientes -----
   window.filtrarClientesMembresia = function() {
     filtroClientes = document.getElementById('m-buscar').value.toLowerCase().trim();
     renderListaClientes();
@@ -1866,55 +1277,19 @@
   function renderListaClientes() {
     const cont = document.getElementById('m-lista-clientes');
     if (!cont) return;
-
     let lista = [...membresiaClientes];
-    if (filtroClientes) {
-      lista = lista.filter(c => 
-        (c.nombre || '').toLowerCase().includes(filtroClientes) ||
-        (c.telefono || '').toLowerCase().includes(filtroClientes)
-      );
-    }
-
-    if (lista.length === 0) {
-      cont.innerHTML = '<div class="empty-msg">📭 No hay clientes registrados aún.</div>';
-      return;
-    }
-
+    if (filtroClientes) lista = lista.filter(c => (c.nombre||'').toLowerCase().includes(filtroClientes) || (c.telefono||'').toLowerCase().includes(filtroClientes));
+    if (lista.length === 0) { cont.innerHTML = '<div class="empty-msg">📭 No hay clientes registrados aún.</div>'; return; }
     cont.innerHTML = lista.map(c => {
       const estado = getEstadoCliente(c);
-      let claseEstado = '';
-      let badgeEstado = '';
+      let claseEstado = '', badgeEstado = '';
       if (estado === 'atrasado') { claseEstado = 'atrasado'; badgeEstado = '<span class="cliente-badge atrasado">⚠️ Atrasado</span>'; }
       else if (estado === 'gratis') { claseEstado = 'gratis'; badgeEstado = '<span class="cliente-badge gratis">🎁 Gratis</span>'; }
       else { badgeEstado = '<span class="cliente-badge ok">✅ Al día</span>'; }
-
-      return `
-        <div class="cliente-row ${claseEstado}">
-          <div class="cliente-info">
-            <div class="cliente-nombre">${c.nombre}</div>
-            <div class="cliente-datos">📱 ${c.telefono || '—'} ${c.email ? '· ✉️ ' + c.email : ''}</div>
-            <div class="cliente-vence ${estado === 'atrasado' ? 'alerta' : 'ok'}">
-              📅 Vence: ${formatearFecha(c.fechaVencimiento)}
-            </div>
-            <div class="cliente-badges">
-              ${badgeEstado}
-              <span class="cliente-badge cuenta">🔢 ${c.cuentasTotales || 0} cuentas</span>
-              <span class="cliente-badge cuenta">📦 ${c.cuentasPedidoMes || 0} este mes</span>
-            </div>
-          </div>
-          <div class="cliente-acciones">
-            <button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button>
-            <button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button>
-            <button class="btn-small btn-amarillo" onclick="agregarCuentaMes('${c.id}', 1)" title="+1 cuenta mes">➕📦</button>
-            <button class="btn-small btn-amarillo-outline" onclick="agregarCuentaMes('${c.id}', -1)" title="-1 cuenta mes">➖📦</button>
-            <button class="btn-small btn-rojo-mini" onclick="eliminarClienteMembresia('${c.id}')">🗑️</button>
-          </div>
-        </div>
-      `;
+      return `<div class="cliente-row ${claseEstado}"><div class="cliente-info"><div class="cliente-nombre">${c.nombre}</div><div class="cliente-datos">📱 ${c.telefono || '—'} ${c.email ? '· ✉️ ' + c.email : ''}</div><div class="cliente-vence ${estado === 'atrasado' ? 'alerta' : 'ok'}">📅 Vence: ${formatearFecha(c.fechaVencimiento)}</div><div class="cliente-badges">${badgeEstado}<span class="cliente-badge cuenta">🔢 ${c.cuentasTotales || 0} cuentas</span><span class="cliente-badge cuenta">📦 ${c.cuentasPedidoMes || 0} mes</span></div></div><div class="cliente-acciones"><button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button><button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button><button class="btn-small btn-amarillo" onclick="agregarCuentaMes('${c.id}', 1)">➕📦</button><button class="btn-small btn-amarillo-outline" onclick="agregarCuentaMes('${c.id}', -1)">➖📦</button><button class="btn-small btn-rojo-mini" onclick="eliminarClienteMembresia('${c.id}')">🗑️</button></div></div>`;
     }).join('');
   }
 
-  // ----- Registrar cliente -----
   window.registrarClienteMembresia = async function() {
     const nombre = document.getElementById('m-nombre').value.trim();
     const telefono = document.getElementById('m-telefono').value.trim();
@@ -1927,65 +1302,30 @@
     const cuentasPedidoMes = parseInt(document.getElementById('m-cuentas-mes-cliente').value) || 0;
     const notas = document.getElementById('m-notas-cliente').value.trim();
     const msg = document.getElementById('m-registro-msg');
-
-    if (!nombre || !telefono || !fechaIngreso || !fechaVencimiento) {
-      msg.textContent = '⚠️ Completa todos los campos obligatorios (*)';
-      msg.style.color = '#dc2626';
-      return;
-    }
-
+    if (!nombre || !telefono || !fechaIngreso || !fechaVencimiento) { msg.textContent = '⚠️ Completa todos los campos obligatorios (*)'; msg.style.color = '#dc2626'; return; }
     try {
-      await addDoc(collection(db, 'membresia_clientes'), {
-        nombre, telefono, email,
-        fechaIngreso,
-        fechaVencimiento,
-        montoPago: monto,
-        tipo,
-        cuentasTotales,
-        cuentasPedidoMes,
-        notas,
-        historialPagos: [],
-        creadoEn: new Date().toISOString()
-      });
-
+      await addDoc(collection(db, 'membresia_clientes'), { nombre, telefono, email, fechaIngreso, fechaVencimiento, montoPago: monto, tipo, cuentasTotales, cuentasPedidoMes, notas, historialPagos: [], creadoEn: new Date().toISOString() });
       msg.textContent = '✅ Cliente registrado correctamente';
       msg.style.color = '#16a34a';
-
-      // Limpiar form
-      document.getElementById('m-nombre').value = '';
-      document.getElementById('m-telefono').value = '';
-      document.getElementById('m-email').value = '';
-      document.getElementById('m-fecha-ingreso').value = '';
-      document.getElementById('m-fecha-vencimiento').value = '';
+      ['m-nombre','m-telefono','m-email','m-fecha-ingreso','m-fecha-vencimiento','m-notas-cliente'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('m-monto').value = '0';
       document.getElementById('m-cuentas-totales').value = '1';
       document.getElementById('m-cuentas-mes-cliente').value = '0';
-      document.getElementById('m-notas-cliente').value = '';
-
       await cargarClientesMembresia();
-      window.mostrarToast('✅ Cliente Registrado', `${nombre} ha sido agregado a la membresía.`);
+      window.mostrarToast('✅ Cliente Registrado', `${nombre} ha sido agregado.`);
       setTimeout(() => { msg.textContent = ''; }, 3000);
-    } catch (err) {
-      msg.textContent = '❌ Error: ' + err.message;
-      msg.style.color = '#dc2626';
-    }
+    } catch (err) { msg.textContent = '❌ Error: ' + err.message; msg.style.color = '#dc2626'; }
   };
 
-  // ----- Eliminar cliente -----
   window.eliminarClienteMembresia = async function(id) {
-    const cliente = membresiaClientes.find(c => c.id === id);
-    if (!cliente) return;
-    if (!confirm(`¿Eliminar al cliente "${cliente.nombre}"? Esta acción no se puede deshacer.`)) return;
-    try {
-      await deleteDoc(doc(db, 'membresia_clientes', id));
-      await cargarClientesMembresia();
-      window.mostrarToast('🗑️ Cliente eliminado', `${cliente.nombre} ha sido eliminado.`);
-    } catch (err) {
-      alert('❌ Error eliminando: ' + err.message);
-    }
+    const c = membresiaClientes.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm(`¿Eliminar al cliente "${c.nombre}"?`)) return;
+    try { await deleteDoc(doc(db, 'membresia_clientes', id)); await cargarClientesMembresia(); window.mostrarToast('🗑️ Eliminado', `${c.nombre} ha sido eliminado.`); }
+    catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  // ----- Modal pago -----
+  // ===== PAGO CON PDF =====
   window.abrirModalPago = function(id) {
     const cliente = membresiaClientes.find(c => c.id === id);
     if (!cliente) return;
@@ -1994,30 +1334,199 @@
     document.getElementById('pago-monto').value = cliente.montoPago || '';
     document.getElementById('pago-dias-extra').value = 30;
     document.getElementById('pago-notas').value = '';
+    document.getElementById('pago-metodo').value = 'nequi';
+    actualizarCuentaPago();
     document.getElementById('modalPagoMembresia').classList.add('active');
   };
+
+  function getCuentaInfo(metodo) {
+    const c = (membresiaConfig.cuentasPago || {})[metodo];
+    if (!c) return 'No configurada';
+    if (metodo === 'nequi') return c.numero ? `${c.numero} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta Nequi';
+    if (metodo === 'transferencia') return c.cuenta ? `${c.banco || 'Banco'} · ${c.cuenta} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta de transferencia';
+    if (metodo === 'deposito') return c.cuenta ? `${c.banco || 'Banco'} · ${c.cuenta} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta de depósito';
+    if (metodo === 'paypal') return c.email ? `${c.email} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu PayPal';
+    if (metodo === 'binance') return c.email ? `${c.email} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu Binance';
+    if (metodo === 'efectivo') return c.info || 'Efectivo en persona';
+    return 'No configurada';
+  }
+
+  window.actualizarCuentaPago = function() {
+    const metodo = document.getElementById('pago-metodo').value;
+    document.getElementById('pago-cuenta-display').innerHTML = `<strong>Cuenta de cobro:</strong> ${getCuentaInfo(metodo)}`;
+  };
+
+  async function generarPagoId() {
+    const hoy = new Date();
+    const ymd = hoy.toISOString().slice(0,10).replace(/-/g,'');
+    const prefix = `ANDY-${ymd}-`;
+    try {
+      const q = query(collection(db, 'membresia_pagos'), where('pagoId', '>=', prefix), where('pagoId', '<', prefix + '\uf8ff'));
+      const snap = await getDocs(q);
+      return prefix + String(snap.size + 1).padStart(3, '0');
+    } catch { return prefix + String(Date.now()).slice(-3); }
+  }
+
+  function crearPDFPago(pago) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const W = 210;
+
+    doc.setFillColor(251, 191, 36);
+    doc.rect(0, 0, W, 45, 'F');
+    doc.setTextColor(26, 26, 46);
+    doc.setFontSize(26);
+    doc.setFont(undefined, 'bold');
+    doc.text('ANDYCHE CHAKER', W/2, 20, { align: 'center' });
+    doc.setFontSize(11);
+    doc.text('COMPROBANTE DE PAGO', W/2, 28, { align: 'center' });
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.text('Sistema Oficial de Membresias', W/2, 35, { align: 'center' });
+
+    doc.setFillColor(255, 251, 235);
+    doc.setDrawColor(251, 191, 36);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(15, 55, W-30, 20, 3, 3, 'FD');
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(180, 83, 9);
+    doc.text(`ID: ${pago.pagoId}`, W/2, 68, { align: 'center' });
+
+    const fecha = new Date(pago.fecha);
+    const fechaStr = fecha.toLocaleDateString('es-ES', { day:'2-digit', month:'long', year:'numeric' });
+    const horaStr = fecha.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(26, 26, 46);
+    doc.text(`Fecha: ${fechaStr}`, 20, 85);
+    doc.text(`Hora: ${horaStr}`, W-20, 85, { align: 'right' });
+
+    doc.setFillColor(255, 251, 235);
+    doc.setDrawColor(251, 191, 36);
+    doc.roundedRect(15, 92, W-30, 30, 3, 3, 'FD');
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(120, 53, 15);
+    doc.text('CLIENTE', 20, 100);
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(26, 26, 46);
+    doc.text(`${pago.clienteNombre}`, 20, 108);
+    doc.text(`Tel: ${pago.clienteTelefono || '—'}`, 20, 115);
+    if (pago.clienteEmail) doc.text(`Email: ${pago.clienteEmail}`, 100, 115);
+
+    doc.setFillColor(255, 251, 235);
+    doc.setDrawColor(251, 191, 36);
+    doc.roundedRect(15, 127, W-30, 55, 3, 3, 'FD');
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(120, 53, 15);
+    doc.text('DETALLE DEL PAGO', 20, 135);
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(26, 26, 46);
+    const metodoNombre = { nequi:'Nequi', transferencia:'Transferencia bancaria', deposito:'Deposito bancario', paypal:'PayPal', binance:'Binance', efectivo:'Efectivo' };
+    doc.text(`Metodo: ${metodoNombre[pago.metodo] || pago.metodo}`, 20, 143);
+    doc.text(`Cuenta: ${pago.cuentaInfo || '—'}`, 20, 150);
+    doc.text(`Dias extendidos: ${pago.diasExtendidos || 30}`, 20, 157);
+    doc.text(`Nuevo vencimiento: ${formatearFecha(pago.fechaVencimientoNueva)}`, 20, 164);
+    if (pago.notas) { doc.setFontSize(9); doc.text(`Notas: ${pago.notas}`, 20, 172); }
+
+    doc.setFillColor(251, 191, 36);
+    doc.roundedRect(15, 187, W-30, 25, 3, 3, 'F');
+    doc.setTextColor(26, 26, 46);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text('MONTO PAGADO', 22, 197);
+    doc.setFontSize(20);
+    doc.text(`$${Number(pago.monto).toFixed(2)}`, W-22, 202, { align: 'right' });
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(120, 53, 15);
+    doc.text('Gracias por su pago!', W/2, 225, { align: 'center' });
+    doc.text('ANDYCHE CHAKER - Sistema Oficial de Membresias', W/2, 230, { align: 'center' });
+    doc.text('Este documento es un comprobante oficial de pago', W/2, 235, { align: 'center' });
+
+    return doc;
+  }
+
+  function descargarPDFPagoObj(pago) {
+    const doc = crearPDFPago(pago);
+    doc.save(`Comprobante-${pago.pagoId}.pdf`);
+  }
+
+  window.descargarPagoActualPDF = function() {
+    if (!pagoActualParaCompartir) return;
+    descargarPDFPagoObj(pagoActualParaCompartir);
+    window.mostrarToast('📥 PDF descargado', `Comprobante ${pagoActualParaCompartir.pagoId} descargado.`);
+  };
+
+  window.enviarPagoActualWhatsApp = async function() {
+    if (!pagoActualParaCompartir) return;
+    await enviarPDFWhatsApp(pagoActualParaCompartir);
+  };
+
+  async function enviarPDFWhatsApp(pago) {
+    const doc = crearPDFPago(pago);
+    const blob = doc.output('blob');
+    const filename = `Comprobante-${pago.pagoId}.pdf`;
+    const file = new File([blob], filename, { type: 'application/pdf' });
+    const mensaje = `Hola ${pago.clienteNombre}, adjunto tu comprobante de pago.\nID: ${pago.pagoId}\nMonto: $${Number(pago.monto).toFixed(2)}\nGracias! - ANDYCHE CHAKER`;
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: `Comprobante ${pago.pagoId}`, text: mensaje });
+        return;
+      } catch (e) { if (e.name === 'AbortError') return; }
+    }
+    // Fallback: descarga + abre WhatsApp con mensaje
+    doc.save(filename);
+    const tel = (pago.clienteTelefono || '').replace(/\D/g, '');
+    const msgEnc = encodeURIComponent(mensaje + '\n\n(Adjunto el PDF que se acaba de descargar)');
+    const url = tel ? `https://wa.me/${tel}?text=${msgEnc}` : `https://wa.me/?text=${msgEnc}`;
+    setTimeout(() => window.open(url, '_blank'), 800);
+  }
 
   window.confirmarPagoMembresia = async function() {
     if (!clientePagoId) return;
     const cliente = membresiaClientes.find(c => c.id === clientePagoId);
     if (!cliente) return;
-
     const monto = parseFloat(document.getElementById('pago-monto').value) || 0;
+    const metodo = document.getElementById('pago-metodo').value;
+    const cuentaInfo = getCuentaInfo(metodo);
     const diasExtra = parseInt(document.getElementById('pago-dias-extra').value) || 30;
     const notas = document.getElementById('pago-notas').value.trim();
 
+    if (monto <= 0) { alert('⚠️ Ingresa un monto mayor a 0'); return; }
+
     try {
+      const pagoId = await generarPagoId();
       const hoy = new Date();
       const nuevaVenc = new Date();
       nuevaVenc.setDate(hoy.getDate() + diasExtra);
 
-      const historial = Array.isArray(cliente.historialPagos) ? cliente.historialPagos : [];
-      historial.push({
-        fecha: hoy.toISOString(),
+      const pagoData = {
+        pagoId,
+        clienteId: clientePagoId,
+        clienteNombre: cliente.nombre,
+        clienteTelefono: cliente.telefono || '',
+        clienteEmail: cliente.email || '',
         monto,
+        metodo,
+        cuentaInfo,
+        diasExtendidos: diasExtra,
+        fechaVencimientoNueva: nuevaVenc.toISOString().split('T')[0],
         notas,
-        dias: diasExtra
-      });
+        fecha: hoy.toISOString()
+      };
+
+      await addDoc(collection(db, 'membresia_pagos'), pagoData);
+
+      const historial = Array.isArray(cliente.historialPagos) ? cliente.historialPagos : [];
+      historial.push({ fecha: hoy.toISOString(), monto, metodo, cuentaInfo, dias: diasExtra, notas, pagoId });
 
       await updateDoc(doc(db, 'membresia_clientes', clientePagoId), {
         ultimoPago: hoy.toISOString(),
@@ -2026,16 +1535,27 @@
         historialPagos: historial
       });
 
+      descargarPDFPagoObj(pagoData);
+      pagoActualParaCompartir = pagoData;
+
       cerrarModal('modalPagoMembresia');
+      document.getElementById('exito-pago-id').textContent = `ID: ${pagoData.pagoId}`;
+      document.getElementById('exito-pago-monto').textContent = `$${monto.toFixed(2)}`;
+      document.getElementById('exito-pago-cliente').textContent = `${cliente.nombre} · ${metodoNombre(metodo)}`;
+      document.getElementById('modalPagoExitoso').classList.add('active');
+
       await cargarClientesMembresia();
-      window.mostrarToast('💵 Pago registrado', `${cliente.nombre} pagó $${monto.toFixed(2)}. Vence: ${formatearFecha(nuevaVenc)}`);
+      await cargarPagosMembresia();
+      window.mostrarToast('💵 Pago registrado', `${cliente.nombre} pagó $${monto.toFixed(2)}. PDF descargado.`);
       clientePagoId = null;
-    } catch (err) {
-      alert('❌ Error registrando pago: ' + err.message);
-    }
+    } catch (err) { alert('❌ Error registrando pago: ' + err.message); }
   };
 
-  // ----- Modal días -----
+  function metodoNombre(m) {
+    return ({nequi:'Nequi', transferencia:'Transferencia', deposito:'Depósito', paypal:'PayPal', binance:'Binance', efectivo:'Efectivo'})[m] || m;
+  }
+
+  // ===== DIAS =====
   window.abrirModalDias = function(id) {
     const cliente = membresiaClientes.find(c => c.id === id);
     if (!cliente) return;
@@ -2050,71 +1570,43 @@
     if (!clienteDiasId) return;
     const cliente = membresiaClientes.find(c => c.id === clienteDiasId);
     if (!cliente) return;
-
     const cantidad = parseInt(document.getElementById('dias-cantidad').value) || 1;
     const delta = signo * cantidad;
-
-    if (!cliente.fechaVencimiento) {
-      alert('⚠️ Este cliente no tiene fecha de vencimiento registrada.');
-      return;
-    }
-
+    if (!cliente.fechaVencimiento) { alert('⚠️ Este cliente no tiene fecha de vencimiento.'); return; }
     try {
       const actual = new Date(cliente.fechaVencimiento);
       actual.setDate(actual.getDate() + delta);
       const nuevaFecha = actual.toISOString().split('T')[0];
-
-      await updateDoc(doc(db, 'membresia_clientes', clienteDiasId), {
-        fechaVencimiento: nuevaFecha
-      });
-
+      await updateDoc(doc(db, 'membresia_clientes', clienteDiasId), { fechaVencimiento: nuevaFecha });
       cerrarModal('modalDias');
       await cargarClientesMembresia();
-      window.mostrarToast(
-        delta > 0 ? '📅 Días sumados' : '📅 Días restados',
-        `${cliente.nombre}: ${delta > 0 ? '+' : ''}${delta} días. Nuevo vencimiento: ${formatearFecha(nuevaFecha)}`
-      );
+      window.mostrarToast(delta > 0 ? '📅 Días sumados' : '📅 Días restados', `${cliente.nombre}: ${delta > 0 ? '+' : ''}${delta} días. Vence: ${formatearFecha(nuevaFecha)}`);
       clienteDiasId = null;
-    } catch (err) {
-      alert('❌ Error ajustando días: ' + err.message);
-    }
+    } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  // ----- Cuentas por mes -----
   window.agregarCuentaMes = async function(id, delta) {
     const cliente = membresiaClientes.find(c => c.id === id);
     if (!cliente) return;
     const actual = parseInt(cliente.cuentasPedidoMes) || 0;
     const nuevo = Math.max(0, actual + delta);
-    try {
-      await updateDoc(doc(db, 'membresia_clientes', id), {
-        cuentasPedidoMes: nuevo
-      });
-      await cargarClientesMembresia();
-    } catch (err) {
-      alert('❌ Error actualizando cuentas: ' + err.message);
-    }
+    try { await updateDoc(doc(db, 'membresia_clientes', id), { cuentasPedidoMes: nuevo }); await cargarClientesMembresia(); }
+    catch (err) { alert('❌ Error: ' + err.message); }
   };
 
   window.reiniciarConteoMes = async function() {
     if (membresiaClientes.length === 0) { alert('⚠️ No hay clientes.'); return; }
-    if (!confirm('¿Reiniciar el conteo de "cuentas pedidas este mes" para todos los clientes?')) return;
+    if (!confirm('¿Reiniciar el conteo de cuentas del mes para todos los clientes?')) return;
     try {
       const batch = writeBatch(db);
-      membresiaClientes.forEach(c => {
-        batch.update(doc(db, 'membresia_clientes', c.id), { cuentasPedidoMes: 0 });
-      });
+      membresiaClientes.forEach(c => batch.update(doc(db, 'membresia_clientes', c.id), { cuentasPedidoMes: 0 }));
       await batch.commit();
       await cargarClientesMembresia();
-      window.mostrarToast('🔄 Conteo Reiniciado', 'Las cuentas pedidas del mes fueron reseteadas a 0.');
-    } catch (err) {
-      alert('❌ Error: ' + err.message);
-    }
+      window.mostrarToast('🔄 Reiniciado', 'Cuentas del mes reseteadas a 0.');
+    } catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  // ============================================================
-  // BLOG DE NOTAS + CONTRASEÑA
-  // ============================================================
+  // ===== PASSWORD EDITOR =====
   window.pedirPasswordNotas = function(callback) {
     if (passwordNotasVerificado) { callback(); return; }
     pendingNotaCallback = callback;
@@ -2129,104 +1621,46 @@
     if (pass === membresiaConfig.password) {
       passwordNotasVerificado = true;
       cerrarModal('modalPassword');
-      if (pendingNotaCallback) {
-        const cb = pendingNotaCallback;
-        pendingNotaCallback = null;
-        cb();
-      }
-    } else {
-      document.getElementById('passwordMsg').textContent = '❌ Contraseña incorrecta';
-    }
+      if (pendingNotaCallback) { const cb = pendingNotaCallback; pendingNotaCallback = null; cb(); }
+    } else document.getElementById('passwordMsg').textContent = '❌ Contraseña incorrecta';
   };
 
-  window.cerrarModalPasswordNotas = function() {
-    pendingNotaCallback = null;
-    cerrarModal('modalPassword');
-  };
-
-  window.cerrarSesionPasswordNotas = function() {
-    passwordNotasVerificado = false;
-    window.mostrarToast('🔒 Sesión cerrada', 'Se requerirá contraseña la próxima vez que edites notas.');
-  };
+  window.cerrarModalPasswordNotas = function() { pendingNotaCallback = null; cerrarModal('modalPassword'); };
+  window.cerrarSesionPasswordNotas = function() { passwordNotasVerificado = false; window.mostrarToast('🔒 Sesión cerrada', 'Se requerirá contraseña la próxima vez.'); };
 
   window.cambiarPasswordEditor = async function() {
     const p1 = document.getElementById('m-config-password').value;
     const p2 = document.getElementById('m-config-password2').value;
     const msg = document.getElementById('m-config-msg');
-
-    if (!p1 || !p2) {
-      msg.textContent = '⚠️ Completa ambos campos';
-      msg.style.color = '#dc2626';
-      return;
-    }
-    if (p1 !== p2) {
-      msg.textContent = '⚠️ Las contraseñas no coinciden';
-      msg.style.color = '#dc2626';
-      return;
-    }
-    if (p1.length < 4) {
-      msg.textContent = '⚠️ Mínimo 4 caracteres';
-      msg.style.color = '#dc2626';
-      return;
-    }
-
+    if (!p1 || !p2) { msg.textContent = '⚠️ Completa ambos campos'; msg.style.color = '#dc2626'; return; }
+    if (p1 !== p2) { msg.textContent = '⚠️ Las contraseñas no coinciden'; msg.style.color = '#dc2626'; return; }
+    if (p1.length < 4) { msg.textContent = '⚠️ Mínimo 4 caracteres'; msg.style.color = '#dc2626'; return; }
     try {
-      await setDoc(doc(db, 'membresia_config', 'editor'), { password: p1 });
+      await updateDoc(doc(db, 'membresia_config', 'editor'), { password: p1 });
       membresiaConfig.password = p1;
       document.getElementById('m-config-password').value = '';
       document.getElementById('m-config-password2').value = '';
       msg.textContent = '✅ Contraseña actualizada correctamente';
       msg.style.color = '#16a34a';
       passwordNotasVerificado = false;
-      window.mostrarToast('🔒 Contraseña actualizada', 'La contraseña del editor de notas fue cambiada.');
-    } catch (err) {
-      msg.textContent = '❌ Error: ' + err.message;
-      msg.style.color = '#dc2626';
-    }
+      window.mostrarToast('🔒 Contraseña actualizada', 'La contraseña del editor fue cambiada.');
+    } catch (err) { msg.textContent = '❌ Error: ' + err.message; msg.style.color = '#dc2626'; }
   };
 
-  // ----- Render notas -----
+  // ===== NOTAS =====
   function renderNotas() {
     const cont = document.getElementById('m-lista-notas');
     if (!cont) return;
-
-    if (membresiaNotas.length === 0) {
-      cont.innerHTML = '<div class="empty-msg">📝 Aún no hay notas. ¡Agrega la primera!</div>';
-      return;
-    }
-
-    const sorted = [...membresiaNotas].sort((a, b) => 
-      new Date(b.fecha || 0) - new Date(a.fecha || 0)
-    );
-
-    const catLabel = {
-      'ayudantes': '⭐ Los que más ayudan',
-      'general': '📌 General',
-      'tips': '💡 Tips',
-      'reconocimiento': '🏆 Reconocimiento'
-    };
-
-    cont.innerHTML = sorted.map(n => `
-      <div class="nota-blog">
-        <span class="nota-cat">${catLabel[n.categoria] || '📌 General'}</span>
-        <div class="nota-titulo">${n.titulo}</div>
-        <div class="nota-meta">✍️ ${n.autor || 'Anónimo'} · ${formatearFecha(n.fecha)}</div>
-        <div class="nota-contenido">${n.contenido}</div>
-        <div class="nota-acciones">
-          <button class="btn-small btn-amarillo" onclick="pedirPasswordNotas(() => editarNota('${n.id}'))">✏️ Editar</button>
-          <button class="btn-small btn-rojo-mini" onclick="pedirPasswordNotas(() => eliminarNota('${n.id}'))">🗑️ Eliminar</button>
-        </div>
-      </div>
-    `).join('');
+    if (membresiaNotas.length === 0) { cont.innerHTML = '<div class="empty-msg">📝 Aún no hay notas. ¡Agrega la primera!</div>'; return; }
+    const sorted = [...membresiaNotas].sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+    const catLabel = { 'ayudantes':'⭐ Los que más ayudan', 'general':'📌 General', 'tips':'💡 Tips', 'reconocimiento':'🏆 Reconocimiento' };
+    cont.innerHTML = sorted.map(n => `<div class="nota-blog"><span class="nota-cat">${catLabel[n.categoria] || '📌 General'}</span><div class="nota-titulo">${n.titulo}</div><div class="nota-meta">✍️ ${n.autor || 'Anónimo'} · ${formatearFecha(n.fecha)}</div><div class="nota-contenido">${n.contenido}</div><div class="nota-acciones"><button class="btn-small btn-amarillo" onclick="pedirPasswordNotas(() => editarNota('${n.id}'))">✏️ Editar</button><button class="btn-small btn-rojo-mini" onclick="pedirPasswordNotas(() => eliminarNota('${n.id}'))">🗑️ Eliminar</button></div></div>`).join('');
   }
 
   window.abrirModalNuevaNota = function() {
     document.getElementById('modal-nota-titulo').textContent = '📝 Nueva Nota';
-    document.getElementById('nota-titulo').value = '';
+    ['nota-titulo','nota-autor','nota-contenido','nota-editando-id'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('nota-categoria').value = 'ayudantes';
-    document.getElementById('nota-autor').value = '';
-    document.getElementById('nota-contenido').value = '';
-    document.getElementById('nota-editando-id').value = '';
     document.getElementById('nota-msg').textContent = '';
     document.getElementById('modalNota').classList.add('active');
   };
@@ -2251,49 +1685,130 @@
     const contenido = document.getElementById('nota-contenido').value.trim();
     const editandoId = document.getElementById('nota-editando-id').value;
     const msg = document.getElementById('nota-msg');
-
-    if (!titulo || !contenido) {
-      msg.textContent = '⚠️ Título y contenido son obligatorios';
-      msg.style.color = '#dc2626';
-      return;
-    }
-
+    if (!titulo || !contenido) { msg.textContent = '⚠️ Título y contenido son obligatorios'; msg.style.color = '#dc2626'; return; }
     try {
       if (editandoId) {
-        await updateDoc(doc(db, 'membresia_notas', editandoId), {
-          titulo, categoria, autor, contenido,
-          fechaEditado: new Date().toISOString()
-        });
-        window.mostrarToast('✏️ Nota actualizada', 'La nota ha sido editada correctamente.');
+        await updateDoc(doc(db, 'membresia_notas', editandoId), { titulo, categoria, autor, contenido, fechaEditado: new Date().toISOString() });
+        window.mostrarToast('✏️ Nota actualizada', 'La nota fue editada.');
       } else {
-        await addDoc(collection(db, 'membresia_notas'), {
-          titulo, categoria, autor, contenido,
-          fecha: new Date().toISOString()
-        });
-        window.mostrarToast('📝 Nota creada', 'La nueva nota ha sido publicada.');
+        await addDoc(collection(db, 'membresia_notas'), { titulo, categoria, autor, contenido, fecha: new Date().toISOString() });
+        window.mostrarToast('📝 Nota creada', 'La nueva nota fue publicada.');
       }
       cerrarModal('modalNota');
       await cargarNotasMembresia();
-    } catch (err) {
-      msg.textContent = '❌ Error: ' + err.message;
-      msg.style.color = '#dc2626';
-    }
+    } catch (err) { msg.textContent = '❌ Error: ' + err.message; msg.style.color = '#dc2626'; }
   };
 
   window.eliminarNota = async function(id) {
-    if (!confirm('¿Eliminar esta nota? Esta acción no se puede deshacer.')) return;
-    try {
-      await deleteDoc(doc(db, 'membresia_notas', id));
-      await cargarNotasMembresia();
-      window.mostrarToast('🗑️ Nota eliminada', 'La nota ha sido eliminada.');
-    } catch (err) {
-      alert('❌ Error: ' + err.message);
-    }
+    if (!confirm('¿Eliminar esta nota?')) return;
+    try { await deleteDoc(doc(db, 'membresia_notas', id)); await cargarNotasMembresia(); window.mostrarToast('🗑️ Eliminada', 'La nota fue eliminada.'); }
+    catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  // ============================================================
-  // NAVEGACIÓN (ADMIN)
-  // ============================================================
+  // ===== CUENTAS GUARDADAS =====
+  function renderCuentas() {
+    const cont = document.getElementById('m-lista-cuentas');
+    if (!cont) return;
+    if (membresiaCuentas.length === 0) { cont.innerHTML = '<div class="empty-msg">📚 Aún no hay cuentas guardadas.</div>'; return; }
+    const sorted = [...membresiaCuentas].sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+    cont.innerHTML = sorted.map(c => `<div class="cuenta-item"><div class="cuenta-servicio">🔐 ${c.servicio}</div><div class="cuenta-meta">${c.perfil ? '👤 ' + c.perfil + ' · ' : ''}${formatearFecha(c.fecha)}</div><div class="cuenta-cred"><strong>📧 Email:</strong> ${c.email}<br><strong>🔑 Clave:</strong> ${c.password}</div>${c.notas ? `<div class="cuenta-notas">📝 ${c.notas}</div>` : ''}<div class="cuenta-acciones"><button class="btn-small btn-amarillo" onclick="pedirPasswordNotas(() => editarCuenta('${c.id}'))">✏️ Editar</button><button class="btn-small btn-rojo-mini" onclick="pedirPasswordNotas(() => eliminarCuenta('${c.id}'))">🗑️ Eliminar</button><button class="btn-small btn-verde-mini" onclick="copiarCuenta('${c.id}')">📋 Copiar</button></div></div>`).join('');
+  }
+
+  window.abrirModalNuevaCuenta = function() {
+    document.getElementById('modal-cuenta-titulo').textContent = '📚 Nueva Cuenta';
+    ['cuenta-servicio','cuenta-email','cuenta-password','cuenta-perfil','cuenta-notas','cuenta-editando-id'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('cuenta-msg').textContent = '';
+    document.getElementById('modalCuenta').classList.add('active');
+  };
+
+  window.editarCuenta = function(id) {
+    const c = membresiaCuentas.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('modal-cuenta-titulo').textContent = '✏️ Editar Cuenta';
+    document.getElementById('cuenta-servicio').value = c.servicio || '';
+    document.getElementById('cuenta-email').value = c.email || '';
+    document.getElementById('cuenta-password').value = c.password || '';
+    document.getElementById('cuenta-perfil').value = c.perfil || '';
+    document.getElementById('cuenta-notas').value = c.notas || '';
+    document.getElementById('cuenta-editando-id').value = id;
+    document.getElementById('cuenta-msg').textContent = '';
+    document.getElementById('modalCuenta').classList.add('active');
+  };
+
+  window.guardarCuenta = async function() {
+    const servicio = document.getElementById('cuenta-servicio').value.trim();
+    const email = document.getElementById('cuenta-email').value.trim();
+    const password = document.getElementById('cuenta-password').value.trim();
+    const perfil = document.getElementById('cuenta-perfil').value.trim();
+    const notas = document.getElementById('cuenta-notas').value.trim();
+    const editandoId = document.getElementById('cuenta-editando-id').value;
+    const msg = document.getElementById('cuenta-msg');
+    if (!servicio || !email || !password) { msg.textContent = '⚠️ Servicio, email y contraseña son obligatorios'; msg.style.color = '#dc2626'; return; }
+    try {
+      if (editandoId) {
+        await updateDoc(doc(db, 'membresia_cuentas', editandoId), { servicio, email, password, perfil, notas, fechaEditado: new Date().toISOString() });
+        window.mostrarToast('✏️ Cuenta actualizada', 'La cuenta fue editada.');
+      } else {
+        await addDoc(collection(db, 'membresia_cuentas'), { servicio, email, password, perfil, notas, fecha: new Date().toISOString() });
+        window.mostrarToast('📚 Cuenta guardada', 'La nueva cuenta fue registrada.');
+      }
+      cerrarModal('modalCuenta');
+      await cargarCuentasMembresia();
+    } catch (err) { msg.textContent = '❌ Error: ' + err.message; msg.style.color = '#dc2626'; }
+  };
+
+  window.eliminarCuenta = async function(id) {
+    if (!confirm('¿Eliminar esta cuenta?')) return;
+    try { await deleteDoc(doc(db, 'membresia_cuentas', id)); await cargarCuentasMembresia(); window.mostrarToast('🗑️ Eliminada', 'La cuenta fue eliminada.'); }
+    catch (err) { alert('❌ Error: ' + err.message); }
+  };
+
+  window.copiarCuenta = async function(id) {
+    const c = membresiaCuentas.find(x => x.id === id);
+    if (!c) return;
+    const txt = `${c.servicio}\nEmail: ${c.email}\nClave: ${c.password}${c.perfil ? '\nPerfil: ' + c.perfil : ''}`;
+    try {
+      await navigator.clipboard.writeText(txt);
+      window.mostrarToast('📋 Copiado', 'Datos copiados al portapapeles.');
+    } catch { alert(txt); }
+  };
+
+  // ===== PAGOS HISTORIAL =====
+  window.filtrarPagosMembresia = function() {
+    filtroPagos = document.getElementById('m-buscar-pagos').value.toLowerCase().trim();
+    renderPagos();
+  };
+
+  function renderPagos() {
+    const cont = document.getElementById('m-lista-pagos');
+    if (!cont) return;
+    let lista = [...membresiaPagos];
+    if (filtroPagos) lista = lista.filter(p => (p.pagoId||'').toLowerCase().includes(filtroPagos) || (p.clienteNombre||'').toLowerCase().includes(filtroPagos) || String(p.monto||'').includes(filtroPagos));
+    if (lista.length === 0) { cont.innerHTML = '<div class="empty-msg">🧾 Aún no hay pagos registrados.</div>'; return; }
+    const sorted = lista.sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+    cont.innerHTML = sorted.map(p => `<div class="pago-item"><div class="pago-header"><div><div class="pago-id">${p.pagoId}</div><div class="pago-fecha">📅 ${new Date(p.fecha).toLocaleString('es-ES')}</div></div><div class="pago-monto">$${Number(p.monto).toFixed(2)}</div></div><div class="pago-cliente">👤 ${p.clienteNombre}</div><div class="pago-detalle">💳 ${metodoNombre(p.metodo)} · ${p.cuentaInfo}</div>${p.notas ? `<div class="pago-detalle">📝 ${p.notas}</div>` : ''}<div class="pago-acciones"><button class="btn-small btn-wsp" onclick="reenviarWhatsApp('${p.id}')">📱 WhatsApp</button><button class="btn-small btn-amarillo" onclick="redescargarPDF('${p.id}')">📥 PDF</button><button class="btn-small btn-rojo-mini" onclick="eliminarPago('${p.id}')">🗑️</button></div></div>`).join('');
+  }
+
+  window.reenviarWhatsApp = async function(id) {
+    const p = membresiaPagos.find(x => x.id === id);
+    if (!p) return;
+    await enviarPDFWhatsApp(p);
+  };
+
+  window.redescargarPDF = function(id) {
+    const p = membresiaPagos.find(x => x.id === id);
+    if (!p) return;
+    descargarPDFPagoObj(p);
+    window.mostrarToast('📥 PDF descargado', `Comprobante ${p.pagoId} descargado.`);
+  };
+
+  window.eliminarPago = async function(id) {
+    if (!confirm('¿Eliminar este comprobante del historial? El cliente NO se verá afectado.')) return;
+    try { await deleteDoc(doc(db, 'membresia_pagos', id)); await cargarPagosMembresia(); window.mostrarToast('🗑️ Eliminado', 'Comprobante eliminado.'); }
+    catch (err) { alert('❌ Error: ' + err.message); }
+  };
+
+  // ===== NAV =====
   document.querySelectorAll('.nav-btn').forEach(btn => {
     const pageId = btn.getAttribute('data-page');
     if (pageId) {
@@ -2306,9 +1821,7 @@
     }
   });
 
-  // ============================================================
-  // INICIALIZAR
-  // ============================================================
+  // ===== INIT =====
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const email = user.email;
@@ -2332,13 +1845,7 @@
     }
   });
 
-  console.log('🦁 ANDYCHE CHAKER - SISTEMA COMPLETO');
-  console.log('✅ Sorteo + Membresía');
-  console.log('✅ Registro público sin necesidad de cuenta');
-  console.log('✅ Solo admin puede acceder al panel');
-  console.log('✅ Panel de membresía con clientes, pagos, cuentas y blog de notas');
-  console.log('✅ Colores blanco y amarillo en membresía');
-  console.log('✅ TODO FUNCIONANDO AL 100%');
+  console.log('🦁 ANDYCHE CHAKER - SISTEMA COMPLETO CON PDF + WHATSAPP');
 </script>
 </body>
 </html>
