@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>🦁 ANDYCHE CHAKER - SORTEO + MEMBRESÍA</title>
+<title>🦁 PANEL ADMINISTRATIVO GENERAL - ANDY OBREGÓN</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -55,7 +55,7 @@
   }
 
   body::before {
-    content: "🦁🔥 ANDYCHE CHAKER 🔥🦁";
+    content: "🦁🔥 ANDY OBREGÓN 🔥🦁";
     font-size: 180px;
     position: fixed;
     bottom: -80px;
@@ -71,28 +71,17 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--celeste-leon); }
 
   .login-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: radial-gradient(ellipse at center, var(--card-bg) 0%, var(--bg) 100%);
-    flex-direction: column;
-    gap: 20px;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 20px; background: radial-gradient(ellipse at center, var(--card-bg) 0%, var(--bg) 100%);
+    flex-direction: column; gap: 20px;
   }
 
   .login-card {
-    max-width: 420px;
-    width: 100%;
-    background: var(--card-bg);
-    border-radius: 32px;
-    padding: 40px 30px;
-    border: 2px solid transparent;
+    max-width: 420px; width: 100%; background: var(--card-bg); border-radius: 32px;
+    padding: 40px 30px; border: 2px solid transparent;
     background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--gradient);
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: var(--shadow-glow);
-    text-align: center;
+    background-origin: padding-box, border-box; background-clip: padding-box, border-box;
+    box-shadow: var(--shadow-glow); text-align: center;
   }
   .login-card .logo-grande { font-size: 64px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .login-card h1 { font-weight: 900; font-size: 1.8rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Orbitron', monospace; }
@@ -109,8 +98,7 @@
     max-width: 420px; width: 100%; padding: 20px 30px; border-radius: 32px;
     border: 3px solid transparent;
     background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--gradient);
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box; background-clip: padding-box, border-box;
     box-shadow: var(--shadow-glow); text-align: center; cursor: pointer;
     transition: all 0.3s ease; font-family: 'Orbitron', monospace; font-weight: 900;
     font-size: 1.3rem; color: #fff; text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
@@ -155,12 +143,13 @@
   .sidebar::-webkit-scrollbar { display: none; }
 
   .logo-area {
-    display: flex; align-items: center; gap: 10px; background: var(--gradient);
-    padding: 6px 16px; border-radius: 60px; font-weight: 800; font-size: 0.9rem;
-    box-shadow: var(--shadow-glow); margin-right: 14px; white-space: nowrap;
-    color: #fff; font-family: 'Orbitron', monospace; letter-spacing: 0.5px;
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    background: var(--gradient); padding: 6px 16px; border-radius: 20px;
+    font-weight: 800; box-shadow: var(--shadow-glow); margin-right: 14px;
+    white-space: nowrap; color: #fff; font-family: 'Orbitron', monospace;
   }
-  .logo-area .icono { font-size: 1.3rem; }
+  .logo-area .titulo-principal { font-size: 0.75rem; line-height: 1.2; }
+  .logo-area .subtitulo-logo { font-size: 0.55rem; opacity: 0.9; letter-spacing: 1px; }
 
   .nav-btn {
     background: var(--card-bg); color: var(--text); padding: 8px 14px;
@@ -309,7 +298,6 @@
   .nota-blog .nota-cat { display: inline-block; padding: 2px 10px; background: var(--gradient-amarillo); color: var(--texto-oscuro); border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.3px; }
   .nota-blog .nota-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
 
-  /* ===== CUENTAS GUARDADAS ===== */
   .cuenta-item { background: #ffffff; border: 2px solid #fde68a; border-left: 6px solid #a855f7; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: var(--texto-oscuro); }
   .cuenta-item .cuenta-servicio { font-weight: 900; font-size: 1.05rem; color: var(--texto-oscuro); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
   .cuenta-item .cuenta-cred { font-family: 'Courier New', monospace; background: var(--amarillo-fondo); padding: 10px 14px; border-radius: 8px; margin: 8px 0; font-size: 0.85rem; border: 1px solid #fde68a; word-break: break-all; }
@@ -318,7 +306,6 @@
   .cuenta-item .cuenta-notas { font-size: 0.85rem; color: #292524; margin-top: 6px; font-style: italic; }
   .cuenta-item .cuenta-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
 
-  /* ===== HISTORIAL PAGOS ===== */
   .pago-item { background: #ffffff; border: 2px solid #fde68a; border-left: 6px solid #16a34a; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: var(--texto-oscuro); }
   .pago-item .pago-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
   .pago-item .pago-id { font-family: 'Courier New', monospace; font-weight: 800; color: #b45309; font-size: 0.9rem; background: var(--amarillo-fondo); padding: 4px 10px; border-radius: 8px; display: inline-block; }
@@ -343,7 +330,8 @@
     .rueda .center-circle { width: 40px; height: 40px; font-size: 16px; }
     .sidebar { gap: 6px; padding: 8px 12px; }
     .nav-btn { font-size: 10px; padding: 6px 10px; }
-    .logo-area { font-size: 0.7rem; padding: 4px 10px; }
+    .logo-area .titulo-principal { font-size: 0.65rem; }
+    .logo-area .subtitulo-logo { font-size: 0.5rem; }
     .container { padding: 10px; }
     .card { padding: 14px; }
     .login-card { padding: 30px 20px; }
@@ -369,8 +357,8 @@
   <div class="texto-administrador" onclick="toggleLogin()">👑 Soy Administrador</div>
   <div class="login-card" id="loginCard" style="display:none;">
     <div class="logo-grande">🦁</div>
-    <h1>ANDYCHE CHAKER</h1>
-    <p>Panel de Administración</p>
+    <h1>PANEL ADMINISTRATIVO</h1>
+    <p>Andy Obregón</p>
     <div id="loginForm">
       <input id="loginEmail" type="email" placeholder="Correo electrónico">
       <div class="input-group">
@@ -391,7 +379,10 @@
 
 <div id="appContainer" style="display:none;">
   <div class="sidebar">
-    <div class="logo-area"><span class="icono">🦁</span><strong>ANDYCHE</strong></div>
+    <div class="logo-area">
+      <div class="titulo-principal">PANEL ADMINISTRATIVO GENERAL</div>
+      <div class="subtitulo-logo">ANDY OBREGÓN</div>
+    </div>
     <button class="nav-btn active" data-page="p-dashboard">📊 Dashboard</button>
     <button class="nav-btn" data-page="p-participantes">🎯 Participantes</button>
     <button class="nav-btn nav-membresia" data-page="p-membresia">💳 Membresía</button>
@@ -402,7 +393,7 @@
     <!-- DASHBOARD -->
     <div id="p-dashboard" class="page active">
       <div class="card">
-        <div class="card-title">📊 Panel de Control - Sorteo del Loco Andy</div>
+        <div class="card-title">📊 Panel de Control - Sorteo</div>
         <div class="dashboard-grid" id="dashboard-stats">
           <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-participantes">0</div><div class="stat-label">Total Participantes</div></div>
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
@@ -481,8 +472,9 @@
         <button class="membresia-tab active" data-tab="m-dashboard">📊 Dashboard</button>
         <button class="membresia-tab" data-tab="m-registrar">➕ Registrar Cliente</button>
         <button class="membresia-tab" data-tab="m-clientes">👥 Clientes</button>
+        <button class="membresia-tab" data-tab="m-cuentas-cobro">🏦 Cuentas de Cobro</button>
         <button class="membresia-tab" data-tab="m-pagos">🧾 Historial Pagos</button>
-        <button class="membresia-tab" data-tab="m-cuentas">📚 Cuentas</button>
+        <button class="membresia-tab" data-tab="m-cuentas">📚 Cuentas Streaming</button>
         <button class="membresia-tab" data-tab="m-notas">📝 Blog Notas</button>
         <button class="membresia-tab" data-tab="m-config">⚙️ Config</button>
       </div>
@@ -557,6 +549,41 @@
         </div>
       </div>
 
+      <!-- CUENTAS DE COBRO (NUEVO) -->
+      <div id="m-cuentas-cobro" class="m-tab">
+        <div class="membresia-card">
+          <h3>🏦 Mis Cuentas para Recibir Pagos</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">
+            Agrega aquí todas las cuentas donde recibes dinero (Nequi, PayPal, Binance, Bancos, etc.). Al registrar un pago, podrás elegir cuál de estas cuentas recibió la plata.
+          </p>
+          
+          <label>Método de Pago *</label>
+          <select id="cc-metodo">
+            <option value="nequi">🟣 Nequi</option>
+            <option value="transferencia">🏦 Transferencia bancaria</option>
+            <option value="deposito">💰 Depósito bancario</option>
+            <option value="paypal">🔵 PayPal</option>
+            <option value="binance">🟡 Binance</option>
+            <option value="efectivo">💵 Efectivo</option>
+          </select>
+
+          <label>Alias / Nombre de la cuenta *</label>
+          <input id="cc-alias" placeholder="Ej: Nequi Personal, PayPal Trabajo...">
+
+          <label>Número de Cuenta / Email / Celular *</label>
+          <input id="cc-cuenta" placeholder="Ej: 3001234567 / mi@paypal.com">
+
+          <label>Titular de la cuenta *</label>
+          <input id="cc-titular" placeholder="Ej: Andy Obregón">
+
+          <button class="btn-amarillo" onclick="guardarCuentaCobro()" style="margin-top:16px;">💾 Agregar Cuenta de Cobro</button>
+          <div id="cc-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
+
+          <h3 style="margin-top:30px; border-top:2px solid #fde68a; padding-top:16px;">📋 Cuentas Registradas</h3>
+          <div id="m-lista-cuentas-cobro"></div>
+        </div>
+      </div>
+
       <!-- HISTORIAL PAGOS -->
       <div id="m-pagos" class="m-tab">
         <div class="membresia-card">
@@ -567,10 +594,10 @@
         </div>
       </div>
 
-      <!-- CUENTAS GUARDADAS -->
+      <!-- CUENTAS STREAMING -->
       <div id="m-cuentas" class="m-tab">
         <div class="membresia-card">
-          <h3>📚 Mis Cuentas Guardadas</h3>
+          <h3>📚 Mis Cuentas de Streaming / Correos</h3>
           <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Guarda aquí tus cuentas (Netflix, Disney, correos, etc). 🔒 Protegido con contraseña.</p>
           <div class="flex-btns">
             <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(abrirModalNuevaCuenta)">➕ Nueva Cuenta</button>
@@ -603,46 +630,6 @@
           <input id="m-config-password2" type="password" placeholder="Confirmar contraseña">
           <button class="btn-amarillo" onclick="cambiarPasswordEditor()" style="margin-top:16px;">💾 Guardar Contraseña</button>
           <div id="m-config-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
-        </div>
-
-        <div class="membresia-card">
-          <h3>🏦 Cuentas de Cobro (para las facturas PDF)</h3>
-          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">Configura las cuentas donde recibes cada método. Aparecerán en el PDF automáticamente.</p>
-
-          <label>🟣 Nequi - Número</label>
-          <input id="cfg-nequi-numero" placeholder="Ej: 3001234567">
-          <label>🟣 Nequi - Titular</label>
-          <input id="cfg-nequi-titular" placeholder="Ej: Andy Obregon">
-
-          <label>🏦 Transferencia - Banco</label>
-          <input id="cfg-transf-banco" placeholder="Ej: Bancolombia">
-          <label>🏦 Transferencia - Cuenta</label>
-          <input id="cfg-transf-cuenta" placeholder="Ej: 123-456789-01">
-          <label>🏦 Transferencia - Titular</label>
-          <input id="cfg-transf-titular" placeholder="Ej: Andy Obregon">
-
-          <label>💰 Depósito - Banco</label>
-          <input id="cfg-dep-banco" placeholder="Ej: Banco Pichincha">
-          <label>💰 Depósito - Cuenta</label>
-          <input id="cfg-dep-cuenta" placeholder="Ej: 2201234567">
-          <label>💰 Depósito - Titular</label>
-          <input id="cfg-dep-titular" placeholder="Ej: Andy Obregon">
-
-          <label>🔵 PayPal - Email</label>
-          <input id="cfg-paypal-email" placeholder="tupaypal@email.com">
-          <label>🔵 PayPal - Titular</label>
-          <input id="cfg-paypal-titular" placeholder="Ej: Andy Obregon">
-
-          <label>🟡 Binance - Email/ID</label>
-          <input id="cfg-binance-email" placeholder="tucorreo@email.com">
-          <label>🟡 Binance - Titular</label>
-          <input id="cfg-binance-titular" placeholder="Ej: Andy Obregon">
-
-          <label>💵 Efectivo - Info adicional</label>
-          <input id="cfg-efectivo-info" placeholder="Ej: Pago en persona">
-
-          <button class="btn-amarillo" onclick="guardarCuentasPago()" style="margin-top:16px;">💾 Guardar Cuentas de Cobro</button>
-          <div id="m-config-cuentas-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
         </div>
       </div>
 
@@ -690,10 +677,12 @@
     <button class="modal-close" onclick="cerrarModal('modalPagoMembresia')">✕</button>
     <div class="modal-title">💵 Registrar Pago</div>
     <p style="font-size:0.9rem; margin-bottom:6px; font-weight:700;">Cliente: <strong id="pago-cliente-nombre"></strong></p>
+    
     <label>Monto ($) *</label>
     <input id="pago-monto" type="number" step="0.01" placeholder="0.00">
+    
     <label>Método de Pago *</label>
-    <select id="pago-metodo" onchange="actualizarCuentaPago()">
+    <select id="pago-metodo" onchange="actualizarCuentasDestino()">
       <option value="nequi">🟣 Nequi</option>
       <option value="transferencia">🏦 Transferencia bancaria</option>
       <option value="deposito">💰 Depósito bancario</option>
@@ -701,8 +690,23 @@
       <option value="binance">🟡 Binance</option>
       <option value="efectivo">💵 Efectivo</option>
     </select>
-    <label>Cuenta que recibe el pago</label>
-    <div class="cuenta-info-box" id="pago-cuenta-display">Selecciona un método de pago</div>
+
+    <label>Cuenta de Destino (Recibió el pago) *</label>
+    <select id="pago-cuenta-destino">
+      <option value="">-- Selecciona una cuenta --</option>
+    </select>
+    <div id="pago-sin-cuenta-msg" style="display:none; color:#dc2626; font-size:0.8rem; font-weight:700; margin-top:6px;">
+      ⚠️ No tienes cuentas de este método registradas. Ve a la pestaña <b>🏦 Cuentas de Cobro</b> para agregarlas.
+    </div>
+
+    <div style="background:#fef2f2; border:2px dashed #fca5a5; border-radius:10px; padding:12px; margin-top:14px;">
+      <div style="font-size:0.75rem; color:#b91c1c; font-weight:800; text-transform:uppercase; margin-bottom:6px;">Datos del Remitente (Quien envía)</div>
+      <label style="margin-top:0;">Nombre de quien envía *</label>
+      <input id="pago-remitente-nombre" placeholder="Ej: Juan Gabriel" style="margin-bottom:6px;">
+      <label style="margin-top:0;">Cuenta / Celular del remitente</label>
+      <input id="pago-remitente-cuenta" placeholder="Ej: 3001234567">
+    </div>
+
     <label>Días a extender desde hoy</label>
     <input id="pago-dias-extra" type="number" value="30" min="1">
     <label>Notas del pago (opcional)</label>
@@ -788,7 +792,7 @@
   </div>
 </div>
 
-<!-- MODAL CUENTA -->
+<!-- MODAL CUENTA STREAMING -->
 <div class="modal-overlay" id="modalCuenta">
   <div class="modal-content modal-amarillo">
     <button class="modal-close" onclick="cerrarModal('modalCuenta')">✕</button>
@@ -837,10 +841,9 @@
   let membresiaNotas = [];
   let membresiaCuentas = [];
   let membresiaPagos = [];
-  let membresiaConfig = {
-    password: 'admin123',
-    cuentasPago: { nequi:{numero:'',titular:''}, transferencia:{banco:'',cuenta:'',titular:''}, deposito:{banco:'',cuenta:'',titular:''}, paypal:{email:'',titular:''}, binance:{email:'',titular:''}, efectivo:{info:'Pago en efectivo'} }
-  };
+  let membresiaCuentasCobro = []; // NUEVO: lista de cuentas receptoras
+  let membresiaConfig = { password: 'admin123' };
+  
   let passwordNotasVerificado = false;
   let pendingNotaCallback = null;
   let clientePagoId = null;
@@ -848,10 +851,12 @@
   let filtroClientes = '';
   let filtroPagos = '';
   let pagoActualParaCompartir = null;
+  
   let unsubscribeClientesM = null;
   let unsubscribeNotasM = null;
   let unsubscribeCuentasM = null;
   let unsubscribePagosM = null;
+  let unsubscribeCuentasCobroM = null;
 
   // ===== TOAST =====
   window.mostrarToast = function(titulo, mensaje) {
@@ -900,8 +905,8 @@
     currentUserIsAdmin = false;
     document.getElementById('toastNotification').classList.remove('show');
     passwordNotasVerificado = false;
-    [unsubscribeClientesM, unsubscribeNotasM, unsubscribeCuentasM, unsubscribePagosM].forEach(u => { if (u) u(); });
-    unsubscribeClientesM = unsubscribeNotasM = unsubscribeCuentasM = unsubscribePagosM = null;
+    [unsubscribeClientesM, unsubscribeNotasM, unsubscribeCuentasM, unsubscribePagosM, unsubscribeCuentasCobroM].forEach(u => { if (u) u(); });
+    unsubscribeClientesM = unsubscribeNotasM = unsubscribeCuentasM = unsubscribePagosM = unsubscribeCuentasCobroM = null;
   };
 
   // ===== SORTEO =====
@@ -1056,7 +1061,7 @@
   window.exportarParticipantes = function() {
     if (!currentUserIsAdmin) return;
     if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes.'); return; }
-    let texto = '🦁 ANDYCHE CHAKER - PARTICIPANTES 🦁\n========================================\n\n';
+    let texto = '🦁 ANDY OBREGÓN - PARTICIPANTES 🦁\n========================================\n\n';
     texto += `📅 Exportado: ${new Date().toLocaleString()}\n👥 Total: ${participantesSorteo.length}\n\n----------------------------------------\n\n`;
     participantesSorteo.forEach((p, i) => { texto += `📌 #${i+1}\n   Nombre: ${p.nombre}\n   Teléfono: ${p.telefono}\n   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n\n`; });
     const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
@@ -1087,6 +1092,7 @@
 
   window.cerrarModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
+  // CONFIGURACIÓN
   async function cargarConfigMembresia() {
     try {
       const ref = doc(db, 'membresia_config', 'editor');
@@ -1094,55 +1100,87 @@
       if (snap.exists()) {
         const d = snap.data();
         membresiaConfig.password = d.password || 'admin123';
-        if (d.cuentasPago) membresiaConfig.cuentasPago = { ...membresiaConfig.cuentasPago, ...d.cuentasPago };
       } else {
         await setDoc(ref, membresiaConfig);
       }
-      cargarCuentasPagoEnConfig();
     } catch (err) { console.error('Error config:', err); }
   }
 
-  function cargarCuentasPagoEnConfig() {
-    const c = membresiaConfig.cuentasPago || {};
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-    set('cfg-nequi-numero', c.nequi?.numero);
-    set('cfg-nequi-titular', c.nequi?.titular);
-    set('cfg-transf-banco', c.transferencia?.banco);
-    set('cfg-transf-cuenta', c.transferencia?.cuenta);
-    set('cfg-transf-titular', c.transferencia?.titular);
-    set('cfg-dep-banco', c.deposito?.banco);
-    set('cfg-dep-cuenta', c.deposito?.cuenta);
-    set('cfg-dep-titular', c.deposito?.titular);
-    set('cfg-paypal-email', c.paypal?.email);
-    set('cfg-paypal-titular', c.paypal?.titular);
-    set('cfg-binance-email', c.binance?.email);
-    set('cfg-binance-titular', c.binance?.titular);
-    set('cfg-efectivo-info', c.efectivo?.info);
+  // ============================================================
+  // NUEVO: CUENTAS DE COBRO (RECIBIR PAGOS)
+  // ============================================================
+  async function cargarCuentasCobro() {
+    try {
+      const snap = await getDocs(collection(db, 'membresia_cuentas_cobro'));
+      membresiaCuentasCobro = [];
+      snap.forEach(d => membresiaCuentasCobro.push({ id: d.id, ...d.data() }));
+      renderCuentasCobro();
+    } catch (err) { console.error('Error cuentas cobro:', err); }
   }
 
-  window.guardarCuentasPago = async function() {
-    const get = id => (document.getElementById(id)?.value || '').trim();
-    const cuentasPago = {
-      nequi: { numero: get('cfg-nequi-numero'), titular: get('cfg-nequi-titular') },
-      transferencia: { banco: get('cfg-transf-banco'), cuenta: get('cfg-transf-cuenta'), titular: get('cfg-transf-titular') },
-      deposito: { banco: get('cfg-dep-banco'), cuenta: get('cfg-dep-cuenta'), titular: get('cfg-dep-titular') },
-      paypal: { email: get('cfg-paypal-email'), titular: get('cfg-paypal-titular') },
-      binance: { email: get('cfg-binance-email'), titular: get('cfg-binance-titular') },
-      efectivo: { info: get('cfg-efectivo-info') }
-    };
-    const msg = document.getElementById('m-config-cuentas-msg');
+  window.guardarCuentaCobro = async function() {
+    const metodo = document.getElementById('cc-metodo').value;
+    const alias = document.getElementById('cc-alias').value.trim();
+    const cuenta = document.getElementById('cc-cuenta').value.trim();
+    const titular = document.getElementById('cc-titular').value.trim();
+    const msg = document.getElementById('cc-msg');
+
+    if (!alias || !cuenta || !titular) {
+      msg.textContent = '⚠️ Completa todos los campos (*)';
+      msg.style.color = '#dc2626';
+      return;
+    }
+
     try {
-      await updateDoc(doc(db, 'membresia_config', 'editor'), { cuentasPago });
-      membresiaConfig.cuentasPago = cuentasPago;
-      msg.textContent = '✅ Cuentas de cobro guardadas correctamente';
+      await addDoc(collection(db, 'membresia_cuentas_cobro'), {
+        metodo, alias, cuenta, titular, fecha: new Date().toISOString()
+      });
+      msg.textContent = '✅ Cuenta guardada correctamente';
       msg.style.color = '#16a34a';
-      window.mostrarToast('🏦 Cuentas Guardadas', 'Las cuentas de cobro han sido actualizadas.');
+      document.getElementById('cc-alias').value = '';
+      document.getElementById('cc-cuenta').value = '';
+      document.getElementById('cc-titular').value = '';
+      await cargarCuentasCobro();
+      window.mostrarToast('🏦 Cuenta Guardada', 'La cuenta de cobro fue registrada.');
+      setTimeout(() => { msg.textContent = ''; }, 3000);
     } catch (err) {
       msg.textContent = '❌ Error: ' + err.message;
       msg.style.color = '#dc2626';
     }
   };
 
+  window.eliminarCuentaCobro = async function(id) {
+    if (!confirm('¿Eliminar esta cuenta de cobro?')) return;
+    try {
+      await deleteDoc(doc(db, 'membresia_cuentas_cobro', id));
+      await cargarCuentasCobro();
+      window.mostrarToast('🗑️ Eliminada', 'Cuenta de cobro eliminada.');
+    } catch (err) { alert('❌ Error: ' + err.message); }
+  };
+
+  function renderCuentasCobro() {
+    const cont = document.getElementById('m-lista-cuentas-cobro');
+    if (!cont) return;
+    if (membresiaCuentasCobro.length === 0) {
+      cont.innerHTML = '<div class="empty-msg">No tienes cuentas de cobro registradas aún.</div>';
+      return;
+    }
+    const metodoNombre = { nequi:'🟣 Nequi', transferencia:'🏦 Transferencia', deposito:'💰 Depósito', paypal:'🔵 PayPal', binance:'🟡 Binance', efectivo:'💵 Efectivo' };
+    cont.innerHTML = membresiaCuentasCobro.map(c => `
+      <div class="cuenta-item" style="border-left-color:#fbbf24;">
+        <div class="cuenta-servicio">${metodoNombre[c.metodo] || c.metodo} - ${c.alias}</div>
+        <div class="cuenta-meta">👤 ${c.titular}</div>
+        <div class="cuenta-cred"><strong>Cuenta:</strong> ${c.cuenta}</div>
+        <div class="cuenta-acciones">
+          <button class="btn-small btn-rojo-mini" onclick="eliminarCuentaCobro('${c.id}')">🗑️ Eliminar</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ============================================================
+  // CLIENTES
+  // ============================================================
   async function cargarClientesMembresia() {
     try {
       const snap = await getDocs(collection(db, 'membresia_clientes'));
@@ -1187,6 +1225,7 @@
     await cargarNotasMembresia();
     await cargarCuentasMembresia();
     await cargarPagosMembresia();
+    await cargarCuentasCobro();
 
     if (unsubscribeClientesM) unsubscribeClientesM();
     unsubscribeClientesM = onSnapshot(collection(db, 'membresia_clientes'), (snap) => {
@@ -1217,6 +1256,17 @@
       snap.forEach(d => membresiaPagos.push({ id: d.id, ...d.data() }));
       renderPagos();
       renderDashboardMembresia();
+    });
+    if (unsubscribeCuentasCobroM) unsubscribeCuentasCobroM();
+    unsubscribeCuentasCobroM = onSnapshot(collection(db, 'membresia_cuentas_cobro'), (snap) => {
+      if (!currentUserIsAdmin) return;
+      membresiaCuentasCobro = [];
+      snap.forEach(d => membresiaCuentasCobro.push({ id: d.id, ...d.data() }));
+      renderCuentasCobro();
+      // Si el modal de pago está abierto, actualizar el selector
+      if (document.getElementById('modalPagoMembresia').classList.contains('active')) {
+        actualizarCuentasDestino();
+      }
     });
   }
 
@@ -1335,25 +1385,34 @@
     document.getElementById('pago-dias-extra').value = 30;
     document.getElementById('pago-notas').value = '';
     document.getElementById('pago-metodo').value = 'nequi';
-    actualizarCuentaPago();
+    
+    // Limpiar remitente
+    document.getElementById('pago-remitente-nombre').value = cliente.nombre; // Por defecto el mismo cliente
+    document.getElementById('pago-remitente-cuenta').value = cliente.telefono || '';
+    
+    actualizarCuentasDestino();
     document.getElementById('modalPagoMembresia').classList.add('active');
   };
 
-  function getCuentaInfo(metodo) {
-    const c = (membresiaConfig.cuentasPago || {})[metodo];
-    if (!c) return 'No configurada';
-    if (metodo === 'nequi') return c.numero ? `${c.numero} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta Nequi';
-    if (metodo === 'transferencia') return c.cuenta ? `${c.banco || 'Banco'} · ${c.cuenta} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta de transferencia';
-    if (metodo === 'deposito') return c.cuenta ? `${c.banco || 'Banco'} · ${c.cuenta} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu cuenta de depósito';
-    if (metodo === 'paypal') return c.email ? `${c.email} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu PayPal';
-    if (metodo === 'binance') return c.email ? `${c.email} - ${c.titular || 'Sin titular'}` : '⚠️ Configura tu Binance';
-    if (metodo === 'efectivo') return c.info || 'Efectivo en persona';
-    return 'No configurada';
-  }
-
-  window.actualizarCuentaPago = function() {
+  window.actualizarCuentasDestino = function() {
     const metodo = document.getElementById('pago-metodo').value;
-    document.getElementById('pago-cuenta-display').innerHTML = `<strong>Cuenta de cobro:</strong> ${getCuentaInfo(metodo)}`;
+    const select = document.getElementById('pago-cuenta-destino');
+    const msg = document.getElementById('pago-sin-cuenta-msg');
+    
+    select.innerHTML = '<option value="">-- Selecciona una cuenta --</option>';
+    const cuentasFiltradas = membresiaCuentasCobro.filter(c => c.metodo === metodo);
+
+    if (cuentasFiltradas.length === 0) {
+      msg.style.display = 'block';
+    } else {
+      msg.style.display = 'none';
+      cuentasFiltradas.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = `${c.alias} | ${c.cuenta} | ${c.titular}`;
+        opt.textContent = `${c.alias} (${c.cuenta}) - ${c.titular}`;
+        select.appendChild(opt);
+      });
+    }
   };
 
   async function generarPagoId() {
@@ -1372,83 +1431,94 @@
     const doc = new jsPDF();
     const W = 210;
 
+    // Encabezado
     doc.setFillColor(251, 191, 36);
-    doc.rect(0, 0, W, 45, 'F');
+    doc.rect(0, 0, W, 50, 'F');
     doc.setTextColor(26, 26, 46);
-    doc.setFontSize(26);
+    doc.setFontSize(20);
     doc.setFont(undefined, 'bold');
-    doc.text('ANDYCHE CHAKER', W/2, 20, { align: 'center' });
-    doc.setFontSize(11);
-    doc.text('COMPROBANTE DE PAGO', W/2, 28, { align: 'center' });
-    doc.setFontSize(9);
+    doc.text('PANEL ADMINISTRATIVO GENERAL', W/2, 18, { align: 'center' });
+    doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
-    doc.text('Sistema Oficial de Membresias', W/2, 35, { align: 'center' });
+    doc.text('ANDY OBREGÓN', W/2, 25, { align: 'center' });
+    
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('PAGO DE MEMBRESÍA VIP', W/2, 38, { align: 'center' });
 
+    // ID Box
     doc.setFillColor(255, 251, 235);
     doc.setDrawColor(251, 191, 36);
     doc.setLineWidth(0.5);
-    doc.roundedRect(15, 55, W-30, 20, 3, 3, 'FD');
-    doc.setFontSize(14);
+    doc.roundedRect(15, 60, W-30, 18, 3, 3, 'FD');
+    doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(180, 83, 9);
-    doc.text(`ID: ${pago.pagoId}`, W/2, 68, { align: 'center' });
+    doc.text(`ID: ${pago.pagoId}`, W/2, 72, { align: 'center' });
 
+    // Fecha y Hora
     const fecha = new Date(pago.fecha);
     const fechaStr = fecha.toLocaleDateString('es-ES', { day:'2-digit', month:'long', year:'numeric' });
     const horaStr = fecha.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(26, 26, 46);
-    doc.text(`Fecha: ${fechaStr}`, 20, 85);
-    doc.text(`Hora: ${horaStr}`, W-20, 85, { align: 'right' });
+    doc.text(`Fecha: ${fechaStr}`, 20, 88);
+    doc.text(`Hora: ${horaStr}`, W-20, 88, { align: 'right' });
 
-    doc.setFillColor(255, 251, 235);
-    doc.setDrawColor(251, 191, 36);
-    doc.roundedRect(15, 92, W-30, 30, 3, 3, 'FD');
-    doc.setFontSize(11);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(120, 53, 15);
-    doc.text('CLIENTE', 20, 100);
+    // Datos Remitente
+    doc.setFillColor(254, 242, 242);
+    doc.setDrawColor(220, 38, 38);
+    doc.roundedRect(15, 95, W-30, 26, 3, 3, 'FD');
     doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(185, 28, 28);
+    doc.text('DATOS DEL REMITENTE (QUIEN ENVÍA)', 20, 102);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(26, 26, 46);
-    doc.text(`${pago.clienteNombre}`, 20, 108);
-    doc.text(`Tel: ${pago.clienteTelefono || '—'}`, 20, 115);
-    if (pago.clienteEmail) doc.text(`Email: ${pago.clienteEmail}`, 100, 115);
+    doc.text(`Nombre: ${pago.remitenteNombre}`, 20, 110);
+    doc.text(`Cuenta: ${pago.remitenteCuenta || '—'}`, 20, 116);
 
-    doc.setFillColor(255, 251, 235);
-    doc.setDrawColor(251, 191, 36);
-    doc.roundedRect(15, 127, W-30, 55, 3, 3, 'FD');
-    doc.setFontSize(11);
+    // Datos Receptor / Pago
+    doc.setFillColor(240, 253, 244);
+    doc.setDrawColor(22, 163, 74);
+    doc.roundedRect(15, 125, W-30, 35, 3, 3, 'FD');
     doc.setFont(undefined, 'bold');
-    doc.setTextColor(120, 53, 15);
-    doc.text('DETALLE DEL PAGO', 20, 135);
-
-    doc.setFontSize(10);
+    doc.setTextColor(21, 128, 61);
+    doc.text('DATOS DEL RECEPTOR (QUIEN RECIBE)', 20, 132);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(26, 26, 46);
-    const metodoNombre = { nequi:'Nequi', transferencia:'Transferencia bancaria', deposito:'Deposito bancario', paypal:'PayPal', binance:'Binance', efectivo:'Efectivo' };
-    doc.text(`Metodo: ${metodoNombre[pago.metodo] || pago.metodo}`, 20, 143);
-    doc.text(`Cuenta: ${pago.cuentaInfo || '—'}`, 20, 150);
-    doc.text(`Dias extendidos: ${pago.diasExtendidos || 30}`, 20, 157);
-    doc.text(`Nuevo vencimiento: ${formatearFecha(pago.fechaVencimientoNueva)}`, 20, 164);
-    if (pago.notas) { doc.setFontSize(9); doc.text(`Notas: ${pago.notas}`, 20, 172); }
+    doc.text(`Método de Pago: ${metodoNombre(pago.metodo)}`, 20, 140);
+    doc.text(`Cuenta Destino: ${pago.cuentaDestino}`, 20, 146);
+    doc.text(`Extensión de días: ${pago.diasExtendidos || 30} días`, 20, 152);
 
+    // Monto
     doc.setFillColor(251, 191, 36);
-    doc.roundedRect(15, 187, W-30, 25, 3, 3, 'F');
+    doc.roundedRect(15, 168, W-30, 25, 3, 3, 'F');
     doc.setTextColor(26, 26, 46);
     doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
-    doc.text('MONTO PAGADO', 22, 197);
+    doc.text('MONTO PAGADO', 22, 178);
     doc.setFontSize(20);
-    doc.text(`$${Number(pago.monto).toFixed(2)}`, W-22, 202, { align: 'right' });
+    doc.text(`$${Number(pago.monto).toFixed(2)}`, W-22, 183, { align: 'right' });
 
+    // Notas
+    if (pago.notas) {
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(120, 53, 15);
+      doc.text(`Notas: ${pago.notas}`, 20, 202);
+    }
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(180, 83, 9);
+    doc.text('CORREO DE QUEJAS: andyobregon799@gmail.com', W/2, 225, { align: 'center' });
+    doc.text('Número de denuncias mala atención: 0990434546', W/2, 232, { align: 'center' });
+    doc.setFont(undefined, 'italic');
     doc.setFontSize(8);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(120, 53, 15);
-    doc.text('Gracias por su pago!', W/2, 225, { align: 'center' });
-    doc.text('ANDYCHE CHAKER - Sistema Oficial de Membresias', W/2, 230, { align: 'center' });
-    doc.text('Este documento es un comprobante oficial de pago', W/2, 235, { align: 'center' });
+    doc.text('Toda información será tomada con sus medidas adecuadas.', W/2, 240, { align: 'center' });
 
     return doc;
   }
@@ -1474,7 +1544,7 @@
     const blob = doc.output('blob');
     const filename = `Comprobante-${pago.pagoId}.pdf`;
     const file = new File([blob], filename, { type: 'application/pdf' });
-    const mensaje = `Hola ${pago.clienteNombre}, adjunto tu comprobante de pago.\nID: ${pago.pagoId}\nMonto: $${Number(pago.monto).toFixed(2)}\nGracias! - ANDYCHE CHAKER`;
+    const mensaje = `Hola ${pago.remitenteNombre || pago.clienteNombre}, adjunto tu comprobante de pago VIP.\nID: ${pago.pagoId}\nMonto: $${Number(pago.monto).toFixed(2)}\nGracias! - ANDY OBREGÓN`;
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
@@ -1482,7 +1552,6 @@
         return;
       } catch (e) { if (e.name === 'AbortError') return; }
     }
-    // Fallback: descarga + abre WhatsApp con mensaje
     doc.save(filename);
     const tel = (pago.clienteTelefono || '').replace(/\D/g, '');
     const msgEnc = encodeURIComponent(mensaje + '\n\n(Adjunto el PDF que se acaba de descargar)');
@@ -1494,13 +1563,18 @@
     if (!clientePagoId) return;
     const cliente = membresiaClientes.find(c => c.id === clientePagoId);
     if (!cliente) return;
+    
     const monto = parseFloat(document.getElementById('pago-monto').value) || 0;
     const metodo = document.getElementById('pago-metodo').value;
-    const cuentaInfo = getCuentaInfo(metodo);
+    const cuentaDestino = document.getElementById('pago-cuenta-destino').value;
+    const remitenteNombre = document.getElementById('pago-remitente-nombre').value.trim();
+    const remitenteCuenta = document.getElementById('pago-remitente-cuenta').value.trim();
     const diasExtra = parseInt(document.getElementById('pago-dias-extra').value) || 30;
     const notas = document.getElementById('pago-notas').value.trim();
 
     if (monto <= 0) { alert('⚠️ Ingresa un monto mayor a 0'); return; }
+    if (!cuentaDestino) { alert('⚠️ Debes seleccionar una cuenta de destino. Si no tienes, ve a la pestaña "🏦 Cuentas de Cobro" para agregarla.'); return; }
+    if (!remitenteNombre) { alert('⚠️ Ingresa el nombre de quien envía.'); return; }
 
     try {
       const pagoId = await generarPagoId();
@@ -1514,9 +1588,11 @@
         clienteNombre: cliente.nombre,
         clienteTelefono: cliente.telefono || '',
         clienteEmail: cliente.email || '',
+        remitenteNombre,
+        remitenteCuenta,
         monto,
         metodo,
-        cuentaInfo,
+        cuentaDestino,
         diasExtendidos: diasExtra,
         fechaVencimientoNueva: nuevaVenc.toISOString().split('T')[0],
         notas,
@@ -1526,7 +1602,7 @@
       await addDoc(collection(db, 'membresia_pagos'), pagoData);
 
       const historial = Array.isArray(cliente.historialPagos) ? cliente.historialPagos : [];
-      historial.push({ fecha: hoy.toISOString(), monto, metodo, cuentaInfo, dias: diasExtra, notas, pagoId });
+      historial.push({ fecha: hoy.toISOString(), monto, metodo, cuentaDestino, dias: diasExtra, notas, pagoId });
 
       await updateDoc(doc(db, 'membresia_clientes', clientePagoId), {
         ultimoPago: hoy.toISOString(),
@@ -1705,7 +1781,7 @@
     catch (err) { alert('❌ Error: ' + err.message); }
   };
 
-  // ===== CUENTAS GUARDADAS =====
+  // ===== CUENTAS STREAMING =====
   function renderCuentas() {
     const cont = document.getElementById('m-lista-cuentas');
     if (!cont) return;
@@ -1786,7 +1862,7 @@
     if (filtroPagos) lista = lista.filter(p => (p.pagoId||'').toLowerCase().includes(filtroPagos) || (p.clienteNombre||'').toLowerCase().includes(filtroPagos) || String(p.monto||'').includes(filtroPagos));
     if (lista.length === 0) { cont.innerHTML = '<div class="empty-msg">🧾 Aún no hay pagos registrados.</div>'; return; }
     const sorted = lista.sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-    cont.innerHTML = sorted.map(p => `<div class="pago-item"><div class="pago-header"><div><div class="pago-id">${p.pagoId}</div><div class="pago-fecha">📅 ${new Date(p.fecha).toLocaleString('es-ES')}</div></div><div class="pago-monto">$${Number(p.monto).toFixed(2)}</div></div><div class="pago-cliente">👤 ${p.clienteNombre}</div><div class="pago-detalle">💳 ${metodoNombre(p.metodo)} · ${p.cuentaInfo}</div>${p.notas ? `<div class="pago-detalle">📝 ${p.notas}</div>` : ''}<div class="pago-acciones"><button class="btn-small btn-wsp" onclick="reenviarWhatsApp('${p.id}')">📱 WhatsApp</button><button class="btn-small btn-amarillo" onclick="redescargarPDF('${p.id}')">📥 PDF</button><button class="btn-small btn-rojo-mini" onclick="eliminarPago('${p.id}')">🗑️</button></div></div>`).join('');
+    cont.innerHTML = sorted.map(p => `<div class="pago-item"><div class="pago-header"><div><div class="pago-id">${p.pagoId}</div><div class="pago-fecha">📅 ${new Date(p.fecha).toLocaleString('es-ES')}</div></div><div class="pago-monto">$${Number(p.monto).toFixed(2)}</div></div><div class="pago-cliente">👤 ${p.clienteNombre} (Enviado por: ${p.remitenteNombre})</div><div class="pago-detalle">💳 ${metodoNombre(p.metodo)} · Destino: ${p.cuentaDestino}</div>${p.notas ? `<div class="pago-detalle">📝 ${p.notas}</div>` : ''}<div class="pago-acciones"><button class="btn-small btn-wsp" onclick="reenviarWhatsApp('${p.id}')">📱 WhatsApp</button><button class="btn-small btn-amarillo" onclick="redescargarPDF('${p.id}')">📥 PDF</button><button class="btn-small btn-rojo-mini" onclick="eliminarPago('${p.id}')">🗑️</button></div></div>`).join('');
   }
 
   window.reenviarWhatsApp = async function(id) {
@@ -1845,7 +1921,7 @@
     }
   });
 
-  console.log('🦁 ANDYCHE CHAKER - SISTEMA COMPLETO CON PDF + WHATSAPP');
+  console.log('🦁 PANEL ADMINISTRATIVO GENERAL - ANDY OBREGÓN');
 </script>
 </body>
 </html>
