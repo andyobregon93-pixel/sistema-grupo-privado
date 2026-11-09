@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>🦁 ANDYCHE CHAKER - SORTEO</title>
+<title>🦁 ANDYCHE CHAKER - SORTEO + MEMBRESÍA</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
@@ -35,6 +35,16 @@
     --accent-start: #a855f7;
     --accent-end: #22d3ee;
     --accent-gradient: linear-gradient(180deg, var(--accent-start), var(--accent-end));
+
+    /* Membresía - Blanco y Amarillo */
+    --amarillo: #fbbf24;
+    --amarillo-claro: #fde047;
+    --amarillo-oscuro: #f59e0b;
+    --amarillo-fondo: #fffbeb;
+    --blanco: #ffffff;
+    --texto-oscuro: #1a1a2e;
+    --texto-marron: #78350f;
+    --gradient-amarillo: linear-gradient(135deg, #fbbf24, #f59e0b);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -271,6 +281,8 @@
   }
   .nav-btn.active { background: var(--gradient); color: #fff; box-shadow: var(--shadow-glow); border-color: transparent; }
   .nav-btn:hover:not(.active) { transform: translateY(-2px); border-color: var(--rojo-leon); box-shadow: 0 0 20px rgba(220, 38, 38, 0.15); }
+  .nav-btn.nav-membresia { background: var(--gradient-amarillo); color: var(--texto-oscuro); border-color: transparent; }
+  .nav-btn.nav-membresia.active { background: var(--gradient-amarillo); color: var(--texto-oscuro); box-shadow: 0 0 25px rgba(251, 191, 36, 0.5); }
 
   .container { padding: 16px; max-width: 1200px; margin: auto; }
   .page { display: none; animation: fadeIn 0.4s ease; }
@@ -514,6 +526,277 @@
   .ganador-content .nombre { font-size: 2.2rem; font-weight: 900; color: #fbbf24; text-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
   .ganador-content .detalle { font-size: 1rem; opacity: 0.7; margin-top: 8px; }
 
+  /* ============================================================ */
+  /* ===== PANEL DE MEMBRESÍA - BLANCO Y AMARILLO ===== */
+  /* ============================================================ */
+  .membresia-hero {
+    background: var(--gradient-amarillo);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 20px;
+    color: var(--texto-oscuro);
+    box-shadow: 0 8px 40px rgba(251, 191, 36, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .membresia-hero h2 { font-size: 1.5rem; font-weight: 900; font-family: 'Orbitron', monospace; }
+  .membresia-hero p { font-size: 0.85rem; font-weight: 600; opacity: 0.85; margin-top: 4px; }
+  .membresia-hero .icono-hero { font-size: 3rem; }
+
+  .membresia-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .membresia-tabs::-webkit-scrollbar { display: none; }
+  .membresia-tab {
+    padding: 10px 18px;
+    border-radius: 40px;
+    border: 2px solid var(--amarillo);
+    background: transparent;
+    color: var(--amarillo);
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s;
+    width: auto;
+    margin: 0;
+  }
+  .membresia-tab:hover { background: rgba(251, 191, 36, 0.1); transform: none; box-shadow: none; }
+  .membresia-tab.active {
+    background: var(--gradient-amarillo);
+    color: var(--texto-oscuro);
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+  }
+
+  .m-tab { display: none; animation: fadeIn 0.3s ease; }
+  .m-tab.active { display: block; }
+
+  .membresia-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+    border: 2px solid var(--amarillo);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 16px;
+    color: var(--texto-oscuro);
+    box-shadow: 0 8px 30px rgba(251, 191, 36, 0.15);
+  }
+  .membresia-card h3 {
+    color: var(--texto-oscuro);
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .membresia-card label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--texto-marron);
+    margin-top: 12px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .membresia-card input,
+  .membresia-card select,
+  .membresia-card textarea {
+    background: var(--amarillo-fondo);
+    border: 2px solid #fde68a;
+    color: var(--texto-oscuro);
+    margin-top: 0;
+    width: 100%;
+    font-weight: 600;
+  }
+  .membresia-card input::placeholder,
+  .membresia-card textarea::placeholder {
+    color: #b45309;
+    opacity: 0.5;
+  }
+  .membresia-card input:focus,
+  .membresia-card select:focus,
+  .membresia-card textarea:focus {
+    outline: none;
+    border-color: var(--amarillo-oscuro);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  }
+
+  .btn-amarillo {
+    background: var(--gradient-amarillo) !important;
+    color: var(--texto-oscuro) !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+    border: none;
+  }
+  .btn-amarillo:hover { box-shadow: 0 0 25px rgba(251, 191, 36, 0.5) !important; }
+
+  .btn-amarillo-outline {
+    background: transparent !important;
+    color: var(--texto-marron) !important;
+    border: 2px solid var(--amarillo) !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+  }
+  .btn-amarillo-outline:hover { background: rgba(251, 191, 36, 0.15) !important; }
+
+  .btn-rojo-mini {
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+    color: #fff !important;
+    text-shadow: none !important;
+  }
+
+  .btn-verde-mini {
+    background: linear-gradient(135deg, #16a34a, #15803d) !important;
+    color: #fff !important;
+    text-shadow: none !important;
+  }
+
+  .membresia-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .membresia-stat {
+    background: linear-gradient(135deg, #ffffff, #fffbeb);
+    border: 2px solid var(--amarillo);
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+    color: var(--texto-oscuro);
+    transition: all 0.3s;
+  }
+  .membresia-stat:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3); }
+  .membresia-stat .m-icon { font-size: 1.6rem; margin-bottom: 4px; }
+  .membresia-stat .m-numero { font-size: 2rem; font-weight: 900; color: #b45309; line-height: 1; }
+  .membresia-stat .m-label { font-size: 0.72rem; font-weight: 800; color: var(--texto-marron); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  .cliente-row {
+    background: #ffffff;
+    border: 2px solid #fde68a;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    color: var(--texto-oscuro);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+    transition: all 0.3s;
+  }
+  .cliente-row:hover { border-color: var(--amarillo-oscuro); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2); }
+  .cliente-row.atrasado { border-color: #dc2626; background: #fef2f2; }
+  .cliente-row.gratis { border-color: #16a34a; background: #f0fdf4; }
+
+  .cliente-info { flex: 1; min-width: 200px; }
+  .cliente-info .cliente-nombre { font-weight: 900; font-size: 1rem; color: var(--texto-oscuro); }
+  .cliente-info .cliente-datos { font-size: 0.78rem; color: var(--texto-marron); font-weight: 600; margin-top: 3px; }
+  .cliente-info .cliente-vence { font-size: 0.78rem; font-weight: 700; margin-top: 4px; }
+  .cliente-info .cliente-vence.alerta { color: #dc2626; }
+  .cliente-info .cliente-vence.ok { color: #16a34a; }
+
+  .cliente-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .cliente-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .cliente-badge.ok { background: #dcfce7; color: #15803d; }
+  .cliente-badge.atrasado { background: #fee2e2; color: #b91c1c; }
+  .cliente-badge.gratis { background: #dbeafe; color: #1e40af; }
+  .cliente-badge.cuenta { background: #fef3c7; color: #92400e; }
+
+  .cliente-acciones { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .empty-msg {
+    text-align: center;
+    padding: 30px 20px;
+    opacity: 0.6;
+    font-size: 0.9rem;
+    color: var(--texto-marron);
+    font-weight: 700;
+  }
+
+  .nota-blog {
+    background: #ffffff;
+    border: 2px solid #fde68a;
+    border-left: 6px solid var(--amarillo);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    color: var(--texto-oscuro);
+    position: relative;
+  }
+  .nota-blog .nota-titulo { font-weight: 900; font-size: 1.05rem; color: var(--texto-oscuro); margin-bottom: 6px; }
+  .nota-blog .nota-meta { font-size: 0.72rem; color: var(--texto-marron); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .nota-blog .nota-contenido { font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; color: #292524; }
+  .nota-blog .nota-cat {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--gradient-amarillo);
+    color: var(--texto-oscuro);
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+  .nota-blog .nota-acciones { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .modal-amarillo {
+    border: 2px solid var(--amarillo) !important;
+    background: linear-gradient(135deg, #ffffff, #fffbeb) !important;
+    color: var(--texto-oscuro) !important;
+  }
+  .modal-amarillo .modal-title {
+    background: var(--gradient-amarillo) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+  .modal-amarillo .modal-close { color: var(--texto-oscuro) !important; }
+  .modal-amarillo input,
+  .modal-amarillo select,
+  .modal-amarillo textarea {
+    background: var(--amarillo-fondo) !important;
+    border: 2px solid #fde68a !important;
+    color: var(--texto-oscuro) !important;
+    font-weight: 600;
+  }
+  .modal-amarillo input:focus,
+  .modal-amarillo select:focus,
+  .modal-amarillo textarea:focus {
+    border-color: var(--amarillo-oscuro) !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important;
+    background: #fff !important;
+  }
+  .modal-amarillo label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--texto-marron);
+    margin-top: 12px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
   @media (max-width: 768px) {
     .rueda-wrapper { width: 220px; height: 220px; }
     .rueda .segmento span { font-size: 7px; max-width: 40px; }
@@ -528,6 +811,10 @@
     .toast { bottom: 15px; right: 15px; left: 15px; max-width: none; }
     .btn-sorteo-publico { font-size: 1rem; padding: 16px 20px; }
     .btn-sorteo-publico .icono-grande { font-size: 2rem; }
+    .membresia-hero h2 { font-size: 1.15rem; }
+    .membresia-hero .icono-hero { font-size: 2rem; }
+    .membresia-stat .m-numero { font-size: 1.5rem; }
+    .cliente-acciones { width: 100%; justify-content: flex-start; }
   }
 </style>
 </head>
@@ -580,6 +867,7 @@
     <div class="logo-area"><span class="icono">🦁</span><strong>ANDYCHE</strong></div>
     <button class="nav-btn active" data-page="p-dashboard">📊 Dashboard</button>
     <button class="nav-btn" data-page="p-participantes">🎯 Participantes</button>
+    <button class="nav-btn nav-membresia" data-page="p-membresia">💳 Membresía</button>
     <button onclick="handleLogout()" style="background:var(--gradient-fire); color:#fff; padding:6px 14px; border-radius:40px; border:none; cursor:pointer; font-weight:700; font-size:11px; white-space:nowrap; margin-left:auto;">🚪 Salir</button>
   </div>
 
@@ -593,6 +881,13 @@
           <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="total-participantes">0</div><div class="stat-label">Total Participantes</div></div>
           <div class="stat-card"><div class="stat-icon">🦁</div><div class="stat-number" id="status-online">✅</div><div class="stat-label">Estado</div></div>
         </div>
+
+        <!-- BOTÓN ACCESO RÁPIDO AL PANEL DE MEMBRESÍA -->
+        <button onclick="document.querySelector('.nav-btn[data-page=&quot;p-membresia&quot;]').click();" 
+          class="btn-amarillo" 
+          style="width:100%; padding:18px; font-size:1.05rem; margin-top:8px; border-radius:18px;">
+          💳 ENTRAR PANEL DE ADMINISTRACIÓN DE CLIENTES DE MEMBRESÍA
+        </button>
       </div>
       
       <!-- ===== RUEDA DE SORTEO ===== -->
@@ -665,6 +960,172 @@
       </div>
     </div>
 
+    <!-- ===== PANEL DE MEMBRESÍA (NUEVO) ===== -->
+    <div id="p-membresia" class="page">
+      
+      <div class="membresia-hero">
+        <div>
+          <h2>💳 Panel de Clientes de Membresía</h2>
+          <p>Gestión completa: clientes, pagos, cuentas y blog de notas ⚡</p>
+        </div>
+        <div class="icono-hero">👑</div>
+      </div>
+
+      <div class="membresia-tabs">
+        <button class="membresia-tab active" data-tab="m-dashboard">📊 Dashboard</button>
+        <button class="membresia-tab" data-tab="m-registrar">➕ Registrar Cliente</button>
+        <button class="membresia-tab" data-tab="m-clientes">👥 Clientes</button>
+        <button class="membresia-tab" data-tab="m-notas">📝 Blog de Notas</button>
+        <button class="membresia-tab" data-tab="m-config">⚙️ Configuración</button>
+      </div>
+
+      <!-- DASHBOARD MEMBRESÍA -->
+      <div id="m-dashboard" class="m-tab active">
+        <div class="membresia-stats-grid">
+          <div class="membresia-stat">
+            <div class="m-icon">👥</div>
+            <div class="m-numero" id="m-total-clientes">0</div>
+            <div class="m-label">Total Clientes</div>
+          </div>
+          <div class="membresia-stat">
+            <div class="m-icon">✅</div>
+            <div class="m-numero" id="m-clientes-aldia">0</div>
+            <div class="m-label">Al Día</div>
+          </div>
+          <div class="membresia-stat">
+            <div class="m-icon">⚠️</div>
+            <div class="m-numero" id="m-clientes-atrasados">0</div>
+            <div class="m-label">Atrasados</div>
+          </div>
+          <div class="membresia-stat">
+            <div class="m-icon">🎁</div>
+            <div class="m-numero" id="m-clientes-gratis">0</div>
+            <div class="m-label">Sin Pago</div>
+          </div>
+          <div class="membresia-stat">
+            <div class="m-icon">🔢</div>
+            <div class="m-numero" id="m-total-cuentas">0</div>
+            <div class="m-label">Total Cuentas</div>
+          </div>
+          <div class="membresia-stat">
+            <div class="m-icon">📦</div>
+            <div class="m-numero" id="m-cuentas-mes">0</div>
+            <div class="m-label">Cuentas Pedidas Mes</div>
+          </div>
+        </div>
+
+        <div class="membresia-card">
+          <h3>⚡ Acciones Rápidas</h3>
+          <div class="flex-btns">
+            <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="irATabMembresia('m-registrar')">➕ Registrar Cliente</button>
+            <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="irATabMembresia('m-clientes')">👥 Ver Clientes</button>
+            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="reiniciarConteoMes()">🔄 Reiniciar Conteo Mes</button>
+          </div>
+        </div>
+
+        <div class="membresia-card">
+          <h3>⚠️ Clientes Atrasados</h3>
+          <div id="m-lista-atrasados"></div>
+        </div>
+
+        <div class="membresia-card">
+          <h3>🎁 Miembros Sin Pago (Familiares/Amigos)</h3>
+          <div id="m-lista-gratis"></div>
+        </div>
+      </div>
+
+      <!-- REGISTRAR CLIENTE -->
+      <div id="m-registrar" class="m-tab">
+        <div class="membresia-card">
+          <h3>➕ Registrar Nuevo Cliente</h3>
+          
+          <label>Nombre completo *</label>
+          <input id="m-nombre" placeholder="Ej: Juan Pérez">
+
+          <label>Teléfono *</label>
+          <input id="m-telefono" type="tel" placeholder="Ej: 0991234567">
+
+          <label>Email (opcional)</label>
+          <input id="m-email" type="email" placeholder="cliente@email.com">
+
+          <label>Fecha de Ingreso *</label>
+          <input id="m-fecha-ingreso" type="date">
+
+          <label>Fecha de Vencimiento / Próximo Pago *</label>
+          <input id="m-fecha-vencimiento" type="date">
+
+          <label>Monto de Pago ($)</label>
+          <input id="m-monto" type="number" step="0.01" placeholder="0.00" value="0">
+
+          <label>Tipo de Cliente *</label>
+          <select id="m-tipo">
+            <option value="pago">💵 Cliente con Pago</option>
+            <option value="gratis">🎁 Familiar / Amigo (Sin Pago)</option>
+          </select>
+
+          <label>Cuentas Totales del Cliente</label>
+          <input id="m-cuentas-totales" type="number" min="0" value="1">
+
+          <label>Cuentas Pedidas Este Mes</label>
+          <input id="m-cuentas-mes-cliente" type="number" min="0" value="0">
+
+          <label>Notas</label>
+          <textarea id="m-notas-cliente" placeholder="Notas opcionales..." rows="3"></textarea>
+
+          <button class="btn-amarillo" onclick="registrarClienteMembresia()" style="margin-top:20px; font-size:1rem;">
+            ✅ Registrar Cliente
+          </button>
+          <div id="m-registro-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
+        </div>
+      </div>
+
+      <!-- LISTA CLIENTES -->
+      <div id="m-clientes" class="m-tab">
+        <div class="membresia-card">
+          <h3>👥 Lista de Clientes</h3>
+          <input id="m-buscar" placeholder="🔍 Buscar por nombre o teléfono..." oninput="filtrarClientesMembresia()" style="margin-bottom:16px;">
+          <div id="m-lista-clientes"></div>
+        </div>
+      </div>
+
+      <!-- BLOG NOTAS -->
+      <div id="m-notas" class="m-tab">
+        <div class="membresia-card">
+          <h3>📝 Blog de Notas - Los que más ayudan</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">
+            Aquí puedes escribir notas sobre los clientes que más ayudan con activaciones y más. 🔒 Requiere contraseña para editar.
+          </p>
+          <div class="flex-btns">
+            <button class="btn-amarillo" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(abrirModalNuevaNota)">➕ Nueva Nota</button>
+            <button class="btn-amarillo-outline" style="width:auto; padding:10px 18px; font-size:0.85rem;" onclick="pedirPasswordNotas(cerrarSesionPasswordNotas)">🔒 Cerrar Sesión Editor</button>
+          </div>
+          <div id="m-lista-notas" style="margin-top:16px;"></div>
+        </div>
+      </div>
+
+      <!-- CONFIGURACIÓN -->
+      <div id="m-config" class="m-tab">
+        <div class="membresia-card">
+          <h3>⚙️ Configuración</h3>
+          <p style="font-size:0.85rem; color:var(--texto-marron); margin-bottom:12px; font-weight:600;">
+            Configura la contraseña para editar el blog de notas (correo/clave del editor).
+          </p>
+          
+          <label>Contraseña del Editor de Notas</label>
+          <input id="m-config-password" type="password" placeholder="Nueva contraseña">
+
+          <label>Confirmar Contraseña</label>
+          <input id="m-config-password2" type="password" placeholder="Confirmar contraseña">
+
+          <button class="btn-amarillo" onclick="cambiarPasswordEditor()" style="margin-top:16px;">
+            💾 Guardar Contraseña
+          </button>
+          <div id="m-config-msg" style="margin-top:12px; font-weight:800; font-size:0.95rem;"></div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </div>
 
@@ -706,13 +1167,84 @@
   </div>
 </div>
 
+<!-- ===== MODAL PAGO MEMBRESÍA ===== -->
+<div class="modal-overlay" id="modalPagoMembresia">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModal('modalPagoMembresia')">✕</button>
+    <div class="modal-title">💵 Registrar Pago</div>
+    <p style="font-size:0.9rem; margin-bottom:6px; font-weight:700;">Cliente: <strong id="pago-cliente-nombre"></strong></p>
+    <label>Monto ($)</label>
+    <input id="pago-monto" type="number" step="0.01" placeholder="0.00">
+    <label>Días a extender desde hoy</label>
+    <input id="pago-dias-extra" type="number" value="30" min="1">
+    <label>Notas del pago (opcional)</label>
+    <input id="pago-notas" placeholder="Ej: Pago mensual...">
+    <button class="btn-amarillo" onclick="confirmarPagoMembresia()" style="margin-top:16px;">✅ Registrar Pago</button>
+  </div>
+</div>
+
+<!-- ===== MODAL AJUSTAR DÍAS ===== -->
+<div class="modal-overlay" id="modalDias">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModal('modalDias')">✕</button>
+    <div class="modal-title">📅 Ajustar Días</div>
+    <p style="font-size:0.9rem; margin-bottom:6px; font-weight:700;">Cliente: <strong id="dias-cliente-nombre"></strong></p>
+    <p style="font-size:0.85rem; margin-bottom:8px; font-weight:600;">Vencimiento actual: <strong id="dias-venc-actual"></strong></p>
+    <label>Días a sumar/restar</label>
+    <input id="dias-cantidad" type="number" value="1" min="1">
+    <div class="flex-btns" style="margin-top:12px;">
+      <button class="btn-verde-mini" style="width:auto; padding:10px 18px; font-size:0.9rem;" onclick="aplicarDias(1)">➕ Sumar Días</button>
+      <button class="btn-rojo-mini" style="width:auto; padding:10px 18px; font-size:0.9rem;" onclick="aplicarDias(-1)">➖ Quitar Días</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PASSWORD EDITOR NOTAS ===== -->
+<div class="modal-overlay" id="modalPassword">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModalPasswordNotas()">✕</button>
+    <div class="modal-title">🔒 Verificación Requerida</div>
+    <p style="font-size:0.9rem; margin-bottom:8px; font-weight:600;">Ingresa la contraseña del editor de notas.</p>
+    <label>Contraseña</label>
+    <input type="password" id="passwordInput" placeholder="Contraseña del editor">
+    <div class="flex-btns" style="margin-top:12px;">
+      <button class="btn-amarillo" style="width:auto; padding:10px 18px;" onclick="confirmarPasswordNotas()">✅ Verificar</button>
+    </div>
+    <div id="passwordMsg" style="margin-top:12px; color:#dc2626; font-weight:800;"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL NOTA ===== -->
+<div class="modal-overlay" id="modalNota">
+  <div class="modal-content modal-amarillo">
+    <button class="modal-close" onclick="cerrarModal('modalNota')">✕</button>
+    <div class="modal-title" id="modal-nota-titulo">📝 Nueva Nota</div>
+    <label>Título</label>
+    <input id="nota-titulo" placeholder="Ej: Los que más ayudaron este mes">
+    <label>Categoría</label>
+    <select id="nota-categoria">
+      <option value="ayudantes">⭐ Los que más ayudan</option>
+      <option value="general">📌 General</option>
+      <option value="tips">💡 Tips / Consejos</option>
+      <option value="reconocimiento">🏆 Reconocimiento</option>
+    </select>
+    <label>Autor</label>
+    <input id="nota-autor" placeholder="Ej: Andy">
+    <label>Contenido</label>
+    <textarea id="nota-contenido" rows="6" placeholder="Escribe aquí..."></textarea>
+    <input type="hidden" id="nota-editando-id" value="">
+    <button class="btn-amarillo" onclick="guardarNota()" style="margin-top:16px;">💾 Guardar Nota</button>
+    <div id="nota-msg" style="margin-top:10px; font-weight:800;"></div>
+  </div>
+</div>
+
 <!-- ============================================================ -->
 <!-- FIREBASE + TODAS LAS FUNCIONES -->
 <!-- ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, getDoc, getDocs, query, where, deleteDoc, onSnapshot, serverTimestamp, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, query, where, deleteDoc, onSnapshot, serverTimestamp, addDoc, writeBatch, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyArnqs6NzzauyMJlx6w3vfUaQqZaithGpM",
@@ -732,6 +1264,20 @@
   let currentUserIsAdmin = false;
   let participantesSorteo = [];
   let ruletaGirando = false;
+
+  // ============================================================
+  // ESTADO DE MEMBRESÍA
+  // ============================================================
+  let membresiaClientes = [];
+  let membresiaNotas = [];
+  let membresiaConfig = { password: 'admin123' };
+  let passwordNotasVerificado = false;
+  let pendingNotaCallback = null;
+  let clientePagoId = null;
+  let clienteDiasId = null;
+  let filtroClientes = '';
+  let unsubscribeClientesM = null;
+  let unsubscribeNotasM = null;
 
   // ============================================================
   // TOAST
@@ -814,6 +1360,9 @@
     document.getElementById('loginMessage').textContent = '';
     currentUserIsAdmin = false;
     document.getElementById('toastNotification').classList.remove('show');
+    passwordNotasVerificado = false;
+    if (unsubscribeClientesM) { unsubscribeClientesM(); unsubscribeClientesM = null; }
+    if (unsubscribeNotasM) { unsubscribeNotasM(); unsubscribeNotasM = null; }
   };
 
   // ============================================================
@@ -1016,10 +1565,9 @@
   };
 
   // ============================================================
-  // FUNCIONES PÚBLICAS
+  // FUNCIONES PÚBLICAS DEL SORTEO
   // ============================================================
   
-  // Abrir modal de registro (público)
   window.abrirModalRegistroSorteo = function() {
     document.getElementById('registroSorteoNombre').value = '';
     document.getElementById('registroSorteoTelefono').value = '';
@@ -1033,7 +1581,6 @@
     document.getElementById('modalRegistroSorteo').classList.remove('active');
   };
 
-  // Registrar participante
   window.registrarParticipanteSorteo = async function() {
     const nombre = document.getElementById('registroSorteoNombre').value.trim();
     const telefono = document.getElementById('registroSorteoTelefono').value.trim();
@@ -1045,7 +1592,6 @@
       return;
     }
     
-    // Verificar si ya está registrado
     const existe = participantesSorteo.some(p => p.telefono === telefono || p.nombre.toLowerCase() === nombre.toLowerCase());
     if (existe) {
       mensaje.innerHTML = '⚠️ Ya estás registrado en el sorteo. ¡Suerte! 🍀';
@@ -1060,18 +1606,15 @@
         fechaRegistro: new Date().toISOString()
       });
       
-      // Mostrar mensaje de éxito con el aviso
       mensaje.style.display = 'none';
       document.getElementById('registroExitoso').style.display = 'block';
       
       window.mostrarToast('🎯 ¡Registro exitoso!', `${nombre}, estás participando en el sorteo del Loco Andy. ¡Buena suerte! 🍀`);
       
-      // Recargar participantes (para el admin)
       if (currentUserIsAdmin) {
         await cargarParticipantesSorteo();
       }
       
-      // Cerrar modal después de 3 segundos
       setTimeout(() => {
         cerrarModalRegistroSorteo();
       }, 3000);
@@ -1083,45 +1626,24 @@
     }
   };
 
-  // Cargar participantes en la ruleta (ADMIN)
   window.cargarParticipantesEnRuleta = function() {
-    if (!currentUserIsAdmin) {
-      alert('⚠️ Solo el administrador puede realizar esta acción.');
-      return;
-    }
-    
-    if (participantesSorteo.length < 2) {
-      alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.');
-      return;
-    }
-    
+    if (!currentUserIsAdmin) { alert('⚠️ Solo el administrador puede realizar esta acción.'); return; }
+    if (participantesSorteo.length < 2) { alert('⚠️ Se necesitan al menos 2 participantes para hacer el sorteo.'); return; }
     generarRuleta();
     window.mostrarToast('🎯 Participantes cargados', `${participantesSorteo.length} participantes listos para el sorteo. ¡Gira la ruleta!`);
   };
 
-  // Eliminar todos los participantes (ADMIN)
   window.eliminarTodosParticipantes = async function() {
-    if (!currentUserIsAdmin) {
-      alert('⚠️ Solo el administrador puede realizar esta acción.');
-      return;
-    }
-    
-    if (participantesSorteo.length === 0) {
-      alert('⚠️ No hay participantes para eliminar.');
-      return;
-    }
-    
+    if (!currentUserIsAdmin) { alert('⚠️ Solo el administrador puede realizar esta acción.'); return; }
+    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes para eliminar.'); return; }
     if (!confirm(`⚠️ ¿Eliminar TODOS los ${participantesSorteo.length} participantes del sorteo? Esta acción no se puede deshacer.`)) return;
     
     try {
       const q = query(collection(db, "sorteo_participantes"));
       const querySnap = await getDocs(q);
       const batch = writeBatch(db);
-      querySnap.forEach(docSnap => {
-        batch.delete(docSnap.ref);
-      });
+      querySnap.forEach(docSnap => { batch.delete(docSnap.ref); });
       await batch.commit();
-      
       await cargarParticipantesSorteo();
       window.mostrarToast('🗑️ Participantes eliminados', 'Todos los participantes han sido eliminados del sorteo.');
     } catch (err) {
@@ -1129,11 +1651,9 @@
     }
   };
 
-  // Eliminar un participante específico (ADMIN)
   window.eliminarParticipante = async function(id) {
     if (!currentUserIsAdmin) return;
     if (!confirm('¿Eliminar este participante?')) return;
-    
     try {
       await deleteDoc(doc(db, "sorteo_participantes", id));
       await cargarParticipantesSorteo();
@@ -1143,13 +1663,9 @@
     }
   };
 
-  // Exportar participantes (ADMIN)
   window.exportarParticipantes = function() {
     if (!currentUserIsAdmin) return;
-    if (participantesSorteo.length === 0) {
-      alert('⚠️ No hay participantes para exportar.');
-      return;
-    }
+    if (participantesSorteo.length === 0) { alert('⚠️ No hay participantes para exportar.'); return; }
     
     let texto = '🦁 ANDYCHE CHAKER - PARTICIPANTES DEL SORTEO 🦁\n';
     texto += '========================================\n\n';
@@ -1161,8 +1677,7 @@
       texto += `📌 #${i+1}\n`;
       texto += `   Nombre: ${p.nombre}\n`;
       texto += `   Teléfono: ${p.telefono}\n`;
-      texto += `   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n`;
-      texto += '\n';
+      texto += `   Registrado: ${p.fechaRegistro ? new Date(p.fechaRegistro).toLocaleString() : '—'}\n\n`;
     });
     
     const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
@@ -1170,6 +1685,610 @@
     a.href = URL.createObjectURL(blob);
     a.download = `participantes_sorteo_${new Date().toISOString().slice(0,10)}.txt`;
     a.click();
+  };
+
+  // ============================================================
+  // ============ PANEL DE MEMBRESÍA - FUNCIONES ================
+  // ============================================================
+
+  // Cambio de tabs de membresía
+  document.querySelectorAll('.membresia-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('.membresia-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  window.irATabMembresia = function(tabId) {
+    document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.membresia-tab').forEach(t => t.classList.remove('active'));
+    const targetTab = document.querySelector(`.membresia-tab[data-tab="${tabId}"]`);
+    if (targetTab) targetTab.classList.add('active');
+  };
+
+  window.cerrarModal = function(id) {
+    document.getElementById(id).classList.remove('active');
+  };
+
+  // ----- Cargar configuración -----
+  async function cargarConfigMembresia() {
+    try {
+      const docRef = doc(db, 'membresia_config', 'editor');
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        membresiaConfig = { password: data.password || 'admin123' };
+      } else {
+        await setDoc(docRef, { password: 'admin123' });
+        membresiaConfig = { password: 'admin123' };
+      }
+    } catch (err) {
+      console.error('Error cargando config:', err);
+    }
+  }
+
+  // ----- Cargar clientes -----
+  async function cargarClientesMembresia() {
+    try {
+      const snap = await getDocs(collection(db, 'membresia_clientes'));
+      membresiaClientes = [];
+      snap.forEach(d => membresiaClientes.push({ id: d.id, ...d.data() }));
+      renderDashboardMembresia();
+      renderListaClientes();
+    } catch (err) {
+      console.error('Error cargando clientes:', err);
+    }
+  }
+
+  // ----- Cargar notas -----
+  async function cargarNotasMembresia() {
+    try {
+      const snap = await getDocs(collection(db, 'membresia_notas'));
+      membresiaNotas = [];
+      snap.forEach(d => membresiaNotas.push({ id: d.id, ...d.data() }));
+      renderNotas();
+    } catch (err) {
+      console.error('Error cargando notas:', err);
+    }
+  }
+
+  // ----- Cargar todo al iniciar sesión -----
+  async function cargarMembresiaCompleta() {
+    await cargarConfigMembresia();
+    await cargarClientesMembresia();
+    await cargarNotasMembresia();
+
+    // Listeners en tiempo real
+    if (unsubscribeClientesM) unsubscribeClientesM();
+    unsubscribeClientesM = onSnapshot(collection(db, 'membresia_clientes'), (snap) => {
+      if (!currentUserIsAdmin) return;
+      membresiaClientes = [];
+      snap.forEach(d => membresiaClientes.push({ id: d.id, ...d.data() }));
+      renderDashboardMembresia();
+      renderListaClientes();
+    });
+
+    if (unsubscribeNotasM) unsubscribeNotasM();
+    unsubscribeNotasM = onSnapshot(collection(db, 'membresia_notas'), (snap) => {
+      if (!currentUserIsAdmin) return;
+      membresiaNotas = [];
+      snap.forEach(d => membresiaNotas.push({ id: d.id, ...d.data() }));
+      renderNotas();
+    });
+  }
+
+  // ----- Helpers de estado cliente -----
+  function getEstadoCliente(cliente) {
+    if (cliente.tipo === 'gratis') return 'gratis';
+    if (!cliente.fechaVencimiento) return 'atrasado';
+    const venc = new Date(cliente.fechaVencimiento);
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+    return venc >= hoy ? 'aldia' : 'atrasado';
+  }
+
+  function formatearFecha(fecha) {
+    if (!fecha) return '—';
+    try {
+      const d = new Date(fecha);
+      return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch { return '—'; }
+  }
+
+  // ----- Render dashboard -----
+  function renderDashboardMembresia() {
+    const total = membresiaClientes.length;
+    let aldia = 0, atrasados = 0, gratis = 0, totalCuentas = 0, cuentasMes = 0;
+
+    membresiaClientes.forEach(c => {
+      const estado = getEstadoCliente(c);
+      if (estado === 'aldia') aldia++;
+      else if (estado === 'atrasado') atrasados++;
+      else if (estado === 'gratis') gratis++;
+      totalCuentas += Number(c.cuentasTotales) || 0;
+      cuentasMes += Number(c.cuentasPedidoMes) || 0;
+    });
+
+    document.getElementById('m-total-clientes').textContent = total;
+    document.getElementById('m-clientes-aldia').textContent = aldia;
+    document.getElementById('m-clientes-atrasados').textContent = atrasados;
+    document.getElementById('m-clientes-gratis').textContent = gratis;
+    document.getElementById('m-total-cuentas').textContent = totalCuentas;
+    document.getElementById('m-cuentas-mes').textContent = cuentasMes;
+
+    // Lista atrasados
+    const listaAtras = document.getElementById('m-lista-atrasados');
+    const atrasList = membresiaClientes.filter(c => getEstadoCliente(c) === 'atrasado');
+    if (atrasList.length === 0) {
+      listaAtras.innerHTML = '<div class="empty-msg">✅ No hay clientes atrasados. ¡Todo al día!</div>';
+    } else {
+      listaAtras.innerHTML = atrasList.map(c => `
+        <div class="cliente-row atrasado" style="padding:10px;">
+          <div class="cliente-info">
+            <div class="cliente-nombre">⚠️ ${c.nombre}</div>
+            <div class="cliente-datos">📱 ${c.telefono || '—'} · Venció: ${formatearFecha(c.fechaVencimiento)}</div>
+          </div>
+          <div class="cliente-acciones">
+            <button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button>
+            <button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Lista gratis
+    const listaGratis = document.getElementById('m-lista-gratis');
+    const gratisList = membresiaClientes.filter(c => c.tipo === 'gratis');
+    if (gratisList.length === 0) {
+      listaGratis.innerHTML = '<div class="empty-msg">No hay miembros sin pago registrados.</div>';
+    } else {
+      listaGratis.innerHTML = gratisList.map(c => `
+        <div class="cliente-row gratis" style="padding:10px;">
+          <div class="cliente-info">
+            <div class="cliente-nombre">🎁 ${c.nombre}</div>
+            <div class="cliente-datos">📱 ${c.telefono || '—'} · Cuentas: ${c.cuentasTotales || 0}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // ----- Render lista clientes -----
+  window.filtrarClientesMembresia = function() {
+    filtroClientes = document.getElementById('m-buscar').value.toLowerCase().trim();
+    renderListaClientes();
+  };
+
+  function renderListaClientes() {
+    const cont = document.getElementById('m-lista-clientes');
+    if (!cont) return;
+
+    let lista = [...membresiaClientes];
+    if (filtroClientes) {
+      lista = lista.filter(c => 
+        (c.nombre || '').toLowerCase().includes(filtroClientes) ||
+        (c.telefono || '').toLowerCase().includes(filtroClientes)
+      );
+    }
+
+    if (lista.length === 0) {
+      cont.innerHTML = '<div class="empty-msg">📭 No hay clientes registrados aún.</div>';
+      return;
+    }
+
+    cont.innerHTML = lista.map(c => {
+      const estado = getEstadoCliente(c);
+      let claseEstado = '';
+      let badgeEstado = '';
+      if (estado === 'atrasado') { claseEstado = 'atrasado'; badgeEstado = '<span class="cliente-badge atrasado">⚠️ Atrasado</span>'; }
+      else if (estado === 'gratis') { claseEstado = 'gratis'; badgeEstado = '<span class="cliente-badge gratis">🎁 Gratis</span>'; }
+      else { badgeEstado = '<span class="cliente-badge ok">✅ Al día</span>'; }
+
+      return `
+        <div class="cliente-row ${claseEstado}">
+          <div class="cliente-info">
+            <div class="cliente-nombre">${c.nombre}</div>
+            <div class="cliente-datos">📱 ${c.telefono || '—'} ${c.email ? '· ✉️ ' + c.email : ''}</div>
+            <div class="cliente-vence ${estado === 'atrasado' ? 'alerta' : 'ok'}">
+              📅 Vence: ${formatearFecha(c.fechaVencimiento)}
+            </div>
+            <div class="cliente-badges">
+              ${badgeEstado}
+              <span class="cliente-badge cuenta">🔢 ${c.cuentasTotales || 0} cuentas</span>
+              <span class="cliente-badge cuenta">📦 ${c.cuentasPedidoMes || 0} este mes</span>
+            </div>
+          </div>
+          <div class="cliente-acciones">
+            <button class="btn-small btn-verde-mini" onclick="abrirModalPago('${c.id}')">💵 Pago</button>
+            <button class="btn-small btn-amarillo" onclick="abrirModalDias('${c.id}')">📅 Días</button>
+            <button class="btn-small btn-amarillo" onclick="agregarCuentaMes('${c.id}', 1)" title="+1 cuenta mes">➕📦</button>
+            <button class="btn-small btn-amarillo-outline" onclick="agregarCuentaMes('${c.id}', -1)" title="-1 cuenta mes">➖📦</button>
+            <button class="btn-small btn-rojo-mini" onclick="eliminarClienteMembresia('${c.id}')">🗑️</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ----- Registrar cliente -----
+  window.registrarClienteMembresia = async function() {
+    const nombre = document.getElementById('m-nombre').value.trim();
+    const telefono = document.getElementById('m-telefono').value.trim();
+    const email = document.getElementById('m-email').value.trim();
+    const fechaIngreso = document.getElementById('m-fecha-ingreso').value;
+    const fechaVencimiento = document.getElementById('m-fecha-vencimiento').value;
+    const monto = parseFloat(document.getElementById('m-monto').value) || 0;
+    const tipo = document.getElementById('m-tipo').value;
+    const cuentasTotales = parseInt(document.getElementById('m-cuentas-totales').value) || 0;
+    const cuentasPedidoMes = parseInt(document.getElementById('m-cuentas-mes-cliente').value) || 0;
+    const notas = document.getElementById('m-notas-cliente').value.trim();
+    const msg = document.getElementById('m-registro-msg');
+
+    if (!nombre || !telefono || !fechaIngreso || !fechaVencimiento) {
+      msg.textContent = '⚠️ Completa todos los campos obligatorios (*)';
+      msg.style.color = '#dc2626';
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'membresia_clientes'), {
+        nombre, telefono, email,
+        fechaIngreso,
+        fechaVencimiento,
+        montoPago: monto,
+        tipo,
+        cuentasTotales,
+        cuentasPedidoMes,
+        notas,
+        historialPagos: [],
+        creadoEn: new Date().toISOString()
+      });
+
+      msg.textContent = '✅ Cliente registrado correctamente';
+      msg.style.color = '#16a34a';
+
+      // Limpiar form
+      document.getElementById('m-nombre').value = '';
+      document.getElementById('m-telefono').value = '';
+      document.getElementById('m-email').value = '';
+      document.getElementById('m-fecha-ingreso').value = '';
+      document.getElementById('m-fecha-vencimiento').value = '';
+      document.getElementById('m-monto').value = '0';
+      document.getElementById('m-cuentas-totales').value = '1';
+      document.getElementById('m-cuentas-mes-cliente').value = '0';
+      document.getElementById('m-notas-cliente').value = '';
+
+      await cargarClientesMembresia();
+      window.mostrarToast('✅ Cliente Registrado', `${nombre} ha sido agregado a la membresía.`);
+      setTimeout(() => { msg.textContent = ''; }, 3000);
+    } catch (err) {
+      msg.textContent = '❌ Error: ' + err.message;
+      msg.style.color = '#dc2626';
+    }
+  };
+
+  // ----- Eliminar cliente -----
+  window.eliminarClienteMembresia = async function(id) {
+    const cliente = membresiaClientes.find(c => c.id === id);
+    if (!cliente) return;
+    if (!confirm(`¿Eliminar al cliente "${cliente.nombre}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      await deleteDoc(doc(db, 'membresia_clientes', id));
+      await cargarClientesMembresia();
+      window.mostrarToast('🗑️ Cliente eliminado', `${cliente.nombre} ha sido eliminado.`);
+    } catch (err) {
+      alert('❌ Error eliminando: ' + err.message);
+    }
+  };
+
+  // ----- Modal pago -----
+  window.abrirModalPago = function(id) {
+    const cliente = membresiaClientes.find(c => c.id === id);
+    if (!cliente) return;
+    clientePagoId = id;
+    document.getElementById('pago-cliente-nombre').textContent = cliente.nombre;
+    document.getElementById('pago-monto').value = cliente.montoPago || '';
+    document.getElementById('pago-dias-extra').value = 30;
+    document.getElementById('pago-notas').value = '';
+    document.getElementById('modalPagoMembresia').classList.add('active');
+  };
+
+  window.confirmarPagoMembresia = async function() {
+    if (!clientePagoId) return;
+    const cliente = membresiaClientes.find(c => c.id === clientePagoId);
+    if (!cliente) return;
+
+    const monto = parseFloat(document.getElementById('pago-monto').value) || 0;
+    const diasExtra = parseInt(document.getElementById('pago-dias-extra').value) || 30;
+    const notas = document.getElementById('pago-notas').value.trim();
+
+    try {
+      const hoy = new Date();
+      const nuevaVenc = new Date();
+      nuevaVenc.setDate(hoy.getDate() + diasExtra);
+
+      const historial = Array.isArray(cliente.historialPagos) ? cliente.historialPagos : [];
+      historial.push({
+        fecha: hoy.toISOString(),
+        monto,
+        notas,
+        dias: diasExtra
+      });
+
+      await updateDoc(doc(db, 'membresia_clientes', clientePagoId), {
+        ultimoPago: hoy.toISOString(),
+        fechaVencimiento: nuevaVenc.toISOString().split('T')[0],
+        montoPago: monto,
+        historialPagos: historial
+      });
+
+      cerrarModal('modalPagoMembresia');
+      await cargarClientesMembresia();
+      window.mostrarToast('💵 Pago registrado', `${cliente.nombre} pagó $${monto.toFixed(2)}. Vence: ${formatearFecha(nuevaVenc)}`);
+      clientePagoId = null;
+    } catch (err) {
+      alert('❌ Error registrando pago: ' + err.message);
+    }
+  };
+
+  // ----- Modal días -----
+  window.abrirModalDias = function(id) {
+    const cliente = membresiaClientes.find(c => c.id === id);
+    if (!cliente) return;
+    clienteDiasId = id;
+    document.getElementById('dias-cliente-nombre').textContent = cliente.nombre;
+    document.getElementById('dias-venc-actual').textContent = formatearFecha(cliente.fechaVencimiento);
+    document.getElementById('dias-cantidad').value = 1;
+    document.getElementById('modalDias').classList.add('active');
+  };
+
+  window.aplicarDias = async function(signo) {
+    if (!clienteDiasId) return;
+    const cliente = membresiaClientes.find(c => c.id === clienteDiasId);
+    if (!cliente) return;
+
+    const cantidad = parseInt(document.getElementById('dias-cantidad').value) || 1;
+    const delta = signo * cantidad;
+
+    if (!cliente.fechaVencimiento) {
+      alert('⚠️ Este cliente no tiene fecha de vencimiento registrada.');
+      return;
+    }
+
+    try {
+      const actual = new Date(cliente.fechaVencimiento);
+      actual.setDate(actual.getDate() + delta);
+      const nuevaFecha = actual.toISOString().split('T')[0];
+
+      await updateDoc(doc(db, 'membresia_clientes', clienteDiasId), {
+        fechaVencimiento: nuevaFecha
+      });
+
+      cerrarModal('modalDias');
+      await cargarClientesMembresia();
+      window.mostrarToast(
+        delta > 0 ? '📅 Días sumados' : '📅 Días restados',
+        `${cliente.nombre}: ${delta > 0 ? '+' : ''}${delta} días. Nuevo vencimiento: ${formatearFecha(nuevaFecha)}`
+      );
+      clienteDiasId = null;
+    } catch (err) {
+      alert('❌ Error ajustando días: ' + err.message);
+    }
+  };
+
+  // ----- Cuentas por mes -----
+  window.agregarCuentaMes = async function(id, delta) {
+    const cliente = membresiaClientes.find(c => c.id === id);
+    if (!cliente) return;
+    const actual = parseInt(cliente.cuentasPedidoMes) || 0;
+    const nuevo = Math.max(0, actual + delta);
+    try {
+      await updateDoc(doc(db, 'membresia_clientes', id), {
+        cuentasPedidoMes: nuevo
+      });
+      await cargarClientesMembresia();
+    } catch (err) {
+      alert('❌ Error actualizando cuentas: ' + err.message);
+    }
+  };
+
+  window.reiniciarConteoMes = async function() {
+    if (membresiaClientes.length === 0) { alert('⚠️ No hay clientes.'); return; }
+    if (!confirm('¿Reiniciar el conteo de "cuentas pedidas este mes" para todos los clientes?')) return;
+    try {
+      const batch = writeBatch(db);
+      membresiaClientes.forEach(c => {
+        batch.update(doc(db, 'membresia_clientes', c.id), { cuentasPedidoMes: 0 });
+      });
+      await batch.commit();
+      await cargarClientesMembresia();
+      window.mostrarToast('🔄 Conteo Reiniciado', 'Las cuentas pedidas del mes fueron reseteadas a 0.');
+    } catch (err) {
+      alert('❌ Error: ' + err.message);
+    }
+  };
+
+  // ============================================================
+  // BLOG DE NOTAS + CONTRASEÑA
+  // ============================================================
+  window.pedirPasswordNotas = function(callback) {
+    if (passwordNotasVerificado) { callback(); return; }
+    pendingNotaCallback = callback;
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordMsg').textContent = '';
+    document.getElementById('modalPassword').classList.add('active');
+    setTimeout(() => document.getElementById('passwordInput').focus(), 100);
+  };
+
+  window.confirmarPasswordNotas = function() {
+    const pass = document.getElementById('passwordInput').value;
+    if (pass === membresiaConfig.password) {
+      passwordNotasVerificado = true;
+      cerrarModal('modalPassword');
+      if (pendingNotaCallback) {
+        const cb = pendingNotaCallback;
+        pendingNotaCallback = null;
+        cb();
+      }
+    } else {
+      document.getElementById('passwordMsg').textContent = '❌ Contraseña incorrecta';
+    }
+  };
+
+  window.cerrarModalPasswordNotas = function() {
+    pendingNotaCallback = null;
+    cerrarModal('modalPassword');
+  };
+
+  window.cerrarSesionPasswordNotas = function() {
+    passwordNotasVerificado = false;
+    window.mostrarToast('🔒 Sesión cerrada', 'Se requerirá contraseña la próxima vez que edites notas.');
+  };
+
+  window.cambiarPasswordEditor = async function() {
+    const p1 = document.getElementById('m-config-password').value;
+    const p2 = document.getElementById('m-config-password2').value;
+    const msg = document.getElementById('m-config-msg');
+
+    if (!p1 || !p2) {
+      msg.textContent = '⚠️ Completa ambos campos';
+      msg.style.color = '#dc2626';
+      return;
+    }
+    if (p1 !== p2) {
+      msg.textContent = '⚠️ Las contraseñas no coinciden';
+      msg.style.color = '#dc2626';
+      return;
+    }
+    if (p1.length < 4) {
+      msg.textContent = '⚠️ Mínimo 4 caracteres';
+      msg.style.color = '#dc2626';
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, 'membresia_config', 'editor'), { password: p1 });
+      membresiaConfig.password = p1;
+      document.getElementById('m-config-password').value = '';
+      document.getElementById('m-config-password2').value = '';
+      msg.textContent = '✅ Contraseña actualizada correctamente';
+      msg.style.color = '#16a34a';
+      passwordNotasVerificado = false;
+      window.mostrarToast('🔒 Contraseña actualizada', 'La contraseña del editor de notas fue cambiada.');
+    } catch (err) {
+      msg.textContent = '❌ Error: ' + err.message;
+      msg.style.color = '#dc2626';
+    }
+  };
+
+  // ----- Render notas -----
+  function renderNotas() {
+    const cont = document.getElementById('m-lista-notas');
+    if (!cont) return;
+
+    if (membresiaNotas.length === 0) {
+      cont.innerHTML = '<div class="empty-msg">📝 Aún no hay notas. ¡Agrega la primera!</div>';
+      return;
+    }
+
+    const sorted = [...membresiaNotas].sort((a, b) => 
+      new Date(b.fecha || 0) - new Date(a.fecha || 0)
+    );
+
+    const catLabel = {
+      'ayudantes': '⭐ Los que más ayudan',
+      'general': '📌 General',
+      'tips': '💡 Tips',
+      'reconocimiento': '🏆 Reconocimiento'
+    };
+
+    cont.innerHTML = sorted.map(n => `
+      <div class="nota-blog">
+        <span class="nota-cat">${catLabel[n.categoria] || '📌 General'}</span>
+        <div class="nota-titulo">${n.titulo}</div>
+        <div class="nota-meta">✍️ ${n.autor || 'Anónimo'} · ${formatearFecha(n.fecha)}</div>
+        <div class="nota-contenido">${n.contenido}</div>
+        <div class="nota-acciones">
+          <button class="btn-small btn-amarillo" onclick="pedirPasswordNotas(() => editarNota('${n.id}'))">✏️ Editar</button>
+          <button class="btn-small btn-rojo-mini" onclick="pedirPasswordNotas(() => eliminarNota('${n.id}'))">🗑️ Eliminar</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.abrirModalNuevaNota = function() {
+    document.getElementById('modal-nota-titulo').textContent = '📝 Nueva Nota';
+    document.getElementById('nota-titulo').value = '';
+    document.getElementById('nota-categoria').value = 'ayudantes';
+    document.getElementById('nota-autor').value = '';
+    document.getElementById('nota-contenido').value = '';
+    document.getElementById('nota-editando-id').value = '';
+    document.getElementById('nota-msg').textContent = '';
+    document.getElementById('modalNota').classList.add('active');
+  };
+
+  window.editarNota = function(id) {
+    const nota = membresiaNotas.find(n => n.id === id);
+    if (!nota) return;
+    document.getElementById('modal-nota-titulo').textContent = '✏️ Editar Nota';
+    document.getElementById('nota-titulo').value = nota.titulo || '';
+    document.getElementById('nota-categoria').value = nota.categoria || 'general';
+    document.getElementById('nota-autor').value = nota.autor || '';
+    document.getElementById('nota-contenido').value = nota.contenido || '';
+    document.getElementById('nota-editando-id').value = id;
+    document.getElementById('nota-msg').textContent = '';
+    document.getElementById('modalNota').classList.add('active');
+  };
+
+  window.guardarNota = async function() {
+    const titulo = document.getElementById('nota-titulo').value.trim();
+    const categoria = document.getElementById('nota-categoria').value;
+    const autor = document.getElementById('nota-autor').value.trim() || 'Anónimo';
+    const contenido = document.getElementById('nota-contenido').value.trim();
+    const editandoId = document.getElementById('nota-editando-id').value;
+    const msg = document.getElementById('nota-msg');
+
+    if (!titulo || !contenido) {
+      msg.textContent = '⚠️ Título y contenido son obligatorios';
+      msg.style.color = '#dc2626';
+      return;
+    }
+
+    try {
+      if (editandoId) {
+        await updateDoc(doc(db, 'membresia_notas', editandoId), {
+          titulo, categoria, autor, contenido,
+          fechaEditado: new Date().toISOString()
+        });
+        window.mostrarToast('✏️ Nota actualizada', 'La nota ha sido editada correctamente.');
+      } else {
+        await addDoc(collection(db, 'membresia_notas'), {
+          titulo, categoria, autor, contenido,
+          fecha: new Date().toISOString()
+        });
+        window.mostrarToast('📝 Nota creada', 'La nueva nota ha sido publicada.');
+      }
+      cerrarModal('modalNota');
+      await cargarNotasMembresia();
+    } catch (err) {
+      msg.textContent = '❌ Error: ' + err.message;
+      msg.style.color = '#dc2626';
+    }
+  };
+
+  window.eliminarNota = async function(id) {
+    if (!confirm('¿Eliminar esta nota? Esta acción no se puede deshacer.')) return;
+    try {
+      await deleteDoc(doc(db, 'membresia_notas', id));
+      await cargarNotasMembresia();
+      window.mostrarToast('🗑️ Nota eliminada', 'La nota ha sido eliminada.');
+    } catch (err) {
+      alert('❌ Error: ' + err.message);
+    }
   };
 
   // ============================================================
@@ -1199,23 +2318,26 @@
         currentUserIsAdmin = true;
         await cargarParticipantesSorteo();
         escucharCambiosParticipantes();
+        await cargarMembresiaCompleta();
       } else {
         await signOut(auth);
         document.getElementById('loginMessage').textContent = '❌ Solo el administrador puede acceder.';
       }
     } else {
-      // Mostrar la pantalla de inicio con el botón de registro
       document.getElementById('loginContainer').style.display = 'flex';
       document.getElementById('appContainer').style.display = 'none';
       document.getElementById('loginCard').style.display = 'none';
       currentUserIsAdmin = false;
+      passwordNotasVerificado = false;
     }
   });
 
-  console.log('🦁 ANDYCHE CHAKER - SISTEMA DE SORTEO');
+  console.log('🦁 ANDYCHE CHAKER - SISTEMA COMPLETO');
+  console.log('✅ Sorteo + Membresía');
   console.log('✅ Registro público sin necesidad de cuenta');
   console.log('✅ Solo admin puede acceder al panel');
-  console.log('✅ Rueda de sorteo con participantes en tiempo real');
+  console.log('✅ Panel de membresía con clientes, pagos, cuentas y blog de notas');
+  console.log('✅ Colores blanco y amarillo en membresía');
   console.log('✅ TODO FUNCIONANDO AL 100%');
 </script>
 </body>
